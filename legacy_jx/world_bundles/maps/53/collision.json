@@ -1,0 +1,44 @@
+{
+  "mapId": 53,
+  "schemaVersion": "1.0.0",
+  "layers": [
+    {
+      "layerId": 0,
+      "name": "Ground",
+      "heightOffset": 0.0,
+      "isWalkable": true
+    },
+    {
+      "layerId": 1,
+      "name": "VillageWalls",
+      "heightOffset": 3.0,
+      "isWalkable": false,
+      "boundingBoxes": [
+        {
+          "min": [
+            340.0,
+            0.0,
+            380.0
+          ],
+          "max": [
+            360.0,
+            4.0,
+            382.0
+          ]
+        },
+        {
+          "min": [
+            340.0,
+            0.0,
+            400.0
+          ],
+          "max": [
+            360.0,
+            4.0,
+            402.0
+          ]
+        }
+      ]
+    }
+  ]
+}

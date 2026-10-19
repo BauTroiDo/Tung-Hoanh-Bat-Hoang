@@ -1,0 +1,52 @@
+{
+  "mapId": 53,
+  "schemaVersion": "1.0.0",
+  "spawns": [
+    {
+      "uSpawnId": 227634053120,
+      "name": "Chuong Diem Ba Lang",
+      "templateId": 101,
+      "kind": 1,
+      "isPinned": true,
+      "legacyX": 11232,
+      "legacyY": 12544,
+      "pos3d": [
+        351.0,
+        0.0,
+        392.0
+      ],
+      "script": "\\script\\maps\\balang\\chuongdiem.lua"
+    },
+    {
+      "uSpawnId": 227634053121,
+      "name": "Tiem Ren Ba Lang",
+      "templateId": 102,
+      "kind": 2,
+      "isPinned": true,
+      "legacyX": 11300,
+      "legacyY": 12500,
+      "pos3d": [
+        353.125,
+        0.0,
+        390.625
+      ],
+      "script": "\\script\\maps\\balang\\tiemren.lua"
+    },
+    {
+      "uSpawnId": 227634249728,
+      "name": "Heo Rung Dã Ngoại",
+      "templateId": 205,
+      "kind": 3,
+      "isPinned": false,
+      "legacyX": 12000,
+      "legacyY": 13000,
+      "pos3d": [
+        375.0,
+        0.0,
+        406.25
+      ],
+      "level": 5,
+      "series": 0
+    }
+  ]
+}

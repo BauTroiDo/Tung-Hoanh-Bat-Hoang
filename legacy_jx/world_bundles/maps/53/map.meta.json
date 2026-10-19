@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "mapId": 53,
+  "mapName": "Ba Lang Huyen",
+  "mapType": "Country",
+  "coordinateContract": {
+    "scaleMetersPerPixel": 0.03125,
+    "logicCellSize": 32,
+    "axisConvention": "X=East, Y=Up, Z=South",
+    "cameraMode": "Isometric_Oblique_45Deg"
+  },
+  "bounds": {
+    "originPixelX": 11232,
+    "originPixelY": 12512,
+    "widthCells": 160,
+    "heightCells": 320,
+    "widthMeters": 160.0,
+    "heightMeters": 320.0
+  },
+  "portals": [
+    {
+      "id": 1,
+      "name": "To Lam An",
+      "legacyX": 11200,
+      "legacyY": 12500,
+      "pos3d": [
+        350.0,
+        0.0,
+        390.625
+      ],
+      "targetMapId": 1
+    },
+    {
+      "id": 2,
+      "name": "To Bien Kinh",
+      "legacyX": 11500,
+      "legacyY": 12200,
+      "pos3d": [
+        359.375,
+        0.0,
+        381.25
+      ],
+      "targetMapId": 2
+    }
+  ]
+}

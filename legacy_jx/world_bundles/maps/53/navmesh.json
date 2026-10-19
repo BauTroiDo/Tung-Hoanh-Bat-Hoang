@@ -1,0 +1,44 @@
+{
+  "mapId": 53,
+  "schemaVersion": "1.0.0",
+  "navTileSizeMeters": 32.0,
+  "waypoints": [
+    {
+      "nodeId": 1,
+      "name": "VillageSquare",
+      "pos3d": [
+        351.0,
+        0.0,
+        392.0
+      ],
+      "neighbors": [
+        2,
+        3
+      ]
+    },
+    {
+      "nodeId": 2,
+      "name": "NorthGate",
+      "pos3d": [
+        350.0,
+        0.0,
+        381.25
+      ],
+      "neighbors": [
+        1
+      ]
+    },
+    {
+      "nodeId": 3,
+      "name": "SouthGate",
+      "pos3d": [
+        350.0,
+        0.0,
+        400.0
+      ],
+      "neighbors": [
+        1
+      ]
+    }
+  ]
+}
