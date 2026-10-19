@@ -1,0 +1,14 @@
+# Legacy tree: sources are GB2312/GBK encoded with hand-mixed CRLF.
+# Disable all EOL/text conversion so git never rewrites bytes the MSVC
+# compiler and the Lua scripts are sensitive to.
+* -text
+
+# Explicitly binary for the vendored artifacts
+*.lib binary
+*.dll binary
+*.exe binary
+*.pdb binary
+*.obj binary
+*.sbr binary
+*.cod binary
+*.ipch binary

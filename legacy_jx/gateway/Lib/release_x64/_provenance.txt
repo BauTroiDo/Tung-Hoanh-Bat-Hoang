@@ -1,0 +1,34 @@
+gateway/Lib/release_x64 - 64-bit copies of the vendor libraries Goddess links
+
+These sit beside, not instead of, the 32-bit archives in Lib/release and
+Sources/MySql/lib, which the Win32 configurations of that project still link.
+
+sqlite3/sqlite3.lib, sqlite3.dll, sqlite3.def
+  SQLite 3.53.4 win64 from sqlite.org; the published SHA3-256 of the download
+  was verified before use.  SQLite ships no import library, so sqlite3.lib
+  was generated from the published sqlite3.def with
+      lib.exe -nologo -def:sqlite3.def -machine:x64 -out:sqlite3.lib
+  and measures x64 with the same 305 exported symbols as the dll.
+  The header compiled against is header/sqlite3/sqlite3.h, SQLite 3.35.5
+  (three older 3.7.16.2 copies sit elsewhere in the tree, off this project's
+  include path).  An older header against a newer dll is the direction SQLite
+  documents as supported, and every interface the sources use is a handle.
+
+mysql/libmysql.lib, libmysql.dll
+  MySQL Connector/C 8.4, copied from the server already installed at
+  'C:/Program Files/MySQL/MySQL Server 8.4/lib'.  All 26 mysql_* functions the
+  sources call are exported by this import library, and the MYSQL, MYSQL_RES
+  and MYSQL_FIELD layouts in the bundled headers under
+  gateway/Sources/MySql/include are textually the ones it was built against.
+
+mysql/libssl-3-x64.dll, libcrypto-3-x64.dll
+  OpenSSL 3 runtimes shipped by the same MySQL Connector/C 8.4 install the line above took
+  libmysql.dll from, copied from 'C:/Program Files/MySQL/MySQL Server 8.4/bin'.  They are not an
+  extra dependency anyone chose: libmysql.dll imports both names, so a folder holding the client
+  library without them is not startable - at round 125 the only other copies on the machine were
+  in C:/Program Files/Git/mingw64/bin, which is why the gateway appeared to run.  The pairing is
+  pinned by measurement rather than by a folder name: the install is accepted when its own
+  libmysql.dll matches the bytes vendored here (sha256 starting 8b10e453d889c259), and each DLL
+  was checked against the file already running on the deployment shelf.  Both measure x64.
+
+Nothing else in this directory is a build output of this tree.

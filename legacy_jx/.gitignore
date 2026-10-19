@@ -1,0 +1,27 @@
+# MSVC build intermediates only.
+# Nothing here is a source or a vendored dependency, so no library is ever lost:
+# (gateway/Lib/release/sqlite3/sqlite3.lib and gameserver/Lib/S3DBInterface.* stay tracked)
+*.obj
+*.sbr
+*.cod
+*.pdb
+*.ilk
+*.exp
+*.bsc
+*.tlog
+*.lst
+*.ipch
+*.sdf
+*.map
+
+# IDE / precompiled-header caches
+ipch/
+*.vcxproj.user
+*.suo
+*.user
+
+# Build-state stamps
+*.lastbuildstate
+
+# Runtime output (regenerated; game data lives outside this tree)
+*.log

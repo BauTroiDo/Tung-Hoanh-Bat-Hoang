@@ -1,0 +1,214 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (Simplified, PRC) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DLG_GODDESS DIALOGEX 0, 0, 679, 311
+STYLE DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Goddess - [Disable]"
+FONT 8, "Tahoma", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Start",IDOK,90,11,67,14
+    LTEXT           "Open port:",IDC_STATIC,7,12,38,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_PORT,48,12,34,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER | NOT WS_BORDER,WS_EX_STATICEDGE
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,1,32,163,1
+    ICON            IDI_ICON1,IDC_STATIC,7,34,21,20
+    LTEXT           "Database thread :",IDC_STATIC,40,34,59,10
+    LTEXT           "Service thread :",IDC_STATIC,48,43,51,10
+    LISTBOX         IDC_LIST_CLIENT,10,55,155,42,LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "Invalid",IDC_STATIC_DATABASE,102,34,60,10
+    LTEXT           "Invalid",IDC_STATIC_SERVICE,102,43,60,10
+    GROUPBOX        "Thiet lap (hoat dong sau khi tat may chu)",IDC_STATIC,169,7,161,149
+    LTEXT           "Max char create:",IDC_STATIC,173,17,50,10,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_MAXNUM_ROLE,225,17,15,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER | NOT WS_BORDER,WS_EX_STATICEDGE
+    LTEXT           "Backup time:",IDC_STATIC,173,33,40,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_BACKUP_SLEEP_TIME,225,33,15,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER | NOT WS_BORDER,WS_EX_STATICEDGE
+    PUSHBUTTON      "Pause",IDC_BTN_BACKUP_SUS_RES,224,76,26,13,WS_DISABLED | NOT WS_TABSTOP
+    LTEXT           "Backup status:",IDC_LAB_BACKUP_STATUS,173,78,45,10
+    PUSHBUTTON      "Manual backup",IDC_BTN_BACKUP_MANUAL,174,90,55,12
+    PUSHBUTTON      "Restart",IDC_RESTART,287,90,41,13
+    PUSHBUTTON      "Save nhat ky",IDC_BTN_CLEAR_LOG,235,90,50,13
+    LISTBOX         IDC_OUTPUT,7,217,507,73,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Cac nhan vat + luu tru ho so bat thuong",IDC_STATIC,333,7,181,61
+    LTEXT           "MAX Player:",IDC_STATIC,173,50,35,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_MAXNUM_PLAYER,215,50,26,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER | WS_DISABLED | NOT WS_BORDER,WS_EX_STATICEDGE
+    LISTBOX         IDC_LIST_ERRROLEINFO,337,17,176,33,LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+    GROUPBOX        "Thao tac Database (dong may chu GS hoac hoat dong ngoai tuyen)",IDC_STATIC,333,67,181,89
+    GROUPBOX        "Mot vung(khi may chu GS tat, hay van hanh than trong)",IDC_STATIC,173,104,152,50
+    EDITTEXT        IDC_EDIT_QUA,177,132,16,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Phan biet thanh",IDC_STATIC,196,134,25,8
+    EDITTEXT        IDC_EDIT_QUB,222,132,16,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Quan, cung mot tai khoan +",IDC_STATIC,241,134,41,8
+    EDITTEXT        IDC_EDIT_JIA,281,132,17,12,ES_CENTER | ES_AUTOHSCROLL
+    PUSHBUTTON      "合区",IDC_BUTTON_HE,301,132,23,13
+    PUSHBUTTON      "清除数据",IDC_BUTTON_CLEARDATA,467,76,39,12
+    LTEXT           "删除角色数据:",IDC_STATIC,339,80,54,8
+    EDITTEXT        IDC_EDIT_REG,396,77,21,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "区,全部",IDC_CHECK_ALL,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,421,79,38,10
+    LTEXT           "删除某个角色:",IDC_STATIC,339,93,52,8
+    EDITTEXT        IDC_EDIT_ROLENAME,396,90,64,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "删除角色",IDC_BUTTON_DELROEL,467,90,39,13
+    LTEXT           "角色转区:",IDC_STATIC,339,105,36,8
+    EDITTEXT        IDC_EDIT_ROLENAME2,380,104,50,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_REG2,442,104,14,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "转",IDC_STATIC,432,106,9,8
+    LTEXT           "区",IDC_STATIC,458,106,9,8
+    PUSHBUTTON      "角色转区",IDC_BUTTON_CHANGEREG,467,104,39,13
+    LTEXT           "删除某个账号角色:",IDC_STATIC,339,119,68,8
+    EDITTEXT        IDC_EDIT_ACCNAME,412,117,50,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "开始删除",IDC_BUTTON_DELACC,467,117,39,13
+    LTEXT           "角色改名:",IDC_STATIC,339,132,36,8
+    EDITTEXT        IDC_EDIT_CHNAME,420,130,41,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "开始改名",IDC_BUTTON_CHNAME,467,130,39,13
+    EDITTEXT        IDC_EDIT_SCNAME,375,130,41,12,ES_AUTOHSCROLL
+    GROUPBOX        "Thao tac (nhan vat offline - nap tien)",IDC_STATIC,10,98,157,110
+    LTEXT           "Role:",IDC_STATIC,16,122,18,8
+    EDITTEXT        IDC_EDIT_MONEYROLE,46,120,51,12,ES_CENTER | ES_AUTOHSCROLL
+    CONTROL         "Vang",IDC_RADIO_JIN,"Button",BS_AUTORADIOBUTTON,17,109,29,10
+    CONTROL         "Bac",IDC_RADIO_YIN,"Button",BS_AUTORADIOBUTTON,49,109,30,10
+    PUSHBUTTON      "Add Money",IDC_BUTTON_ADDMONEY,103,136,60,12
+    LTEXT           "Money:",IDC_STATIC,16,138,25,8
+    EDITTEXT        IDC_EDIT_MONEYCOUNT,45,136,51,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Check online",IDC_CHECK_ONLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,86,109,55,9
+    LTEXT           "EnterMap:",IDC_STATIC,339,144,50,8
+    EDITTEXT        IDC_EDIT_BAONAME,211,117,41,12,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MAPIDX,441,143,20,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "IDMap",IDC_STATIC,420,145,20,8
+    PUSHBUTTON      "Bat dau",IDC_BUTTON_RECHANGE,467,143,39,13
+    LTEXT           "Nhan vat private",IDC_STATIC,176,118,40,8
+    EDITTEXT        IDC_EDIT_RECNAME,375,142,41,12,ES_AUTOHSCROLL
+    LTEXT           "Cap do loc:",IDC_STATIC,259,119,50,8
+    EDITTEXT        IDC_EDIT_DELLEVE,296,117,23,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Lam sach it hon:",IDC_STATIC,14,153,60,8
+    EDITTEXT        IDC_EDIT_REMOVELEVEL,70,151,45,12,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Nhan vat level",IDC_STATIC,15,168,50,8
+    PUSHBUTTON      "Remove Role",IDC_BUTTON_REMOVEROLE,70,166,49,12
+    GROUPBOX        "找回BAK操作(关闭GS服务器或角色下线操作)",IDC_STATIC,519,7,158,226
+    LTEXT           "bak路径",IDC_STATIC,526,19,28,8
+    EDITTEXT        IDC_EDIT_BAKPATH,555,18,102,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "选",IDC_BUTTON_BAKSEL,661,18,16,14
+    LISTBOX         IDC_LIST_BAKROLEINFO,524,138,145,90,LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+    LTEXT           "角色名",IDC_STATIC,527,34,25,8
+    EDITTEXT        IDC_EDIT_BAKROLENAME,555,33,54,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "查找",IDC_BUTTON_FIND_BAK,613,33,21,12
+    PUSHBUTTON      "恢复",IDC_BUTTON_ADD_BAK,641,33,25,12
+    LTEXT           "Data type:",IDC_STATIC,245,17,43,10,SS_CENTERIMAGE
+    CONTROL         "DB",IDC_RADIO_DATA_DB,"Button",BS_AUTORADIOBUTTON | BS_FLAT,283,17,20,10
+    CONTROL         "SQL",IDC_RADIO_DATA_SQL,"Button",BS_AUTORADIOBUTTON | BS_FLAT,305,17,26,10
+    PUSHBUTTON      "Set up database",IDC_BUTTON_SETDATA_KIND,260,29,60,13
+    PUSHBUTTON      "<<Copy DB to MySQL>>",IDC_BUTTON_DATA_COPY,244,44,83,13
+    PUSHBUTTON      "Backup",IDC_BUTTON_GETITEMDATA,454,293,37,13
+    CONTROL         "Body",IDC_CHECK_SHENG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,210,295,27,10
+    CONTROL         "Me chong",IDC_CHECK_ZIMU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,295,40,10
+    CONTROL         "Kho",IDC_CHECK_CHUWU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,284,295,33,10
+    CONTROL         "Box1",IDC_CHECK_KUOYI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,319,295,27,10
+    CONTROL         "Box2",IDC_CHECK_KUOER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,354,295,28,10
+    CONTROL         "Box3",IDC_CHECK_KUOSAN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,387,295,32,10
+    CONTROL         "All",IDC_CHECK_ITEM_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,422,295,30,10
+    LTEXT           "Account:",IDC_STATIC,53,295,30,8
+    EDITTEXT        IDC_EDIT_ITEM_ACC,85,293,41,12,ES_AUTOHSCROLL
+    LTEXT           "Nhan vat:",IDC_STATIC,130,295,35,8
+    EDITTEXT        IDC_EDIT_ITEM_ROLE,165,293,41,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "<<Copy MySQL to DB>>",IDC_BUTTON_DATA_COPY2,244,59,83,15
+    PUSHBUTTON      "Close",IDC_BUTTON_COLOSEGAME,10,293,37,13
+    PUSHBUTTON      "恢复全部数据",IDC_BUTTON_ADD_BAKALLDATA,617,48,60,12
+    PUSHBUTTON      "临时修复技能",IDC_BUTTON_TEMP_SKILL,537,50,60,12
+    LISTBOX         IDC_LIST_ROLENAME,526,67,118,44,LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,WS_EX_STATICEDGE
+    PUSHBUTTON      "+",IDC_BUTTON_ADD_NAME,527,116,14,14
+    EDITTEXT        IDC_EDIT_ROLENAME3,544,117,64,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "-",IDC_BUTTON_DEL_NAME,612,116,14,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DLG_GODDESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 677
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 309
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "goddess.ico"
+
+IDI_ICON2               ICON                    "Goddess16.ico"
+
+#endif    // Chinese (Simplified, PRC) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

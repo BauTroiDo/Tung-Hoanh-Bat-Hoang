@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Every project used to write its binaries by climbing six levels out of the
+       repository into a hard-coded _bin_v2_ folder, which only existed on the
+       original build machine.  One property decides where output goes now;
+       override it per build with /p:JxOutputRoot=<path>. -->
+  <PropertyGroup>
+    <JxOutputRoot Condition="'$(JxOutputRoot)' == ''">$(MSBuildThisFileDirectory)..\ServerNew\_bin_v2_\</JxOutputRoot>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- Two-wide fixes that belong to the whole tree rather than to a single
+           project: the SDK's windows.h drags in winsock.h unless
+           WIN32_LEAN_AND_MEAN, and C++17's std::byte turns every rpcndr.h
+           ::byte into an ambiguous symbol in the legacy "using namespace std". -->
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>

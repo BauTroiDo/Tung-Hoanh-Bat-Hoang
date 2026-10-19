@@ -1,0 +1,2340 @@
+//=============================================================================
+// ScriptFuns_V9_Registration.h
+// Table entries for V9 functions to be added into GameScriptFuns[]
+// Total functions ready: 1125 (Tranches 1-13)
+//=============================================================================
+
+#ifndef SCRIPTFUNS_V9_REGISTRATION_H
+#define SCRIPTFUNS_V9_REGISTRATION_H
+
+// Prototypes: Player Stats & Flags (Tranche 1 - 28 funcs)
+int LuaGetPvPKilledNum(Lua_State *L);
+int LuaAddPvPKilledNum(Lua_State *L);
+int LuaGetEnergy(Lua_State *L);
+int LuaAddEnergy(Lua_State *L);
+int LuaReduceEnergy(Lua_State *L);
+int LuaSetEnergy(Lua_State *L);
+int LuaGetRespect(Lua_State *L);
+int LuaAddRespect(Lua_State *L);
+int LuaReduceRespect(Lua_State *L);
+int LuaSetRespect(Lua_State *L);
+int LuaGetArenaCredits(Lua_State *L);
+int LuaAddArenaCredits(Lua_State *L);
+int LuaReduceArenaCredits(Lua_State *L);
+int LuaSetArenaCredits(Lua_State *L);
+int LuaGetBitTask(Lua_State *L);
+int LuaSetBitTask(Lua_State *L);
+int LuaGetMaxResist(Lua_State *L);
+int LuaSetMaxResist(Lua_State *L);
+int LuaAddMaxResist(Lua_State *L);
+int LuaGetSkillMaxLevelAddons(Lua_State *L);
+int LuaSetSkillMaxLevelAddons(Lua_State *L);
+int LuaCheckPlayerFlag(Lua_State *L);
+int LuaSetPlayerFlag(Lua_State *L);
+int LuaGetLoginTime(Lua_State *L);
+int LuaGetLastLogoutTime(Lua_State *L);
+int LuaSetLastLogoutTime(Lua_State *L);
+int LuaGetLastOfflineTime(Lua_State *L);
+int LuaSetLastOfflineTime(Lua_State *L);
+int LuaSetHide(Lua_State *L);
+int LuaIsHide(Lua_State *L);
+int LuaIsDeath(Lua_State *L);
+int LuaGetGlobalTradeFlag(Lua_State *L);
+int LuaSetGlobalTradeFlag(Lua_State *L);
+int LuaCheckGlobalTradeFlag(Lua_State *L);
+int LuaGetStallState(Lua_State *L);
+int LuaCancelStall(Lua_State *L);
+int LuaGetLevelUpExp(Lua_State *L);
+
+// Prototypes: TabFile & IniFile (Tranche 2 - TabFile Suite)
+int LuaTabFile_Load(Lua_State *L);
+int LuaTabFile_UnLoad(Lua_State *L);
+int LuaTabFile_GetRowCount(Lua_State *L);
+int LuaTabFile_GetColCount(Lua_State *L);
+int LuaTabFile_GetCell(Lua_State *L);
+int LuaTabFile_SetCell(Lua_State *L);
+int LuaTabFile_Search(Lua_State *L);
+int LuaTabFile_Save(Lua_State *L);
+int LuaIniFile_UnLoad(Lua_State *L);
+int LuaIniFile_Save(Lua_State *L);
+class KTabFile;
+KTabFile* GetScriptTabFile(const char* pszKeyOrPath);
+
+
+// Prototypes: Timer System (Tranche 3 - 4 funcs)
+int LuaAddTimer(Lua_State *L);
+int LuaDelTimer(Lua_State *L);
+int LuaSuspendTimer(Lua_State *L);
+int LuaResumeTimer(Lua_State *L);
+
+// Prototypes: Progress Bar System (Tranche 4 - 4 funcs)
+int LuaOpenProgressBar(Lua_State *L);
+int LuaSetProgressBarEvent(Lua_State *L);
+int LuaClearProgressBarEvent(Lua_State *L);
+int LuaGetProgressBarMaskEvent(Lua_State *L);
+
+// Prototypes: 120 Skills & Item Stack/Bind (Tranche 5 - 16 funcs)
+int LuaAdd120SkillExp(Lua_State *L);
+int LuaGet120SkillEnhanceExpRate(Lua_State *L);
+int LuaCalcEnhanceExp(Lua_State *L);
+int LuaGetEnhanceExpRate(Lua_State *L);
+int LuaAddStackItem(Lua_State *L);
+int LuaAddItemNoStack(Lua_State *L);
+int LuaAutoStackItem(Lua_State *L);
+int LuaGetItemBTLMaxStackCount(Lua_State *L);
+int LuaGetItemStackCount(Lua_State *L);
+int LuaSetItemStackCount(Lua_State *L);
+int LuaGetItemMaxStackCount(Lua_State *L);
+int LuaIsItemStackable(Lua_State *L);
+int LuaBindItem(Lua_State *L);
+int LuaUnBindItem(Lua_State *L);
+int LuaGetItemBindState(Lua_State *L);
+int LuaSetItemBindState(Lua_State *L);
+
+// Prototypes: Platina & Star Stone (Tranche 6 - 14 funcs)
+int LuaAddPlatinaItem(Lua_State *L);
+int LuaSetPlatinaMagicIndex(Lua_State *L);
+int LuaGetPtMagicAttrExValue(Lua_State *L);
+int LuaGetCurEquipWishValue(Lua_State *L);
+int LuaSetEquipWishValue(Lua_State *L);
+int LuaGetMaxEquipWishValue(Lua_State *L);
+int LuaGetStarStoneOnEquip(Lua_State *L);
+int LuaGetStoneLevelOnEquip(Lua_State *L);
+int LuaSetStoneLevelOnEquip(Lua_State *L);
+int LuaGetEquipMaxStoneNum(Lua_State *L);
+int LuaGetLastBreakTime(Lua_State *L);
+int LuaSetLastBreakTime(Lua_State *L);
+int LuaGetItemValue(Lua_State *L);
+int LuaAbradeEquipments(Lua_State *L);
+
+// Prototypes: Title & ChatRoom (Tranche 7 - 17 funcs)
+int LuaTitle_AddTitle(Lua_State *L);
+int LuaTitle_ActiveTitle(Lua_State *L);
+int LuaTitle_RemoveTitle(Lua_State *L);
+int LuaTitle_GetActiveTitle(Lua_State *L);
+int LuaTitle_GetTitleTab(Lua_State *L);
+int LuaTitle_GetTitleName(Lua_State *L);
+int LuaTitle_GetTitleInfo(Lua_State *L);
+int LuaChatRoom_CreateRoom(Lua_State *L);
+int LuaChatRoom_EnterRoom(Lua_State *L);
+int LuaChatRoom_LeaveRoom(Lua_State *L);
+int LuaChatRoom_FindRoom(Lua_State *L);
+int LuaChatRoom_CloseRoom(Lua_State *L);
+int LuaChatRoom_KickOut(Lua_State *L);
+int LuaChatRoom_Prevent(Lua_State *L);
+int LuaChatRoom_UnPrevent(Lua_State *L);
+int LuaChatRoom_ChangePassword(Lua_State *L);
+int LuaChatRoom_AddTime(Lua_State *L);
+
+// Prototypes: Item Dice & Party Loot Sharing (Tranche 8 - 10 funcs)
+int LuaOpenDice(Lua_State *L);
+int LuaGetDiceIncome(Lua_State *L);
+int LuaApplyItemDice(Lua_State *L);
+int LuaAddDiceItemInfo(Lua_State *L);
+int LuaRollItem(Lua_State *L);
+int LuaGetItemDiceState(Lua_State *L);
+int LuaDiceLootItem(Lua_State *L);
+int LuaGetItemDiceRollInfo(Lua_State *L);
+int LuaGetItemDiceItemInfo(Lua_State *L);
+int LuaGetItemDicePlayerList(Lua_State *L);
+
+// Prototypes: Dungeon & Dynamic Maps (Tranche 9 - 5 funcs)
+int LuaIsGSHaveFreeMap(Lua_State *L);
+int LuaPreApplyDungeonMap(Lua_State *L);
+int LuaApplyDungeonMap(Lua_State *L);
+int LuaReturnDungenonMap(Lua_State *L);
+int LuaApplyDelDungeonMap(Lua_State *L);
+
+// Prototypes: Partner AI & Companion System (Tranche 10 - 48 funcs)
+int LuaPARTNER_Count(Lua_State *L);
+int LuaPARTNER_GetCurPartner(Lua_State *L);
+int LuaPARTNER_SetCurPartner(Lua_State *L);
+int LuaPARTNER_CallOutCurPartner(Lua_State *L);
+int LuaPARTNER_AddFightPartner(Lua_State *L);
+int LuaPARTNER_RemovePartner(Lua_State *L);
+int LuaPARTNER_GetLevel(Lua_State *L);
+int LuaPARTNER_GetExp(Lua_State *L);
+int LuaPARTNER_AddExp(Lua_State *L);
+int LuaPARTNER_LevelUp(Lua_State *L);
+int LuaPARTNER_GetName(Lua_State *L);
+int LuaPARTNER_SetName(Lua_State *L);
+int LuaPARTNER_GetSeries(Lua_State *L);
+int LuaPARTNER_GetCharacter(Lua_State *L);
+int LuaPARTNER_ChangeCharacter(Lua_State *L);
+int LuaPARTNER_GetEmotionDegree(Lua_State *L);
+int LuaPARTNER_SetEmotionDegree(Lua_State *L);
+int LuaPARTNER_AddEmotionDegree(Lua_State *L);
+int LuaPARTNER_GetEssentialFeatureID(Lua_State *L);
+int LuaPARTNER_GetSettingIdx(Lua_State *L);
+int LuaPARTNER_GetEndure(Lua_State *L);
+int LuaPARTNER_GetBirthday(Lua_State *L);
+int LuaPARTNER_GetAptitudes(Lua_State *L);
+int LuaPARTNER_AddLifeAptitude(Lua_State *L);
+int LuaPARTNER_AddStrengthAptitude(Lua_State *L);
+int LuaPARTNER_AddHitTargetRateAptitude(Lua_State *L);
+int LuaPARTNER_AddDefenceAptitude(Lua_State *L);
+int LuaPARTNER_AddSpeedAptitude(Lua_State *L);
+int LuaPARTNER_AddLuckAptitude(Lua_State *L);
+int LuaPARTNER_GetAttribs(Lua_State *L);
+int LuaPARTNER_SetAttribs(Lua_State *L);
+int LuaPARTNER_GetAttribsInc(Lua_State *L);
+int LuaPARTNER_ReGenAttribsInc(Lua_State *L);
+int LuaPARTNER_GetResists(Lua_State *L);
+int LuaPARTNER_SetResists(Lua_State *L);
+int LuaPARTNER_AddSkill(Lua_State *L);
+int LuaPARTNER_RemoveSkill(Lua_State *L);
+int LuaPARTNER_RemoveAllSkill(Lua_State *L);
+int LuaPARTNER_GetAllSkill(Lua_State *L);
+int LuaPARTNER_GetSkillInfo(Lua_State *L);
+int LuaPARTNER_SetStandbySkill(Lua_State *L);
+int LuaPARTNER_GetTaskValue(Lua_State *L);
+int LuaPARTNER_SetTaskValue(Lua_State *L);
+int LuaPARTNER_ChangeFeature(Lua_State *L);
+int LuaPARTNER_ChangeFeatureOfPeriod(Lua_State *L);
+int LuaPARTNER_AddState(Lua_State *L);
+int LuaPARTNER_SetCallOutSwitch(Lua_State *L);
+int LuaPARTNER_GetGenData(Lua_State *L);
+
+// Prototypes: Pet Companion System (Tranche 11 - 38 funcs)
+int LuaPET_Create(Lua_State *L);
+int LuaPET_Delete(Lua_State *L);
+int LuaPET_IsCreate(Lua_State *L);
+int LuaPET_Summon(Lua_State *L);
+int LuaPET_IsSummon(Lua_State *L);
+int LuaPET_UnSummon(Lua_State *L);
+int LuaPET_GetFeatureId(Lua_State *L);
+int LuaPET_SetFeatureId(Lua_State *L);
+int LuaPET_SetName(Lua_State *L);
+int LuaPET_GetName(Lua_State *L);
+int LuaPET_GetUpgradePoint(Lua_State *L);
+int LuaPET_SetUpgradePoint(Lua_State *L);
+int LuaPET_AddUpgradePoint(Lua_State *L);
+int LuaPET_GetGrownPoint(Lua_State *L);
+int LuaPET_SetGrownPoint(Lua_State *L);
+int LuaPET_GetTamePoint(Lua_State *L);
+int LuaPET_SetTamePoint(Lua_State *L);
+int LuaPET_GetLevel(Lua_State *L);
+int LuaPET_SetLevel(Lua_State *L);
+int LuaPET_ClearAttrib(Lua_State *L);
+int LuaPET_ClearSkill(Lua_State *L);
+int LuaPET_SetAttrib(Lua_State *L);
+int LuaPET_GetAttrib(Lua_State *L);
+int LuaPET_AddAttrib(Lua_State *L);
+int LuaPET_SetSkill(Lua_State *L);
+int LuaPET_GetSkill(Lua_State *L);
+int LuaPET_SetStr(Lua_State *L);
+int LuaPET_SetDex(Lua_State *L);
+int LuaPET_SetVit(Lua_State *L);
+int LuaPET_SetEng(Lua_State *L);
+int LuaPET_SetLife(Lua_State *L);
+int LuaPET_SetMana(Lua_State *L);
+int LuaPET_GetStr(Lua_State *L);
+int LuaPET_GetDex(Lua_State *L);
+int LuaPET_GetVit(Lua_State *L);
+int LuaPET_GetEng(Lua_State *L);
+int LuaPET_GetLife(Lua_State *L);
+int LuaPET_GetMana(Lua_State *L);
+
+// Prototypes: Nation War (Tranche 12 - 24 funcs)
+int LuaNW_IsEmperor(Lua_State *L);
+int LuaNW_GetEmperorName(Lua_State *L);
+int LuaNW_GetDuty(Lua_State *L);
+int LuaNW_GetTask(Lua_State *L);
+int LuaNW_SetTask(Lua_State *L);
+int LuaNW_Enthrone(Lua_State *L);
+int LuaNW_Abdicate(Lua_State *L);
+int LuaNW_InEmperorTong(Lua_State *L);
+int LuaNW_Instate(Lua_State *L);
+int LuaNW_Dismiss(Lua_State *L);
+int LuaNW_GetNationTitle(Lua_State *L);
+int LuaNW_SetNationTitle(Lua_State *L);
+int LuaNW_GetRemark(Lua_State *L);
+int LuaNW_RemarkEmperor(Lua_State *L);
+int LuaNW_OwnSeal(Lua_State *L);
+int LuaNW_GetSealInfo(Lua_State *L);
+int LuaNW_OpenCongratulation(Lua_State *L);
+int LuaNW_CloseCongratulation(Lua_State *L);
+int LuaNW_AwardEmperor(Lua_State *L);
+int LuaNW_Levy(Lua_State *L);
+int LuaNW_ForbidChat(Lua_State *L);
+int LuaNW_CheckText(Lua_State *L);
+int LuaNW_EmperorHistoryCount(Lua_State *L);
+int LuaNW_EmperorHistory(Lua_State *L);
+
+// Prototypes: League System (Tranche 12 - 23 funcs)
+int LuaLG_CreateLeagueObj(Lua_State *L);
+int LuaLG_FreeLeagueObj(Lua_State *L);
+int LuaLG_GetLeagueObj(Lua_State *L);
+int LuaLG_GetLeagueObjByRole(Lua_State *L);
+int LuaLG_GetMemberCount(Lua_State *L);
+int LuaLG_AddMemberToObj(Lua_State *L);
+int LuaLG_GetMemberObj(Lua_State *L);
+int LuaLG_GetMemberInfo(Lua_State *L);
+int LuaLG_GetMemberJoinTime(Lua_State *L);
+int LuaLG_GetMemberTask(Lua_State *L);
+int LuaLG_ApplySetMemberTask(Lua_State *L);
+int LuaLG_ApplyAppendMemberTask(Lua_State *L);
+int LuaLG_GetLeagueInfo(Lua_State *L);
+int LuaLG_SetLeagueInfo(Lua_State *L);
+int LuaLG_GetLeagueCreateTime(Lua_State *L);
+int LuaLG_GetLeagueTask(Lua_State *L);
+int LuaLG_ApplySetLeagueTask(Lua_State *L);
+int LuaLG_ApplyAppendLeagueTask(Lua_State *L);
+int LuaLG_ApplyAddLeague(Lua_State *L);
+int LuaLG_ApplyRemoveLeague(Lua_State *L);
+int LuaLG_GetFirstLeague(Lua_State *L);
+int LuaLG_GetNextLeague(Lua_State *L);
+int LuaLG_ApplyDoScript(Lua_State *L);
+// Macro to insert into GameScriptFuns[]:
+
+// Prototypes: Advanced Tong System (Tranche 13 - 191 funcs)
+int LuaTONGM_ApplyAddOffer(Lua_State* L);
+int LuaTONGM_ApplyAddOfferEx(Lua_State* L);
+int LuaTONGM_ApplyAddRight(Lua_State* L);
+int LuaTONGM_ApplyAddTaskValue(Lua_State* L);
+int LuaTONGM_ApplyAddUTaskValue(Lua_State* L);
+int LuaTONGM_ApplyDelRight(Lua_State* L);
+int LuaTONGM_ApplySetLWeekGoalOffer(Lua_State* L);
+int LuaTONGM_ApplySetLWeeklyOffer(Lua_State* L);
+int LuaTONGM_ApplySetLastOnlineDate(Lua_State* L);
+int LuaTONGM_ApplySetRetireDate(Lua_State* L);
+int LuaTONGM_ApplySetTaskValue(Lua_State* L);
+int LuaTONGM_CheckRight(Lua_State* L);
+int LuaTONGM_GetFigure(Lua_State* L);
+int LuaTONGM_GetJoinDay(Lua_State* L);
+int LuaTONGM_GetJoinTime(Lua_State* L);
+int LuaTONGM_GetLWeekGoalOffer(Lua_State* L);
+int LuaTONGM_GetLWeeklyOffer(Lua_State* L);
+int LuaTONGM_GetLastOnlineDate(Lua_State* L);
+int LuaTONGM_GetMoney(Lua_State* L);
+int LuaTONGM_GetName(Lua_State* L);
+int LuaTONGM_GetOffer(Lua_State* L);
+int LuaTONGM_GetOnline(Lua_State* L);
+int LuaTONGM_GetRetireDate(Lua_State* L);
+int LuaTONGM_GetSex(Lua_State* L);
+int LuaTONGM_GetTaskValue(Lua_State* L);
+int LuaTONGM_GetUTaskValue(Lua_State* L);
+int LuaTONGM_IsExist(Lua_State* L);
+int LuaTONG_AddTaskTemp(Lua_State* L);
+int LuaTONG_GetBuildLevel(Lua_State* L);
+int LuaTONG_GetCredit(Lua_State* L);
+int LuaTONG_GetCurCamp(Lua_State* L);
+int LuaTONG_GetDay(Lua_State* L);
+int LuaTONG_GetExp(Lua_State* L);
+int LuaTONG_GetExpLevel(Lua_State* L);
+int LuaTONG_GetFirstMember(Lua_State* L);
+int LuaTONG_GetFirstTong(Lua_State* L);
+int LuaTONG_GetMaster(Lua_State* L);
+int LuaTONG_GetMemberCount(Lua_State* L);
+int LuaTONG_GetName(Lua_State* L);
+int LuaTONG_GetNextMember(Lua_State* L);
+int LuaTONG_GetNextTong(Lua_State* L);
+int LuaTONG_GetOnlineCount(Lua_State* L);
+int LuaTONG_GetPauseState(Lua_State* L);
+int LuaTONG_GetSelfCamp(Lua_State* L);
+int LuaTONG_GetTaskTemp(Lua_State* L);
+int LuaTONG_GetTongByRoleName(Lua_State* L);
+int LuaTONG_GetTongCount(Lua_State* L);
+int LuaTONG_GetTongMap(Lua_State* L);
+int LuaTONG_GetTongMapBan(Lua_State* L);
+int LuaTONG_GetTongMapTemplate(Lua_State* L);
+int LuaTONG_GetUnionID(Lua_State* L);
+int LuaTONG_GetWarState(Lua_State* L);
+int LuaTONG_GetWeek(Lua_State* L);
+int LuaTONG_IsExist(Lua_State* L);
+int LuaTONG_Name2ID(Lua_State* L);
+int LuaTONG_SetTaskTemp(Lua_State* L);
+int LuaTONG_WriteLog(Lua_State* L);
+int LuaTONG_ApplyAddBuildFund(Lua_State* L);
+int LuaTONG_ApplyAddDay(Lua_State* L);
+int LuaTONG_ApplyAddEventRecord(Lua_State* L);
+int LuaTONG_ApplyAddHistoryRecord(Lua_State* L);
+int LuaTONG_ApplyAddLWeekGoalValue(Lua_State* L);
+int LuaTONG_ApplyAddMoney(Lua_State* L);
+int LuaTONG_ApplyAddPerStandFund(Lua_State* L);
+int LuaTONG_ApplyAddStoredBuildFund(Lua_State* L);
+int LuaTONG_ApplyAddStoredOffer(Lua_State* L);
+int LuaTONG_ApplyAddTaskValue(Lua_State* L);
+int LuaTONG_ApplyAddTotalBuildFund(Lua_State* L);
+int LuaTONG_ApplyAddUTaskValue(Lua_State* L);
+int LuaTONG_ApplyAddWarBuildFund(Lua_State* L);
+int LuaTONG_ApplyAddWeek(Lua_State* L);
+int LuaTONG_ApplyAddWeekBuildFund(Lua_State* L);
+int LuaTONG_ApplyAddWeekGoalValue(Lua_State* L);
+int LuaTONG_ApplyCreatMap(Lua_State* L);
+int LuaTONG_ApplyDegrade(Lua_State* L);
+int LuaTONG_ApplyDeleteMap(Lua_State* L);
+int LuaTONG_ApplyDeleteMember(Lua_State* L);
+int LuaTONG_ApplyInit(Lua_State* L);
+int LuaTONG_ApplyKickMember(Lua_State* L);
+int LuaTONG_ApplyMaintain(Lua_State* L);
+int LuaTONG_ApplySetAnnouncement(Lua_State* L);
+int LuaTONG_ApplySetBuildFund(Lua_State* L);
+int LuaTONG_ApplySetCurWeekGoalLevel(Lua_State* L);
+int LuaTONG_ApplySetDay(Lua_State* L);
+int LuaTONG_ApplySetLWeekGoalEvent(Lua_State* L);
+int LuaTONG_ApplySetLWeekGoalLevel(Lua_State* L);
+int LuaTONG_ApplySetLWeekGoalPlayer(Lua_State* L);
+int LuaTONG_ApplySetLWeekGoalPricePlayer(Lua_State* L);
+int LuaTONG_ApplySetLWeekGoalPriceTong(Lua_State* L);
+int LuaTONG_ApplySetLWeekGoalTotal(Lua_State* L);
+int LuaTONG_ApplySetLWeekGoalValue(Lua_State* L);
+int LuaTONG_ApplySetMaintainFund(Lua_State* L);
+int LuaTONG_ApplySetMoney(Lua_State* L);
+int LuaTONG_ApplySetOccupyCityDay(Lua_State* L);
+int LuaTONG_ApplySetPauseState(Lua_State* L);
+int LuaTONG_ApplySetPerStandFund(Lua_State* L);
+int LuaTONG_ApplySetStoredBuildFund(Lua_State* L);
+int LuaTONG_ApplySetStoredOffer(Lua_State* L);
+int LuaTONG_ApplySetStunt(Lua_State* L);
+int LuaTONG_ApplySetTaskValue(Lua_State* L);
+int LuaTONG_ApplySetTongMap(Lua_State* L);
+int LuaTONG_ApplySetTongMapBan(Lua_State* L);
+int LuaTONG_ApplySetTotalBuildFund(Lua_State* L);
+int LuaTONG_ApplySetWarBuildFund(Lua_State* L);
+int LuaTONG_ApplySetWeek(Lua_State* L);
+int LuaTONG_ApplySetWeekBuildFund(Lua_State* L);
+int LuaTONG_ApplySetWeekBuildUpper(Lua_State* L);
+int LuaTONG_ApplySetWeekGoalEvent(Lua_State* L);
+int LuaTONG_ApplySetWeekGoalLevel(Lua_State* L);
+int LuaTONG_ApplySetWeekGoalPlayer(Lua_State* L);
+int LuaTONG_ApplySetWeekGoalPricePlayer(Lua_State* L);
+int LuaTONG_ApplySetWeekGoalPriceTong(Lua_State* L);
+int LuaTONG_ApplySetWeekGoalTotal(Lua_State* L);
+int LuaTONG_ApplySetWeekGoalValue(Lua_State* L);
+int LuaTONG_ApplyUpgrade(Lua_State* L);
+int LuaTONG_ApplyWeeklyMaintain(Lua_State* L);
+int LuaTONG_ChangeAllMemberFeature(Lua_State* L);
+int LuaTONG_ContributeOffer(Lua_State* L);
+int LuaTONG_DistributeOfferToGroup(Lua_State* L);
+int LuaTONG_DistributeOfferToMember(Lua_State* L);
+int LuaTONG_GetBuildFund(Lua_State* L);
+int LuaTONG_GetCurWeekGoalLevel(Lua_State* L);
+int LuaTONG_GetLWeekGoalEvent(Lua_State* L);
+int LuaTONG_GetLWeekGoalLevel(Lua_State* L);
+int LuaTONG_GetLWeekGoalPlayer(Lua_State* L);
+int LuaTONG_GetLWeekGoalPricePlayer(Lua_State* L);
+int LuaTONG_GetLWeekGoalPriceTong(Lua_State* L);
+int LuaTONG_GetLWeekGoalTotal(Lua_State* L);
+int LuaTONG_GetLWeekGoalValue(Lua_State* L);
+int LuaTONG_GetMaintainFund(Lua_State* L);
+int LuaTONG_GetMoney(Lua_State* L);
+int LuaTONG_GetOccupyCityDay(Lua_State* L);
+int LuaTONG_GetPerStandFund(Lua_State* L);
+int LuaTONG_GetPremium(Lua_State* L);
+int LuaTONG_GetStandFund(Lua_State* L);
+int LuaTONG_GetStoredBuildFund(Lua_State* L);
+int LuaTONG_GetStoredOffer(Lua_State* L);
+int LuaTONG_GetTaskValue(Lua_State* L);
+int LuaTONG_GetTotalBuildFund(Lua_State* L);
+int LuaTONG_GetUTaskValue(Lua_State* L);
+int LuaTONG_GetWarBuildFund(Lua_State* L);
+int LuaTONG_GetWeekBuildFund(Lua_State* L);
+int LuaTONG_GetWeekBuildUpper(Lua_State* L);
+int LuaTONG_GetWeekGoalEvent(Lua_State* L);
+int LuaTONG_GetWeekGoalLevel(Lua_State* L);
+int LuaTONG_GetWeekGoalPlayer(Lua_State* L);
+int LuaTONG_GetWeekGoalPricePlayer(Lua_State* L);
+int LuaTONG_GetWeekGoalPriceTong(Lua_State* L);
+int LuaTONG_GetWeekGoalTotal(Lua_State* L);
+int LuaTONG_GetWeekGoalValue(Lua_State* L);
+int LuaAddTongExp(Lua_State* L);
+int LuaAddTongMTask(Lua_State* L);
+int LuaAddTongMoney(Lua_State* L);
+int LuaAddTongWeek(Lua_State* L);
+int LuaCreateTong(Lua_State* L);
+int LuaForceLeaveTong(Lua_State* L);
+int LuaGMTongAddMember(Lua_State* L);
+int LuaGMTongDismiss(Lua_State* L);
+int LuaGMTongSetAddTime(Lua_State* L);
+int LuaGMTongSetExp(Lua_State* L);
+int LuaGMTongSetLevel(Lua_State* L);
+int LuaGMTongSetMaster(Lua_State* L);
+int LuaGetCityWarTongCamp(Lua_State* L);
+int LuaGetCurrentTong(Lua_State* L);
+int LuaGetJoinTongTime(Lua_State* L);
+int LuaGetNpcTong(Lua_State* L);
+int LuaGetSignUpTongName(Lua_State* L);
+int LuaGetTong(Lua_State* L);
+int LuaGetTongCamp(Lua_State* L);
+int LuaGetTongFigure(Lua_State* L);
+int LuaGetTongLogData(Lua_State* L);
+int LuaGetTongMTask(Lua_State* L);
+int LuaGetTongMemberCount(Lua_State* L);
+int LuaGetTongMemberID(Lua_State* L);
+int LuaGetTongTitle(Lua_State* L);
+int LuaGetTongWeek(Lua_State* L);
+int LuaIsTongWarMap(Lua_State* L);
+int LuaMoveTongExp(Lua_State* L);
+int LuaMsg2Tong(Lua_State* L);
+int LuaNumOfSignUpTongs(Lua_State* L);
+int LuaOpenTongCamp(Lua_State* L);
+int LuaOpenTongZhaoMu(Lua_State* L);
+int LuaQueryTongName(Lua_State* L);
+int LuaRenameTong(Lua_State* L);
+int LuaSetCouldDisbandTong(Lua_State* L);
+int LuaSetCouldKickTong(Lua_State* L);
+int LuaSetCouldQuitTong(Lua_State* L);
+int LuaSetJoinTongTime(Lua_State* L);
+int LuaSetTongMTask(Lua_State* L);
+int LuaSetTongWeek(Lua_State* L);
+int LuaTongClaimWar(Lua_State* L);
+
+
+// Prototypes: Achievement, Anti-Bot & Cross-Server (Tranche 14 - 25 funcs)
+int LuaAchievement_Achieve(Lua_State* L);
+int LuaAchievement_GetData(Lua_State* L);
+int LuaAchievement_IsAchieved(Lua_State* L);
+int LuaAchievement_IsRewarded(Lua_State* L);
+int LuaAchievement_Reward(Lua_State* L);
+int LuaAchievement_SetData(Lua_State* L);
+int LuaAddBotCode(Lua_State* L);
+int LuaBotStopValidateClient(Lua_State* L);
+int LuaBotValidateClient(Lua_State* L);
+int LuaClearBotCode(Lua_State* L);
+int LuaGetArenaBothSides(Lua_State* L);
+int LuaGetBotDeleteAccountFlag(Lua_State* L);
+int LuaGetBotPunishFlag(Lua_State* L);
+int LuaGetCityWarBothSides(Lua_State* L);
+int LuaGetRefuseLoginCount(Lua_State* L);
+int LuaGetRefuseLoginFlag(Lua_State* L);
+int LuaSetDeathPunish_PK10(Lua_State* L);
+int LuaSetRefuseLogin(Lua_State* L);
+int LuaStartBotDeleteAccount(Lua_State* L);
+int LuaStartBotPunish(Lua_State* L);
+int LuaTripC_Apply(Lua_State* L);
+int LuaTripC_GetServerCount(Lua_State* L);
+int LuaTripC_GetServerName(Lua_State* L);
+int LuaTripC_Kick(Lua_State* L);
+int LuaTripS_Return(Lua_State* L);
+
+
+// Prototypes: Skills Extended & Equipment Extended (Tranche 15 - 41 funcs)
+int LuaAddNpcSkillState(Lua_State* L);
+int LuaClear120SkillExpLimit(Lua_State* L);
+int LuaForbitSkill(Lua_State* L);
+int LuaGetAllSkillCurInc(Lua_State* L);
+int LuaGetSkillCount(Lua_State* L);
+int LuaGetSkillExp(Lua_State* L);
+int LuaGetSkillMaxLevel(Lua_State* L);
+int LuaGetSkillNextExp(Lua_State* L);
+int LuaGetSkillState(Lua_State* L);
+int LuaGetTotalSkill(Lua_State* L);
+int LuaIsExpSkill(Lua_State* L);
+int LuaNpcCastSkill(Lua_State* L);
+int LuaReloadSkill(Lua_State* L);
+int LuaRemoveNpcSkillState(Lua_State* L);
+int LuaRemoveSkillState(Lua_State* L);
+int LuaSet120SkillID(Lua_State* L);
+int LuaSetAForbitSkill(Lua_State* L);
+int LuaSetImmedSkill(Lua_State* L);
+int LuaSetNpcAuraSkill(Lua_State* L);
+int LuaAddItemIntoEquipmentBox(Lua_State* L);
+int LuaCalcEquiproomItemCountEx(Lua_State* L);
+int LuaConsumeEquiproomItem(Lua_State* L);
+int LuaConsumeEquiproomItemEx(Lua_State* L);
+int LuaDegradePlatinaItem(Lua_State* L);
+int LuaFantasyGoldEquip(Lua_State* L);
+int LuaGetAllClothesEquipment(Lua_State* L);
+int LuaGetAllEquipValue(Lua_State* L);
+int LuaGetAllEquipment(Lua_State* L);
+int LuaGetFusionInEquipInfo(Lua_State* L);
+int LuaGetPlatinaEquipIndex(Lua_State* L);
+int LuaGetPlatinaLevel(Lua_State* L);
+int LuaGetRoleEquipValue(Lua_State* L);
+int LuaITEM_Abrade2BrokenEquip(Lua_State* L);
+int LuaITEM_BrokenEquip2Normal(Lua_State* L);
+int LuaInlayStarStone(Lua_State* L);
+int LuaPreviewPlatinaFromGold(Lua_State* L);
+int LuaPreviewPlatinaUpgrade(Lua_State* L);
+int LuaSmeltEquip(Lua_State* L);
+int LuaUnSmeltEquip(Lua_State* L);
+int LuaUpgradePlatinaFromGoldItem(Lua_State* L);
+int LuaUpgradePlatinaItem(Lua_State* L);
+
+
+// Prototypes: Partner Extended & Timer Extended (Tranche 16 - 19 funcs)
+int LuaGetPartnerBagLevel(Lua_State* L);
+int LuaPartnerBeDrawBack(Lua_State* L);
+int LuaPartnerBloodFallQuickly(Lua_State* L);
+int LuaPartnerCallout(Lua_State* L);
+int LuaPartnerKillBoss(Lua_State* L);
+int LuaPartnerKillPartner(Lua_State* L);
+int LuaSetPartnerBagLevel(Lua_State* L);
+int LuaGetNpcTimer(Lua_State* L);
+int LuaSetNpcTimer(Lua_State* L);
+int LuaStartGlbMSTimer(Lua_State* L);
+int LuaStopGlbMSTimer(Lua_State* L);
+int LuaTM_GetTimerCount(Lua_State* L);
+int LuaTM_HasTimer(Lua_State* L);
+int LuaTM_IsTimerSuspending(Lua_State* L);
+int LuaTM_ResumeTimer(Lua_State* L);
+int LuaTM_SetTimer(Lua_State* L);
+int LuaTM_StopTimer(Lua_State* L);
+int LuaTM_SuspendTimer(Lua_State* L);
+int LuaTimerFuncForAutoHang(Lua_State* L);
+
+
+// Prototypes: General Player & Npc Systems (Tranche 17 - 128 funcs)
+int LuaAddExpInMap(Lua_State* L);
+int LuaAddPlayerEvent(Lua_State* L);
+int LuaBT_SetBattleLevelDesc(Lua_State* L);
+int LuaCalcAutoHangPlayerCount(Lua_State* L);
+int LuaCallPlayerFunction(Lua_State* L);
+int LuaClearFactionRecord(Lua_State* L);
+int LuaDisableTeamChangeCamp(Lua_State* L);
+int LuaForbitStamina(Lua_State* L);
+int LuaGMMsg2Player(Lua_State* L);
+int LuaGetArenaLevel(Lua_State* L);
+int LuaGetArenaTotalLevel(Lua_State* L);
+int LuaGetArenaTotalLevelByCity(Lua_State* L);
+int LuaGetAroundPlayerList(Lua_State* L);
+int LuaGetAutoHangExpValue(Lua_State* L);
+int LuaGetCurrentMagicLevel(Lua_State* L);
+int LuaGetDupedDealLevel(Lua_State* L);
+int LuaGetExpPercent(Lua_State* L);
+int LuaGetFactionNumber(Lua_State* L);
+int LuaGetFirstPlayerAtSW(Lua_State* L);
+int LuaGetFirstPlayerAtServer(Lua_State* L);
+int LuaGetItemLife(Lua_State* L);
+int LuaGetLevelExp(Lua_State* L);
+int LuaGetMapPlayerList(Lua_State* L);
+int LuaGetNextPlayerAtSW(Lua_State* L);
+int LuaGetNextPlayerAtServer(Lua_State* L);
+int LuaGetNpcAroundPlayerList(Lua_State* L);
+int LuaGetNpcCurCamp(Lua_State* L);
+int LuaGetNpcCurLife(Lua_State* L);
+int LuaGetNpcCurMaxLife(Lua_State* L);
+int LuaGetNpcFightState(Lua_State* L);
+int LuaGetPlayerClientIP(Lua_State* L);
+int LuaGetPlayerEnteringTrap(Lua_State* L);
+int LuaGetPlayerFeature(Lua_State* L);
+int LuaGetPlayerFortuneRank(Lua_State* L);
+int LuaGetPlayerMagicAttrib(Lua_State* L);
+int LuaGetRoleCreateDate(Lua_State* L);
+int LuaGetRoleCreateTime(Lua_State* L);
+int LuaGetRoleCreateTimeData(Lua_State* L);
+int LuaGetRoleDataTransMark(Lua_State* L);
+int LuaGetStarLevel(Lua_State* L);
+int LuaGetTmpCamp(Lua_State* L);
+int LuaGetTotalMagicLevel(Lua_State* L);
+int LuaHostKillPlayer(Lua_State* L);
+int LuaHostLevelUp(Lua_State* L);
+int LuaITEM_ExportShop(Lua_State* L);
+int LuaITEM_GetExpiredTime(Lua_State* L);
+int LuaITEM_SetExpiredTime(Lua_State* L);
+int LuaITEM_SetExpiredTime2(Lua_State* L);
+int LuaIsForbidChangePK(Lua_State* L);
+int LuaMsg2Faction(Lua_State* L);
+int LuaNPCINFO_GetLevel(Lua_State* L);
+int LuaNPCINFO_GetNpcCurrentLife(Lua_State* L);
+int LuaNPCINFO_GetNpcCurrentMana(Lua_State* L);
+int LuaNPCINFO_GetNpcCurrentMaxLife(Lua_State* L);
+int LuaNPCINFO_GetNpcCurrentMaxMana(Lua_State* L);
+int LuaNPCINFO_SetMaxLife(Lua_State* L);
+int LuaNPCINFO_SetMaxMana(Lua_State* L);
+int LuaNPCINFO_SetNpcCurrentLife(Lua_State* L);
+int LuaNPCINFO_SetNpcCurrentMana(Lua_State* L);
+int LuaNPCINFO_SetNpcCurrentMaxLife(Lua_State* L);
+int LuaNPCINFO_SetNpcCurrentMaxMana(Lua_State* L);
+int LuaOpenCityManageUI(Lua_State* L);
+int LuaQueryRoleName(Lua_State* L);
+int LuaReduceOwnExp(Lua_State* L);
+int LuaRemoveAllPlayerEvent(Lua_State* L);
+int LuaRemovePlayerEvent(Lua_State* L);
+int LuaRenameRole(Lua_State* L);
+int LuaST_DoTransLife(Lua_State* L);
+int LuaST_IsTransLife(Lua_State* L);
+int LuaST_LevelUp(Lua_State* L);
+int LuaST_SetPlayerGameTime(Lua_State* L);
+int LuaST_SetTransLifeCount(Lua_State* L);
+int LuaST_UseCurCampTeam(Lua_State* L);
+int LuaSearchPlayer(Lua_State* L);
+int LuaSearchPlayerByNameID(Lua_State* L);
+int LuaSetDupedDealLevel(Lua_State* L);
+int LuaSetLastFactionNumber(Lua_State* L);
+int LuaSetNpcCurLife(Lua_State* L);
+int LuaSetNpcExpRate(Lua_State* L);
+int LuaSetNpcFightState(Lua_State* L);
+int LuaSetPlayerEnteringTrap(Lua_State* L);
+int LuaSetPlayerFortuneRank(Lua_State* L);
+int LuaSetPlayerLog(Lua_State* L);
+int LuaSetSex(Lua_State* L);
+int LuaStackExp(Lua_State* L);
+int LuaStarLevelUp(Lua_State* L);
+int LuaTWS_ApplySetUseLevel(Lua_State* L);
+int LuaTWS_ApplySetUseLevelSet(Lua_State* L);
+int LuaTWS_GetLevel(Lua_State* L);
+int LuaTWS_GetUseLevel(Lua_State* L);
+int LuaTWS_GetUseLevelSet(Lua_State* L);
+int LuaChangeNpcFeature(Lua_State* L);
+int LuaClearNpcDamageState(Lua_State* L);
+int LuaDropItemEx(Lua_State* L);
+int LuaGetArenaTargetCity(Lua_State* L);
+int LuaGetIsCheckNpcBarrier(Lua_State* L);
+int LuaGetLastDamageNpc(Lua_State* L);
+int LuaGetLastDlgNpc(Lua_State* L);
+int LuaGetMapNpcWithName(Lua_State* L);
+int LuaGetNpcAroundNpcList(Lua_State* L);
+int LuaGetNpcDropRateFile(Lua_State* L);
+int LuaGetNpcFreeCount(Lua_State* L);
+int LuaGetNpcId(Lua_State* L);
+int LuaGetNpcPowerType(Lua_State* L);
+int LuaGetNpcScript(Lua_State* L);
+int LuaGetNpcSettingIdx(Lua_State* L);
+int LuaGoldItemDrop(Lua_State* L);
+int LuaIsNpcFeatureChanged(Lua_State* L);
+int LuaIsNpcHide(Lua_State* L);
+int LuaNPCINFO_AddBlueNpc(Lua_State* L);
+int LuaNpcChat(Lua_State* L);
+int LuaNpcDialog(Lua_State* L);
+int LuaNpcDropMoney(Lua_State* L);
+int LuaNpcName2Replace(Lua_State* L);
+int LuaNpcNewWorld(Lua_State* L);
+int LuaNpcSetHide(Lua_State* L);
+int LuaNpcWalk(Lua_State* L);
+int LuaOutputMonsterPos(Lua_State* L);
+int LuaRestoreNpcFeature(Lua_State* L);
+int LuaSetIsCheckNpcBarrier(Lua_State* L);
+int LuaSetNpcAI(Lua_State* L);
+int LuaSetNpcActiveRegion(Lua_State* L);
+int LuaSetNpcKind(Lua_State* L);
+int LuaStopNpcAction(Lua_State* L);
+int LuaSyncIsCheckNpcBarrier(Lua_State* L);
+int LuaTWS_GetBuildingNpc(Lua_State* L);
+int LuaTWS_SetBuildingNpc(Lua_State* L);
+int LuaWorldBossAppear(Lua_State* L);
+
+
+// Prototypes: General Items, Tasks & Maps (Tranche 18 - 156 funcs)
+int LuaAddBoxMoney(Lua_State* L);
+int LuaAddClothesItem(Lua_State* L);
+int LuaAddItemByIndex(Lua_State* L);
+int LuaAddItemForAutoHang(Lua_State* L);
+int LuaAddQualityItem(Lua_State* L);
+int LuaAddTempItem(Lua_State* L);
+int LuaAddVerGoldItem(Lua_State* L);
+int LuaAddVerItem(Lua_State* L);
+int LuaBT_SendMemberCount(Lua_State* L);
+int LuaCheckStoreBoxState(Lua_State* L);
+int LuaCountFreeRoomByWH(Lua_State* L);
+int LuaDelCommonItem(Lua_State* L);
+int LuaEnchaseItem(Lua_State* L);
+int LuaFindFreeRoomByWH(Lua_State* L);
+int LuaFindSpecItemParam2(Lua_State* L);
+int LuaFoundryItem(Lua_State* L);
+int LuaGMCancleBoxPassword(Lua_State* L);
+int LuaGMLockBox(Lua_State* L);
+int LuaGMSetBoxPassword(Lua_State* L);
+int LuaGMUnlockBox(Lua_State* L);
+int LuaGetBoxLockState(Lua_State* L);
+int LuaGetBoxMoney(Lua_State* L);
+int LuaGetChooseCount(Lua_State* L);
+int LuaGetEventTaskCount(Lua_State* L);
+int LuaGetFailedItem(Lua_State* L);
+int LuaGetGiveItemUnitWithPos(Lua_State* L);
+int LuaGetGoldCoinCount(Lua_State* L);
+int LuaGetItemAllParams(Lua_State* L);
+int LuaGetItemBTLName(Lua_State* L);
+int LuaGetItemBelong(Lua_State* L);
+int LuaGetItemBillType(Lua_State* L);
+int LuaGetItemCmd(Lua_State* L);
+int LuaGetItemExchangeValue(Lua_State* L);
+int LuaGetItemFortuneValue(Lua_State* L);
+int LuaGetItemGenTime(Lua_State* L);
+int LuaGetItemHeight(Lua_State* L);
+int LuaGetItemIndexBydwID(Lua_State* L);
+int LuaGetItemMagicDesc(Lua_State* L);
+int LuaGetItemPrice(Lua_State* L);
+int LuaGetItemQuality(Lua_State* L);
+int LuaGetItemWidth(Lua_State* L);
+int LuaGetMapTrapCount(Lua_State* L);
+int LuaGetNextItemIndexInRoom(Lua_State* L);
+int LuaGetPayTicketCount(Lua_State* L);
+int LuaGetPoisonCount(Lua_State* L);
+int LuaGetPotionCount(Lua_State* L);
+int LuaGetQuestionPrice(Lua_State* L);
+int LuaGetRepairDurPrice(Lua_State* L);
+int LuaGetRoomItems(Lua_State* L);
+int LuaGetTicketCount(Lua_State* L);
+int LuaGetTotalItemCount(Lua_State* L);
+int LuaHandItemIdx(Lua_State* L);
+int LuaITEM_CalcItemValue(Lua_State* L);
+int LuaITEM_GetImmediaItemIndex(Lua_State* L);
+int LuaITEM_GetItemExParam(Lua_State* L);
+int LuaITEM_GetItemInfo(Lua_State* L);
+int LuaITEM_GetItemRandSeed(Lua_State* L);
+int LuaITEM_GetItemVersion(Lua_State* L);
+int LuaITEM_GetLatestItemVersion(Lua_State* L);
+int LuaITEM_SetItemExParam(Lua_State* L);
+int LuaITEM_TransferItemValue(Lua_State* L);
+int LuaIncreasePoisonCount(Lua_State* L);
+int LuaIncreasePotionCount(Lua_State* L);
+int LuaIsMyItem(Lua_State* L);
+int LuaLottery_GenerateItem(Lua_State* L);
+int LuaNewItemEx(Lua_State* L);
+int LuaOpenStoreBox(Lua_State* L);
+int LuaPrintLuaStack(Lua_State* L);
+int LuaQueryAuctionItemInfo(Lua_State* L);
+int LuaRemoveOpenCardUiItem(Lua_State* L);
+int LuaSTAT_GetGoodsCount(Lua_State* L);
+int LuaSTAT_SearchGoodsSaledItem(Lua_State* L);
+int LuaST_GetDamageCounter(Lua_State* L);
+int LuaST_IncreaseDamageCounter(Lua_State* L);
+int LuaST_StartDamageCounter(Lua_State* L);
+int LuaST_StopDamageCounter(Lua_State* L);
+int LuaSetItemExchangeValue(Lua_State* L);
+int LuaSetItemFortuneValue(Lua_State* L);
+int LuaSetItemNewFeature(Lua_State* L);
+int LuaSetPoisonCount(Lua_State* L);
+int LuaSetPotionCount(Lua_State* L);
+int LuaSetUiGiveItemMoreConfirmMsg(Lua_State* L);
+int LuaSetUiGiveItemMsg(Lua_State* L);
+int LuaSmeltItem(Lua_State* L);
+int LuaStartPoisonCounter(Lua_State* L);
+int LuaStartPotionCounter(Lua_State* L);
+int LuaStopPoisonCounter(Lua_State* L);
+int LuaStopPotionCounter(Lua_State* L);
+int LuaSyncClothesItemPreView(Lua_State* L);
+int LuaTM_GetRestCount(Lua_State* L);
+int LuaTWS_GetWorkshopCount(Lua_State* L);
+int LuaTabFile_GetColCount(Lua_State* L);
+int LuaThrowAllItem(Lua_State* L);
+int LuaAddTempMagic(Lua_State* L);
+int LuaBT_ChangeMiniMap(Lua_State* L);
+int LuaBT_SetMissionDesc(Lua_State* L);
+int LuaBT_SetMissionName(Lua_State* L);
+int LuaBT_SetType2Task(Lua_State* L);
+int LuaCloseGlbMission(Lua_State* L);
+int LuaCloseTask(Lua_State* L);
+int LuaDelMapTrap(Lua_State* L);
+int LuaFirstTask(Lua_State* L);
+int LuaGetBiaoChePos(Lua_State* L);
+int LuaGetEventTask(Lua_State* L);
+int LuaGetMapInfoFile(Lua_State* L);
+int LuaGetMapParam(Lua_State* L);
+int LuaGetMapType(Lua_State* L);
+int LuaGetQuestion(Lua_State* L);
+int LuaGetQuestionTip(Lua_State* L);
+int LuaGetStringTask(Lua_State* L);
+int LuaGetTaskEventID(Lua_State* L);
+int LuaGetTaskMoney(Lua_State* L);
+int LuaGetTaskStatus(Lua_State* L);
+int LuaLoadMap(Lua_State* L);
+int LuaMsg2Map(Lua_State* L);
+int LuaNPCINFO_GetTemplateId(Lua_State* L);
+int LuaNextTask(Lua_State* L);
+int LuaOpenAllTask(Lua_State* L);
+int LuaOpenCreateTask(Lua_State* L);
+int LuaOpenGlbMission(Lua_State* L);
+int LuaOpenOwnTask(Lua_State* L);
+int LuaQueryMapTrap(Lua_State* L);
+int LuaRunGlbMission(Lua_State* L);
+int LuaSelectTaskAward(Lua_State* L);
+int LuaSelectTaskFinish(Lua_State* L);
+int LuaSelectTaskStart(Lua_State* L);
+int LuaSendTaskOrder(Lua_State* L);
+int LuaSetAutoHangMapFlag(Lua_State* L);
+int LuaSetHighLightPos(Lua_State* L);
+int LuaSetMapParam(Lua_State* L);
+int LuaSetMapType(Lua_State* L);
+int LuaSetMoveSpeed(Lua_State* L);
+int LuaSetStringTask(Lua_State* L);
+int LuaSetTaskStatus(Lua_State* L);
+int LuaStartTask(Lua_State* L);
+int LuaSubWorldIdx2MapCopy(Lua_State* L);
+int LuaSyncTaskValueMore(Lua_State* L);
+int LuaTWS_ApplyAddTaskValue(Lua_State* L);
+int LuaTWS_ApplyAddUTaskValue(Lua_State* L);
+int LuaTWS_ApplySetTaskValue(Lua_State* L);
+int LuaTWS_GetTaskValue(Lua_State* L);
+int LuaTWS_GetUTaskValue(Lua_State* L);
+int LuaTaskAward(Lua_State* L);
+int LuaTaskCondition(Lua_State* L);
+int LuaTaskConditionMatrix(Lua_State* L);
+int LuaTaskEntity(Lua_State* L);
+int LuaTaskEntityMatrix(Lua_State* L);
+int LuaTaskEvent(Lua_State* L);
+int LuaTaskEventMatrix(Lua_State* L);
+int LuaTaskId(Lua_State* L);
+int LuaTaskIdMatrix(Lua_State* L);
+int LuaTaskName(Lua_State* L);
+int LuaTaskTalk(Lua_State* L);
+int LuaTaskTalkMatrix(Lua_State* L);
+int LuaTaskTip(Lua_State* L);
+int LuaTellPos(Lua_State* L);
+
+
+// Prototypes: General Core Final Suite (Tranche 19 - 320 funcs)
+int LuaActorQuit(Lua_State* L);
+int LuaAddBreakPoint(Lua_State* L);
+int LuaAddContribution(Lua_State* L);
+int LuaAddCumulateOffer(Lua_State* L);
+int LuaAddDex(Lua_State* L);
+int LuaAddEng(Lua_State* L);
+int LuaAddExtPoint(Lua_State* L);
+int LuaAddExtPointForGS(Lua_State* L);
+int LuaAddShop2Stores(Lua_State* L);
+int LuaAddSomeObj(Lua_State* L);
+int LuaAddStatData(Lua_State* L);
+int LuaAddStrg(Lua_State* L);
+int LuaAddTicket(Lua_State* L);
+int LuaAddTotalOffer(Lua_State* L);
+int LuaAddVit(Lua_State* L);
+int LuaAddWeekGoalOffer(Lua_State* L);
+int LuaAddWeeklyOffer(Lua_State* L);
+int LuaAmulet(Lua_State* L);
+int LuaAppendString(Lua_State* L);
+int LuaAppointChallenger(Lua_State* L);
+int LuaAppointViceroy(Lua_State* L);
+int LuaArmor(Lua_State* L);
+int LuaAroundFillString(Lua_State* L);
+int LuaAskClientForNumber(Lua_State* L);
+int LuaAskClientForString(Lua_State* L);
+int LuaAskRelayForAuctionStatus(Lua_State* L);
+int LuaAskRelayForKillerStatus(Lua_State* L);
+int LuaAttachActor(Lua_State* L);
+int LuaBT_BroadBattleDesc(Lua_State* L);
+int LuaBT_BroadGameDataToAll(Lua_State* L);
+int LuaBT_ClearBattle(Lua_State* L);
+int LuaBT_GetBattleName(Lua_State* L);
+int LuaBT_GetBattleParam(Lua_State* L);
+int LuaBT_GetLadderInfo(Lua_State* L);
+int LuaBT_GetTopTenInfo(Lua_State* L);
+int LuaBT_GetTypeBonus(Lua_State* L);
+int LuaBT_ReportResult(Lua_State* L);
+int LuaBT_SendLadderNo(Lua_State* L);
+int LuaBT_SetBattleName(Lua_State* L);
+int LuaBT_SetTypeBonus(Lua_State* L);
+int LuaBT_SortWorldLadder(Lua_State* L);
+int LuaBoot(Lua_State* L);
+int LuaCN(Lua_State* L);
+int LuaC_Random(Lua_State* L);
+int LuaCancel(Lua_State* L);
+int LuaCancelTrade(Lua_State* L);
+int LuaChangeOwnFeature(Lua_State* L);
+int LuaCheckTicket(Lua_State* L);
+int LuaClearScriptAnswers(Lua_State* L);
+int LuaClearSomeObj(Lua_State* L);
+int LuaCloseShop(Lua_State* L);
+int LuaCreateBiaoChe(Lua_State* L);
+int LuaCreateChannel(Lua_State* L);
+int LuaCreateStores(Lua_State* L);
+int LuaCuff(Lua_State* L);
+int LuaDRS(Lua_State* L);
+int LuaDbgPoint(Lua_State* L);
+int LuaDelBreakPoint(Lua_State* L);
+int LuaDelObject(Lua_State* L);
+int LuaDelStationList(Lua_State* L);
+int LuaDeleteBiaoChe(Lua_State* L);
+int LuaDeleteChannel(Lua_State* L);
+int LuaDetachActor(Lua_State* L);
+int LuaDisabledChatCity(Lua_State* L);
+int LuaDisabledChatWorld(Lua_State* L);
+int LuaDisabledStall(Lua_State* L);
+int LuaDisabledTeam(Lua_State* L);
+int LuaDisabledUseHeart(Lua_State* L);
+int LuaDoMarry(Lua_State* L);
+int LuaDoRelayScript(Lua_State* L);
+int LuaDoSth(Lua_State* L);
+int LuaDynamicExecute(Lua_State* L);
+int LuaEH_SetCurDurability(Lua_State* L);
+int LuaEnterChannel(Lua_State* L);
+int LuaForbitAura(Lua_State* L);
+int LuaForbitSyncAura(Lua_State* L);
+int LuaForbitSyncName(Lua_State* L);
+int LuaForbitTalk(Lua_State* L);
+int LuaForceTransferTax(Lua_State* L);
+int LuaFormatTime2Date(Lua_State* L);
+int LuaFormatTime2Number(Lua_State* L);
+int LuaFormatTime2String(Lua_State* L);
+int LuaGameNewSupply(Lua_State* L);
+int LuaGetAccLeftTime(Lua_State* L);
+int LuaGetAccrueSeries(Lua_State* L);
+int LuaGetAllCitySummary(Lua_State* L);
+int LuaGetArenaCityArea(Lua_State* L);
+int LuaGetArenaInfoByCity(Lua_State* L);
+int LuaGetArenaSchedule(Lua_State* L);
+int LuaGetCashCoin(Lua_State* L);
+int LuaGetChoose(Lua_State* L);
+int LuaGetCityArea(Lua_State* L);
+int LuaGetCityAreaName(Lua_State* L);
+int LuaGetCityOwner(Lua_State* L);
+int LuaGetCitySummary(Lua_State* L);
+int LuaGetConquerSeries(Lua_State* L);
+int LuaGetContribution(Lua_State* L);
+int LuaGetCumulateOffer(Lua_State* L);
+int LuaGetCurServerTime(Lua_State* L);
+int LuaGetDelDupedAllInOne(Lua_State* L);
+int LuaGetDelayCatchTime(Lua_State* L);
+int LuaGetDisabledFuncFlag(Lua_State* L);
+int LuaGetDynamicShopID(Lua_State* L);
+int LuaGetFeeType(Lua_State* L);
+int LuaGetGateWayClientID(Lua_State* L);
+int LuaGetGlbValue(Lua_State* L);
+int LuaGetGlodEqIndex(Lua_State* L);
+int LuaGetLastExchangeTime(Lua_State* L);
+int LuaGetLocalTime(Lua_State* L);
+int LuaGetLogoutRV(Lua_State* L);
+int LuaGetLoop(Lua_State* L);
+int LuaGetMaskFeature(Lua_State* L);
+int LuaGetMateName(Lua_State* L);
+int LuaGetNewBulletin(Lua_State* L);
+int LuaGetOnlineCommissionStatus(Lua_State* L);
+int LuaGetOrgMaxDurability(Lua_State* L);
+int LuaGetPayTicket(Lua_State* L);
+int LuaGetPkReduceState(Lua_State* L);
+int LuaGetProductLanguge(Lua_State* L);
+int LuaGetProductRegion(Lua_State* L);
+int LuaGetProtectTime(Lua_State* L);
+int LuaGetQAnswer(Lua_State* L);
+int LuaGetQBeginTime(Lua_State* L);
+int LuaGetQEndTime(Lua_State* L);
+int LuaGetRanking(Lua_State* L);
+int LuaGetRelaxTime(Lua_State* L);
+int LuaGetRetScoreForGoldCoin(Lua_State* L);
+int LuaGetRideState(Lua_State* L);
+int LuaGetSaleMoney(Lua_State* L);
+int LuaGetServerDate(Lua_State* L);
+int LuaGetServiceMatchID(Lua_State* L);
+int LuaGetSignCodeSyncTime(Lua_State* L);
+int LuaGetStallTotal(Lua_State* L);
+int LuaGetStallTotalTax(Lua_State* L);
+int LuaGetSwitch(Lua_State* L);
+int LuaGetTaxCollected(Lua_State* L);
+int LuaGetTicket(Lua_State* L);
+int LuaGetTireTime(Lua_State* L);
+int LuaGetTiredDegree(Lua_State* L);
+int LuaGetTmpValue(Lua_State* L);
+int LuaGetTotalOffer(Lua_State* L);
+int LuaGetTradeTotal(Lua_State* L);
+int LuaGetTripMode(Lua_State* L);
+int LuaGetWeekGoalOffer(Lua_State* L);
+int LuaGetWeeklyOffer(Lua_State* L);
+int LuaHaveBeginWar(Lua_State* L);
+int LuaHorse(Lua_State* L);
+int LuaHostBeEnmity(Lua_State* L);
+int LuaHostBloodLess(Lua_State* L);
+int LuaHostKillAnimal(Lua_State* L);
+int LuaHostPkTooHigh(Lua_State* L);
+int LuaHostTradeInvite(Lua_State* L);
+int LuaITEM_GetLeftUsageTime(Lua_State* L);
+int LuaITEM_SetLeftUsageTime(Lua_State* L);
+int LuaIsArenaBegin(Lua_State* L);
+int LuaIsBiaoCheAlive(Lua_State* L);
+int LuaIsDisabledChatCity(Lua_State* L);
+int LuaIsDisabledChatWorld(Lua_State* L);
+int LuaIsDisabledStall(Lua_State* L);
+int LuaIsDisabledTeam(Lua_State* L);
+int LuaIsDisabledUseHeart(Lua_State* L);
+int LuaIsOpeningModule(Lua_State* L);
+int LuaIsOwnFeatureChanged(Lua_State* L);
+int LuaIsSeriesAccrue(Lua_State* L);
+int LuaIsSeriesConquer(Lua_State* L);
+int LuaIsSigningUp(Lua_State* L);
+int LuaIsSpectator(Lua_State* L);
+int LuaLGM_ApplyAddMember(Lua_State* L);
+int LuaLGM_ApplyRemoveMember(Lua_State* L);
+int LuaLGM_CreateMemberObj(Lua_State* L);
+int LuaLGM_FreeMemberObj(Lua_State* L);
+int LuaLGM_SetMemberInfo(Lua_State* L);
+int LuaLadder_ClearLadder(Lua_State* L);
+int LuaLadder_NewLadder(Lua_State* L);
+int LuaLeaveChannel(Lua_State* L);
+int LuaLeftFillString(Lua_State* L);
+int LuaLeftTrimString(Lua_State* L);
+int LuaLoadScript(Lua_State* L);
+int LuaLoginDelaySync(Lua_State* L);
+int LuaLottery_CheckPrize(Lua_State* L);
+int LuaLottery_DrawCurrentIssue(Lua_State* L);
+int LuaLottery_GetDesc(Lua_State* L);
+int LuaLottery_GetLatestPrizeInfo(Lua_State* L);
+int LuaLottery_StartNewIssue(Lua_State* L);
+int LuaLottery_UpdateIssue(Lua_State* L);
+int LuaLottery_WriteLog(Lua_State* L);
+int LuaMagicAttrib2Str(Lua_State* L);
+int LuaMakeDateTime(Lua_State* L);
+int LuaMantle(Lua_State* L);
+int LuaMeleeWeapon(Lua_State* L);
+int LuaMessage(Lua_State* L);
+int LuaNPCINFO_GetName(Lua_State* L);
+int LuaNoChoice(Lua_State* L);
+int LuaNotifyArenaResult(Lua_State* L);
+int LuaNotifyWarResult(Lua_State* L);
+int LuaNumber2Int(Lua_State* L);
+int LuaNumber2UInt(Lua_State* L);
+int LuaOB_Append(Lua_State* L);
+int LuaOB_Clear(Lua_State* L);
+int LuaOB_Copy(Lua_State* L);
+int LuaOB_Create(Lua_State* L);
+int LuaOB_IsEmpty(Lua_State* L);
+int LuaOB_PopByte(Lua_State* L);
+int LuaOB_PopDouble(Lua_State* L);
+int LuaOB_PopInt(Lua_State* L);
+int LuaOB_PopString(Lua_State* L);
+int LuaOB_PushByte(Lua_State* L);
+int LuaOB_PushDouble(Lua_State* L);
+int LuaOB_PushInt(Lua_State* L);
+int LuaOB_PushString(Lua_State* L);
+int LuaOB_Release(Lua_State* L);
+int LuaOB_LoadShareData(Lua_State* L);
+int LuaOB_SaveShareData(Lua_State* L);
+int LuaOB_DeleteShareData(Lua_State* L);
+int LuaObjName2Relace(Lua_State* L);
+int LuaOpenCardBack(Lua_State* L);
+int LuaOpenHelp(Lua_State* L);
+int LuaOpenStores(Lua_State* L);
+int LuaOpenSubmitAuction(Lua_State* L);
+int LuaOpenWatchGameInputDlg(Lua_State* L);
+int LuaPayCoin(Lua_State* L);
+int LuaPayRetScoreForGoldCoin(Lua_State* L);
+int LuaPopString(Lua_State* L);
+int LuaPrise(Lua_State* L);
+int LuaPushString(Lua_State* L);
+int LuaQueryWiseMan(Lua_State* L);
+int LuaQueryWiseManForSB(Lua_State* L);
+int LuaRemoteExecute(Lua_State* L);
+int LuaRepair_Open(Lua_State* L);
+int LuaReplaceString(Lua_State* L);
+int LuaRestoreOwnFeature(Lua_State* L);
+int LuaRevID2WXY(Lua_State* L);
+int LuaRightFillString(Lua_State* L);
+int LuaRightTrimString(Lua_State* L);
+int LuaSTAT_CleanGoodsSaleNum(Lua_State* L);
+int LuaSTAT_GetGoodsName(Lua_State* L);
+int LuaSTAT_GetGoodsSaleNum(Lua_State* L);
+int LuaST_CheckLockState(Lua_State* L);
+int LuaST_CheckTextFilter(Lua_State* L);
+int LuaST_GetOffliveState(Lua_State* L);
+int LuaSaveMaskFeature(Lua_State* L);
+int LuaSaveNow(Lua_State* L);
+int LuaSaveQuickly(Lua_State* L);
+int LuaSaveSDB2Relay(Lua_State* L);
+int LuaSendScriptData(Lua_State* L);
+int LuaSendSpreaderCDKey(Lua_State* L);
+int LuaSetAutoHangFreeFlag(Lua_State* L);
+int LuaSetCumulateOffer(Lua_State* L);
+int LuaSetDeathReliveFlag(Lua_State* L);
+int LuaSetDebugOut(Lua_State* L);
+int LuaSetDelDupedAllInOne(Lua_State* L);
+int LuaSetDelayCatchTime(Lua_State* L);
+int LuaSetDisabledFuncFlag(Lua_State* L);
+int LuaSetFusionIsSmelted(Lua_State* L);
+int LuaSetFusionMagicSeed(Lua_State* L);
+int LuaSetGlbValue(Lua_State* L);
+int LuaSetLucky(Lua_State* L);
+int LuaSetMangonelParam(Lua_State* L);
+int LuaSetMaxDurability(Lua_State* L);
+int LuaSetMissleStep(Lua_State* L);
+int LuaSetOnlineCommissionStatus(Lua_State* L);
+int LuaSetPkReduceState(Lua_State* L);
+int LuaSetRandSeed(Lua_State* L);
+int LuaSetRelaxTime(Lua_State* L);
+int LuaSetSiegeVoitureParam(Lua_State* L);
+int LuaSetSignCodeSyncTime(Lua_State* L);
+int LuaSetStatData(Lua_State* L);
+int LuaSetSwitch(Lua_State* L);
+int LuaSetTireTime(Lua_State* L);
+int LuaSetTmpValue(Lua_State* L);
+int LuaSetTotalOffer(Lua_State* L);
+int LuaSetWeekGoalOffer(Lua_State* L);
+int LuaSetWeeklyOffer(Lua_State* L);
+int LuaSetWorldName(Lua_State* L);
+int LuaString2Id(Lua_State* L);
+int LuaSyncBiaoCheDeathInfoToRelay(Lua_State* L);
+int LuaSyncCitySummary(Lua_State* L);
+int LuaSyncWorkshopList(Lua_State* L);
+int LuaTM_GetRestTime(Lua_State* L);
+int LuaTRepair(Lua_State* L);
+int LuaTW(Lua_State* L);
+int LuaTWS_ApplyAdd(Lua_State* L);
+int LuaTWS_ApplyAddDayOutput(Lua_State* L);
+int LuaTWS_ApplyClose(Lua_State* L);
+int LuaTWS_ApplyDegrade(Lua_State* L);
+int LuaTWS_ApplyMaintain(Lua_State* L);
+int LuaTWS_ApplyOpen(Lua_State* L);
+int LuaTWS_ApplyRemove(Lua_State* L);
+int LuaTWS_ApplySetDayOutput(Lua_State* L);
+int LuaTWS_ApplyUpgrade(Lua_State* L);
+int LuaTWS_ApplyUse(Lua_State* L);
+int LuaTWS_GetDayOutput(Lua_State* L);
+int LuaTWS_GetFirstWorkshop(Lua_State* L);
+int LuaTWS_GetNextWorkshop(Lua_State* L);
+int LuaTWS_GetType(Lua_State* L);
+int LuaTWS_IsExist(Lua_State* L);
+int LuaTWS_IsOpen(Lua_State* L);
+int LuaTableSDD_Close(Lua_State* L);
+int LuaTableSDD_GetHeight(Lua_State* L);
+int LuaTableSDD_GetValue(Lua_State* L);
+int LuaTableSDD_Open(Lua_State* L);
+int LuaTableSDD_Search(Lua_State* L);
+int LuaTableSDD_SetValue(Lua_State* L);
+int LuaTestScript(Lua_State* L);
+int LuaTime2Tm(Lua_State* L);
+int LuaTm2Time(Lua_State* L);
+int LuaTownPortalUseOut(Lua_State* L);
+int LuaTrimString(Lua_State* L);
+int LuaUnMarry(Lua_State* L);
+int LuaUnSmeltIsBind(Lua_State* L);
+int LuaUpdateSDBRecord(Lua_State* L);
+int LuaUseSilver(Lua_State* L);
+int LuaWriteCompoundLog(Lua_State* L);
+int LuaWriteGoldLog(Lua_State* L);
+int LuaWriteLog(Lua_State* L);
+int LuaWriteSaleLog(Lua_State* L);
+int LuaWriteStatLog(Lua_State* L);
+int LuaWriteYunBiaoLog(Lua_State* L);
+int Luacn(Lua_State* L);
+int Luacurpack(Lua_State* L);
+int Luausepack(Lua_State* L);
+int Luamantle(Lua_State* L);
+int Luatw(Lua_State* L);
+int Luaunpack(Lua_State* L);
+int Luazh(Lua_State* L);
+
+#define SCRIPTFUNS_V9_TABLE_ENTRIES \
+    {"GetPvPKilledNum", LuaGetPvPKilledNum}, \
+    {"AddPvPKilledNum", LuaAddPvPKilledNum}, \
+    {"GetEnergy", LuaGetEnergy}, \
+    {"AddEnergy", LuaAddEnergy}, \
+    {"ReduceEnergy", LuaReduceEnergy}, \
+    {"SetEnergy", LuaSetEnergy}, \
+    {"GetRespect", LuaGetRespect}, \
+    {"AddRespect", LuaAddRespect}, \
+    {"ReduceRespect", LuaReduceRespect}, \
+    {"SetRespect", LuaSetRespect}, \
+    {"GetArenaCredits", LuaGetArenaCredits}, \
+    {"AddArenaCredits", LuaAddArenaCredits}, \
+    {"ReduceArenaCredits", LuaReduceArenaCredits}, \
+    {"SetArenaCredits", LuaSetArenaCredits}, \
+    {"GetBitTask", LuaGetBitTask}, \
+    {"SetBitTask", LuaSetBitTask}, \
+    {"GetMaxResist", LuaGetMaxResist}, \
+    {"SetMaxResist", LuaSetMaxResist}, \
+    {"AddMaxResist", LuaAddMaxResist}, \
+    {"GetSkillMaxLevelAddons", LuaGetSkillMaxLevelAddons}, \
+    {"SetSkillMaxLevelAddons", LuaSetSkillMaxLevelAddons}, \
+    {"CheckPlayerFlag", LuaCheckPlayerFlag}, \
+    {"SetPlayerFlag", LuaSetPlayerFlag}, \
+    {"GetLoginTime", LuaGetLoginTime}, \
+    {"GetLastLogoutTime", LuaGetLastLogoutTime}, \
+    {"SetLastLogoutTime", LuaSetLastLogoutTime}, \
+    {"GetLastOfflineTime", LuaGetLastOfflineTime}, \
+    {"SetLastOfflineTime", LuaSetLastOfflineTime}, \
+    {"SetHide", LuaSetHide}, \
+    {"IsHide", LuaIsHide}, \
+    {"IsDeath", LuaIsDeath}, \
+    {"GetGlobalTradeFlag", LuaGetGlobalTradeFlag}, \
+    {"SetGlobalTradeFlag", LuaSetGlobalTradeFlag}, \
+    {"CheckGlobalTradeFlag", LuaCheckGlobalTradeFlag}, \
+    {"GetStallState", LuaGetStallState}, \
+    {"CancelStall", LuaCancelStall}, \
+    {"GetLevelUpExp", LuaGetLevelUpExp}, \
+    {"TabFile_Load", LuaTabFile_Load}, \
+    {"TabFile_UnLoad", LuaTabFile_UnLoad}, \
+    {"TabFile_GetRowCount", LuaTabFile_GetRowCount}, \
+    {"TabFile_GetColCount", LuaTabFile_GetColCount}, \
+    {"TabFile_GetCell", LuaTabFile_GetCell}, \
+    {"TabFile_SetCell", LuaTabFile_SetCell}, \
+    {"TabFile_Search", LuaTabFile_Search}, \
+    {"TabFile_Save", LuaTabFile_Save}, \
+    {"IniFile_UnLoad", LuaIniFile_UnLoad}, \
+    {"IniFile_Save", LuaIniFile_Save}, \
+    {"AddTimer", LuaAddTimer}, \
+    {"DelTimer", LuaDelTimer}, \
+    {"SuspendTimer", LuaSuspendTimer}, \
+    {"ResumeTimer", LuaResumeTimer}, \
+    {"OpenProgressBar", LuaOpenProgressBar}, \
+    {"SetProgressBarEvent", LuaSetProgressBarEvent}, \
+    {"ClearProgressBarEvent", LuaClearProgressBarEvent}, \
+    {"GetProgressBarMaskEvent", LuaGetProgressBarMaskEvent}, \
+    {"Add120SkillExp", LuaAdd120SkillExp}, \
+    {"Get120SkillEnhanceExpRate", LuaGet120SkillEnhanceExpRate}, \
+    {"CalcEnhanceExp", LuaCalcEnhanceExp}, \
+    {"GetEnhanceExpRate", LuaGetEnhanceExpRate}, \
+    {"AddStackItem", LuaAddStackItem}, \
+    {"AddItemNoStack", LuaAddItemNoStack}, \
+    {"AutoStackItem", LuaAutoStackItem}, \
+    {"GetItemBTLMaxStackCount", LuaGetItemBTLMaxStackCount}, \
+    {"GetItemStackCount", LuaGetItemStackCount}, \
+    {"SetItemStackCount", LuaSetItemStackCount}, \
+    {"GetItemMaxStackCount", LuaGetItemMaxStackCount}, \
+    {"IsItemStackable", LuaIsItemStackable}, \
+    {"BindItem", LuaBindItem}, \
+    {"UnBindItem", LuaUnBindItem}, \
+    {"GetItemBindState", LuaGetItemBindState}, \
+    {"SetItemBindState", LuaSetItemBindState}, \
+    {"AddPlatinaItem", LuaAddPlatinaItem}, \
+    {"SetPlatinaMagicIndex", LuaSetPlatinaMagicIndex}, \
+    {"GetPtMagicAttrExValue", LuaGetPtMagicAttrExValue}, \
+    {"GetCurEquipWishValue", LuaGetCurEquipWishValue}, \
+    {"SetEquipWishValue", LuaSetEquipWishValue}, \
+    {"GetMaxEquipWishValue", LuaGetMaxEquipWishValue}, \
+    {"GetStarStoneOnEquip", LuaGetStarStoneOnEquip}, \
+    {"GetStoneLevelOnEquip", LuaGetStoneLevelOnEquip}, \
+    {"SetStoneLevelOnEquip", LuaSetStoneLevelOnEquip}, \
+    {"GetEquipMaxStoneNum", LuaGetEquipMaxStoneNum}, \
+    {"GetLastBreakTime", LuaGetLastBreakTime}, \
+    {"SetLastBreakTime", LuaSetLastBreakTime}, \
+    {"GetItemValue", LuaGetItemValue}, \
+    {"AbradeEquipments", LuaAbradeEquipments}, \
+    {"Title_AddTitle", LuaTitle_AddTitle}, \
+    {"Title_ActiveTitle", LuaTitle_ActiveTitle}, \
+    {"Title_RemoveTitle", LuaTitle_RemoveTitle}, \
+    {"Title_GetActiveTitle", LuaTitle_GetActiveTitle}, \
+    {"Title_GetTitleTab", LuaTitle_GetTitleTab}, \
+    {"Title_GetTitleName", LuaTitle_GetTitleName}, \
+    {"Title_GetTitleInfo", LuaTitle_GetTitleInfo}, \
+    {"ChatRoom_CreateRoom", LuaChatRoom_CreateRoom}, \
+    {"ChatRoom_EnterRoom", LuaChatRoom_EnterRoom}, \
+    {"ChatRoom_LeaveRoom", LuaChatRoom_LeaveRoom}, \
+    {"ChatRoom_FindRoom", LuaChatRoom_FindRoom}, \
+    {"ChatRoom_CloseRoom", LuaChatRoom_CloseRoom}, \
+    {"ChatRoom_KickOut", LuaChatRoom_KickOut}, \
+    {"ChatRoom_Prevent", LuaChatRoom_Prevent}, \
+    {"ChatRoom_UnPrevent", LuaChatRoom_UnPrevent}, \
+    {"ChatRoom_ChangePassword", LuaChatRoom_ChangePassword}, \
+    {"ChatRoom_AddTime", LuaChatRoom_AddTime}, \
+    {"OpenDice", LuaOpenDice}, \
+    {"GetDiceIncome", LuaGetDiceIncome}, \
+    {"ApplyItemDice", LuaApplyItemDice}, \
+    {"AddDiceItemInfo", LuaAddDiceItemInfo}, \
+    {"RollItem", LuaRollItem}, \
+    {"GetItemDiceState", LuaGetItemDiceState}, \
+    {"DiceLootItem", LuaDiceLootItem}, \
+    {"GetItemDiceRollInfo", LuaGetItemDiceRollInfo}, \
+    {"GetItemDiceItemInfo", LuaGetItemDiceItemInfo}, \
+    {"GetItemDicePlayerList", LuaGetItemDicePlayerList}, \
+    {"IsGSHaveFreeMap", LuaIsGSHaveFreeMap}, \
+    {"PreApplyDungeonMap", LuaPreApplyDungeonMap}, \
+    {"ApplyDungeonMap", LuaApplyDungeonMap}, \
+    {"ReturnDungenonMap", LuaReturnDungenonMap}, \
+    {"ApplyDelDungeonMap", LuaApplyDelDungeonMap}, \
+    {"PARTNER_Count", LuaPARTNER_Count}, \
+    {"PARTNER_GetCurPartner", LuaPARTNER_GetCurPartner}, \
+    {"PARTNER_SetCurPartner", LuaPARTNER_SetCurPartner}, \
+    {"PARTNER_CallOutCurPartner", LuaPARTNER_CallOutCurPartner}, \
+    {"PARTNER_AddFightPartner", LuaPARTNER_AddFightPartner}, \
+    {"PARTNER_RemovePartner", LuaPARTNER_RemovePartner}, \
+    {"PARTNER_GetLevel", LuaPARTNER_GetLevel}, \
+    {"PARTNER_GetExp", LuaPARTNER_GetExp}, \
+    {"PARTNER_AddExp", LuaPARTNER_AddExp}, \
+    {"PARTNER_LevelUp", LuaPARTNER_LevelUp}, \
+    {"PARTNER_GetName", LuaPARTNER_GetName}, \
+    {"PARTNER_SetName", LuaPARTNER_SetName}, \
+    {"PARTNER_GetSeries", LuaPARTNER_GetSeries}, \
+    {"PARTNER_GetCharacter", LuaPARTNER_GetCharacter}, \
+    {"PARTNER_ChangeCharacter", LuaPARTNER_ChangeCharacter}, \
+    {"PARTNER_GetEmotionDegree", LuaPARTNER_GetEmotionDegree}, \
+    {"PARTNER_SetEmotionDegree", LuaPARTNER_SetEmotionDegree}, \
+    {"PARTNER_AddEmotionDegree", LuaPARTNER_AddEmotionDegree}, \
+    {"PARTNER_GetEssentialFeatureID", LuaPARTNER_GetEssentialFeatureID}, \
+    {"PARTNER_GetSettingIdx", LuaPARTNER_GetSettingIdx}, \
+    {"PARTNER_GetEndure", LuaPARTNER_GetEndure}, \
+    {"PARTNER_GetBirthday", LuaPARTNER_GetBirthday}, \
+    {"PARTNER_GetAptitudes", LuaPARTNER_GetAptitudes}, \
+    {"PARTNER_AddLifeAptitude", LuaPARTNER_AddLifeAptitude}, \
+    {"PARTNER_AddStrengthAptitude", LuaPARTNER_AddStrengthAptitude}, \
+    {"PARTNER_AddHitTargetRateAptitude", LuaPARTNER_AddHitTargetRateAptitude}, \
+    {"PARTNER_AddDefenceAptitude", LuaPARTNER_AddDefenceAptitude}, \
+    {"PARTNER_AddSpeedAptitude", LuaPARTNER_AddSpeedAptitude}, \
+    {"PARTNER_AddLuckAptitude", LuaPARTNER_AddLuckAptitude}, \
+    {"PARTNER_GetAttribs", LuaPARTNER_GetAttribs}, \
+    {"PARTNER_SetAttribs", LuaPARTNER_SetAttribs}, \
+    {"PARTNER_GetAttribsInc", LuaPARTNER_GetAttribsInc}, \
+    {"PARTNER_ReGenAttribsInc", LuaPARTNER_ReGenAttribsInc}, \
+    {"PARTNER_GetResists", LuaPARTNER_GetResists}, \
+    {"PARTNER_SetResists", LuaPARTNER_SetResists}, \
+    {"PARTNER_AddSkill", LuaPARTNER_AddSkill}, \
+    {"PARTNER_RemoveSkill", LuaPARTNER_RemoveSkill}, \
+    {"PARTNER_RemoveAllSkill", LuaPARTNER_RemoveAllSkill}, \
+    {"PARTNER_GetAllSkill", LuaPARTNER_GetAllSkill}, \
+    {"PARTNER_GetSkillInfo", LuaPARTNER_GetSkillInfo}, \
+    {"PARTNER_SetStandbySkill", LuaPARTNER_SetStandbySkill}, \
+    {"PARTNER_GetTaskValue", LuaPARTNER_GetTaskValue}, \
+    {"PARTNER_SetTaskValue", LuaPARTNER_SetTaskValue}, \
+    {"PARTNER_ChangeFeature", LuaPARTNER_ChangeFeature}, \
+    {"PARTNER_ChangeFeatureOfPeriod", LuaPARTNER_ChangeFeatureOfPeriod}, \
+    {"PARTNER_AddState", LuaPARTNER_AddState}, \
+    {"PARTNER_SetCallOutSwitch", LuaPARTNER_SetCallOutSwitch}, \
+    {"PARTNER_GetGenData", LuaPARTNER_GetGenData}, \
+    {"PET_Create", LuaPET_Create}, \
+    {"PET_Delete", LuaPET_Delete}, \
+    {"PET_IsCreate", LuaPET_IsCreate}, \
+    {"PET_Summon", LuaPET_Summon}, \
+    {"PET_IsSummon", LuaPET_IsSummon}, \
+    {"PET_UnSummon", LuaPET_UnSummon}, \
+    {"PET_GetFeatureId", LuaPET_GetFeatureId}, \
+    {"PET_SetFeatureId", LuaPET_SetFeatureId}, \
+    {"PET_SetName", LuaPET_SetName}, \
+    {"PET_GetName", LuaPET_GetName}, \
+    {"PET_GetUpgradePoint", LuaPET_GetUpgradePoint}, \
+    {"PET_SetUpgradePoint", LuaPET_SetUpgradePoint}, \
+    {"PET_AddUpgradePoint", LuaPET_AddUpgradePoint}, \
+    {"PET_GetGrownPoint", LuaPET_GetGrownPoint}, \
+    {"PET_SetGrownPoint", LuaPET_SetGrownPoint}, \
+    {"PET_GetTamePoint", LuaPET_GetTamePoint}, \
+    {"PET_SetTamePoint", LuaPET_SetTamePoint}, \
+    {"PET_GetLevel", LuaPET_GetLevel}, \
+    {"PET_SetLevel", LuaPET_SetLevel}, \
+    {"PET_ClearAttrib", LuaPET_ClearAttrib}, \
+    {"PET_ClearSkill", LuaPET_ClearSkill}, \
+    {"PET_SetAttrib", LuaPET_SetAttrib}, \
+    {"PET_GetAttrib", LuaPET_GetAttrib}, \
+    {"PET_AddAttrib", LuaPET_AddAttrib}, \
+    {"PET_SetSkill", LuaPET_SetSkill}, \
+    {"PET_GetSkill", LuaPET_GetSkill}, \
+    {"PET_SetStr", LuaPET_SetStr}, \
+    {"PET_SetDex", LuaPET_SetDex}, \
+    {"PET_SetVit", LuaPET_SetVit}, \
+    {"PET_SetEng", LuaPET_SetEng}, \
+    {"PET_SetLife", LuaPET_SetLife}, \
+    {"PET_SetMana", LuaPET_SetMana}, \
+    {"PET_GetStr", LuaPET_GetStr}, \
+    {"PET_GetDex", LuaPET_GetDex}, \
+    {"PET_GetVit", LuaPET_GetVit}, \
+    {"PET_GetEng", LuaPET_GetEng}, \
+    {"PET_GetLife", LuaPET_GetLife}, \
+    {"PET_GetMana", LuaPET_GetMana}, \
+    {"NW_IsEmperor", LuaNW_IsEmperor}, \
+    {"NW_GetEmperorName", LuaNW_GetEmperorName}, \
+    {"NW_GetDuty", LuaNW_GetDuty}, \
+    {"NW_GetTask", LuaNW_GetTask}, \
+    {"NW_SetTask", LuaNW_SetTask}, \
+    {"NW_Enthrone", LuaNW_Enthrone}, \
+    {"NW_Abdicate", LuaNW_Abdicate}, \
+    {"NW_InEmperorTong", LuaNW_InEmperorTong}, \
+    {"NW_Instate", LuaNW_Instate}, \
+    {"NW_Dismiss", LuaNW_Dismiss}, \
+    {"NW_GetNationTitle", LuaNW_GetNationTitle}, \
+    {"NW_SetNationTitle", LuaNW_SetNationTitle}, \
+    {"NW_GetRemark", LuaNW_GetRemark}, \
+    {"NW_RemarkEmperor", LuaNW_RemarkEmperor}, \
+    {"NW_OwnSeal", LuaNW_OwnSeal}, \
+    {"NW_GetSealInfo", LuaNW_GetSealInfo}, \
+    {"NW_OpenCongratulation", LuaNW_OpenCongratulation}, \
+    {"NW_CloseCongratulation", LuaNW_CloseCongratulation}, \
+    {"NW_AwardEmperor", LuaNW_AwardEmperor}, \
+    {"NW_Levy", LuaNW_Levy}, \
+    {"NW_ForbidChat", LuaNW_ForbidChat}, \
+    {"NW_CheckText", LuaNW_CheckText}, \
+    {"NW_EmperorHistoryCount", LuaNW_EmperorHistoryCount}, \
+    {"NW_EmperorHistory", LuaNW_EmperorHistory}, \
+    {"LG_CreateLeagueObj", LuaLG_CreateLeagueObj}, \
+    {"LG_FreeLeagueObj", LuaLG_FreeLeagueObj}, \
+    {"LG_GetLeagueObj", LuaLG_GetLeagueObj}, \
+    {"LG_GetLeagueObjByRole", LuaLG_GetLeagueObjByRole}, \
+    {"LG_GetMemberCount", LuaLG_GetMemberCount}, \
+    {"LG_AddMemberToObj", LuaLG_AddMemberToObj}, \
+    {"LG_GetMemberObj", LuaLG_GetMemberObj}, \
+    {"LG_GetMemberInfo", LuaLG_GetMemberInfo}, \
+    {"LG_GetMemberJoinTime", LuaLG_GetMemberJoinTime}, \
+    {"LG_GetMemberTask", LuaLG_GetMemberTask}, \
+    {"LG_ApplySetMemberTask", LuaLG_ApplySetMemberTask}, \
+    {"LG_ApplyAppendMemberTask", LuaLG_ApplyAppendMemberTask}, \
+    {"LG_GetLeagueInfo", LuaLG_GetLeagueInfo}, \
+    {"LG_SetLeagueInfo", LuaLG_SetLeagueInfo}, \
+    {"LG_GetLeagueCreateTime", LuaLG_GetLeagueCreateTime}, \
+    {"LG_GetLeagueTask", LuaLG_GetLeagueTask}, \
+    {"LG_ApplySetLeagueTask", LuaLG_ApplySetLeagueTask}, \
+    {"LG_ApplyAppendLeagueTask", LuaLG_ApplyAppendLeagueTask}, \
+    {"LG_ApplyAddLeague", LuaLG_ApplyAddLeague}, \
+    {"LG_ApplyRemoveLeague", LuaLG_ApplyRemoveLeague}, \
+    {"LG_GetFirstLeague", LuaLG_GetFirstLeague}, \
+    {"LG_GetNextLeague", LuaLG_GetNextLeague}, \
+    {"LG_ApplyDoScript", LuaLG_ApplyDoScript}, \
+    /*  Tranche 13: Advanced Tong System (191 funcs) */\
+    {"TONGM_ApplyAddOffer", LuaTONGM_ApplyAddOffer}, \
+    {"TONGM_ApplyAddOfferEx", LuaTONGM_ApplyAddOfferEx}, \
+    {"TONGM_ApplyAddRight", LuaTONGM_ApplyAddRight}, \
+    {"TONGM_ApplyAddTaskValue", LuaTONGM_ApplyAddTaskValue}, \
+    {"TONGM_ApplyAddUTaskValue", LuaTONGM_ApplyAddUTaskValue}, \
+    {"TONGM_ApplyDelRight", LuaTONGM_ApplyDelRight}, \
+    {"TONGM_ApplySetLWeekGoalOffer", LuaTONGM_ApplySetLWeekGoalOffer}, \
+    {"TONGM_ApplySetLWeeklyOffer", LuaTONGM_ApplySetLWeeklyOffer}, \
+    {"TONGM_ApplySetLastOnlineDate", LuaTONGM_ApplySetLastOnlineDate}, \
+    {"TONGM_ApplySetRetireDate", LuaTONGM_ApplySetRetireDate}, \
+    {"TONGM_ApplySetTaskValue", LuaTONGM_ApplySetTaskValue}, \
+    {"TONGM_CheckRight", LuaTONGM_CheckRight}, \
+    {"TONGM_GetFigure", LuaTONGM_GetFigure}, \
+    {"TONGM_GetJoinDay", LuaTONGM_GetJoinDay}, \
+    {"TONGM_GetJoinTime", LuaTONGM_GetJoinTime}, \
+    {"TONGM_GetLWeekGoalOffer", LuaTONGM_GetLWeekGoalOffer}, \
+    {"TONGM_GetLWeeklyOffer", LuaTONGM_GetLWeeklyOffer}, \
+    {"TONGM_GetLastOnlineDate", LuaTONGM_GetLastOnlineDate}, \
+    {"TONGM_GetMoney", LuaTONGM_GetMoney}, \
+    {"TONGM_GetName", LuaTONGM_GetName}, \
+    {"TONGM_GetOffer", LuaTONGM_GetOffer}, \
+    {"TONGM_GetOnline", LuaTONGM_GetOnline}, \
+    {"TONGM_GetRetireDate", LuaTONGM_GetRetireDate}, \
+    {"TONGM_GetSex", LuaTONGM_GetSex}, \
+    {"TONGM_GetTaskValue", LuaTONGM_GetTaskValue}, \
+    {"TONGM_GetUTaskValue", LuaTONGM_GetUTaskValue}, \
+    {"TONGM_IsExist", LuaTONGM_IsExist}, \
+    {"TONG_AddTaskTemp", LuaTONG_AddTaskTemp}, \
+    {"TONG_GetBuildLevel", LuaTONG_GetBuildLevel}, \
+    {"TONG_GetCredit", LuaTONG_GetCredit}, \
+    {"TONG_GetCurCamp", LuaTONG_GetCurCamp}, \
+    {"TONG_GetDay", LuaTONG_GetDay}, \
+    {"TONG_GetExp", LuaTONG_GetExp}, \
+    {"TONG_GetExpLevel", LuaTONG_GetExpLevel}, \
+    {"TONG_GetFirstMember", LuaTONG_GetFirstMember}, \
+    {"TONG_GetFirstTong", LuaTONG_GetFirstTong}, \
+    {"TONG_GetMaster", LuaTONG_GetMaster}, \
+    {"TONG_GetMemberCount", LuaTONG_GetMemberCount}, \
+    {"TONG_GetName", LuaTONG_GetName}, \
+    {"TONG_GetNextMember", LuaTONG_GetNextMember}, \
+    {"TONG_GetNextTong", LuaTONG_GetNextTong}, \
+    {"TONG_GetOnlineCount", LuaTONG_GetOnlineCount}, \
+    {"TONG_GetPauseState", LuaTONG_GetPauseState}, \
+    {"TONG_GetSelfCamp", LuaTONG_GetSelfCamp}, \
+    {"TONG_GetTaskTemp", LuaTONG_GetTaskTemp}, \
+    {"TONG_GetTongByRoleName", LuaTONG_GetTongByRoleName}, \
+    {"TONG_GetTongCount", LuaTONG_GetTongCount}, \
+    {"TONG_GetTongMap", LuaTONG_GetTongMap}, \
+    {"TONG_GetTongMapBan", LuaTONG_GetTongMapBan}, \
+    {"TONG_GetTongMapTemplate", LuaTONG_GetTongMapTemplate}, \
+    {"TONG_GetUnionID", LuaTONG_GetUnionID}, \
+    {"TONG_GetWarState", LuaTONG_GetWarState}, \
+    {"TONG_GetWeek", LuaTONG_GetWeek}, \
+    {"TONG_IsExist", LuaTONG_IsExist}, \
+    {"TONG_Name2ID", LuaTONG_Name2ID}, \
+    {"TONG_SetTaskTemp", LuaTONG_SetTaskTemp}, \
+    {"TONG_WriteLog", LuaTONG_WriteLog}, \
+    {"TONG_ApplyAddBuildFund", LuaTONG_ApplyAddBuildFund}, \
+    {"TONG_ApplyAddDay", LuaTONG_ApplyAddDay}, \
+    {"TONG_ApplyAddEventRecord", LuaTONG_ApplyAddEventRecord}, \
+    {"TONG_ApplyAddHistoryRecord", LuaTONG_ApplyAddHistoryRecord}, \
+    {"TONG_ApplyAddLWeekGoalValue", LuaTONG_ApplyAddLWeekGoalValue}, \
+    {"TONG_ApplyAddMoney", LuaTONG_ApplyAddMoney}, \
+    {"TONG_ApplyAddPerStandFund", LuaTONG_ApplyAddPerStandFund}, \
+    {"TONG_ApplyAddStoredBuildFund", LuaTONG_ApplyAddStoredBuildFund}, \
+    {"TONG_ApplyAddStoredOffer", LuaTONG_ApplyAddStoredOffer}, \
+    {"TONG_ApplyAddTaskValue", LuaTONG_ApplyAddTaskValue}, \
+    {"TONG_ApplyAddTotalBuildFund", LuaTONG_ApplyAddTotalBuildFund}, \
+    {"TONG_ApplyAddUTaskValue", LuaTONG_ApplyAddUTaskValue}, \
+    {"TONG_ApplyAddWarBuildFund", LuaTONG_ApplyAddWarBuildFund}, \
+    {"TONG_ApplyAddWeek", LuaTONG_ApplyAddWeek}, \
+    {"TONG_ApplyAddWeekBuildFund", LuaTONG_ApplyAddWeekBuildFund}, \
+    {"TONG_ApplyAddWeekGoalValue", LuaTONG_ApplyAddWeekGoalValue}, \
+    {"TONG_ApplyCreatMap", LuaTONG_ApplyCreatMap}, \
+    {"TONG_ApplyDegrade", LuaTONG_ApplyDegrade}, \
+    {"TONG_ApplyDeleteMap", LuaTONG_ApplyDeleteMap}, \
+    {"TONG_ApplyDeleteMember", LuaTONG_ApplyDeleteMember}, \
+    {"TONG_ApplyInit", LuaTONG_ApplyInit}, \
+    {"TONG_ApplyKickMember", LuaTONG_ApplyKickMember}, \
+    {"TONG_ApplyMaintain", LuaTONG_ApplyMaintain}, \
+    {"TONG_ApplySetAnnouncement", LuaTONG_ApplySetAnnouncement}, \
+    {"TONG_ApplySetBuildFund", LuaTONG_ApplySetBuildFund}, \
+    {"TONG_ApplySetCurWeekGoalLevel", LuaTONG_ApplySetCurWeekGoalLevel}, \
+    {"TONG_ApplySetDay", LuaTONG_ApplySetDay}, \
+    {"TONG_ApplySetLWeekGoalEvent", LuaTONG_ApplySetLWeekGoalEvent}, \
+    {"TONG_ApplySetLWeekGoalLevel", LuaTONG_ApplySetLWeekGoalLevel}, \
+    {"TONG_ApplySetLWeekGoalPlayer", LuaTONG_ApplySetLWeekGoalPlayer}, \
+    {"TONG_ApplySetLWeekGoalPricePlayer", LuaTONG_ApplySetLWeekGoalPricePlayer}, \
+    {"TONG_ApplySetLWeekGoalPriceTong", LuaTONG_ApplySetLWeekGoalPriceTong}, \
+    {"TONG_ApplySetLWeekGoalTotal", LuaTONG_ApplySetLWeekGoalTotal}, \
+    {"TONG_ApplySetLWeekGoalValue", LuaTONG_ApplySetLWeekGoalValue}, \
+    {"TONG_ApplySetMaintainFund", LuaTONG_ApplySetMaintainFund}, \
+    {"TONG_ApplySetMoney", LuaTONG_ApplySetMoney}, \
+    {"TONG_ApplySetOccupyCityDay", LuaTONG_ApplySetOccupyCityDay}, \
+    {"TONG_ApplySetPauseState", LuaTONG_ApplySetPauseState}, \
+    {"TONG_ApplySetPerStandFund", LuaTONG_ApplySetPerStandFund}, \
+    {"TONG_ApplySetStoredBuildFund", LuaTONG_ApplySetStoredBuildFund}, \
+    {"TONG_ApplySetStoredOffer", LuaTONG_ApplySetStoredOffer}, \
+    {"TONG_ApplySetStunt", LuaTONG_ApplySetStunt}, \
+    {"TONG_ApplySetTaskValue", LuaTONG_ApplySetTaskValue}, \
+    {"TONG_ApplySetTongMap", LuaTONG_ApplySetTongMap}, \
+    {"TONG_ApplySetTongMapBan", LuaTONG_ApplySetTongMapBan}, \
+    {"TONG_ApplySetTotalBuildFund", LuaTONG_ApplySetTotalBuildFund}, \
+    {"TONG_ApplySetWarBuildFund", LuaTONG_ApplySetWarBuildFund}, \
+    {"TONG_ApplySetWeek", LuaTONG_ApplySetWeek}, \
+    {"TONG_ApplySetWeekBuildFund", LuaTONG_ApplySetWeekBuildFund}, \
+    {"TONG_ApplySetWeekBuildUpper", LuaTONG_ApplySetWeekBuildUpper}, \
+    {"TONG_ApplySetWeekGoalEvent", LuaTONG_ApplySetWeekGoalEvent}, \
+    {"TONG_ApplySetWeekGoalLevel", LuaTONG_ApplySetWeekGoalLevel}, \
+    {"TONG_ApplySetWeekGoalPlayer", LuaTONG_ApplySetWeekGoalPlayer}, \
+    {"TONG_ApplySetWeekGoalPricePlayer", LuaTONG_ApplySetWeekGoalPricePlayer}, \
+    {"TONG_ApplySetWeekGoalPriceTong", LuaTONG_ApplySetWeekGoalPriceTong}, \
+    {"TONG_ApplySetWeekGoalTotal", LuaTONG_ApplySetWeekGoalTotal}, \
+    {"TONG_ApplySetWeekGoalValue", LuaTONG_ApplySetWeekGoalValue}, \
+    {"TONG_ApplyUpgrade", LuaTONG_ApplyUpgrade}, \
+    {"TONG_ApplyWeeklyMaintain", LuaTONG_ApplyWeeklyMaintain}, \
+    {"TONG_ChangeAllMemberFeature", LuaTONG_ChangeAllMemberFeature}, \
+    {"TONG_ContributeOffer", LuaTONG_ContributeOffer}, \
+    {"TONG_DistributeOfferToGroup", LuaTONG_DistributeOfferToGroup}, \
+    {"TONG_DistributeOfferToMember", LuaTONG_DistributeOfferToMember}, \
+    {"TONG_GetBuildFund", LuaTONG_GetBuildFund}, \
+    {"TONG_GetCurWeekGoalLevel", LuaTONG_GetCurWeekGoalLevel}, \
+    {"TONG_GetLWeekGoalEvent", LuaTONG_GetLWeekGoalEvent}, \
+    {"TONG_GetLWeekGoalLevel", LuaTONG_GetLWeekGoalLevel}, \
+    {"TONG_GetLWeekGoalPlayer", LuaTONG_GetLWeekGoalPlayer}, \
+    {"TONG_GetLWeekGoalPricePlayer", LuaTONG_GetLWeekGoalPricePlayer}, \
+    {"TONG_GetLWeekGoalPriceTong", LuaTONG_GetLWeekGoalPriceTong}, \
+    {"TONG_GetLWeekGoalTotal", LuaTONG_GetLWeekGoalTotal}, \
+    {"TONG_GetLWeekGoalValue", LuaTONG_GetLWeekGoalValue}, \
+    {"TONG_GetMaintainFund", LuaTONG_GetMaintainFund}, \
+    {"TONG_GetMoney", LuaTONG_GetMoney}, \
+    {"TONG_GetOccupyCityDay", LuaTONG_GetOccupyCityDay}, \
+    {"TONG_GetPerStandFund", LuaTONG_GetPerStandFund}, \
+    {"TONG_GetPremium", LuaTONG_GetPremium}, \
+    {"TONG_GetStandFund", LuaTONG_GetStandFund}, \
+    {"TONG_GetStoredBuildFund", LuaTONG_GetStoredBuildFund}, \
+    {"TONG_GetStoredOffer", LuaTONG_GetStoredOffer}, \
+    {"TONG_GetTaskValue", LuaTONG_GetTaskValue}, \
+    {"TONG_GetTotalBuildFund", LuaTONG_GetTotalBuildFund}, \
+    {"TONG_GetUTaskValue", LuaTONG_GetUTaskValue}, \
+    {"TONG_GetWarBuildFund", LuaTONG_GetWarBuildFund}, \
+    {"TONG_GetWeekBuildFund", LuaTONG_GetWeekBuildFund}, \
+    {"TONG_GetWeekBuildUpper", LuaTONG_GetWeekBuildUpper}, \
+    {"TONG_GetWeekGoalEvent", LuaTONG_GetWeekGoalEvent}, \
+    {"TONG_GetWeekGoalLevel", LuaTONG_GetWeekGoalLevel}, \
+    {"TONG_GetWeekGoalPlayer", LuaTONG_GetWeekGoalPlayer}, \
+    {"TONG_GetWeekGoalPricePlayer", LuaTONG_GetWeekGoalPricePlayer}, \
+    {"TONG_GetWeekGoalPriceTong", LuaTONG_GetWeekGoalPriceTong}, \
+    {"TONG_GetWeekGoalTotal", LuaTONG_GetWeekGoalTotal}, \
+    {"TONG_GetWeekGoalValue", LuaTONG_GetWeekGoalValue}, \
+    {"AddTongExp", LuaAddTongExp}, \
+    {"AddTongMTask", LuaAddTongMTask}, \
+    {"AddTongMoney", LuaAddTongMoney}, \
+    {"AddTongWeek", LuaAddTongWeek}, \
+    {"CreateTong", LuaCreateTong}, \
+    {"ForceLeaveTong", LuaForceLeaveTong}, \
+    {"GMTongAddMember", LuaGMTongAddMember}, \
+    {"GMTongDismiss", LuaGMTongDismiss}, \
+    {"GMTongSetAddTime", LuaGMTongSetAddTime}, \
+    {"GMTongSetExp", LuaGMTongSetExp}, \
+    {"GMTongSetLevel", LuaGMTongSetLevel}, \
+    {"GMTongSetMaster", LuaGMTongSetMaster}, \
+    {"GetCityWarTongCamp", LuaGetCityWarTongCamp}, \
+    {"GetCurrentTong", LuaGetCurrentTong}, \
+    {"GetJoinTongTime", LuaGetJoinTongTime}, \
+    {"GetNpcTong", LuaGetNpcTong}, \
+    {"GetSignUpTongName", LuaGetSignUpTongName}, \
+    {"GetTong", LuaGetTong}, \
+    {"GetTongCamp", LuaGetTongCamp}, \
+    {"GetTongFigure", LuaGetTongFigure}, \
+    {"GetTongLogData", LuaGetTongLogData}, \
+    {"GetTongMTask", LuaGetTongMTask}, \
+    {"GetTongMemberCount", LuaGetTongMemberCount}, \
+    {"GetTongMemberID", LuaGetTongMemberID}, \
+    {"GetTongTitle", LuaGetTongTitle}, \
+    {"GetTongWeek", LuaGetTongWeek}, \
+    {"IsTongWarMap", LuaIsTongWarMap}, \
+    {"MoveTongExp", LuaMoveTongExp}, \
+    {"Msg2Tong", LuaMsg2Tong}, \
+    {"NumOfSignUpTongs", LuaNumOfSignUpTongs}, \
+    {"OpenTongCamp", LuaOpenTongCamp}, \
+    {"OpenTongZhaoMu", LuaOpenTongZhaoMu}, \
+    {"QueryTongName", LuaQueryTongName}, \
+    {"RenameTong", LuaRenameTong}, \
+    {"SetCouldDisbandTong", LuaSetCouldDisbandTong}, \
+    {"SetCouldKickTong", LuaSetCouldKickTong}, \
+    {"SetCouldQuitTong", LuaSetCouldQuitTong}, \
+    {"SetJoinTongTime", LuaSetJoinTongTime}, \
+    {"SetTongMTask", LuaSetTongMTask}, \
+    {"SetTongWeek", LuaSetTongWeek}, \
+    {"TongClaimWar", LuaTongClaimWar}, \
+    /*  Tranche 14: Achievement, Anti-Bot & Cross-Server (25 funcs) */\
+    {"Achievement_Achieve", LuaAchievement_Achieve}, \
+    {"Achievement_GetData", LuaAchievement_GetData}, \
+    {"Achievement_IsAchieved", LuaAchievement_IsAchieved}, \
+    {"Achievement_IsRewarded", LuaAchievement_IsRewarded}, \
+    {"Achievement_Reward", LuaAchievement_Reward}, \
+    {"Achievement_SetData", LuaAchievement_SetData}, \
+    {"AddBotCode", LuaAddBotCode}, \
+    {"BotStopValidateClient", LuaBotStopValidateClient}, \
+    {"BotValidateClient", LuaBotValidateClient}, \
+    {"ClearBotCode", LuaClearBotCode}, \
+    {"GetArenaBothSides", LuaGetArenaBothSides}, \
+    {"GetBotDeleteAccountFlag", LuaGetBotDeleteAccountFlag}, \
+    {"GetBotPunishFlag", LuaGetBotPunishFlag}, \
+    {"GetCityWarBothSides", LuaGetCityWarBothSides}, \
+    {"GetRefuseLoginCount", LuaGetRefuseLoginCount}, \
+    {"GetRefuseLoginFlag", LuaGetRefuseLoginFlag}, \
+    {"SetDeathPunish_PK10", LuaSetDeathPunish_PK10}, \
+    {"SetRefuseLogin", LuaSetRefuseLogin}, \
+    {"StartBotDeleteAccount", LuaStartBotDeleteAccount}, \
+    {"StartBotPunish", LuaStartBotPunish}, \
+    {"TripC_Apply", LuaTripC_Apply}, \
+    {"TripC_GetServerCount", LuaTripC_GetServerCount}, \
+    {"TripC_GetServerName", LuaTripC_GetServerName}, \
+    {"TripC_Kick", LuaTripC_Kick}, \
+    {"TripS_Return", LuaTripS_Return}, \
+    /*  Tranche 15: Skills Extended & Equipment Extended (41 funcs) */\
+    {"AddNpcSkillState", LuaAddNpcSkillState}, \
+    {"Clear120SkillExpLimit", LuaClear120SkillExpLimit}, \
+    {"ForbitSkill", LuaForbitSkill}, \
+    {"GetAllSkillCurInc", LuaGetAllSkillCurInc}, \
+    {"GetSkillCount", LuaGetSkillCount}, \
+    {"GetSkillExp", LuaGetSkillExp}, \
+    {"GetSkillMaxLevel", LuaGetSkillMaxLevel}, \
+    {"GetSkillNextExp", LuaGetSkillNextExp}, \
+    {"GetSkillState", LuaGetSkillState}, \
+    {"GetTotalSkill", LuaGetTotalSkill}, \
+    {"IsExpSkill", LuaIsExpSkill}, \
+    {"NpcCastSkill", LuaNpcCastSkill}, \
+    {"ReloadSkill", LuaReloadSkill}, \
+    {"RemoveNpcSkillState", LuaRemoveNpcSkillState}, \
+    {"RemoveSkillState", LuaRemoveSkillState}, \
+    {"Set120SkillID", LuaSet120SkillID}, \
+    {"SetAForbitSkill", LuaSetAForbitSkill}, \
+    {"SetImmedSkill", LuaSetImmedSkill}, \
+    {"SetNpcAuraSkill", LuaSetNpcAuraSkill}, \
+    {"AddItemIntoEquipmentBox", LuaAddItemIntoEquipmentBox}, \
+    {"CalcEquiproomItemCountEx", LuaCalcEquiproomItemCountEx}, \
+    {"ConsumeEquiproomItem", LuaConsumeEquiproomItem}, \
+    {"ConsumeEquiproomItemEx", LuaConsumeEquiproomItemEx}, \
+    {"DegradePlatinaItem", LuaDegradePlatinaItem}, \
+    {"FantasyGoldEquip", LuaFantasyGoldEquip}, \
+    {"GetAllClothesEquipment", LuaGetAllClothesEquipment}, \
+    {"GetAllEquipValue", LuaGetAllEquipValue}, \
+    {"GetAllEquipment", LuaGetAllEquipment}, \
+    {"GetFusionInEquipInfo", LuaGetFusionInEquipInfo}, \
+    {"GetPlatinaEquipIndex", LuaGetPlatinaEquipIndex}, \
+    {"GetPlatinaLevel", LuaGetPlatinaLevel}, \
+    {"GetRoleEquipValue", LuaGetRoleEquipValue}, \
+    {"ITEM_Abrade2BrokenEquip", LuaITEM_Abrade2BrokenEquip}, \
+    {"ITEM_BrokenEquip2Normal", LuaITEM_BrokenEquip2Normal}, \
+    {"InlayStarStone", LuaInlayStarStone}, \
+    {"PreviewPlatinaFromGold", LuaPreviewPlatinaFromGold}, \
+    {"PreviewPlatinaUpgrade", LuaPreviewPlatinaUpgrade}, \
+    {"SmeltEquip", LuaSmeltEquip}, \
+    {"UnSmeltEquip", LuaUnSmeltEquip}, \
+    {"UpgradePlatinaFromGoldItem", LuaUpgradePlatinaFromGoldItem}, \
+    {"UpgradePlatinaItem", LuaUpgradePlatinaItem}, \
+    /*  Tranche 16: Partner Extended & Timer Extended (19 funcs) */\
+    {"GetPartnerBagLevel", LuaGetPartnerBagLevel}, \
+    {"PartnerBeDrawBack", LuaPartnerBeDrawBack}, \
+    {"PartnerBloodFallQuickly", LuaPartnerBloodFallQuickly}, \
+    {"PartnerCallout", LuaPartnerCallout}, \
+    {"PartnerKillBoss", LuaPartnerKillBoss}, \
+    {"PartnerKillPartner", LuaPartnerKillPartner}, \
+    {"SetPartnerBagLevel", LuaSetPartnerBagLevel}, \
+    {"GetNpcTimer", LuaGetNpcTimer}, \
+    {"SetNpcTimer", LuaSetNpcTimer}, \
+    {"StartGlbMSTimer", LuaStartGlbMSTimer}, \
+    {"StopGlbMSTimer", LuaStopGlbMSTimer}, \
+    {"TM_GetTimerCount", LuaTM_GetTimerCount}, \
+    {"TM_HasTimer", LuaTM_HasTimer}, \
+    {"TM_IsTimerSuspending", LuaTM_IsTimerSuspending}, \
+    {"TM_ResumeTimer", LuaTM_ResumeTimer}, \
+    {"TM_SetTimer", LuaTM_SetTimer}, \
+    {"TM_StopTimer", LuaTM_StopTimer}, \
+    {"TM_SuspendTimer", LuaTM_SuspendTimer}, \
+    {"TimerFuncForAutoHang", LuaTimerFuncForAutoHang}, \
+    /*  Tranche 17: General Player & Npc Systems (128 funcs) */\
+    {"AddExpInMap", LuaAddExpInMap}, \
+    {"AddPlayerEvent", LuaAddPlayerEvent}, \
+    {"BT_SetBattleLevelDesc", LuaBT_SetBattleLevelDesc}, \
+    {"CalcAutoHangPlayerCount", LuaCalcAutoHangPlayerCount}, \
+    {"CallPlayerFunction", LuaCallPlayerFunction}, \
+    {"ClearFactionRecord", LuaClearFactionRecord}, \
+    {"DisableTeamChangeCamp", LuaDisableTeamChangeCamp}, \
+    {"ForbitStamina", LuaForbitStamina}, \
+    {"GMMsg2Player", LuaGMMsg2Player}, \
+    {"GetArenaLevel", LuaGetArenaLevel}, \
+    {"GetArenaTotalLevel", LuaGetArenaTotalLevel}, \
+    {"GetArenaTotalLevelByCity", LuaGetArenaTotalLevelByCity}, \
+    {"GetAroundPlayerList", LuaGetAroundPlayerList}, \
+    {"GetAutoHangExpValue", LuaGetAutoHangExpValue}, \
+    {"GetCurrentMagicLevel", LuaGetCurrentMagicLevel}, \
+    {"GetDupedDealLevel", LuaGetDupedDealLevel}, \
+    {"GetExpPercent", LuaGetExpPercent}, \
+    {"GetFactionNumber", LuaGetFactionNumber}, \
+    {"GetFirstPlayerAtSW", LuaGetFirstPlayerAtSW}, \
+    {"GetFirstPlayerAtServer", LuaGetFirstPlayerAtServer}, \
+    {"GetItemLife", LuaGetItemLife}, \
+    {"GetLevelExp", LuaGetLevelExp}, \
+    {"GetMapPlayerList", LuaGetMapPlayerList}, \
+    {"GetNextPlayerAtSW", LuaGetNextPlayerAtSW}, \
+    {"GetNextPlayerAtServer", LuaGetNextPlayerAtServer}, \
+    {"GetNpcAroundPlayerList", LuaGetNpcAroundPlayerList}, \
+    {"GetNpcCurCamp", LuaGetNpcCurCamp}, \
+    {"GetNpcCurLife", LuaGetNpcCurLife}, \
+    {"GetNpcCurMaxLife", LuaGetNpcCurMaxLife}, \
+    {"GetNpcFightState", LuaGetNpcFightState}, \
+    {"GetPlayerClientIP", LuaGetPlayerClientIP}, \
+    {"GetPlayerEnteringTrap", LuaGetPlayerEnteringTrap}, \
+    {"GetPlayerFeature", LuaGetPlayerFeature}, \
+    {"GetPlayerFortuneRank", LuaGetPlayerFortuneRank}, \
+    {"GetPlayerMagicAttrib", LuaGetPlayerMagicAttrib}, \
+    {"GetRoleCreateDate", LuaGetRoleCreateDate}, \
+    {"GetRoleCreateTime", LuaGetRoleCreateTime}, \
+    {"GetRoleCreateTimeData", LuaGetRoleCreateTimeData}, \
+    {"GetRoleDataTransMark", LuaGetRoleDataTransMark}, \
+    {"GetStarLevel", LuaGetStarLevel}, \
+    {"GetTmpCamp", LuaGetTmpCamp}, \
+    {"GetTotalMagicLevel", LuaGetTotalMagicLevel}, \
+    {"HostKillPlayer", LuaHostKillPlayer}, \
+    {"HostLevelUp", LuaHostLevelUp}, \
+    {"ITEM_ExportShop", LuaITEM_ExportShop}, \
+    {"ITEM_GetExpiredTime", LuaITEM_GetExpiredTime}, \
+    {"ITEM_SetExpiredTime", LuaITEM_SetExpiredTime}, \
+    {"ITEM_SetExpiredTime2", LuaITEM_SetExpiredTime2}, \
+    {"IsForbidChangePK", LuaIsForbidChangePK}, \
+    {"Msg2Faction", LuaMsg2Faction}, \
+    {"NPCINFO_GetLevel", LuaNPCINFO_GetLevel}, \
+    {"NPCINFO_GetNpcCurrentLife", LuaNPCINFO_GetNpcCurrentLife}, \
+    {"NPCINFO_GetNpcCurrentMana", LuaNPCINFO_GetNpcCurrentMana}, \
+    {"NPCINFO_GetNpcCurrentMaxLife", LuaNPCINFO_GetNpcCurrentMaxLife}, \
+    {"NPCINFO_GetNpcCurrentMaxMana", LuaNPCINFO_GetNpcCurrentMaxMana}, \
+    {"NPCINFO_SetMaxLife", LuaNPCINFO_SetMaxLife}, \
+    {"NPCINFO_SetMaxMana", LuaNPCINFO_SetMaxMana}, \
+    {"NPCINFO_SetNpcCurrentLife", LuaNPCINFO_SetNpcCurrentLife}, \
+    {"NPCINFO_SetNpcCurrentMana", LuaNPCINFO_SetNpcCurrentMana}, \
+    {"NPCINFO_SetNpcCurrentMaxLife", LuaNPCINFO_SetNpcCurrentMaxLife}, \
+    {"NPCINFO_SetNpcCurrentMaxMana", LuaNPCINFO_SetNpcCurrentMaxMana}, \
+    {"OpenCityManageUI", LuaOpenCityManageUI}, \
+    {"QueryRoleName", LuaQueryRoleName}, \
+    {"ReduceOwnExp", LuaReduceOwnExp}, \
+    {"RemoveAllPlayerEvent", LuaRemoveAllPlayerEvent}, \
+    {"RemovePlayerEvent", LuaRemovePlayerEvent}, \
+    {"RenameRole", LuaRenameRole}, \
+    {"ST_DoTransLife", LuaST_DoTransLife}, \
+    {"ST_IsTransLife", LuaST_IsTransLife}, \
+    {"ST_LevelUp", LuaST_LevelUp}, \
+    {"ST_SetPlayerGameTime", LuaST_SetPlayerGameTime}, \
+    {"ST_SetTransLifeCount", LuaST_SetTransLifeCount}, \
+    {"ST_UseCurCampTeam", LuaST_UseCurCampTeam}, \
+    {"SearchPlayer", LuaSearchPlayer}, \
+    {"SearchPlayerByNameID", LuaSearchPlayerByNameID}, \
+    {"SetDupedDealLevel", LuaSetDupedDealLevel}, \
+    {"SetLastFactionNumber", LuaSetLastFactionNumber}, \
+    {"SetNpcCurLife", LuaSetNpcCurLife}, \
+    {"SetNpcExpRate", LuaSetNpcExpRate}, \
+    {"SetNpcFightState", LuaSetNpcFightState}, \
+    {"SetPlayerEnteringTrap", LuaSetPlayerEnteringTrap}, \
+    {"SetPlayerFortuneRank", LuaSetPlayerFortuneRank}, \
+    {"SetPlayerLog", LuaSetPlayerLog}, \
+    {"SetSex", LuaSetSex}, \
+    {"StackExp", LuaStackExp}, \
+    {"StarLevelUp", LuaStarLevelUp}, \
+    {"TWS_ApplySetUseLevel", LuaTWS_ApplySetUseLevel}, \
+    {"TWS_ApplySetUseLevelSet", LuaTWS_ApplySetUseLevelSet}, \
+    {"TWS_GetLevel", LuaTWS_GetLevel}, \
+    {"TWS_GetUseLevel", LuaTWS_GetUseLevel}, \
+    {"TWS_GetUseLevelSet", LuaTWS_GetUseLevelSet}, \
+    {"ChangeNpcFeature", LuaChangeNpcFeature}, \
+    {"ClearNpcDamageState", LuaClearNpcDamageState}, \
+    {"DropItemEx", LuaDropItemEx}, \
+    {"GetArenaTargetCity", LuaGetArenaTargetCity}, \
+    {"GetIsCheckNpcBarrier", LuaGetIsCheckNpcBarrier}, \
+    {"GetLastDamageNpc", LuaGetLastDamageNpc}, \
+    {"GetLastDlgNpc", LuaGetLastDlgNpc}, \
+    {"GetMapNpcWithName", LuaGetMapNpcWithName}, \
+    {"GetNpcAroundNpcList", LuaGetNpcAroundNpcList}, \
+    {"GetNpcDropRateFile", LuaGetNpcDropRateFile}, \
+    {"GetNpcFreeCount", LuaGetNpcFreeCount}, \
+    {"GetNpcId", LuaGetNpcId}, \
+    {"GetNpcPowerType", LuaGetNpcPowerType}, \
+    {"GetNpcScript", LuaGetNpcScript}, \
+    {"GetNpcSettingIdx", LuaGetNpcSettingIdx}, \
+    {"GoldItemDrop", LuaGoldItemDrop}, \
+    {"IsNpcFeatureChanged", LuaIsNpcFeatureChanged}, \
+    {"IsNpcHide", LuaIsNpcHide}, \
+    {"NPCINFO_AddBlueNpc", LuaNPCINFO_AddBlueNpc}, \
+    {"NpcChat", LuaNpcChat}, \
+    {"NpcDialog", LuaNpcDialog}, \
+    {"NpcDropMoney", LuaNpcDropMoney}, \
+    {"NpcName2Replace", LuaNpcName2Replace}, \
+    {"NpcNewWorld", LuaNpcNewWorld}, \
+    {"NpcSetHide", LuaNpcSetHide}, \
+    {"NpcWalk", LuaNpcWalk}, \
+    {"OutputMonsterPos", LuaOutputMonsterPos}, \
+    {"RestoreNpcFeature", LuaRestoreNpcFeature}, \
+    {"SetIsCheckNpcBarrier", LuaSetIsCheckNpcBarrier}, \
+    {"SetNpcAI", LuaSetNpcAI}, \
+    {"SetNpcActiveRegion", LuaSetNpcActiveRegion}, \
+    {"SetNpcKind", LuaSetNpcKind}, \
+    {"StopNpcAction", LuaStopNpcAction}, \
+    {"SyncIsCheckNpcBarrier", LuaSyncIsCheckNpcBarrier}, \
+    {"TWS_GetBuildingNpc", LuaTWS_GetBuildingNpc}, \
+    {"TWS_SetBuildingNpc", LuaTWS_SetBuildingNpc}, \
+    {"WorldBossAppear", LuaWorldBossAppear}, \
+    /*  Tranche 18: General Items, Tasks & Maps (156 funcs) */\
+    {"AddBoxMoney", LuaAddBoxMoney}, \
+    {"AddClothesItem", LuaAddClothesItem}, \
+    {"AddItemByIndex", LuaAddItemByIndex}, \
+    {"AddItemForAutoHang", LuaAddItemForAutoHang}, \
+    {"AddQualityItem", LuaAddQualityItem}, \
+    {"AddTempItem", LuaAddTempItem}, \
+    {"AddVerGoldItem", LuaAddVerGoldItem}, \
+    {"AddVerItem", LuaAddVerItem}, \
+    {"BT_SendMemberCount", LuaBT_SendMemberCount}, \
+    {"CheckStoreBoxState", LuaCheckStoreBoxState}, \
+    {"CountFreeRoomByWH", LuaCountFreeRoomByWH}, \
+    {"DelCommonItem", LuaDelCommonItem}, \
+    {"EnchaseItem", LuaEnchaseItem}, \
+    {"FindFreeRoomByWH", LuaFindFreeRoomByWH}, \
+    {"FindSpecItemParam2", LuaFindSpecItemParam2}, \
+    {"FoundryItem", LuaFoundryItem}, \
+    {"GMCancleBoxPassword", LuaGMCancleBoxPassword}, \
+    {"GMLockBox", LuaGMLockBox}, \
+    {"GMSetBoxPassword", LuaGMSetBoxPassword}, \
+    {"GMUnlockBox", LuaGMUnlockBox}, \
+    {"GetBoxLockState", LuaGetBoxLockState}, \
+    {"GetBoxMoney", LuaGetBoxMoney}, \
+    {"GetChooseCount", LuaGetChooseCount}, \
+    {"GetEventTaskCount", LuaGetEventTaskCount}, \
+    {"GetFailedItem", LuaGetFailedItem}, \
+    {"GetGiveItemUnitWithPos", LuaGetGiveItemUnitWithPos}, \
+    {"GetGoldCoinCount", LuaGetGoldCoinCount}, \
+    {"GetItemAllParams", LuaGetItemAllParams}, \
+    {"GetItemBTLName", LuaGetItemBTLName}, \
+    {"GetItemBelong", LuaGetItemBelong}, \
+    {"GetItemBillType", LuaGetItemBillType}, \
+    {"GetItemCmd", LuaGetItemCmd}, \
+    {"GetItemExchangeValue", LuaGetItemExchangeValue}, \
+    {"GetItemFortuneValue", LuaGetItemFortuneValue}, \
+    {"GetItemGenTime", LuaGetItemGenTime}, \
+    {"GetItemHeight", LuaGetItemHeight}, \
+    {"GetItemIndexBydwID", LuaGetItemIndexBydwID}, \
+    {"GetItemMagicDesc", LuaGetItemMagicDesc}, \
+    {"GetItemPrice", LuaGetItemPrice}, \
+    {"GetItemQuality", LuaGetItemQuality}, \
+    {"GetItemWidth", LuaGetItemWidth}, \
+    {"GetMapTrapCount", LuaGetMapTrapCount}, \
+    {"GetNextItemIndexInRoom", LuaGetNextItemIndexInRoom}, \
+    {"GetPayTicketCount", LuaGetPayTicketCount}, \
+    {"GetPoisonCount", LuaGetPoisonCount}, \
+    {"GetPotionCount", LuaGetPotionCount}, \
+    {"GetQuestionPrice", LuaGetQuestionPrice}, \
+    {"GetRepairDurPrice", LuaGetRepairDurPrice}, \
+    {"GetRoomItems", LuaGetRoomItems}, \
+    {"GetTicketCount", LuaGetTicketCount}, \
+    {"GetTotalItemCount", LuaGetTotalItemCount}, \
+    {"HandItemIdx", LuaHandItemIdx}, \
+    {"ITEM_CalcItemValue", LuaITEM_CalcItemValue}, \
+    {"ITEM_GetImmediaItemIndex", LuaITEM_GetImmediaItemIndex}, \
+    {"ITEM_GetItemExParam", LuaITEM_GetItemExParam}, \
+    {"ITEM_GetItemInfo", LuaITEM_GetItemInfo}, \
+    {"ITEM_GetItemRandSeed", LuaITEM_GetItemRandSeed}, \
+    {"ITEM_GetItemVersion", LuaITEM_GetItemVersion}, \
+    {"ITEM_GetLatestItemVersion", LuaITEM_GetLatestItemVersion}, \
+    {"ITEM_SetItemExParam", LuaITEM_SetItemExParam}, \
+    {"ITEM_TransferItemValue", LuaITEM_TransferItemValue}, \
+    {"IncreasePoisonCount", LuaIncreasePoisonCount}, \
+    {"IncreasePotionCount", LuaIncreasePotionCount}, \
+    {"IsMyItem", LuaIsMyItem}, \
+    {"Lottery_GenerateItem", LuaLottery_GenerateItem}, \
+    {"NewItemEx", LuaNewItemEx}, \
+    {"OpenStoreBox", LuaOpenStoreBox}, \
+    {"PrintLuaStack", LuaPrintLuaStack}, \
+    {"QueryAuctionItemInfo", LuaQueryAuctionItemInfo}, \
+    {"RemoveOpenCardUiItem", LuaRemoveOpenCardUiItem}, \
+    {"STAT_GetGoodsCount", LuaSTAT_GetGoodsCount}, \
+    {"STAT_SearchGoodsSaledItem", LuaSTAT_SearchGoodsSaledItem}, \
+    {"ST_GetDamageCounter", LuaST_GetDamageCounter}, \
+    {"ST_IncreaseDamageCounter", LuaST_IncreaseDamageCounter}, \
+    {"ST_StartDamageCounter", LuaST_StartDamageCounter}, \
+    {"ST_StopDamageCounter", LuaST_StopDamageCounter}, \
+    {"SetItemExchangeValue", LuaSetItemExchangeValue}, \
+    {"SetItemFortuneValue", LuaSetItemFortuneValue}, \
+    {"SetItemNewFeature", LuaSetItemNewFeature}, \
+    {"SetPoisonCount", LuaSetPoisonCount}, \
+    {"SetPotionCount", LuaSetPotionCount}, \
+    {"SetUiGiveItemMoreConfirmMsg", LuaSetUiGiveItemMoreConfirmMsg}, \
+    {"SetUiGiveItemMsg", LuaSetUiGiveItemMsg}, \
+    {"SmeltItem", LuaSmeltItem}, \
+    {"StartPoisonCounter", LuaStartPoisonCounter}, \
+    {"StartPotionCounter", LuaStartPotionCounter}, \
+    {"StopPoisonCounter", LuaStopPoisonCounter}, \
+    {"StopPotionCounter", LuaStopPotionCounter}, \
+    {"SyncClothesItemPreView", LuaSyncClothesItemPreView}, \
+    {"TM_GetRestCount", LuaTM_GetRestCount}, \
+    {"TWS_GetWorkshopCount", LuaTWS_GetWorkshopCount}, \
+    {"TabFile_GetColCount", LuaTabFile_GetColCount}, \
+    {"ThrowAllItem", LuaThrowAllItem}, \
+    {"AddTempMagic", LuaAddTempMagic}, \
+    {"BT_ChangeMiniMap", LuaBT_ChangeMiniMap}, \
+    {"BT_SetMissionDesc", LuaBT_SetMissionDesc}, \
+    {"BT_SetMissionName", LuaBT_SetMissionName}, \
+    {"BT_SetType2Task", LuaBT_SetType2Task}, \
+    {"CloseGlbMission", LuaCloseGlbMission}, \
+    {"CloseTask", LuaCloseTask}, \
+    {"DelMapTrap", LuaDelMapTrap}, \
+    {"FirstTask", LuaFirstTask}, \
+    {"GetBiaoChePos", LuaGetBiaoChePos}, \
+    {"GetEventTask", LuaGetEventTask}, \
+    {"GetMapInfoFile", LuaGetMapInfoFile}, \
+    {"GetMapParam", LuaGetMapParam}, \
+    {"GetMapType", LuaGetMapType}, \
+    {"GetQuestion", LuaGetQuestion}, \
+    {"GetQuestionTip", LuaGetQuestionTip}, \
+    {"GetStringTask", LuaGetStringTask}, \
+    {"GetTaskEventID", LuaGetTaskEventID}, \
+    {"GetTaskMoney", LuaGetTaskMoney}, \
+    {"GetTaskStatus", LuaGetTaskStatus}, \
+    {"LoadMap", LuaLoadMap}, \
+    {"Msg2Map", LuaMsg2Map}, \
+    {"NPCINFO_GetTemplateId", LuaNPCINFO_GetTemplateId}, \
+    {"NextTask", LuaNextTask}, \
+    {"OpenAllTask", LuaOpenAllTask}, \
+    {"OpenCreateTask", LuaOpenCreateTask}, \
+    {"OpenGlbMission", LuaOpenGlbMission}, \
+    {"OpenOwnTask", LuaOpenOwnTask}, \
+    {"QueryMapTrap", LuaQueryMapTrap}, \
+    {"RunGlbMission", LuaRunGlbMission}, \
+    {"SelectTaskAward", LuaSelectTaskAward}, \
+    {"SelectTaskFinish", LuaSelectTaskFinish}, \
+    {"SelectTaskStart", LuaSelectTaskStart}, \
+    {"SendTaskOrder", LuaSendTaskOrder}, \
+    {"SetAutoHangMapFlag", LuaSetAutoHangMapFlag}, \
+    {"SetHighLightPos", LuaSetHighLightPos}, \
+    {"SetMapParam", LuaSetMapParam}, \
+    {"SetMapType", LuaSetMapType}, \
+    {"SetMoveSpeed", LuaSetMoveSpeed}, \
+    {"SetStringTask", LuaSetStringTask}, \
+    {"SetTaskStatus", LuaSetTaskStatus}, \
+    {"StartTask", LuaStartTask}, \
+    {"SubWorldIdx2MapCopy", LuaSubWorldIdx2MapCopy}, \
+    {"SyncTaskValueMore", LuaSyncTaskValueMore}, \
+    {"TWS_ApplyAddTaskValue", LuaTWS_ApplyAddTaskValue}, \
+    {"TWS_ApplyAddUTaskValue", LuaTWS_ApplyAddUTaskValue}, \
+    {"TWS_ApplySetTaskValue", LuaTWS_ApplySetTaskValue}, \
+    {"TWS_GetTaskValue", LuaTWS_GetTaskValue}, \
+    {"TWS_GetUTaskValue", LuaTWS_GetUTaskValue}, \
+    {"TaskAward", LuaTaskAward}, \
+    {"TaskCondition", LuaTaskCondition}, \
+    {"TaskConditionMatrix", LuaTaskConditionMatrix}, \
+    {"TaskEntity", LuaTaskEntity}, \
+    {"TaskEntityMatrix", LuaTaskEntityMatrix}, \
+    {"TaskEvent", LuaTaskEvent}, \
+    {"TaskEventMatrix", LuaTaskEventMatrix}, \
+    {"TaskId", LuaTaskId}, \
+    {"TaskIdMatrix", LuaTaskIdMatrix}, \
+    {"TaskName", LuaTaskName}, \
+    {"TaskTalk", LuaTaskTalk}, \
+    {"TaskTalkMatrix", LuaTaskTalkMatrix}, \
+    {"TaskTip", LuaTaskTip}, \
+    {"TellPos", LuaTellPos}, \
+    /*  Tranche 19: General Core Final Suite (320 funcs) */\
+    {"ActorQuit", LuaActorQuit}, \
+    {"AddBreakPoint", LuaAddBreakPoint}, \
+    {"AddContribution", LuaAddContribution}, \
+    {"AddCumulateOffer", LuaAddCumulateOffer}, \
+    {"AddDex", LuaAddDex}, \
+    {"AddEng", LuaAddEng}, \
+    {"AddExtPoint", LuaAddExtPoint}, \
+    {"AddExtPointForGS", LuaAddExtPointForGS}, \
+    {"AddShop2Stores", LuaAddShop2Stores}, \
+    {"AddSomeObj", LuaAddSomeObj}, \
+    {"AddStatData", LuaAddStatData}, \
+    {"AddStrg", LuaAddStrg}, \
+    {"AddTicket", LuaAddTicket}, \
+    {"AddTotalOffer", LuaAddTotalOffer}, \
+    {"AddVit", LuaAddVit}, \
+    {"AddWeekGoalOffer", LuaAddWeekGoalOffer}, \
+    {"AddWeeklyOffer", LuaAddWeeklyOffer}, \
+    {"Amulet", LuaAmulet}, \
+    {"AppendString", LuaAppendString}, \
+    {"AppointChallenger", LuaAppointChallenger}, \
+    {"AppointViceroy", LuaAppointViceroy}, \
+    {"Armor", LuaArmor}, \
+    {"AroundFillString", LuaAroundFillString}, \
+    {"AskClientForNumber", LuaAskClientForNumber}, \
+    {"AskClientForString", LuaAskClientForString}, \
+    {"AskRelayForAuctionStatus", LuaAskRelayForAuctionStatus}, \
+    {"AskRelayForKillerStatus", LuaAskRelayForKillerStatus}, \
+    {"AttachActor", LuaAttachActor}, \
+    {"BT_BroadBattleDesc", LuaBT_BroadBattleDesc}, \
+    {"BT_BroadGameDataToAll", LuaBT_BroadGameDataToAll}, \
+    {"BT_ClearBattle", LuaBT_ClearBattle}, \
+    {"BT_GetBattleName", LuaBT_GetBattleName}, \
+    {"BT_GetBattleParam", LuaBT_GetBattleParam}, \
+    {"BT_GetLadderInfo", LuaBT_GetLadderInfo}, \
+    {"BT_GetTopTenInfo", LuaBT_GetTopTenInfo}, \
+    {"BT_GetTypeBonus", LuaBT_GetTypeBonus}, \
+    {"BT_ReportResult", LuaBT_ReportResult}, \
+    {"BT_SendLadderNo", LuaBT_SendLadderNo}, \
+    {"BT_SetBattleName", LuaBT_SetBattleName}, \
+    {"BT_SetTypeBonus", LuaBT_SetTypeBonus}, \
+    {"BT_SortWorldLadder", LuaBT_SortWorldLadder}, \
+    {"Boot", LuaBoot}, \
+    {"CN", LuaCN}, \
+    {"C_Random", LuaC_Random}, \
+    {"Cancel", LuaCancel}, \
+    {"CancelTrade", LuaCancelTrade}, \
+    {"ChangeOwnFeature", LuaChangeOwnFeature}, \
+    {"CheckTicket", LuaCheckTicket}, \
+    {"ClearScriptAnswers", LuaClearScriptAnswers}, \
+    {"ClearSomeObj", LuaClearSomeObj}, \
+    {"CloseShop", LuaCloseShop}, \
+    {"CreateBiaoChe", LuaCreateBiaoChe}, \
+    {"CreateChannel", LuaCreateChannel}, \
+    {"CreateStores", LuaCreateStores}, \
+    {"Cuff", LuaCuff}, \
+    {"DRS", LuaDRS}, \
+    {"DbgPoint", LuaDbgPoint}, \
+    {"DelBreakPoint", LuaDelBreakPoint}, \
+    {"DelObject", LuaDelObject}, \
+    {"DelStationList", LuaDelStationList}, \
+    {"DeleteBiaoChe", LuaDeleteBiaoChe}, \
+    {"DeleteChannel", LuaDeleteChannel}, \
+    {"DetachActor", LuaDetachActor}, \
+    {"DisabledChatCity", LuaDisabledChatCity}, \
+    {"DisabledChatWorld", LuaDisabledChatWorld}, \
+    {"DisabledStall", LuaDisabledStall}, \
+    {"DisabledTeam", LuaDisabledTeam}, \
+    {"DisabledUseHeart", LuaDisabledUseHeart}, \
+    {"DoMarry", LuaDoMarry}, \
+    {"DoRelayScript", LuaDoRelayScript}, \
+    {"DoSth", LuaDoSth}, \
+    {"DynamicExecute", LuaDynamicExecute}, \
+    {"EH_SetCurDurability", LuaEH_SetCurDurability}, \
+    {"EnterChannel", LuaEnterChannel}, \
+    {"ForbitAura", LuaForbitAura}, \
+    {"ForbitSyncAura", LuaForbitSyncAura}, \
+    {"ForbitSyncName", LuaForbitSyncName}, \
+    {"ForbitTalk", LuaForbitTalk}, \
+    {"ForceTransferTax", LuaForceTransferTax}, \
+    {"FormatTime2Date", LuaFormatTime2Date}, \
+    {"FormatTime2Number", LuaFormatTime2Number}, \
+    {"FormatTime2String", LuaFormatTime2String}, \
+    {"GameNewSupply", LuaGameNewSupply}, \
+    {"GetAccLeftTime", LuaGetAccLeftTime}, \
+    {"GetAccrueSeries", LuaGetAccrueSeries}, \
+    {"GetAllCitySummary", LuaGetAllCitySummary}, \
+    {"GetArenaCityArea", LuaGetArenaCityArea}, \
+    {"GetArenaInfoByCity", LuaGetArenaInfoByCity}, \
+    {"GetArenaSchedule", LuaGetArenaSchedule}, \
+    {"GetCashCoin", LuaGetCashCoin}, \
+    {"GetChoose", LuaGetChoose}, \
+    {"GetCityArea", LuaGetCityArea}, \
+    {"GetCityAreaName", LuaGetCityAreaName}, \
+    {"GetCityOwner", LuaGetCityOwner}, \
+    {"GetCitySummary", LuaGetCitySummary}, \
+    {"GetConquerSeries", LuaGetConquerSeries}, \
+    {"GetContribution", LuaGetContribution}, \
+    {"GetCumulateOffer", LuaGetCumulateOffer}, \
+    {"GetCurServerTime", LuaGetCurServerTime}, \
+    {"GetDelDupedAllInOne", LuaGetDelDupedAllInOne}, \
+    {"GetDelayCatchTime", LuaGetDelayCatchTime}, \
+    {"GetDisabledFuncFlag", LuaGetDisabledFuncFlag}, \
+    {"GetDynamicShopID", LuaGetDynamicShopID}, \
+    {"GetFeeType", LuaGetFeeType}, \
+    {"GetGateWayClientID", LuaGetGateWayClientID}, \
+    {"GetGlbValue", LuaGetGlbValue}, \
+    {"GetGlodEqIndex", LuaGetGlodEqIndex}, \
+    {"GetLastExchangeTime", LuaGetLastExchangeTime}, \
+    {"GetLocalTime", LuaGetLocalTime}, \
+    {"GetLogoutRV", LuaGetLogoutRV}, \
+    {"GetLoop", LuaGetLoop}, \
+    {"GetMaskFeature", LuaGetMaskFeature}, \
+    {"GetMateName", LuaGetMateName}, \
+    {"GetNewBulletin", LuaGetNewBulletin}, \
+    {"GetOnlineCommissionStatus", LuaGetOnlineCommissionStatus}, \
+    {"GetOrgMaxDurability", LuaGetOrgMaxDurability}, \
+    {"GetPayTicket", LuaGetPayTicket}, \
+    {"GetPkReduceState", LuaGetPkReduceState}, \
+    {"GetProductLanguge", LuaGetProductLanguge}, \
+    {"GetProductRegion", LuaGetProductRegion}, \
+    {"GetProtectTime", LuaGetProtectTime}, \
+    {"GetQAnswer", LuaGetQAnswer}, \
+    {"GetQBeginTime", LuaGetQBeginTime}, \
+    {"GetQEndTime", LuaGetQEndTime}, \
+    {"GetRanking", LuaGetRanking}, \
+    {"GetRelaxTime", LuaGetRelaxTime}, \
+    {"GetRetScoreForGoldCoin", LuaGetRetScoreForGoldCoin}, \
+    {"GetRideState", LuaGetRideState}, \
+    {"GetSaleMoney", LuaGetSaleMoney}, \
+    {"GetServerDate", LuaGetServerDate}, \
+    {"GetServiceMatchID", LuaGetServiceMatchID}, \
+    {"GetSignCodeSyncTime", LuaGetSignCodeSyncTime}, \
+    {"GetStallTotal", LuaGetStallTotal}, \
+    {"GetStallTotalTax", LuaGetStallTotalTax}, \
+    {"GetSwitch", LuaGetSwitch}, \
+    {"GetTaxCollected", LuaGetTaxCollected}, \
+    {"GetTicket", LuaGetTicket}, \
+    {"GetTireTime", LuaGetTireTime}, \
+    {"GetTiredDegree", LuaGetTiredDegree}, \
+    {"GetTmpValue", LuaGetTmpValue}, \
+    {"GetTotalOffer", LuaGetTotalOffer}, \
+    {"GetTradeTotal", LuaGetTradeTotal}, \
+    {"GetTripMode", LuaGetTripMode}, \
+    {"GetWeekGoalOffer", LuaGetWeekGoalOffer}, \
+    {"GetWeeklyOffer", LuaGetWeeklyOffer}, \
+    {"HaveBeginWar", LuaHaveBeginWar}, \
+    {"Horse", LuaHorse}, \
+    {"HostBeEnmity", LuaHostBeEnmity}, \
+    {"HostBloodLess", LuaHostBloodLess}, \
+    {"HostKillAnimal", LuaHostKillAnimal}, \
+    {"HostPkTooHigh", LuaHostPkTooHigh}, \
+    {"HostTradeInvite", LuaHostTradeInvite}, \
+    {"ITEM_GetLeftUsageTime", LuaITEM_GetLeftUsageTime}, \
+    {"ITEM_SetLeftUsageTime", LuaITEM_SetLeftUsageTime}, \
+    {"IsArenaBegin", LuaIsArenaBegin}, \
+    {"IsBiaoCheAlive", LuaIsBiaoCheAlive}, \
+    {"IsDisabledChatCity", LuaIsDisabledChatCity}, \
+    {"IsDisabledChatWorld", LuaIsDisabledChatWorld}, \
+    {"IsDisabledStall", LuaIsDisabledStall}, \
+    {"IsDisabledTeam", LuaIsDisabledTeam}, \
+    {"IsDisabledUseHeart", LuaIsDisabledUseHeart}, \
+    {"IsOpeningModule", LuaIsOpeningModule}, \
+    {"IsOwnFeatureChanged", LuaIsOwnFeatureChanged}, \
+    {"IsSeriesAccrue", LuaIsSeriesAccrue}, \
+    {"IsSeriesConquer", LuaIsSeriesConquer}, \
+    {"IsSigningUp", LuaIsSigningUp}, \
+    {"IsSpectator", LuaIsSpectator}, \
+    {"LGM_ApplyAddMember", LuaLGM_ApplyAddMember}, \
+    {"LGM_ApplyRemoveMember", LuaLGM_ApplyRemoveMember}, \
+    {"LGM_CreateMemberObj", LuaLGM_CreateMemberObj}, \
+    {"LGM_FreeMemberObj", LuaLGM_FreeMemberObj}, \
+    {"LGM_SetMemberInfo", LuaLGM_SetMemberInfo}, \
+    {"Ladder_ClearLadder", LuaLadder_ClearLadder}, \
+    {"Ladder_NewLadder", LuaLadder_NewLadder}, \
+    {"LeaveChannel", LuaLeaveChannel}, \
+    {"LeftFillString", LuaLeftFillString}, \
+    {"LeftTrimString", LuaLeftTrimString}, \
+    {"LoadScript", LuaLoadScript}, \
+    {"LoginDelaySync", LuaLoginDelaySync}, \
+    {"Lottery_CheckPrize", LuaLottery_CheckPrize}, \
+    {"Lottery_DrawCurrentIssue", LuaLottery_DrawCurrentIssue}, \
+    {"Lottery_GetDesc", LuaLottery_GetDesc}, \
+    {"Lottery_GetLatestPrizeInfo", LuaLottery_GetLatestPrizeInfo}, \
+    {"Lottery_StartNewIssue", LuaLottery_StartNewIssue}, \
+    {"Lottery_UpdateIssue", LuaLottery_UpdateIssue}, \
+    {"Lottery_WriteLog", LuaLottery_WriteLog}, \
+    {"MagicAttrib2Str", LuaMagicAttrib2Str}, \
+    {"MakeDateTime", LuaMakeDateTime}, \
+    {"Mantle", LuaMantle}, \
+    {"MeleeWeapon", LuaMeleeWeapon}, \
+    {"Message", LuaMessage}, \
+    {"NPCINFO_GetName", LuaNPCINFO_GetName}, \
+    {"NoChoice", LuaNoChoice}, \
+    {"NotifyArenaResult", LuaNotifyArenaResult}, \
+    {"NotifyWarResult", LuaNotifyWarResult}, \
+    {"Number2Int", LuaNumber2Int}, \
+    {"Number2UInt", LuaNumber2UInt}, \
+    {"OB_Append", LuaOB_Append}, \
+    {"OB_Clear", LuaOB_Clear}, \
+    {"OB_Copy", LuaOB_Copy}, \
+    {"OB_Create", LuaOB_Create}, \
+    {"OB_IsEmpty", LuaOB_IsEmpty}, \
+    {"OB_PopByte", LuaOB_PopByte}, \
+    {"OB_PopDouble", LuaOB_PopDouble}, \
+    {"OB_PopInt", LuaOB_PopInt}, \
+    {"OB_PopString", LuaOB_PopString}, \
+    {"OB_PushByte", LuaOB_PushByte}, \
+    {"OB_PushDouble", LuaOB_PushDouble}, \
+    {"OB_PushInt", LuaOB_PushInt}, \
+    {"OB_PushString", LuaOB_PushString}, \
+    {"OB_Release", LuaOB_Release}, \
+    {"OB_LoadShareData", LuaOB_LoadShareData}, \
+    {"OB_SaveShareData", LuaOB_SaveShareData}, \
+    {"OB_DeleteShareData", LuaOB_DeleteShareData}, \
+    {"ObjName2Relace", LuaObjName2Relace}, \
+    {"OpenCardBack", LuaOpenCardBack}, \
+    {"OpenHelp", LuaOpenHelp}, \
+    {"OpenStores", LuaOpenStores}, \
+    {"OpenSubmitAuction", LuaOpenSubmitAuction}, \
+    {"OpenWatchGameInputDlg", LuaOpenWatchGameInputDlg}, \
+    {"PayCoin", LuaPayCoin}, \
+    {"PayRetScoreForGoldCoin", LuaPayRetScoreForGoldCoin}, \
+    {"PopString", LuaPopString}, \
+    {"Prise", LuaPrise}, \
+    {"PushString", LuaPushString}, \
+    {"QueryWiseMan", LuaQueryWiseMan}, \
+    {"QueryWiseManForSB", LuaQueryWiseManForSB}, \
+    {"RemoteExecute", LuaRemoteExecute}, \
+    {"Repair_Open", LuaRepair_Open}, \
+    {"ReplaceString", LuaReplaceString}, \
+    {"RestoreOwnFeature", LuaRestoreOwnFeature}, \
+    {"RevID2WXY", LuaRevID2WXY}, \
+    {"RightFillString", LuaRightFillString}, \
+    {"RightTrimString", LuaRightTrimString}, \
+    {"STAT_CleanGoodsSaleNum", LuaSTAT_CleanGoodsSaleNum}, \
+    {"STAT_GetGoodsName", LuaSTAT_GetGoodsName}, \
+    {"STAT_GetGoodsSaleNum", LuaSTAT_GetGoodsSaleNum}, \
+    {"ST_CheckLockState", LuaST_CheckLockState}, \
+    {"ST_CheckTextFilter", LuaST_CheckTextFilter}, \
+    {"ST_GetOffliveState", LuaST_GetOffliveState}, \
+    {"SaveMaskFeature", LuaSaveMaskFeature}, \
+    {"SaveNow", LuaSaveNow}, \
+    {"SaveQuickly", LuaSaveQuickly}, \
+    {"SaveSDB2Relay", LuaSaveSDB2Relay}, \
+    {"SendScriptData", LuaSendScriptData}, \
+    {"SendSpreaderCDKey", LuaSendSpreaderCDKey}, \
+    {"SetAutoHangFreeFlag", LuaSetAutoHangFreeFlag}, \
+    {"SetCumulateOffer", LuaSetCumulateOffer}, \
+    {"SetDeathReliveFlag", LuaSetDeathReliveFlag}, \
+    {"SetDebugOut", LuaSetDebugOut}, \
+    {"SetDelDupedAllInOne", LuaSetDelDupedAllInOne}, \
+    {"SetDelayCatchTime", LuaSetDelayCatchTime}, \
+    {"SetDisabledFuncFlag", LuaSetDisabledFuncFlag}, \
+    {"SetFusionIsSmelted", LuaSetFusionIsSmelted}, \
+    {"SetFusionMagicSeed", LuaSetFusionMagicSeed}, \
+    {"SetGlbValue", LuaSetGlbValue}, \
+    {"SetLucky", LuaSetLucky}, \
+    {"SetMangonelParam", LuaSetMangonelParam}, \
+    {"SetMaxDurability", LuaSetMaxDurability}, \
+    {"SetMissleStep", LuaSetMissleStep}, \
+    {"SetOnlineCommissionStatus", LuaSetOnlineCommissionStatus}, \
+    {"SetPkReduceState", LuaSetPkReduceState}, \
+    {"SetRandSeed", LuaSetRandSeed}, \
+    {"SetRelaxTime", LuaSetRelaxTime}, \
+    {"SetSiegeVoitureParam", LuaSetSiegeVoitureParam}, \
+    {"SetSignCodeSyncTime", LuaSetSignCodeSyncTime}, \
+    {"SetStatData", LuaSetStatData}, \
+    {"SetSwitch", LuaSetSwitch}, \
+    {"SetTireTime", LuaSetTireTime}, \
+    {"SetTmpValue", LuaSetTmpValue}, \
+    {"SetTotalOffer", LuaSetTotalOffer}, \
+    {"SetWeekGoalOffer", LuaSetWeekGoalOffer}, \
+    {"SetWeeklyOffer", LuaSetWeeklyOffer}, \
+    {"SetWorldName", LuaSetWorldName}, \
+    {"String2Id", LuaString2Id}, \
+    {"SyncBiaoCheDeathInfoToRelay", LuaSyncBiaoCheDeathInfoToRelay}, \
+    {"SyncCitySummary", LuaSyncCitySummary}, \
+    {"SyncWorkshopList", LuaSyncWorkshopList}, \
+    {"TM_GetRestTime", LuaTM_GetRestTime}, \
+    {"TRepair", LuaTRepair}, \
+    {"TW", LuaTW}, \
+    {"TWS_ApplyAdd", LuaTWS_ApplyAdd}, \
+    {"TWS_ApplyAddDayOutput", LuaTWS_ApplyAddDayOutput}, \
+    {"TWS_ApplyClose", LuaTWS_ApplyClose}, \
+    {"TWS_ApplyDegrade", LuaTWS_ApplyDegrade}, \
+    {"TWS_ApplyMaintain", LuaTWS_ApplyMaintain}, \
+    {"TWS_ApplyOpen", LuaTWS_ApplyOpen}, \
+    {"TWS_ApplyRemove", LuaTWS_ApplyRemove}, \
+    {"TWS_ApplySetDayOutput", LuaTWS_ApplySetDayOutput}, \
+    {"TWS_ApplyUpgrade", LuaTWS_ApplyUpgrade}, \
+    {"TWS_ApplyUse", LuaTWS_ApplyUse}, \
+    {"TWS_GetDayOutput", LuaTWS_GetDayOutput}, \
+    {"TWS_GetFirstWorkshop", LuaTWS_GetFirstWorkshop}, \
+    {"TWS_GetNextWorkshop", LuaTWS_GetNextWorkshop}, \
+    {"TWS_GetType", LuaTWS_GetType}, \
+    {"TWS_IsExist", LuaTWS_IsExist}, \
+    {"TWS_IsOpen", LuaTWS_IsOpen}, \
+    {"TableSDD_Close", LuaTableSDD_Close}, \
+    {"TableSDD_GetHeight", LuaTableSDD_GetHeight}, \
+    {"TableSDD_GetValue", LuaTableSDD_GetValue}, \
+    {"TableSDD_Open", LuaTableSDD_Open}, \
+    {"TableSDD_Search", LuaTableSDD_Search}, \
+    {"TableSDD_SetValue", LuaTableSDD_SetValue}, \
+    {"TestScript", LuaTestScript}, \
+    {"Time2Tm", LuaTime2Tm}, \
+    {"Tm2Time", LuaTm2Time}, \
+    {"TownPortalUseOut", LuaTownPortalUseOut}, \
+    {"TrimString", LuaTrimString}, \
+    {"UnMarry", LuaUnMarry}, \
+    {"UnSmeltIsBind", LuaUnSmeltIsBind}, \
+    {"UpdateSDBRecord", LuaUpdateSDBRecord}, \
+    {"UseSilver", LuaUseSilver}, \
+    {"WriteCompoundLog", LuaWriteCompoundLog}, \
+    {"WriteGoldLog", LuaWriteGoldLog}, \
+    {"WriteLog", LuaWriteLog}, \
+    {"WriteSaleLog", LuaWriteSaleLog}, \
+    {"WriteStatLog", LuaWriteStatLog}, \
+    {"WriteYunBiaoLog", LuaWriteYunBiaoLog}, \
+    {"cn", Luacn}, \
+    {"curpack", Luacurpack}, \
+    {"usepack", Luausepack}, \
+    {"mantle", Luamantle}, \
+    {"tw", Luatw}, \
+    {"unpack", Luaunpack}, \
+    {"zh", Luazh}
+
+#endif // SCRIPTFUNS_V9_REGISTRATION_H
+

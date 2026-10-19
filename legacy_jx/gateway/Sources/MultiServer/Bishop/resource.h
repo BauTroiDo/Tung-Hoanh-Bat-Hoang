@@ -1,0 +1,119 @@
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ generated include file.
+// Used by Bishop.rc
+//
+#define IDS_NAMEPSWD_ERROR              1
+#define IDS_NETWORK_ERROR               2
+#define IDS_APP_TITLE                   3
+#define IDI_LOCK                        150
+#define IDD_DLG_LOGIN                   151
+#define IDD_DLG_INTERCESSOR             153
+#define IDD_DLG_ROLESET                 156
+#define IDC_EDIT_USERNAME               1000
+#define IDC_EDIT_PASSWORD               1001
+#define IDC_EDIT_LOGONTO_IP             1002
+#define IDC_CHECK2                      1002
+#define IDC_CHECK_ACCSVR                1002
+#define IDC_EDIT_LOGONTO_PORT           1003
+#define IDC_EDIT_ACCSVRIP               1003
+#define IDC_EDIT_ACCSVRPORT             1004
+#define IDC_CHECK3                      1005
+#define IDC_CHECK_ROLESVR               1005
+#define IDC_CHECK4                      1006
+#define IDC_CHECK_PLAYER                1006
+#define IDC_CHECK5                      1007
+#define IDC_CHECK_GAMESVR               1007
+#define IDC_EDIT_ROLESVRIP              1008
+#define IDC_EDIT_CLIENT_PORT            1009
+#define IDC_EDIT_GAMESVR_PORT           1010
+#define IDC_EDIT_ROLESVRPORT            1011
+#define IDC_LIST_GAMESERVER_INFO        1012
+#define IDC_CHECK_REVIVE                1012
+#define IDC_EDIT_TWO_REVIVE             1013
+#define IDC_LIST_GAMESERVER             1014
+#define IDC_BTN_GAMESVRINFO             1015
+#define IDC_STATIC_GAMESERVER_CONTEXT   1016
+#define IDC_STATIC_TASK                 1017
+#define IDC_INDEX_SEND2GAMESERVER       1018
+#define IDC_RADIO2                      1019
+#define IDC_INDEX_SEND2GS_ISSEL         1019
+#define IDC_EDIT_ANNOUNCE_MSG           1020
+#define IDC_BTN_SEND_MSG                1021
+#define IDC_LIST_GAMESERVER2            1022
+#define IDC_RADIO_ANNOUNCE_OPTION       1023
+#define IDC_INDEX_GS2CLOSE              1024
+#define IDC_INDEX_WANINGGS2CLOSE        1025
+#define IDC_CHECK_REVIVE2               1027
+#define IDC_EDIT_BISHOPVER              1028
+#define IDC_BUTTON_SAVE                 1029
+#define IDC_LIST_FORBITACC              1030
+#define IDC_ACC_EDIT                    1031
+#define IDC_ACC_ADD_BTN                 1032
+#define IDC_ACC_DEL_BTN                 1033
+#define IDC_DAORUACC_BTN                1034
+#define IDC_SAVEACC_BTN                 1035
+#define IDC_CLEARACC_BTN                1036
+#define IDC_LIST_FORBITIP               1037
+#define IDC_IP_EDIT                     1038
+#define IDC_IP_ADD_BTN                  1039
+#define IDC_IP_DEL_BTN                  1040
+#define IDC_DAORUIP_BTN                 1041
+#define IDC_SAVEIP_BTN                  1042
+#define IDC_CLEARIP_BTN                 1043
+#define IDC_CHECK_FORBITALL             1044
+#define IDC_LIST_CLIENTIPINFO           1045
+#define IDC_LIST_FORBITOPEN_INFO        1046
+#define IDC_EDIT_FORBITOPENUM           1047
+#define IDC_CHECK_FORBITIP              1048
+#define IDC_CLIENTIP_ADD_BTN            1049
+#define IDC_CLIENTIP_DEL_BTN            1050
+#define IDC_FINDIP_BTN                  1051
+#define IDC_IP_FORBITOPEN_ADD_BTN       1052
+#define IDC_IP_FORBITOPEN_CLEAR_BTN     1053
+#define IDC_LIST_FORBITROLEINFO         1054
+#define IDC_LIST_HAVECONETIP            1055
+#define IDC_BUTTON_CHONG                1055
+#define IDC_BUTTON_CLEARHAVEIP          1056
+#define IDC_EDIT_SERVER                 1056
+#define IDC_BUTTON_DELHAVEIP            1057
+#define IDC_EDIT_ROLELEVEL              1057
+#define IDC_BUTTON_ADDHAVEIP            1058
+#define IDC_EDIT_ROLEMONEY              1058
+#define IDCANCEL_OUT                    1059
+#define IDC_EDIT_QUYU                   1060
+#define IDC_CHECK_SAVEPAI               1061
+#define IDC_CHECK_OPEN_YU               1062
+#define IDC_CHECK_OPEN_YUJIAN           1062
+#define IDC_CHECK_ROLESET               1063
+#define IDC_EDIT_ROLEXU                 1064
+#define IDC_LIST_YUJIAN                 1065
+#define IDC_ACC_EDIT_YUJIAN             1066
+#define IDC_ACC_ADD_BTN_YUJIAN          1067
+#define IDC_ACC_DEL_BTN_YUJIAN          1068
+#define IDC_BUTTON1                     1069
+#define IDC_EDIT_FU                     1070
+#define IDC_CHECK_OPEN_YUJIAN2          1071
+#define IDC_CHECK_OPEN_ALLSERVER        1071
+#define IDC_BUTTON_PAY                  1072
+#define ID_START                        1073
+#define IDC_LIST_VIP                    1074
+#define IDC_ACC_DEL_BTN_VIP             1075
+#define IDC_ACC_EDIT_VIP                1076
+#define IDC_ACC_ADD_BTN_VIP             1077
+#define IDC_DAORUACC_VIP                1078
+#define IDC_SAVEACC_VIP                 1079
+#define IDC_CLEARACC_VIP                1080
+#define IDC_CHECK_OPEN_ALLSERVER2       1081
+#define IDC_CHECK_OPEN_ALL_VIP          1081
+
+// Next default values for new objects
+// 
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NO_MFC                     1
+#define _APS_NEXT_RESOURCE_VALUE        157
+#define _APS_NEXT_COMMAND_VALUE         32772
+#define _APS_NEXT_CONTROL_VALUE         1074
+#define _APS_NEXT_SYMED_VALUE           101
+#endif
+#endif

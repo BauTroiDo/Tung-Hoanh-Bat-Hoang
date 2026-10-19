@@ -1,0 +1,10 @@
+Stage,WorkingSet_GB,WorkingSet_MB,PrivateBytes_GB,PrivateBytes_MB,MapsLoaded,NpcCount,SvrFPS,Notes
+Pre-Audit Initial (Dirty Heap),10.91,11171.8,11.82,12103.6,770,74290,18/18,"1.4M heap allocs in KRegion, uninitialized m_Obstacle"
+PR0-Fix1 (Eliminate KRegion heap),9.66,9895.4,10.70,10956.8,770,74290,18/18,"Eliminated new int[512] NPC/Obj ref, added obstacle zero-init"
+PR0-Fix2 (On-Demand KTrapGrid),9.06,9276.1,9.86,10094.1,770,74290,18/18,Replaced static 2048-byte m_dwTrap with on-demand KTrapGrid*
+PR1-SpawnSplit (Static/Runtime Split),9.08,9297.9,9.88,10117.1,770,74290,18/18,"Stable 64-bit spawn ID, 100% parity verification"
+PR2-LazyMapLoad (Two-Tier Lazy Map Loading),7.75,7938.7,8.55,8756.2,770,18313,18/18,"Town-pinned, 753 maps on-demand lazy load, -3.27 GB Private RAM saved"
+PR3-NpcActivation (Region Dynamic Streaming),7.75,7939.5,8.55,8758.2,770,18313,18/18,"On-demand 1-ring region NPC activation, dormant state persistence, exception matrix pinned"
+PR4-SafeUnload (Safe Map Unload & Idle TTL),7.75,7938.3,8.55,8755.8,770,18313,18/18,"Idle TTL (300s), safe unload validation, no dangling pointers, single-flight reload on-demand"
+PR5-PerfBudget (Load Budget & QPC Telemetry),7.75,7938.4,8.55,8755.7,17,18313,18/18,"MaxConcurrentLoads=2, MaxLoadedMaps=64, eliminated 2400 string ops per load"
+PR5-PoolTuning (Static Pool Optimization),3.85,3943.9,4.56,4670.9,17,18313,18/18,"MaxNpcCount=90000 MaxItemCount=100000; achieved < 5 GB target (-61.4% Private RAM)"

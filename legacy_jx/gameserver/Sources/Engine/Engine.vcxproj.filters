@@ -1,0 +1,577 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source files">
+      <UniqueIdentifier>{9fdc7ede-653a-41c6-b3c9-4021b6f0e53f}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="header files">
+      <UniqueIdentifier>{5aa967c1-b189-4d4c-88a8-5906e6423ab2}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="library files">
+      <UniqueIdentifier>{0891db24-a63d-4719-a855-e063e98daffc}</UniqueIdentifier>
+      <Extensions>h,lib</Extensions>
+    </Filter>
+    <Filter Include="library files\Debug">
+      <UniqueIdentifier>{fc142734-84e4-4182-a834-be3e406cab54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library files\release">
+      <UniqueIdentifier>{b07c578c-6cb9-4d5b-b914-e2320e14731f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="译码与解码">
+      <UniqueIdentifier>{0f87e370-0d4f-4522-b647-865ea1f532b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="文字处理">
+      <UniqueIdentifier>{b6c46e34-b2e6-40a0-a761-9a08332c1a3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ucl">
+      <UniqueIdentifier>{e1490f94-364b-4f8c-a192-42407b749dcd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\KAutoMutex.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KCache.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KCodec.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KCodecLzo.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KDebug.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KDError.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KEngine.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KEvent.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KFile.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KFileCopy.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KFileDialog.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KFilePath.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KFindBinTree.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KHashList.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KHashNode.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KHashTable.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KIniFile.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KLinkArray.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KList.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KLuaScript.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KLuaScriptSet.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KLubCmpl_Blocker.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KMemBase.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KMemClass.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KMemClass1.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KMemManager.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KMemStack.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KMessage.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KMsgNode.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KMutex.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KNode.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KOctreeNode.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KPakData.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KPakFile.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KPakList.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KPakTool.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KRandom.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KSafeList.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KScanDir.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KScript.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KScriptCache.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KScriptList.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KScriptSet.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KSG_MD5_String.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KSG_StringProcess.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KSortBinTree.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KSortList.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KStepLuaScript.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KStrBase.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KStrList.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KStrNode.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KTabFile.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KTabFileCtrl.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KThread.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KTimer.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KWin32.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KZipCodec.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KZipData.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KZipFile.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KZipList.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\md5.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PassChecksum.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\stdafx.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\XPackFile.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Cryptography\EDOneTimePad.cpp">
+      <Filter>译码与解码</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Text.cpp">
+      <Filter>文字处理</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\alloc.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\io.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2b_99.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2b_d.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2b_ds.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2b_to.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2d_99.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2d_d.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2d_ds.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2d_to.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2e_99.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2e_d.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2e_ds.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\n2e_to.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\ucl_crc.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\ucl_dll.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\ucl_init.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\ucl_ptr.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\ucl_str.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ucl\ucl_util.c">
+      <Filter>ucl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KWin32App.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KWin32Wnd.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KPolygon.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\KLogFile.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\KAutoMutex.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KBinsTree.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KBinTreeNode.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KCache.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KCodec.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KCodecLzo.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KCriticalSection.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KDebug.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KDError.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KEngine.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KEvent.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KFile.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KFileCopy.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KFileDialog.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KFilePath.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KFindBinTree.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KHashList.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KHashNode.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KHashTable.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KIniFile.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KLinkArray.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KList.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KLuaScript.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KLuaScriptSet.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KLubCmpl_Blocker.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMemBase.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMemClass.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMemClass1.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Tools\Sources\LubCompile\KMemClass1.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMemManager.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMemStack.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMessage.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMouse.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMsgNode.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KMutex.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KNode.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KOctreeNode.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KPakData.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KPakFile.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KPakList.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KPakTool.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KRandom.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KSafeList.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KScanDir.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KScript.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KScriptCache.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KScriptList.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KScriptSet.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KSG_MD5_String.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KSG_StringProcess.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KSortBinTree.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KSortList.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KStepLuaScript.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KStrBase.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KStrList.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KStrNode.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KTabFile.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KTabFileCtrl.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KThread.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KTimer.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KWin32.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KZipCodec.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KZipData.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KZipFile.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KZipList.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\LinkStruct.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\md5.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\PassChecksum.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\XPackFile.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Cryptography\EDOneTimePad.h">
+      <Filter>译码与解码</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Text.h">
+      <Filter>文字处理</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ucl\fake16.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ucl\getbit.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ucl\internal.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ucl\ucl.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ucl\ucl_conf.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ucl\ucl_ptr.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ucl\ucl_util.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ucl\uclconf.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ucl\uclutil.h">
+      <Filter>ucl</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KWin32App.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KWin32Wnd.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KPolygon.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\iconv.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KLogFile.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="testsrc.asm">
+      <Filter>source files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\Lib\lualibdll.lib">
+      <Filter>library files\release</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

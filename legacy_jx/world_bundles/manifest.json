@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleName": "JX1_3D_Canonical_World_Bundle",
+  "verticalSliceMapId": 53,
+  "totalFiles": 5,
+  "checksums": {
+    "maps/53/map.meta.json": "287da9132fd7e9d594fff3d9b3fff9fc6e1334335eee99515a4aefc17644a28c",
+    "maps/53/regions.index": "fba640dc9f3f04ea60a5774c6df5f1532c1a3464173d111fea1bccdad97cfc68",
+    "maps/53/spawns.json": "2434828f6b7a23d42133e53571adb9358d4579da04c6bd98d3436058219fffb9",
+    "maps/53/collision.json": "122dd08af52a6d128f79eccdef363d777e5c0897de9ae2d17c59a9c75eebf155",
+    "maps/53/navmesh.json": "1a7df4ae578e67c840b91a1868f80969889315b9f706dd3b7ec00a577b41c79f"
+  }
+}
