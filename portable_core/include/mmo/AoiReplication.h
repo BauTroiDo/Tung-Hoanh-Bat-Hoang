@@ -14,7 +14,8 @@ namespace mmo { namespace portable {
 
 enum class ReplicationStatus {
     Prepared, NoChanges, InFlight, Invalid, WrongThread, Unbound,
-    PlannerRejected, NotPending, WrongSequence, SequenceExhausted
+    PlannerRejected, NotPending, WrongSequence, SequenceExhausted,
+    WrongViewer, WrongConnection, WrongEpoch
 };
 
 struct ReplicationBatch {
@@ -38,6 +39,7 @@ public:
     AoiReplicationSession& operator=(const AoiReplicationSession&) = delete;
 
     bool bindOwnerToCurrentThread() noexcept;
+    ReplicationStatus accessStatus() const noexcept { return ownerStatus(); }
     const EntityKey& viewer() const noexcept { return viewer_; }
     bool hasInFlight() const noexcept { return static_cast<bool>(staged_); }
     std::size_t committedVisibleCount() const noexcept;
