@@ -19,6 +19,23 @@ Provides an original C++17 library with:
 - Per-producer/world-owner boundaries are explicit: call `bindOwnerToCurrentThread()` and perform upsert, erase and plan on the bound world thread; never use it as a concurrently mutable registry.
 - **Important integration limitations:** AOI is not yet attached to JX `KRegion`/`KSubWorld` or network packets; no reliable delivery/ack/resync strategy, view ownership binding to authenticated sessions, line of sight, 3D height filter, entity history eviction, full world pressure limits or production metrics. Server-authoritative coordinates and scene epochs must be supplied by integration. Planner updating observer-known state must be coordinated with successful network send, or a replay/resync mechanism is necessary.
 
+### AOI Session Bridge — authenticated-context adapter (CORE-07 / CORE-35 test harness)
+
+- `AoiSessionBridge` is a **portable integration contract**, not JX GameServer integration. It wraps the stop-and-wait replicator and requires a valid viewer key plus monotonic, server-controlled `connectionGeneration` and `sceneEpoch`.
+- An ACK must be supplied by the **authenticated server transport context** with matching viewer, connection generation, scene epoch and in-flight sequence. Wrong identifiers are rejected before commit; a change of scene/connection invalidates staged and committed state, forcing a new Reset snapshot.
+- Identity fields are **not security credentials**. Never trust a client-supplied connection generation, session binding, viewer key or scene epoch. Authenticate the socket/transport and resolve the authoritative session on the world owner thread before calling `acknowledge`.
+- `advanceScene`/`advanceConnection` only accept increasing nonzero generations. Teleporting to another world/instance or reusing a viewer runtime ID requires a **new bridge** with a new immutable `EntityKey`. Do not reuse connections after generation wrap.
+- Event budgeting remains with `SpatialAoi`/`AoiReplicationSession`; **no byte-accurate packet-size limits, global connection admission, authenticated wire ACK, retry policy, or live JX transport integration yet**. Production enabling requires those plus replay/DoS review, metrics and feature-flag rollback.
+- Dedicated `aoi_session_bridge_tests` covers wrong viewer/connection/scene/sequence, stale ACK after transitions, resend/reset behavior and foreign-thread rejection. Test in MSVC, Windows GCC and Linux before integration.
+
+### AOI Replication / Scene Synchronization (CORE-07 / CORE-35 prototype)
+
+- `AoiReplicationSession` wraps `SpatialAoi` with **prepare -> retry/acknowledge -> commit**. A prepared delta does NOT advance committed client-known entities until trusted delivery confirmation.
+- At most one in-flight batch per viewer (stop-and-wait); retries reuse the exact sequence and events to support deduplication. `invalidateForResync()` discards uncertain state so the next prepare creates a full Reset+Create snapshot.
+- Uses monotonic nanoseconds for timeout detection, validates scene epoch and sequence numbers, rejects wrong-owner thread calls and delegates per-client event budgeting to the AOI planner.
+- **Important:** `acknowledge(seq)` is NOT an authenticated network protocol. Only call after verified transport/client acknowledgement bound to the authenticated session. A successful TCP send()/queue operation alone is NOT proof that the client applied the packet. On uncertain delivery, disconnect, teleport or sequence mismatch, resync is required.
+- **Not yet production-ready:** reliable wire encoding/ack/dedup, explicit retry policy, bounded per-client memory/backpressure, global admission limit, client capability negotiation, anti-replay and session-lifetime binding, E2E JX packet compatibility.
+
 The code is self-contained and not linked into the existing JX server.
 Out-of-tree CMake build required; do not place build output in legacy JX bin/lib/Release directories.
 
