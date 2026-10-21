@@ -8,7 +8,9 @@
 //---------------------------------------------------------------------------
 #ifndef KWin32_H
 #define KWin32_H 
+#ifdef _MSC_VER
 #pragma warning(disable:4996)  //ÆÁ±ÎÄ³Àà¾¯¸æ
+#endif
 
 #define __RPC__out_xcount_part(size, length)
 
@@ -51,6 +53,8 @@ typedef unsigned long POINTER_64_INT;
 #ifdef _STANDALONE
 	#define ENGINE_API
 	#define _ASSERT(x)
+#elif defined(__linux__) || defined(__linux)
+	#define ENGINE_API __attribute__((visibility("default")))
 #else
 	#ifdef ENGINE_EXPORTS
 		#define ENGINE_API __declspec(dllexport)
@@ -76,7 +80,8 @@ typedef unsigned long POINTER_64_INT;
         #include <dinput.h>
         #include <ddraw.h>
 #else
-        #define LONG long
+        #include <stdint.h>
+        typedef int32_t LONG;
 		#define INT int
 		#define LPINT int *
         #define HWND unsigned long
@@ -85,7 +90,7 @@ typedef unsigned long POINTER_64_INT;
         #define LPTSTR char *
         #define LPCSTR const char *
 		#define LPCTSTR const char *
-        #define DWORD unsigned long
+        typedef uint32_t DWORD;
         #define LPVOID void *
         #define PVOID void *
         #define BOOL int
@@ -96,7 +101,7 @@ typedef unsigned long POINTER_64_INT;
 	#define UINT unsigned int
 	#define PBYTE unsigned char *
 	#define LPBYTE unsigned char *
-        #define LONG long
+        /* LONG is the fixed-width signed 32-bit typedef above. */
 #define IN
 #define OUT
 typedef struct tagRECT
@@ -148,7 +153,7 @@ typedef struct _GUID {          // size is 16
 
 #include <unistd.h>
 #define __stdcall
-#define LPDWORD unsigned long *
+typedef DWORD* LPDWORD;
 #define SOCKET_ERROR -1
 #endif
 //---------------------------------------------------------------------------
@@ -168,7 +173,7 @@ typedef struct _GUID {          // size is 16
 #endif
 
 #ifndef KSG_ATTENTION
-#define KSG_ATTENTION(MSG) __FILE__"("__TEXT_LINE__(__LINE__)") : ATTENTION "#MSG
+#define KSG_ATTENTION(MSG) __FILE__ "(" __TEXT_LINE__(__LINE__) ") : ATTENTION " #MSG
 #endif
 
 
