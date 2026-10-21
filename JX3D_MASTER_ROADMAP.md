@@ -86,6 +86,8 @@
 | PR #14 | AOI budget/pool + WorldServer adapter mặc định OFF; 10/10 CTest | CoreServer/gameplay nối runtime |
 | PR #15 | Hai session Auth → World → AOI trong harness; 11/11 CTest | Hai client thật / codec mạng |
 | PR #16 | C ABI owner-tick CoreServer, Win64 `ClCompile` PASS, Windows/Linux/san test 1/1 | Entity snapshot, CoreServer DLL link mới, DEV rollout |
+| PR #18 | GAME-02.1 lập bảng nguồn `KPlayer/KNpc/SubWorld`, ID/slot, tọa độ 2D và checkpoint owner-tick | Chưa chứng minh toàn bộ writer/IOCP và lifetime scene/instance |
+| PR #19/#20 | AOI adapter có `erase` owner-only, từ chối generation cũ, giải phóng active quota sau despawn; Windows LLVM-MinGW full build + 11/11 CTest PASS | Chưa nối entity snapshot gameplay thật, thiếu sanitizer Ubuntu và build/link CoreServer toàn phần |
 | Bishop `Bishop_20261022.exe` | DEV `56722/56732` LISTEN và GS/S3Relay/AccountServer/RoleServer đã kết nối | Client JX1 3D mới sử dụng Bishop — **không đặt mục tiêu này** |
 | Linux PR #5/#7 | Engine ABI / KNode/KList / Timer native slices có test | Native Linux GameServer ELF / E2E |
 
@@ -117,6 +119,6 @@ Chỉ sửa **ba dòng** trong bảng điều hành này khi có bằng chứng:
 
 - **ACTIVE:** `M1 / GAME-02`
 - **NEXT:** `M2 / NET-01` **sau khi M1 PASS**
-- **LAST VERIFIED BASELINE:** `main@4487b360085d7d4224a510e56769e29b331a9e9e` (PR #16), 2026-10-22.
+- **LAST VERIFIED BASELINE:** `main@35356889d4dd6c41c7e050be94c12a87eb408c6c` (PR #18–#20; audit + AOI erase/quota component-only, chưa đạt Gate M1), 2026-10-22.
 
 Khi merge các PR tiếp theo, cập nhật commit nền và checklist gate tương ứng trong chính file này, không tạo file lộ trình thứ hai.
