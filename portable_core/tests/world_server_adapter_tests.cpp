@@ -144,7 +144,7 @@ int main() {
         ==AoiDeliveryStatus::Accepted); // aggregate pending bytes also released
     // GAME-02: despawn is owner-only, produces AOI Remove and does not
     // resurrect a stale NPC generation after the legacy slot is recycled.
-    WorldServerIntegrationAdapter lifecycle({4,2,1,3},{1,8,8,1,1},true);
+    WorldServerIntegrationAdapter lifecycle({4,2,1,1},{1,8,8,1,1},true);
     const EntityKey npcKey{301,1,1,1};
     CHECK(lifecycle.erase(npcKey)==AoiStatus::Unbound);
     CHECK(lifecycle.bindOwnerToCurrentThread());
@@ -152,6 +152,8 @@ int main() {
     TrustedWorldContext lc{9,{900,1,1,1},1,1};
     CHECK(lifecycle.attach(lc,{8,3,50},8));
     CHECK(lifecycle.upsert({npcKey,2,2,1,true})==AoiStatus::Ok);
+    // Active quota is full; replacement requires a matching authoritative despawn.
+    CHECK(lifecycle.upsert({{301,2,1,1},3,3,2,true})==AoiStatus::Invalid);
     auto first=lifecycle.prepare(lc,0,0,20,1);
     CHECK(first.replication.status==ReplicationStatus::Prepared);
     bool created=false;
