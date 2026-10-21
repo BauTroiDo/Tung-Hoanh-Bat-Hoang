@@ -29,6 +29,7 @@
 
 #include <map>
 #include <list>
+#include <string>
 
 /*
  * class CGameServer
@@ -45,6 +46,7 @@ public:
 		IClient	*pClient;
 		
 		HWND	hwndContainer;
+		std::string trustedGameServerIPs;
 		
 	}NI, NEAR *PNI, FAR *LPNI;
 	
