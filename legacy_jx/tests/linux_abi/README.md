@@ -35,3 +35,39 @@ Linux compilation, `gs001` ELF binary, runtime login, NPC/map gameplay,
 or authentic JX V9 wire verification. The original `KNode.h` still produces
 legacy pragma/no-op assert warnings. Linux port should proceed module by
 module, avoiding unsupported WinAPI stub headers.
+
+## 2026-10-21 follow-up: native KTimer (3/3 tests)
+
+The original `KTimer.cpp` failed Linux compilation because it included
+`Winbase.h` unconditionally, used a Windows-only `gettimeofday` shim,
+referenced non-existent Linux `m_nFrequency`, and returned zero for
+`GetInterval()`. Wall-clock `gettimeofday` can jump if the clock is
+adjusted, corrupting gameplay duration calculations.
+
+The Linux-only implementation now uses `clock_gettime(CLOCK_MONOTONIC)`
+and `timespec`, preserving existing Windows `QueryPerformanceCounter`
+behavior within `WIN32` branches. `GetElapse()` and `GetInterval()`
+return milliseconds; Linux `GetElapseFrequency()` returns elapsed
+high-resolution **nanoseconds**, not a frequency value in hertz. Existing
+Windows returns raw QPC counts. API consumers must not assume both
+platforms use the same QPC tick frequency. The Linux timer initializes
+to zero, resets its frozen Stop value at Start, and rejects a null FPS
+output pointer.
+
+The new `jx_engine_timer_monotonic` regression compiles the ACTUAL
+legacy `KTimer.cpp` and verifies Start/Stop/interval, monotonic elapsed
+milliseconds, high-resolution ticks, Passed threshold and reset, plus
+GetFPS before/after 1000 ms. This is a Linux source-slice acceptance
+test, **not** certification of a Linux GameServer binary or multiplayer
+runtime. Test uses real sleeping and coarse timing bands to limit jitter.
+
+```bash
+cmake -S legacy_jx/tests/linux_abi -B /tmp/jx-engine-linux -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build /tmp/jx-engine-linux
+ctest --test-dir /tmp/jx-engine-linux --output-on-failure
+```
+
+On Ubuntu x86_64 GCC 15.2 the expanded suite passed **3/3 ordinary**
+and **3/3 with ASan+UBSan**. The timer C++ source itself compiles with
+`-Wall -Wextra -Wpedantic -Werror`. Existing legacy `KNode.h`
+compiler warnings remain in the separate node/list tests.

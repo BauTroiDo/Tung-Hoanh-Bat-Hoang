@@ -82,6 +82,7 @@ typedef unsigned long POINTER_64_INT;
 #else
         #include <stdint.h>
         typedef int32_t LONG;
+        typedef int64_t LONGLONG;
 		#define INT int
 		#define LPINT int *
         #define HWND unsigned long
