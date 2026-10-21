@@ -8,22 +8,24 @@
 //---------------------------------------------------------------------------
 #include "KWin32.h"
 
+#ifdef WIN32
 #include <Winbase.h>
-
 #include "KDebug.h"
 #include "KMemBase.h"
+#endif
 #include "KTimer.h"
 #include <time.h>
 // flying add this macro.
 // must pay more attention in the platform porting job.
 #ifdef __linux
-#include <sys/time.h>
+#include <stdint.h>
 #endif
 
 //#include <time.h>
 // 从1601年1月1日0:0:0:000到1970年1月1日0:0:0:000的时间(单位100ns)
 #define EPOCHFILETIME (116444736000000000UL)
 
+#ifdef WIN32
 int gettimeofday(struct timeval * val, struct timezone *)
 {
 	if (val)
@@ -36,7 +38,20 @@ int gettimeofday(struct timeval * val, struct timezone *)
 	}
 	return 0;
 }
+#endif  // WIN32
 
+#ifdef __linux
+// A monotonic clock avoids wall-clock changes changing gameplay deadlines.
+static LONGLONG TimerNanoseconds(const timespec& from, const timespec& to)
+{
+    if ((from.tv_sec == 0 && from.tv_nsec == 0) ||
+        (to.tv_sec == 0 && to.tv_nsec == 0))
+        return 0;
+    const LONGLONG seconds = static_cast<LONGLONG>(to.tv_sec) - from.tv_sec;
+    const LONGLONG nanos = seconds * 1000000000LL + to.tv_nsec - from.tv_nsec;
+    return nanos > 0 ? nanos : 0;
+}
+#endif
 
 KTimer::KTimer()
 {
@@ -61,7 +76,10 @@ KTimer::KTimer()
 		_useKind=TIME_USE_TICK;
 	}
 #else
-    m_nFrequency = CLOCKS_PER_SEC; //以下原来没有的
+    m_nTimeStart = timespec{0, 0};
+    m_nTimeStop = timespec{0, 0};
+    m_nFPS = 0;
+    _useKind = TIME_USE_QUERY;
 #endif
 }
 //---------------------------------------------------------------------------
@@ -84,8 +102,9 @@ void KTimer::Start()
 	}
 	//gettimeofday(&m_nTimeStart, NULL);
 #else
-    gettimeofday(&m_nTimeStart, NULL); //原来
-//	QueryPerformanceCounter(&m_nTimeStart);
+    if (clock_gettime(CLOCK_MONOTONIC, &m_nTimeStart) != 0)
+        m_nTimeStart = timespec{0, 0};
+    m_nTimeStop = timespec{0, 0};
 #endif
 }
 //---------------------------------------------------------------------------
@@ -109,8 +128,8 @@ void KTimer::Stop()
 	}
 	//gettimeofday(&m_nTimeStop, NULL);
 #else
-	gettimeofday(&m_nTimeStop, NULL); //原来
-//	QueryPerformanceCounter(&m_nTimeStop);
+    if (clock_gettime(CLOCK_MONOTONIC, &m_nTimeStop) != 0)
+        m_nTimeStop = timespec{0, 0};
 #endif
 }
 //---------------------------------------------------------------------------
@@ -141,9 +160,10 @@ LONGLONG KTimer::GetElapse()
 	//gettimeofday(&nTime, NULL);
 	// return (nTime.tv_sec - m_nTimeStart.tv_sec) * 1000 + nTime.tv_usec / 1000;  //毫秒
 #else
-	timeval tv;
-	gettimeofday(&tv, NULL); //原来
-    return (tv.tv_sec - m_nTimeStart.tv_sec) * 1000 + tv.tv_usec / 1000;  //毫秒
+    timespec now{};
+    if (clock_gettime(CLOCK_MONOTONIC, &now) != 0)
+        return 0;
+    return TimerNanoseconds(m_nTimeStart, now) / 1000000LL;
 #endif
 }
 //---------------------------------------------------------------------------
@@ -174,8 +194,12 @@ LONGLONG  KTimer::GetElapseFrequency()
 	//timeval tv;
 	//gettimeofday(&tv, NULL); //原来
 	//return (tv.tv_sec - m_nTimeStart.tv_sec) * 1000 + tv.tv_usec / 1000;  //毫秒
+#else
+    timespec now{};
+    if (clock_gettime(CLOCK_MONOTONIC, &now) != 0)
+        return 0;
+    return TimerNanoseconds(m_nTimeStart, now);
 #endif
-	return 0;
 }
 //---------------------------------------------------------------------------
 // 函数:	GetInterval
@@ -189,8 +213,11 @@ LONGLONG KTimer::GetInterval()
 	//return (DWORD)((m_nTimeStop.QuadPart - m_nTimeStart.QuadPart) * 1000 / m_nFrequency.QuadPart); //毫秒为单位
     return 0;//(m_nTimeStop.QuadPart - m_nTimeStart.QuadPart);
 #endif
-  // return (DWORD)((m_nTimeStop.QuadPart - m_nTimeStart.QuadPart) * 1000 / m_nFrequency.QuadPart);
-	return 0; //原来
+#ifdef __linux
+    return TimerNanoseconds(m_nTimeStart, m_nTimeStop) / 1000000LL;
+#else
+    return 0;
+#endif
 }
 //---------------------------------------------------------------------------
 // 函数:	Passed
@@ -218,7 +245,15 @@ BOOL KTimer::Passed(int nTime)
 //---------------------------------------------------------------------------
 BOOL KTimer::GetFPS(int *nFPS)
 {
-	if (GetElapse() >= 1000UL) 
+#ifndef WIN32
+    if (nFPS == NULL)
+        return FALSE;
+#endif
+#ifdef WIN32
+	if (GetElapse() >= 1000UL)
+#else
+	if (GetElapse() >= 1000LL)
+#endif
 	{
 		*nFPS = m_nFPS;
 		m_nFPS = 0;

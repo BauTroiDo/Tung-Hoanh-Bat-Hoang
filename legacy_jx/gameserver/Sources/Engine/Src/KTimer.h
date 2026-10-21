@@ -8,6 +8,10 @@
 //---------------------------------------------------------------------------
 #ifndef KTimer_H
 #define KTimer_H
+
+#ifndef WIN32
+#include <time.h>
+#endif
 //---------------------------------------------------------------------------
 
 enum TIME_USE_MODEL
@@ -31,8 +35,8 @@ private:
 	//timeval m_nTimeStart;
 	//timeval m_nTimeStop;
 #else
-	timeval m_nTimeStart;
-	timeval m_nTimeStop;
+	timespec m_nTimeStart;
+	timespec m_nTimeStop;
 #endif
 	int				m_nFPS;
 	int            _useKind;
