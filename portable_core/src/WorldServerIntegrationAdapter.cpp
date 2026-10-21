@@ -74,6 +74,13 @@ AoiStatus WorldServerIntegrationAdapter::upsert(const AoiEntity& entity) {
     if (result != AoiStatus::Ok && inserted.second) entityIdentities_.erase(inserted.first);
     return result;
 }
+AoiStatus WorldServerIntegrationAdapter::erase(const EntityKey& key) {
+    if (!owner()) return bound_ ? AoiStatus::WrongThread : AoiStatus::Unbound;
+    if (!enabled_) return AoiStatus::Invalid;
+    // Do not release the bounded identity slot: it is a tombstone that prevents
+    // old generations from being accepted after an entity disappears.
+    return world_.erase(key);
+}
 AoiPoolPrepare WorldServerIntegrationAdapter::prepare(const TrustedWorldContext& c,
     std::int32_t x, std::int32_t y, std::uint32_t radius, std::uint64_t now) {
     auto* s = find(c); if (!s) return {};

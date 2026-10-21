@@ -142,5 +142,44 @@ int main() {
     CHECK(last.replication.status==ReplicationStatus::Prepared);
     CHECK(shutting.admit(replacement,last.replication.batch.sequence,{4,3,2,1},2).delivery
         ==AoiDeliveryStatus::Accepted); // aggregate pending bytes also released
+    // GAME-02: despawn is owner-only, produces AOI Remove and does not
+    // resurrect a stale NPC generation after the legacy slot is recycled.
+    WorldServerIntegrationAdapter lifecycle({4,2,1,3},{1,8,8,1,1},true);
+    const EntityKey npcKey{301,1,1,1};
+    CHECK(lifecycle.erase(npcKey)==AoiStatus::Unbound);
+    CHECK(lifecycle.bindOwnerToCurrentThread());
+    CHECK(lifecycle.erase(npcKey)==AoiStatus::NotFound);
+    TrustedWorldContext lc{9,{900,1,1,1},1,1};
+    CHECK(lifecycle.attach(lc,{8,3,50},8));
+    CHECK(lifecycle.upsert({npcKey,2,2,1,true})==AoiStatus::Ok);
+    auto first=lifecycle.prepare(lc,0,0,20,1);
+    CHECK(first.replication.status==ReplicationStatus::Prepared);
+    bool created=false;
+    for (const auto& event : first.replication.batch.events)
+        if (event.kind==AoiDelta::Kind::Create && event.key==npcKey) created=true;
+    CHECK(created);
+    const auto firstSeq=first.replication.batch.sequence;
+    CHECK(lifecycle.admit(lc,firstSeq,{1,2},2).delivery==AoiDeliveryStatus::Accepted);
+    CHECK(lifecycle.beginTick(1)==AoiPoolStatus::Ok);
+    CHECK(lifecycle.nextSend(2).sequence==firstSeq);
+    CHECK(lifecycle.postAck(lc,firstSeq)==WorldCommandQueue::PostStatus::Accepted);
+    CHECK(lifecycle.drain().failed==0);
+    bool wrongErase=false;
+    std::thread eraseWorker([&] { wrongErase=lifecycle.erase(npcKey)==AoiStatus::WrongThread; });
+    eraseWorker.join(); CHECK(wrongErase);
+    CHECK(lifecycle.erase(npcKey)==AoiStatus::Ok);
+    CHECK(lifecycle.erase(npcKey)==AoiStatus::NotFound);
+    auto gone=lifecycle.prepare(lc,0,0,20,3);
+    CHECK(gone.replication.status==ReplicationStatus::Prepared);
+    bool removed=false;
+    for (const auto& event : gone.replication.batch.events)
+        if (event.kind==AoiDelta::Kind::Remove && event.key==npcKey) removed=true;
+    CHECK(removed);
+    CHECK(lifecycle.upsert({npcKey,2,2,2,true})==AoiStatus::StaleGeneration);
+    const EntityKey recycled{301,2,1,1};
+    CHECK(lifecycle.upsert({recycled,3,3,3,true})==AoiStatus::Ok);
+    CHECK(lifecycle.erase(npcKey)==AoiStatus::NotFound);
+    CHECK(lifecycle.erase(recycled)==AoiStatus::Ok);
+    CHECK(off.erase(npcKey)==AoiStatus::Invalid);
     std::cout << "world adapter regressions passed\n";
 }
