@@ -71,6 +71,10 @@ bool CNetwork::Create()
 
 	m_nClientOpenPort  = theConfigFile.ReadInteger( "Network", "ClientOpenPort", 0 );
 	m_nGameSvrOpenPort = theConfigFile.ReadInteger( "Network", "GameSvrOpenPort", 0 );
+	char trustedGsIPs[512] = {0};
+	theConfigFile.ReadString("Network", "TrustedGameServerIPs", trustedGsIPs, sizeof(trustedGsIPs), "");
+	trustedGsIPs[sizeof(trustedGsIPs)-1] = 0;
+	m_sTrustedGameServerIPs = trustedGsIPs;
 
 	m_nTwoRevivrPos    = theConfigFile.ReadInteger( "Network", "TwoRevivePos", 0 );
 

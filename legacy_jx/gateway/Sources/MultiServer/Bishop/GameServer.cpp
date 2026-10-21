@@ -12,6 +12,7 @@
 #include "Macro.h"
 #include "SmartClient.h"
 #include "BishopPacketGuard.h"
+#include "BishopGsPeerGuard.h"
 
 extern CLogFile  bs_LogFile;
 extern HWND hbishopOutput;
@@ -209,7 +210,19 @@ void __stdcall CGameServer::GameSvrEventNotify( LPVOID lpParam,
 	switch ( ulnEventType )
 	{
 	case enumClientConnectCreate:
-		{//GS建立链接
+		{
+			// Check the real TCP peer (not a claimed packet IP) before
+			// constructing/activating any GameServer object.
+			char remoteEndpoint[128] = {0};
+			if (!pNI->pServer) break;
+			pNI->pServer->GetClientInfo(ulnID, remoteEndpoint, sizeof(remoteEndpoint));
+			if (!BishopGsPeerGuard::PeerAllowed(remoteEndpoint,
+					pNI->trustedGameServerIPs.c_str()))
+			{
+				pNI->pServer->ShutdownClient(ulnID);
+				break;
+			}
+			//GS建立链接
 			IGServer *pGServer = new CGameServer(pNI->pServer,pNI->pClient,ulnID);//
 
 			ASSERT(pGServer);

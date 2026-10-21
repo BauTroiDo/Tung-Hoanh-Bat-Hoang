@@ -10,6 +10,7 @@
 #include "Macro.h"
 #include "Buffer.h"
 #include "BishopPacketGuard.h"
+#include "BishopGsPeerGuard.h"
 
 #include "SmartClient.h"
 
@@ -240,6 +241,9 @@ void CIntercessor::_PlayerEventNotify( const unsigned long &ulnID,
 
 bool CIntercessor::StartupNetwork()
 {
+	// A missing or malformed allowlist MUST fail before any listen socket opens.
+	if (!BishopGsPeerGuard::ValidateAllowlist(m_theNetworkConfig.GetTrustedGameServerIPs()))
+		return false;
 	bool bPlayerServerSucceed = false;
 	bDBRoleServerSucceed = false;
 	bool bGameSvrServerSucceed = false;
@@ -318,6 +322,7 @@ bool CIntercessor::StartupNetwork()
 		ni.pServer = m_pGameSvrServer;
 		ni.pClient = NULL; //m_pAccSvrClient;
 		ni.hwndContainer = m_hwndViewer;
+		ni.trustedGameServerIPs = m_theNetworkConfig.GetTrustedGameServerIPs();
 		
 		m_pGameSvrServer->RegisterMsgFilter(reinterpret_cast< void * >(&ni), CGameServer::GameSvrEventNotify);
 		///DWORD dwIP = inet_addr("192.168.100.7");

@@ -60,6 +60,7 @@ public:
 	void SetClientOpenPort( unsigned short nClientOpenPort ) { m_nClientOpenPort = nClientOpenPort; }
 
 	unsigned short GetGameSvrOpenPort() { return m_nGameSvrOpenPort; }
+	const char* GetTrustedGameServerIPs() const { return m_sTrustedGameServerIPs.c_str(); }
 	void SetGameSvrOpenPort( unsigned short nGameSvrOpenPort ) { m_nGameSvrOpenPort = nGameSvrOpenPort; }
 
 	unsigned short GetTwoRevivrPos() { return m_nTwoRevivrPos; }
@@ -111,6 +112,7 @@ private:
 	 * Game server config
 	 */
 	unsigned short	m_nGameSvrOpenPort;
+	_tstring		m_sTrustedGameServerIPs;
 	
 	unsigned short	m_nTwoRevivrPos;
 	unsigned short	m_nMaxPlayerCount;
