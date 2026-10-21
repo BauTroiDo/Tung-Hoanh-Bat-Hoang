@@ -9,6 +9,7 @@
 
 #include "Macro.h"
 #include "Buffer.h"
+#include "BishopPacketGuard.h"
 
 #include "SmartClient.h"
 
@@ -582,7 +583,8 @@ int	CIntercessor::Helper()
 		{
 			ASSERT(CPackager::Peek(pData) > g_nGlobalProtocolType);
 
-			if (s2c_accountfdfsglogin == *(const char *)pData)
+			if (s2c_accountfdfsglogin == *(const char *)pData &&
+                BishopPacketGuard::HasBytes(pData, dataLength, 1 + sizeof(KAccountHead)))
 			{//如果等于帐号登陆的
 				const KAccountHead *pAUR = (KAccountHead * )(((const char *)pData) + 1);
 				
@@ -636,25 +638,28 @@ int	CIntercessor::Helper()
 			BYTE cProtocol = CPackager::Peek(pData);
 
 			UINT uID = (UINT)(-1);
+            bool validIdentity = false;
+            if (cProtocol < g_nGlobalProtocolType)
+            {
+                std::uint32_t id = 0;
+                validIdentity = BishopPacketGuard::ReadU32(pData, dataLength, 2, id);
+                if (validIdentity) uID = static_cast<UINT>(id);
+            }
+            else if (cProtocol > g_nGlobalProtocolType &&
+                     BishopPacketGuard::HasBytes(pData, dataLength, offsetof(TProcessData, pDataBuffer)))
+            {
+                const TProcessData* pPD = static_cast<const TProcessData*>(pData);
+                uID = pPD->ulIdentity;
+                validIdentity = true;
+            }
 
-			if (cProtocol < g_nGlobalProtocolType)
-			{
-				uID = *(const unsigned long *)((const char *)pData + 2);
-			}
-			else // cProtocol > g_nGlobalProtocolType
-			{
-				TProcessData *pPD = (TProcessData *)(pData);
-
-				uID = pPD->ulIdentity;
-			}
-
-			if (uID < m_lnMaxPlayerCount && m_thePlayers.end() != m_thePlayers.find( uID ))
+			if (validIdentity && uID < m_lnMaxPlayerCount && m_thePlayers.end() != m_thePlayers.find( uID ))
 			{
 				IPlayer *pPlayer = m_thePlayers[uID];
 
 				ASSERT(pPlayer);
 				
-				pPlayer->AppendData(CGamePlayer::enumOwnerRoleSvr, pData, dataLength);
+				if (pPlayer) pPlayer->AppendData(CGamePlayer::enumOwnerRoleSvr, pData, dataLength);
 			}
 			
 			/*
@@ -683,6 +688,9 @@ int	CIntercessor::Helper()
 
 bool CIntercessor::AnalyzePlayerRequire( size_t index, const void *pData, size_t datalength )
 {
+    if (!BishopPacketGuard::HasBytes(pData, datalength, 1) ||
+        index >= m_lnMaxPlayerCount ||
+        m_thePlayers.find(index) == m_thePlayers.end()) return false;
 	ASSERT( pData && datalength );
 
 	BYTE cProtocol = *( const BYTE * )pData;
@@ -691,7 +699,9 @@ bool CIntercessor::AnalyzePlayerRequire( size_t index, const void *pData, size_t
 	{
 	case c2s_login_fhgyrinhkmvnsheypo:
 		{
-			const BYTE *pBuffer = (const BYTE *)pData + 1;
+			if (!BishopPacketGuard::HasBytes(pData, datalength, 1 + sizeof(KLoginAccountInfo)))
+                return false;
+            const BYTE *pBuffer = (const BYTE *)pData + 1;
 
 			KLoginAccountInfo *pLAI = (KLoginAccountInfo *)pBuffer;
 

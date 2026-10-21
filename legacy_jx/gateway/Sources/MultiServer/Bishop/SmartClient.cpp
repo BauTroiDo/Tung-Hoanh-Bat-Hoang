@@ -371,8 +371,8 @@ void CSmartClient::_Verify(IClient* pClient, bool bDisconnect)
 				
 				nLen--;
 				if ( pReturn &&
-					( g_dwServerIdentify == pReturn->Operate ) && 
-					( nLen == sizeof( KAccountUserReturn ) ) )
+					( nLen == sizeof( KAccountUserReturn ) ) &&
+					( g_dwServerIdentify == pReturn->Operate ) )
 				{
 					if ( ACTION_SUCCESS == pReturn->nReturn )
 					{

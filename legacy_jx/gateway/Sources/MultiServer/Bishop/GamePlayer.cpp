@@ -6,6 +6,7 @@
 #include "resource.h"
 #include "AccountLoginDef.h"
 #include "LoginDef.h"
+#include "BishopPacketGuard.h"
 #include "S3DBInterface.h"
 #include "..\..\Engine\Src\KEngine.h"
 
@@ -592,7 +593,8 @@ bool CGamePlayer::Run()
 
 bool CGamePlayer::AppendData(UINT nOwner, const void *pData, size_t dataLength)
 {
-	if ( nOwner >= enumOwnerTotal || !m_bActiveStatus )
+	if (!BishopPacketGuard::HasBytes(pData, dataLength, 1) ||
+	    nOwner >= enumOwnerTotal || !m_bActiveStatus )
 	{
 		return false;
 	}
@@ -819,6 +821,12 @@ UINT CGamePlayer::WaitForAccPwd()
 	 
 	if (pRetBuffer)
 	{
+        if (!BishopPacketGuard::HasBytes(pRetBuffer->GetBuffer(),
+            pRetBuffer->GetUsed(), 1 + sizeof(KLoginAccountInfo)))
+        {
+            SAFE_RELEASE(pRetBuffer);
+            return enumError;
+        }
 		KLoginAccountInfo* pLAI = ( KLoginAccountInfo * )(pRetBuffer->GetBuffer() + 1/* size of a protocol byte */);
 
 		UINT nNextTask = enumError;
@@ -1024,6 +1032,12 @@ UINT CGamePlayer::VerifyAccount()
 
 	if (pRetBuffer)
 	{
+        if (!BishopPacketGuard::HasBytes(pRetBuffer->GetBuffer(),
+            pRetBuffer->GetUsed(), 1 + sizeof(KAccountUserReturnExt)))
+        {
+            SAFE_RELEASE(pRetBuffer);
+            return enumError;
+        }
 		KAccountUserReturnExt* pReturn = ( KAccountUserReturnExt * )( pRetBuffer->GetBuffer() + 1/* size of a protocol byte */ );
 
 		int nResult = pReturn->nReturn;
