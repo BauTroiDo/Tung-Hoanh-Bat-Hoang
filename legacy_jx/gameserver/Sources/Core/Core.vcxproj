@@ -890,6 +890,9 @@ if not exist "$(OutDir)libdb181.dll" copy "..\..\Lib\release\libdb181.dll" "$(Ou
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|Win32'"> /LD   /LD </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|x64'"> /LD   /LD </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="Src\Jx3dLegacyWorldTickBridge.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Src\KSubWorldSet.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|Win32'"> /LD   /LD </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|x64'"> /LD   /LD </AdditionalOptions>
