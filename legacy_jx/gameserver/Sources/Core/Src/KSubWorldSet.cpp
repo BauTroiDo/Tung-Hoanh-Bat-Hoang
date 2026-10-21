@@ -649,7 +649,8 @@ else
 		{
 			if (npcSlot >= MAX_NPC) { complete = false; break; }
 			const KNpc& npc = Npc[npcSlot];
-			const int playerSlot = Npc[npcSlot].GetnPlayerIdx();
+			const int playerSlot = (npc.m_Kind == kind_player) ?
+				Npc[npcSlot].GetnPlayerIdx() : 0;
 			if (npc.m_dwID == 0 || npc.m_RegionIndex < 0)
 				continue;
 			if (npc.m_SubWorldIndex < 0 ||
