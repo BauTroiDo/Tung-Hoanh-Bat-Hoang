@@ -40,8 +40,8 @@ public:
     bool transition(const TrustedWorldContext&);
     bool detach(const TrustedWorldContext&);
     AoiStatus upsert(const AoiEntity&);
-    // Owner-only despawn; retains the identity tombstone for stale-generation rejection.
-    // The identity quota is deliberately lifetime-bounded until a controlled world reset.
+    // Owner-only despawn; SpatialAoi retains a generation tombstone while
+    // releasing this adapter's quota for the no-longer-active entity.
     AoiStatus erase(const EntityKey&);
     AoiPoolPrepare prepare(const TrustedWorldContext&, std::int32_t x,
         std::int32_t y, std::uint32_t radius, std::uint64_t nowNs);
