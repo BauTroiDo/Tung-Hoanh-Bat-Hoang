@@ -11,6 +11,7 @@
 //#include "../../engine/Src/KIniFile.h"
 #include "Macro.h"
 #include "SmartClient.h"
+#include "BishopPacketGuard.h"
 
 extern CLogFile  bs_LogFile;
 extern HWND hbishopOutput;
@@ -385,6 +386,8 @@ DWORD WINAPI CGameServer::ManagerThreadFunction( void *pParam )
 
 bool CGameServer::AnalyzeRequire( const void *pData, size_t datalength )
 {
+    if (!BishopPacketGuard::HasBytes(pData, datalength, 1))
+        return false;
 	bool ok = true;
 
 	BYTE cProtocol = CPackager::Peek( pData );
@@ -474,6 +477,10 @@ bool CGameServer::_QueryGameSvrInfo()
 //更新地图编号容器
 bool CGameServer::_UpdateMapID(const void *pData,size_t datalength)
 {
+    if (!BishopPacketGuard::HasBytes(pData, datalength,
+        offsetof(tagUpdateMapID, szMapID))) return false;
+    const tagUpdateMapID* incoming = static_cast<const tagUpdateMapID*>(pData);
+    if (!BishopPacketGuard::SafeMapSuffix(incoming->szparmName)) return false;
 	tagUpdateMapID *pUMI = (tagUpdateMapID *)pData;
 
 	int  nGsIndex = (int)pUMI->cMapCount;
@@ -486,8 +493,10 @@ bool CGameServer::_UpdateMapID(const void *pData,size_t datalength)
 	ZeroMemory(nMapListPath,sizeof(nMapListPath));
 	ZeroMemory(nTempPath,sizeof(nTempPath));
 
-	sprintf(nTempPath,"maps\\WorldSet_%s.ini",pUMI->szparmName);
-	sprintf(nMapListPath,"%s%s",sAppPath.c_str(),nTempPath);
+	const int a = snprintf(nTempPath, sizeof(nTempPath), "maps\\WorldSet_%s.ini", pUMI->szparmName);
+    if (a < 0 || static_cast<size_t>(a) >= sizeof(nTempPath)) return false;
+    const int b = snprintf(nMapListPath, sizeof(nMapListPath), "%s%s", sAppPath.c_str(), nTempPath);
+    if (b < 0 || static_cast<size_t>(b) >= sizeof(nMapListPath)) return false;
 
 	theMsgFile.SetFile(nMapListPath);
 
@@ -659,6 +668,8 @@ int CGameServer::_GetLocalIpAddress(DWORD *pIntranetAddr, DWORD *pInternetAddr)
 //从GS获取更新服务器端口
 bool CGameServer::_UpdateGameSvrInfo( const void *pData, size_t datalength )
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagGameSvrInfo)))
+        return false;
 	ASSERT( sizeof( tagGameSvrInfo ) == datalength );
 
 	tagGameSvrInfo *pGSI = ( tagGameSvrInfo * )pData;
@@ -692,6 +703,12 @@ bool CGameServer::_UpdateGameSvrInfo( const void *pData, size_t datalength )
 
 bool CGameServer::c2s_itemsynaction_result( const void *pData, size_t datalength )
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(VIEW_LIAN_ITEM_SYNC)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const VIEW_LIAN_ITEM_SYNC*>(pData)->m_WonName),
+            sizeof(static_cast<const VIEW_LIAN_ITEM_SYNC*>(pData)->m_WonName)))
+        return false;
 	if  (!pData) return false;
 	ASSERT( sizeof( VIEW_LIAN_ITEM_SYNC ) == datalength);
 	IGServer *pGServer =NULL;
@@ -713,6 +730,16 @@ bool CGameServer::c2s_itemsynaction_result( const void *pData, size_t datalength
 
 bool CGameServer::c2s_itemsynaction( const void *pData, size_t datalength )
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagItemAction)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagItemAction*>(pData)->nRoleName),
+            sizeof(static_cast<const tagItemAction*>(pData)->nRoleName)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagItemAction*>(pData)->nGmRoleName),
+            sizeof(static_cast<const tagItemAction*>(pData)->nGmRoleName)))
+        return false;
 	if  (!pData) return false;
 	tagItemAction *pRSI = ( tagItemAction * )pData;
 	ASSERT( sizeof( tagItemAction ) == datalength);
@@ -744,6 +771,16 @@ bool CGameServer::c2s_itemsynaction( const void *pData, size_t datalength )
 //执行从gs发送过来的数据
 bool CGameServer::gm_synroleaction_result( const void *pData, size_t datalength )
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagGmAction)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagGmAction*>(pData)->nRoleName),
+            sizeof(static_cast<const tagGmAction*>(pData)->nRoleName)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagGmAction*>(pData)->nGmRoleName),
+            sizeof(static_cast<const tagGmAction*>(pData)->nGmRoleName)))
+        return false;
 	if  (!pData) return false;
 	tagGmAction *pRSI = ( tagGmAction * )pData;
 	ASSERT( sizeof( tagGmAction ) == datalength);
@@ -772,6 +809,16 @@ bool CGameServer::gm_synroleaction_result( const void *pData, size_t datalength 
 
 bool CGameServer::gm_synroleaction(const void *pData, size_t datalength)
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagGmAction)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagGmAction*>(pData)->nRoleName),
+            sizeof(static_cast<const tagGmAction*>(pData)->nRoleName)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagGmAction*>(pData)->nGmRoleName),
+            sizeof(static_cast<const tagGmAction*>(pData)->nGmRoleName)))
+        return false;
 	if  (!pData) return false;
 	tagGmAction *pRSI = ( tagGmAction * )pData;
 	ASSERT( sizeof( tagGmAction ) == datalength);
@@ -824,6 +871,12 @@ bool CGameServer::gm_synroleaction(const void *pData, size_t datalength)
 
 bool CGameServer::c2smsginfo_all(const void *pData, size_t datalength)
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagMsgInGame)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagMsgInGame*>(pData)->strMsg),
+            sizeof(static_cast<const tagMsgInGame*>(pData)->strMsg)))
+        return false;
 	tagMsgInGame *pRSI = ( tagMsgInGame * )pData;
 	ASSERT( sizeof( tagMsgInGame ) == datalength);
 	IGServer *pGServer =NULL;
@@ -862,6 +915,12 @@ bool CGameServer::c2smsginfo_all(const void *pData, size_t datalength)
 
 bool CGameServer::_Rc2smsginfo(const void *pData, size_t datalength)
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagMsgInGame)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagMsgInGame*>(pData)->strMsg),
+            sizeof(static_cast<const tagMsgInGame*>(pData)->strMsg)))
+        return false;
 	//return false;//取消
 	tagMsgInGame *pRSI = ( tagMsgInGame * )pData;
 	ASSERT( sizeof( tagMsgInGame ) == datalength);
@@ -949,6 +1008,8 @@ bool CGameServer::_Rc2smsginfo(const void *pData, size_t datalength)
 
 bool CGameServer::_RequestSvrIP( const void *pData, size_t datalength )
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagRequestSvrIp)))
+        return false;
 	if  (!pData) return false;
 
 	tagRequestSvrIp *pRSI = ( tagRequestSvrIp * )pData;
@@ -990,6 +1051,20 @@ bool CGameServer::_RequestSvrIP( const void *pData, size_t datalength )
 //接受GS 发送过来的数据包  并把数据发往 game 客户端通知可以登陆！
 bool CGameServer::_NotifyPlayerLogin(const void *pData, size_t datalength)
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagPermitPlayerLogin)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagPermitPlayerLogin*>(pData)->szRoleName),
+            sizeof(static_cast<const tagPermitPlayerLogin*>(pData)->szRoleName)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagPermitPlayerLogin*>(pData)->szAccountName),
+            sizeof(static_cast<const tagPermitPlayerLogin*>(pData)->szAccountName)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagPermitPlayerLogin*>(pData)->strRoleNmae),
+            sizeof(static_cast<const tagPermitPlayerLogin*>(pData)->strRoleNmae)))
+        return false;
 	tagPermitPlayerLogin *pPPL = (tagPermitPlayerLogin *)pData;
 
 	ASSERT(sizeof(tagPermitPlayerLogin)==datalength);
@@ -1030,7 +1105,10 @@ bool CGameServer::_NotifyPlayerLogin(const void *pData, size_t datalength)
 				bool isHave=false;
 				for(int i=0; i<nCount;i++)
 				{
-					::SendMessage(hYuJianCheckList, LB_GETTEXT, i, (LPARAM)buf);	//获取字符串
+					const LRESULT itemLen = ::SendMessage(hYuJianCheckList, LB_GETTEXTLEN, i, 0);
+                    if (itemLen == LB_ERR || itemLen < 0 ||
+                        static_cast<size_t>(itemLen) >= sizeof(buf)) continue;
+                    ::SendMessage(hYuJianCheckList, LB_GETTEXT, i, (LPARAM)buf);	//获取字符串
 					if (strstr((char *)pPPL->szAccountName,buf))
 					{
 						isHave =true;
@@ -1097,6 +1175,12 @@ bool CGameServer::_NotifyPlayerLogin(const void *pData, size_t datalength)
 
 bool CGameServer::_RegisterAccount( const void *pData, size_t datalength )
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagRegisterAccount)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagRegisterAccount*>(pData)->szAccountName),
+            sizeof(static_cast<const tagRegisterAccount*>(pData)->szAccountName)))
+        return false;
 	ASSERT( pData && datalength );
 
 	tagRegisterAccount *pRA = ( tagRegisterAccount * )pData;
@@ -1107,7 +1191,7 @@ bool CGameServer::_RegisterAccount( const void *pData, size_t datalength )
 	}
 	//ASSERT(pRoleData->BaseInfo.szName[0] !='\0');
 	char Mgs[128];
-	sprintf(Mgs,"-------收到跨服GS信息;账号:%s ------ ", (const char *)pRA->szAccountName);	 
+	snprintf(Mgs, sizeof(Mgs),"-------收到跨服GS信息;账号:%s ------ ", (const char *)pRA->szAccountName);
 	AddOutputIpList(hDugList,Mgs);
 
 	//CGamePlayer::Add((const char *)pRA->szAccountName,(IPlayer *)this);
@@ -1119,6 +1203,12 @@ bool CGameServer::_RegisterAccount( const void *pData, size_t datalength )
 //通知开始进入游戏
 bool CGameServer::_NotifyEnterGame(const void *pData, size_t datalength)
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagEnterGame)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagEnterGame*>(pData)->szAccountName),
+            sizeof(static_cast<const tagEnterGame*>(pData)->szAccountName)))
+        return false;
 	ASSERT(pData && datalength);
 
 	tagEnterGame *pEG = (tagEnterGame *)pData;
@@ -1138,6 +1228,12 @@ bool CGameServer::_NotifyEnterGame(const void *pData, size_t datalength)
 //通知pays离开游戏
 bool CGameServer::_NotifyLeaveGame(const void *pData, size_t datalength)
 {
+    if (!BishopPacketGuard::ExactBytes(pData, datalength, sizeof(tagLeaveGame)))
+        return false;
+    if (!BishopPacketGuard::HasNul(reinterpret_cast<const char*>(
+            static_cast<const tagLeaveGame*>(pData)->szAccountName),
+            sizeof(static_cast<const tagLeaveGame*>(pData)->szAccountName)))
+        return false;
 	ASSERT(pData && datalength);
 	
 	tagLeaveGame *pLG = (tagLeaveGame *)pData;
