@@ -5,6 +5,9 @@
 #include "KNpc.h"
 #include "KIniFile.h"
 #include "KSubWorldSet.h"
+#if defined(_SERVER) && defined(JX3D_ENABLE_LEGACY_WORLD_TICK_HOOK)
+#include "Jx3dLegacyWorldTickBridge.h"
+#endif
 #include "KMissleSet.h"
 #include "LuaFuns.h"
 #include "KPlayerSet.h"
@@ -631,6 +634,12 @@ else
 //	PlayerSet.AutoSave(); //auto save data
 
 	m_dwCurrentTime++;
+#if defined(_SERVER) && defined(JX3D_ENABLE_LEGACY_WORLD_TICK_HOOK)
+	// One owner-thread notification AFTER all legacy map/NPC updates.
+	// Opt-in only; default Win64 build executes no JX3D adapter.
+	Jx3dNotifyWorldTick(static_cast<uint32_t>(m_dwCurrentTime),
+		static_cast<uint32_t>(MAX_SUBWORLD));
+#endif
  /*if (MAX_SUBWORLD>=nSeparateWorldCount)
  {//ÓÐBUG
 	Concurrency::parallel_for(0,MAX_SUBWORLD,[&](int n)
