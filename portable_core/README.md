@@ -52,3 +52,24 @@ The two original codec CTest executables test deterministic golden little-endian
 **Production gaps:** callback failure diagnostics, queue/pacer metrics, fairness between traffic classes, actor lifetime/resolution, state replay, bounded wall-time per tick, compatibility load testing and live JX integration are NOT implemented. A callback throwing is counted and suppressed; the caller must add diagnostics and safe recovery before using in production.
 
 Linux WSL build (from the PC): `cmake -S portable_core -B <out-of-tree> -G Ninja -DCMAKE_BUILD_TYPE=Debug && cmake --build <out-of-tree> && ctest --test-dir <out-of-tree> --output-on-failure`. Sanitizer flags: `-fsanitize=address,undefined` for compiler and linker. No JX runtime linking has occurred.
+
+## New JX1 3D client authentication (AUTH-01, 2026-10-22)
+
+**Project decision: JX1 3D uses new PC/Web/Mobile clients, not Client V9.**
+The legacy Bishop handshake and V9 packet compatibility are no longer
+requirements for the new authentication path.
+
+`AuthTicketAuthority` is a C++17 single-process **prototype** integrated
+into this portable core, issuing 256-bit OS CSPRNG opaque, short-lived,
+realm-bound, single-use tickets. WorldGateway consumes the ticket once
+and receives an authoritative account/session generation bound to a
+server-side connection ID, with stale-generation revocation and
+server-side session close. It uses Windows CNG or Linux getrandom, never
+weak pseudo-random sources.
+
+See [AUTH_SERVICE_TICKET_CONTRACT.md](AUTH_SERVICE_TICKET_CONTRACT.md)
+for the security limits, future AuthService/WorldGateway split and the
+required strongly consistent shared ticket store. No credential
+provider, TLS endpoint, distributed atomic consume or new client
+connection has been implemented yet; it is not production-ready.
+Run `auth_ticket_authority_tests` with the normal portable core tests.
