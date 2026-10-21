@@ -1056,7 +1056,14 @@ UINT CGamePlayer::VerifyAccount()
         if (!BishopPacketGuard::HasBytes(pRetBuffer->GetBuffer(),
             pRetBuffer->GetUsed(), 1 + sizeof(KAccountUserReturnExt)))
         {
+            // Attach() consumes the queue entry; releasing pRetBuffer
+            // alone is not enough: fail the login and close the socket.
+            // Inactive() retains the AccountServer unlock and the
+            // process-local account-claim release in the correct order.
             SAFE_RELEASE(pRetBuffer);
+            _VerifyAccount_ToPlayer(LOGIN_A_LOGIN | LOGIN_R_FAILED, 0);
+            if (m_pPlayerServer)
+                m_pPlayerServer->ShutdownClient(m_lnIdentityID);
             return enumError;
         }
 		KAccountUserReturnExt* pReturn = ( KAccountUserReturnExt * )( pRetBuffer->GetBuffer() + 1/* size of a protocol byte */ );
