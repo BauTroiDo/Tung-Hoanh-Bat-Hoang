@@ -23,6 +23,7 @@
 
 #include "IGServer.h"
 #include "GameServer.h"
+#include "BishopLoginAttemptGate.h"
 
 #include "PlayerCreator.h"
 
@@ -184,6 +185,7 @@ private:
 	UINT GetCurrentTask() { return /* m_nCurrentTaskID; */ ::InterlockedExchange( &m_nCurrentTaskID, m_nCurrentTaskID ); }
 
 	LONG m_nCurrentTaskID;
+	BishopLoginAttemptGate m_loginGate;
 	
 	void InitTaskProcessor();
 

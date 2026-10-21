@@ -716,9 +716,8 @@ bool CIntercessor::AnalyzePlayerRequire( size_t index, const void *pData, size_t
 
 			if (pLAI && pPlayer)
 			{				
-				pPlayer->AppendData(CGamePlayer::enumOwnerPlayer, pData, datalength);
-
-				pPlayer->DispatchTask(CGamePlayer::enumLogin);
+				if (pPlayer->AppendData(CGamePlayer::enumOwnerPlayer, pData, datalength))
+					pPlayer->DispatchTask(CGamePlayer::enumLogin);
 			}
 		}
 

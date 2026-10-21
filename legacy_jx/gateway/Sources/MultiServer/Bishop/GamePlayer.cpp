@@ -335,6 +335,7 @@ CGamePlayer::~CGamePlayer()
 
 bool CGamePlayer::Active()
 {
+	m_loginGate.ResetForNewConnection();
 	SetCurrentTask(enumNone);
 
 	m_nAttachServerID = -1;
@@ -359,6 +360,7 @@ bool CGamePlayer::Active()
 bool CGamePlayer::Inactive()
 {
 	m_bActiveStatus = false;
+	m_loginGate.ResetForNewConnection();
 
 	SetCurrentTask(enumNone);
 	Del(m_sRoleName.c_str());	
@@ -493,6 +495,8 @@ void CGamePlayer::DETACH_NETWORK()
 
 bool CGamePlayer::DispatchTask( UINT nTaskID )
 {
+	// Duplicate login must not reset a running login/role task.
+	if (nTaskID == enumLogin && IsWorking()) return false;
 	/*
 	 * This player is processing a special tasks
 	 */	
@@ -600,7 +604,17 @@ bool CGamePlayer::AppendData(UINT nOwner, const void *pData, size_t dataLength)
 	}
 
 	BYTE cProtocol = CPackager::Peek(pData);
-	
+	// Claim the login opcode atomically before it reaches CDataQueue,
+	// which otherwise replaces an existing packet with the same opcode.
+	if (nOwner == enumOwnerPlayer && cProtocol == c2s_login_fhgyrinhkmvnsheypo)
+	{
+		if (dataLength < 1 + sizeof(KLoginAccountInfo) || !m_loginGate.TryClaim())
+			return false;
+		const bool queued = SmallPackProcess(nOwner, pData, dataLength);
+		if (!queued) m_loginGate.ResetForNewConnection();
+		return queued;
+	}
+
 	if ( cProtocol < g_nGlobalProtocolType)
 	{
 		return LargePackProcess(nOwner,pData,dataLength);
@@ -713,9 +727,7 @@ bool CGamePlayer::DispatchTaskForPlayer(const void *pData, size_t dataLength)
 
 	BYTE cProtocol = CPackager::Peek(pData);
 
-	m_theDataQueue[enumOwnerPlayer].AddData(cProtocol,(const BYTE *)pData,dataLength);
-
-	return true;
+	return m_theDataQueue[enumOwnerPlayer].AddData(cProtocol,(const BYTE *)pData,dataLength);
 }
 
 void CGamePlayer::_ClearTaskQueue()
