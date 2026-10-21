@@ -335,6 +335,7 @@ CGamePlayer::~CGamePlayer()
 
 bool CGamePlayer::Active()
 {
+	m_accountClaimSession.Begin();
 	m_loginGate.ResetForNewConnection();
 	SetCurrentTask(enumNone);
 
@@ -376,6 +377,7 @@ bool CGamePlayer::Inactive()
 		m_bAutoUnlockAccount = false;
 	}
 
+	m_accountClaimSession.End();
 	_ClearTaskQueue();
 ///////////////////////////////////////////////
 /*	IGServer *pGServer = CGameServer::GetServer( m_nAttachServerID );
@@ -905,6 +907,13 @@ UINT CGamePlayer::WaitForAccPwd()
 
 UINT CGamePlayer::QueryAccPwd()
 {
+	// Hold a local account reservation before forwarding credentials.
+	// On denial, preserve the legacy already-logged-in response code.
+	if (!m_accountClaimSession.TryReserve(m_sAccountName.c_str()))
+	{
+		_VerifyAccount_ToPlayer(LOGIN_A_LOGIN | LOGIN_R_ACCOUNT_EXIST, 0);
+		return enumError;
+	}
 #ifdef	CONSOLE_DEBUG
 	cprintf( "CGamePlayer::QueryAccPwd...\n" );
 	OutputDebugString("CGamePlayer::QueryAccPwd...\n" );
@@ -1156,6 +1165,8 @@ UINT CGamePlayer::VerifyAccount()
 
 		}
 
+		if (nResult != ACTION_SUCCESS)
+			m_accountClaimSession.ReleaseClaim();
 		SAFE_RELEASE(pRetBuffer);
 		m_theDataQueue[enumOwnerAccSvr].Detach(s2c_accountfdfsglogin);
 
