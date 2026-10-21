@@ -68,7 +68,7 @@ AoiStatus WorldServerIntegrationAdapter::upsert(const AoiEntity& entity) {
     if (!enabled_) return AoiStatus::Invalid;
     if (!entityIdentities_.count(entity.key) &&
         entityIdentities_.size() >= limits_.maxEntityIdentities) return AoiStatus::Invalid;
-    // Reserve identity before world mutation, also bounding generation tombstones.
+    // Reserve active-entity quota before mutation; SpatialAoi tracks generations.
     const auto inserted = entityIdentities_.insert(entity.key);
     const auto result = world_.upsert(entity);
     if (result != AoiStatus::Ok && inserted.second) entityIdentities_.erase(inserted.first);
@@ -77,9 +77,11 @@ AoiStatus WorldServerIntegrationAdapter::upsert(const AoiEntity& entity) {
 AoiStatus WorldServerIntegrationAdapter::erase(const EntityKey& key) {
     if (!owner()) return bound_ ? AoiStatus::WrongThread : AoiStatus::Unbound;
     if (!enabled_) return AoiStatus::Invalid;
-    // Do not release the bounded identity slot: it is a tombstone that prevents
-    // old generations from being accepted after an entity disappears.
-    return world_.erase(key);
+    // SpatialAoi keeps the generation tombstone; the adapter's quota only
+    // counts active entities so repeated despawn/respawn cannot exhaust it.
+    const auto result = world_.erase(key);
+    if (result == AoiStatus::Ok) entityIdentities_.erase(key);
+    return result;
 }
 AoiPoolPrepare WorldServerIntegrationAdapter::prepare(const TrustedWorldContext& c,
     std::int32_t x, std::int32_t y, std::uint32_t radius, std::uint64_t now) {
