@@ -27,7 +27,10 @@ public:
     ReplicationPrepareResult prepare(SpatialAoi& world, std::int32_t x,
         std::int32_t y, std::uint32_t radius, std::uint64_t nowNs);
     ReplicationPrepareResult retry() const;
+    // Needed by bounded delivery and fail-closed resynchronization.
+    ReplicationStatus accessStatus() const noexcept { return replication_.accessStatus(); }
     ReplicationStatus acknowledge(const AuthenticatedAoiAck& ack);
+    bool invalidateForResync();
 
     // Both changes reset known-view and discard in-flight ACK expectations.
     // Fail closed on zero, reused, lower, or overflowing generation values.

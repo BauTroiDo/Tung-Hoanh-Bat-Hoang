@@ -31,6 +31,10 @@ ReplicationPrepareResult AoiSessionBridge::retry() const {
     return replication_.retry();
 }
 
+bool AoiSessionBridge::invalidateForResync() {
+    return replication_.invalidateForResync();
+}
+
 ReplicationStatus AoiSessionBridge::acknowledge(const AuthenticatedAoiAck& ack) {
     // Avoid reading mutable bridge generations from a foreign thread.
     const auto access = replication_.accessStatus();
