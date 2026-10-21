@@ -37,3 +37,16 @@ else()
   target_compile_options(jx_bishop_login_once_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 add_test(NAME bishop_one_initial_login_per_connection COMMAND jx_bishop_login_once_test)
+
+# Atomic claim/release ownership across local Bishop connections. These tests
+# are not a substitute for AccountServer's authoritative session locks.
+add_executable(jx_bishop_account_claim_test test_bishop_account_claim.cpp)
+target_include_directories(jx_bishop_account_claim_test PRIVATE
+  "${CMAKE_CURRENT_SOURCE_DIR}/../../gateway/Sources/MultiServer/Bishop")
+target_compile_features(jx_bishop_account_claim_test PRIVATE cxx_std_17)
+if(MSVC)
+  target_compile_options(jx_bishop_account_claim_test PRIVATE /W4 /WX)
+else()
+  target_compile_options(jx_bishop_account_claim_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+add_test(NAME bishop_local_account_claim_ownership COMMAND jx_bishop_account_claim_test)

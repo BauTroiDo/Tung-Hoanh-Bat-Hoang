@@ -24,6 +24,7 @@
 #include "IGServer.h"
 #include "GameServer.h"
 #include "BishopLoginAttemptGate.h"
+#include "BishopAccountClaimSession.h"
 
 #include "PlayerCreator.h"
 
@@ -186,6 +187,7 @@ private:
 
 	LONG m_nCurrentTaskID;
 	BishopLoginAttemptGate m_loginGate;
+	BishopAccountClaimSession m_accountClaimSession;
 	
 	void InitTaskProcessor();
 
