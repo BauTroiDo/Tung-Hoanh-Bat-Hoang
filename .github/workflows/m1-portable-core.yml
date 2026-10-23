@@ -25,7 +25,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verify byte-preserving legacy DEV-only NPC hook staging
-        run: python3 legacy_jx/tools/test_m1_dev_hooks_patcher.py
+        run: |
+          python3 legacy_jx/tools/test_m1_dev_hooks_patcher.py
+          python3 legacy_jx/tools/apply_m1_dev_aoi_hooks.py \
+            --source-dir legacy_jx/gameserver/Sources/Core/Src \
+            --output-dir build-m1-staged-hooks \
+            --manifest build-m1-staged-manifest.json
       - name: Configure isolated portable core
         run: cmake -S portable_core -B build-m1 -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DBUILD_TESTING=ON
       - name: Build with warnings treated as errors
