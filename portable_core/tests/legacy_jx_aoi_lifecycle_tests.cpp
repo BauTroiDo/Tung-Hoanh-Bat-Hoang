@@ -64,7 +64,7 @@ int main() {
     CHECK(bridge.observeSpawn(snap(10,204)).key.generation==3); ++checks;
     // AOI adapter's active-entity limit is lower than the bridge's. The
     // rejected spawn must not consume a generation or leave an active slot.
-    WorldServerIntegrationAdapter bounded({8,2,1,2},{1,8,8,1,1},true);
+    WorldServerIntegrationAdapter bounded({8,2,1,1},{1,8,8,1,1},true);
     LegacyJxAoiLifecycleBridge reject(bounded,1000,100,2,2,true);
     CHECK(reject.bindOwnerToCurrentThread()); ++checks;
     CHECK(reject.observeSpawn(snap()).status==LegacyNpcSyncStatus::Ok); ++checks;
