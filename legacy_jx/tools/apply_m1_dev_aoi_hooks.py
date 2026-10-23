@@ -94,6 +94,8 @@ def main() -> None:
     p.add_argument("--source-dir",type=Path,required=True)
     p.add_argument("--output-dir",type=Path)
     p.add_argument("--manifest",type=Path)
+    p.add_argument("--hook-header",type=Path,
+                   help="Path to Jx3dM1DevAoiHooks.h (default source-dir header)")
     a=p.parse_args()
     if a.output_dir and a.source_dir.resolve() == a.output_dir.resolve():
         p.error("refusing to overwrite the source directory")
@@ -113,6 +115,20 @@ def main() -> None:
         outputs.append({"filename":name,"original_sha256":sha(raw),
                         "staged_sha256":sha(converted),
                         "original_bytes":len(raw),"staged_bytes":len(converted),
+                        "writes_to_original":False})
+    header=a.hook_header or (a.source_dir/"Jx3dM1DevAoiHooks.h")
+    if a.output_dir:
+        header_bytes=header.read_bytes()
+        if b"#define JX3D_M1_DEV_AOI_EMIT_SPAWN" not in header_bytes or (
+            b"#define JX3D_M1_DEV_AOI_EMIT_REMOVE" not in header_bytes):
+            raise ValueError("invalid DEV hook macro header")
+        destination=a.output_dir/"Jx3dM1DevAoiHooks.h"
+        if destination.exists():
+            raise FileExistsError("never overwrite already staged header "+str(destination))
+        destination.write_bytes(header_bytes)
+        outputs.append({"filename":destination.name,"original_sha256":sha(header_bytes),
+                        "staged_sha256":sha(header_bytes),"original_bytes":len(header_bytes),
+                        "staged_bytes":len(header_bytes),
                         "writes_to_original":False})
     report={"kind":"M1_DEV_AOI_STAGING_ONLY","feature_macro":"JX3D_M1_DEV_AOI",
             "shipping_default_off":True,"files":outputs}
