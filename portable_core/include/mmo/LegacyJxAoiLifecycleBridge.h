@@ -124,6 +124,8 @@ public:
         return {LegacyNpcSyncStatus::Ok, status, key};
     }
 
+    // Capture must verify this BEFORE touching any legacy Npc[]/SubWorld[] memory.
+    bool isOwnerThread() const noexcept { return enabled_ && owner(); }
     std::size_t activeCount() const { return owner() ? active_.size() : 0; }
     std::uint32_t lastGeneration(std::uint32_t id) const {
         if (!owner()) return 0;
