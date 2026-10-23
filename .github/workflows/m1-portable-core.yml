@@ -24,6 +24,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Verify byte-preserving legacy DEV-only NPC hook staging
+        run: python3 legacy_jx/tools/test_m1_dev_hooks_patcher.py
       - name: Configure isolated portable core
         run: cmake -S portable_core -B build-m1 -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DBUILD_TESTING=ON
       - name: Build with warnings treated as errors
