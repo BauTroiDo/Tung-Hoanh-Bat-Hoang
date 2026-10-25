@@ -2973,8 +2973,21 @@ void KSwordOnLineSever::DatabaseMessageProcess(const char* pData, size_t dataLen
                 const unsigned __int64 expected=JXRoleRevisionWire::ReadU64(ack+1);
                 const unsigned __int64 committed=JXRoleRevisionWire::ReadU64(ack+9);
                 const unsigned __int64 nonce=JXRoleRevisionWire::ReadU64(ack+17);
+                const JXRoleSaveRetry::Pending* pending =
+                    m_roleSaveRetryCache.Find(nIndex);
+                unsigned __int64 liveExpected=0,liveNonce=0;
+                if (!pending ||
+                    !m_pCoreServerShell->GetPendingRoleSave(
+                        nIndex,pending->role.c_str(),&liveExpected,&liveNonce) ||
+                    !m_roleSaveRetryCache.Matches(nIndex,pending->role,
+                        expected,nonce) || liveExpected!=expected ||
+                    liveNonce!=nonce)
+                    break; // stale ACK cannot complete a recycled slot
                 const int accepted=m_pCoreServerShell->FinishRoleSave(
                     nIndex,expected,nonce,status,committed);
+                if (accepted!=0)
+                    m_roleSaveRetryCache.RemoveIfMatch(nIndex,
+                        pending->role,expected,nonce);
                 if (accepted != 1) {
                     if (accepted < 0)
                         m_pCoreServerShell->SetSaveStatus(nIndex,SAVE_REQUEST);
@@ -4480,6 +4493,7 @@ void KSwordOnLineSever::MainLoop()
 	 PlayerLogoutGateway();                //网关断开 循环检测 是否退出游戏的
 	 PlayerExchangeServer();               //跨服转换地图时 
     //m_pServer->PreparePackSink();  //准备发包？
+    RetryPendingRoleSaves();
     m_pCoreServerShell->Breathe();    //服务器端里的主循环
 	//TongattackLoop();	                        //帮会宣战循环
 
@@ -4660,6 +4674,47 @@ void KSwordOnLineSever::ProcessPingReply(const unsigned long lnID, const char* p
 	}
 }
 */
+void KSwordOnLineSever::RetryPendingRoleSaves()
+{
+    if (!m_pCoreServerShell || !m_pDatabaseClient) return;
+    const DWORD now=GetTickCount();
+    const DWORD intervalMs=5000;
+    const unsigned int maxRetries=3;
+    std::vector<int> stale;
+    const std::map<int,JXRoleSaveRetry::Pending>& tasks =
+        m_roleSaveRetryCache.Entries();
+    for(std::map<int,JXRoleSaveRetry::Pending>::const_iterator it=tasks.begin();
+        it!=tasks.end();++it) {
+        const int slot=it->first;
+        const JXRoleSaveRetry::Pending& pending=it->second;
+        unsigned __int64 expected=0,nonce=0;
+        if(!m_pCoreServerShell->GetPendingRoleSave(
+                slot,pending.role.c_str(),&expected,&nonce) ||
+           !m_roleSaveRetryCache.Matches(slot,pending.role,expected,nonce)) {
+            stale.push_back(slot);
+            continue;
+        }
+        if(!pending.Due(now,intervalMs)) continue;
+        if(pending.retries>=maxRetries) {
+            // The database might already have committed. Never invent
+            // a new nonce: fail closed and require authoritative resync.
+            m_pCoreServerShell->FinishRoleSave(slot,expected,nonce,-14,0);
+            m_pCoreServerShell->SetSaveStatus(slot,SAVE_REQUEST);
+            printf("[RoleSave] Retry exhausted for %s; resync required.\n",
+                   pending.role.c_str());
+            stale.push_back(slot);
+            continue;
+        }
+        // Exactly the same Rainbow frames as the original save request.
+        for(size_t j=0;j<pending.frames.size();++j)
+            m_pDatabaseClient->SendPackToServer(
+                pending.frames[j].data(),pending.frames[j].size());
+        m_roleSaveRetryCache.RecordRetry(slot,now);
+    }
+    for(size_t j=0;j<stale.size();++j)
+        m_roleSaveRetryCache.Remove(stale[j]);
+}
+
 BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 {
 	if (!m_pDatabaseClient)
@@ -4752,16 +4807,28 @@ BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 		char* pBuffer = m_theSend.GetHeadPack(c2s_rolekfjhu_saveroleinfo, actLen);
 		//printf("-----------存档长度J:%d-----------\n", pData->dwDataLen);
 #endif
+        std::vector<std::vector<unsigned char> > framedPackets;
 		int loopCount=0;
 		while(pBuffer)
 		{//发往goddes
 			loopCount ++;
 #ifndef _STANDALONE
 			//printf("-----------存档长度A:%d-----------\n", pBuffer->GetUsed());
-			m_pDatabaseClient->SendPackToServer(pBuffer->GetBuffer(), pBuffer->GetUsed());
+            if (versioned) {
+                const unsigned char* raw=(const unsigned char*)pBuffer->GetBuffer();
+                framedPackets.push_back(std::vector<unsigned char>(
+                    raw,raw+pBuffer->GetUsed()));
+            } else {
+                m_pDatabaseClient->SendPackToServer(pBuffer->GetBuffer(),pBuffer->GetUsed());
+            }
 #else
 			//printf("-----------存档长度B:%d-----------\n",actLen);
-			m_pDatabaseClient->SendPackToServer(pBuffer, actLen);
+            if (versioned) {
+                const unsigned char* raw=(const unsigned char*)pBuffer;
+                framedPackets.push_back(std::vector<unsigned char>(raw,raw+actLen));
+            } else {
+                m_pDatabaseClient->SendPackToServer(pBuffer,actLen);
+            }
 #endif
 
 #ifndef _STANDALONE
@@ -4786,6 +4853,23 @@ BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 #endif
 		}
 		m_theSend.DelData(c2s_rolekfjhu_saveroleinfo);
+        if (versioned) {
+            unsigned __int64 liveExpected=0,liveNonce=0;
+            const bool bound=m_pCoreServerShell->GetPendingRoleSave(
+                nIndex,pData->BaseInfo.szName,&liveExpected,&liveNonce);
+            if(!bound || !m_roleSaveRetryCache.Store(
+                 nIndex,pData->BaseInfo.szName,liveExpected,liveNonce,
+                 GetTickCount(),framedPackets)) {
+                if(bound)
+                    m_pCoreServerShell->FinishRoleSave(
+                        nIndex,liveExpected,liveNonce,-14,0);
+                return FALSE;
+            }
+            // Send exactly the stored frames, reused byte-for-byte on retry.
+            for(size_t packetIndex=0;packetIndex<framedPackets.size();++packetIndex)
+                m_pDatabaseClient->SendPackToServer(
+                    framedPackets[packetIndex].data(),framedPackets[packetIndex].size());
+        }
 #ifndef _STANDALONE
 		try
 		{

@@ -115,6 +115,7 @@ public:
 	bool ConfirmRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 expected, unsigned __int64 next);
 	bool IsRoleSaveRevisionRequired(int nIndex, const char* roleName);
 	bool BeginRoleSave(int nIndex, const char* roleName, unsigned __int64* expected, unsigned __int64* nonce);
+	bool GetPendingRoleSave(int nIndex, const char* roleName, unsigned __int64* expected, unsigned __int64* nonce);
 	int FinishRoleSave(int nIndex, unsigned __int64 expected, unsigned __int64 nonce, int dbResult, unsigned __int64 committed);
 	bool IsCharacterQuiting(int nIndex);
 	bool IsShutdownClient(int nIndex);
@@ -3951,6 +3952,22 @@ bool CoreServerShell::BeginRoleSave(int idx, const char* name,
     *nonce=ticket;
     return true;
 }
+bool CoreServerShell::GetPendingRoleSave(int idx, const char* name,
+    unsigned __int64* expected, unsigned __int64* nonce)
+{
+    if (!expected || !nonce || !name || !name[0] ||
+        !IsRoleSaveRevisionRequired(idx,name) ||
+        strcmp(Player[idx].m_PlayerName,name)!=0 ||
+        strcmp(Player[idx].m_szRoleSavePendingName,name)!=0 ||
+        !Player[idx].m_bRoleSaveRevisionLoaded ||
+        !Player[idx].m_bRoleSavePending ||
+        !Player[idx].m_uRoleSavePendingNonce)
+        return false;
+    *expected=Player[idx].m_uRoleSavePendingExpected;
+    *nonce=Player[idx].m_uRoleSavePendingNonce;
+    return true;
+}
+
 int CoreServerShell::FinishRoleSave(int idx, unsigned __int64 expected,
     unsigned __int64 nonce, int dbResult, unsigned __int64 committed)
 {

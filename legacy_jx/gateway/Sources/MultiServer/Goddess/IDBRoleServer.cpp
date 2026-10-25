@@ -158,6 +158,7 @@ int copySqldataToDB()
 int copyDBdataToSql()
 {  //hBakRoleListOutput  AddRoleOutputString
 	char outStr[218];
+    int skipped=0;
 	if (db_table && sqlitel_table)
 	{
 		ZCursor *copycursor = db_table->first();
@@ -169,17 +170,26 @@ int copyDBdataToSql()
 				unsigned int nkey=FileNameDB(pRoleData->BaseInfo.szName);
 				//sqlitel_table->deleteBlobData(pRoleData->BaseInfo.szName,nkey,true);
 				//sqlitel_table->InsertBlobData((void *)copycursor->data,copycursor->size,pRoleData->BaseInfo.szName,nkey);
-			    sqlitel_table->updateBlobData((void *)copycursor->data,copycursor->size,pRoleData->BaseInfo.szName,nkey,true);
+			    const bool imported=sqlitel_table->updateBlobData(
+                    (void*)copycursor->data,copycursor->size,
+                    pRoleData->BaseInfo.szName,nkey,true);
+                if(!imported) {
+                    ++skipped;
+                    AddRoleOutputString(hBakRoleListOutput,
+                        "[BDB->SQLite] SKIP existing/revisioned/trade-fenced role");
+                }
 
+				if(imported) {
 				sprintf(outStr,"-拷贝:%s:%s成功",pRoleData->BaseInfo.caccname,pRoleData->BaseInfo.szName);
 				AddRoleOutputString(hBakRoleListOutput,outStr);
+                }
 			}
 
 			if(!db_table->next(copycursor))
 				break;
 		} 
 
-		return true;
+		return skipped==0;
 	}
 	AddRoleOutputString(hBakRoleListOutput,"db或sql数据库没有打开,不能copy!");
 	return false;

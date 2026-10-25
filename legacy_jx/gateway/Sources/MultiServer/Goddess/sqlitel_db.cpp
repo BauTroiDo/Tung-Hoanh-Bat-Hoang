@@ -8,6 +8,7 @@
 #include "RoleSaveRevisionCAS.h"
 #include "LegacyRoleSaveGuardSql.h"
 #include "RoleSaveVersionedReceipt.h"
+#include "SafeBdbRoleImport.h"
 #ifndef WIN32
 #include <sys/stat.h>
 #else
@@ -1535,55 +1536,28 @@ bool sqlitel_db::updateBlobData_atomic_dual(
 
 
 //更新数据  ('update byte set b = {}'.format(img))
-bool sqlitel_db::updateBlobData(void * roleData,int len,char *roleName,unsigned int nkey,bool show)
- {//查询 获得id 删除 在原始id上插入数据 否则就新增加
-	 if  (!roleName) return false;
+// BDB migration is create-only. It is not a game save or an admin restore.
+// Existing SQLite characters are never deleted or overwritten here.
+bool sqlitel_db::updateBlobData(void* roleData,int len,char* roleName,
+                                unsigned int nkey,bool show)
+{
+    if(!m_pDb || !roleName || !roleName[0] || !roleData ||
+       len<=0 || len>128*1024 || !ensureTradeReceiptTable())
+        return false;
+    const std::string roleUtf8=EncodeTradeRoleName(roleName);
+    const bool imported=JX273SafeBdbImport::ImportNew(
+        m_pDb,roleUtf8,roleData,len,(sqlite3_int64)nkey);
+    if(show) {
+        char message[256]={0};
+        sprintf_s(message,sizeof(message),
+            "[BDB->SQLite] %s role=%s key=%u",
+            imported?"INSERTED":"SKIPPED existing/fenced/revisioned",
+            roleName,nkey);
+        AddOutputString_e(hListOutput,message);
+    }
+    return imported;
+}
 
-	 char *zErrMsg = 0;
-	 char sql[256];   
-	 char nTempstr[128];
-	sprintf_s(sql, "select ID from role_Blob where roleName='%s'",G2U(roleName));
-	 int idx=0;
-	if  (SQLITE_OK== sqlite3_prepare(m_pDb, sql, strlen(sql), &m_pStmt, 0))                 
-	 {
-		 while (sqlite3_step(m_pStmt) == SQLITE_ROW)
-			 idx = sqlite3_column_int(m_pStmt, 0);                       
-	 }
-	 sqlite3_finalize(m_pStmt);
-
-	 if (idx)
-	 {//如果存在 就开始执行删除
-		 sprintf_s(sql, "delete from role_Blob where roleName='%s'",G2U(roleName)); //roleName='%s' and  ekey=%u
-		if (SQLITE_OK ==  sqlite3_exec(m_pDb, sql, NULL, 0, &zErrMsg))
-		{
-			sprintf (nTempstr,"------[SQL]删除记录:角色=%s,key=%u 成功------",roleName,nkey);
-			AddOutputString_e(hListOutput,nTempstr);
-		}
-
-		if (zErrMsg)
-		sqlite3_free(zErrMsg);
-
-		//删除完毕 在源id位置上插入新数据
-		 sprintf_s(sql, "insert into role_Blob values('%d','%s',?,'%u');",idx,G2U(roleName),nkey); 
-	 }
-	 else//否则就新增加id数据
-		 sprintf_s(sql, "insert into role_Blob values(NULL,'%s',?,'%u');",G2U(roleName),nkey); 
-
-	 sqlite3_prepare(m_pDb, sql, strlen(sql), &m_pStmt, 0);                  
-	 {
-		 sqlite3_bind_blob(m_pStmt, 1,roleData, len, NULL);   
-		 sqlite3_step(m_pStmt);                                             
-	 }
-	 sqlite3_finalize(m_pStmt);
-	 ///
-	 if  (show)
-	 {	 
-		 sprintf (nTempstr,"------[SQL]更新记录:角色=%s,key=%u 成功------",roleName,nkey);
-		 AddOutputString_e(hListOutput,nTempstr);
-	 }
-
-	 return true;
- }
 //----------------------------------
 //函数功能：向表中插入BLOB数据
 //参数：    sqlite3 *db[IN]                               -- 数据库操作指针
