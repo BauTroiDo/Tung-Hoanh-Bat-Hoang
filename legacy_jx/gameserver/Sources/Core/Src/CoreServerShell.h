@@ -282,6 +282,7 @@ struct iCoreServerShell
  virtual void SetTongData(int nPlayerIdx, void* data)=0;
  virtual void SyncBlackList(int nPlayerIdx,  std::list<std::string> &blackList) = 0;
  virtual BOOL CheckBlackList(int nPlayerIdx, char* szName)=0;
+ virtual void OnTradePairSaveResult(unsigned __int64 uTxId, int nResultCode, const char* szRoleA, const char* szRoleB) = 0;
 };
 
 #ifndef CORE_EXPORTS

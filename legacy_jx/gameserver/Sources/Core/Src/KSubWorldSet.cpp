@@ -5,9 +5,6 @@
 #include "KNpc.h"
 #include "KIniFile.h"
 #include "KSubWorldSet.h"
-#if defined(_SERVER) && defined(JX3D_ENABLE_LEGACY_WORLD_TICK_HOOK)
-#include "Jx3dLegacyWorldTickBridge.h"
-#endif
 #include "KMissleSet.h"
 #include "LuaFuns.h"
 #include "KPlayerSet.h"
@@ -18,6 +15,7 @@
 #include "KSortScript.h"
 #include "KScriptValueSet.h"
 #include <ppl.h>
+#include "Jx3dM1OwnerRuntime.h"
 //#include <omp.h>
 //#include "KNpcTemplate.h"
 //extern KNpcTemplate	* g_pNpcTemplate[MAX_NPCSTYLE][MAX_NPC_LEVEL]; //0,0为起点
@@ -524,6 +522,7 @@ BOOL KSubWorldSet::LoadSerMaps(LPSTR szFileName)
 //客户端和 服务器端 公共调用函数---游戏主循环
 void KSubWorldSet::MainLoop()
 {
+    jx3d_m1_owner::begin();
 	++m_nLoopRate;
 #ifdef _SERVER
 	extern int g_nMapLoadsThisTick;
@@ -634,84 +633,7 @@ else
 //	PlayerSet.AutoSave(); //auto save data
 
 	m_dwCurrentTime++;
-#if defined(_SERVER) && defined(JX3D_ENABLE_LEGACY_WORLD_TICK_HOOK)
-#if defined(JX3D_ENABLE_LEGACY_ENTITY_SNAPSHOT)
-	// Experimental OFF-by-default copy point, after all SubWorld updates.
-	// No client or IO worker may read these legacy globals from another thread.
-	const uint32_t snapshotLimit = Jx3dWorldSnapshotLimit();
-	if (snapshotLimit > 0 && snapshotLimit <= JX3D_SNAPSHOT_MAX_ENTITIES)
-	{
-		Jx3dLegacyEntitySample values[JX3D_SNAPSHOT_MAX_ENTITIES];
-		uint32_t count = 0;
-		bool complete = true;
-		for (int npcSlot = NpcSet.GetNextIdx(0); npcSlot > 0;
-			npcSlot = NpcSet.GetNextIdx(npcSlot))
-		{
-			if (npcSlot >= MAX_NPC) { complete = false; break; }
-			const KNpc& npc = Npc[npcSlot];
-			const int playerSlot = (npc.m_Kind == kind_player) ?
-				Npc[npcSlot].GetnPlayerIdx() : 0;
-			if (npc.m_dwID == 0 || npc.m_RegionIndex < 0)
-				continue;
-			if (npc.m_SubWorldIndex < 0 ||
-				npc.m_SubWorldIndex >= MAX_SUBWORLD)
-			{ complete = false; break; }
-			const KSubWorld& world = SubWorld[npc.m_SubWorldIndex];
-			if (world.m_eMapState != emMAP_STATE_LOADED &&
-				world.m_eMapState != emMAP_STATE_IDLE)
-				continue; // unloaded map: entity is no longer on the scene
-			if (!world.m_Region || npc.m_RegionIndex >= world.m_nTotalRegion ||
-				world.m_SubWorldID < 0)
-			{ complete = false; break; }
-			if (npc.m_MapX < 0 || npc.m_MapX >= world.m_nRegionWidth ||
-				npc.m_MapY < 0 || npc.m_MapY >= world.m_nRegionHeight ||
-				world.m_nCellWidth <= 0 || world.m_nCellHeight <= 0 ||
-				npc.m_OffX < 0 || npc.m_OffY < 0 ||
-				static_cast<int64_t>(npc.m_OffX) >=
-				static_cast<int64_t>(world.m_nCellWidth) * 1024 ||
-				static_cast<int64_t>(npc.m_OffY) >=
-				static_cast<int64_t>(world.m_nCellHeight) * 1024)
-			{ complete = false; break; }
-			if (count >= snapshotLimit) { complete = false; break; }
-			// Match NewMap2Mps, but use signed 64-bit intermediates.
-			const int64_t x = static_cast<int64_t>(
-				world.m_Region[npc.m_RegionIndex].m_nRegionX) +
-				static_cast<int64_t>(npc.m_MapX) * 32 + (npc.m_OffX >> 10);
-			const int64_t y = static_cast<int64_t>(
-				world.m_Region[npc.m_RegionIndex].m_nRegionY) +
-				static_cast<int64_t>(npc.m_MapY) * 32 + (npc.m_OffY >> 10);
-			if (x < -2147483647LL - 1 || x > 2147483647LL ||
-				y < -2147483647LL - 1 || y > 2147483647LL)
-			{ complete = false; break; }
-			Jx3dLegacyEntitySample sample = {};
-			sample.npcSlot = static_cast<uint32_t>(npcSlot);
-			sample.sourceNpcId = npc.m_dwID;
-			sample.mapSlot = static_cast<uint32_t>(npc.m_SubWorldIndex);
-			sample.mapId = static_cast<uint32_t>(world.m_SubWorldID);
-			sample.kind = npc.m_Kind;
-			sample.pixelX = static_cast<int32_t>(x);
-			sample.pixelY = static_cast<int32_t>(y);
-			sample.direction = npc.m_Dir;
-			if (npc.m_Kind == kind_player && playerSlot > 0 &&
-				playerSlot < MAX_PLAYER &&
-				Player[playerSlot].m_nIndex == npcSlot &&
-				Player[playerSlot].m_dwID != 0)
-			{
-				sample.playerSlot = static_cast<uint32_t>(playerSlot);
-				sample.playerId = Player[playerSlot].m_dwID;
-			}
-			values[count++] = sample;
-		}
-		// Incomplete batches are diagnostics ONLY, never authoritative despawns.
-		Jx3dPublishWorldSnapshot(static_cast<uint32_t>(m_dwCurrentTime),
-			values, count, complete);
-	}
-#endif
-	// One owner-thread notification AFTER all legacy map/NPC updates.
-	// Opt-in only; default Win64 build executes no JX3D adapter.
-	Jx3dNotifyWorldTick(static_cast<uint32_t>(m_dwCurrentTime),
-		static_cast<uint32_t>(MAX_SUBWORLD));
-#endif
+    jx3d_m1_owner::end();
  /*if (MAX_SUBWORLD>=nSeparateWorldCount)
  {//有BUG
 	Concurrency::parallel_for(0,MAX_SUBWORLD,[&](int n)
@@ -758,6 +680,7 @@ BOOL KSubWorldSet::SendMessage(int nSubWorldID, DWORD dwMsgType, int nParam1, in
 //离开游戏时调用的函数
 void KSubWorldSet::Close()
 {
+    jx3d_m1_owner::stop();
 	for (int i = 0; i < MAX_SUBWORLD; ++i)
 	{
 		SubWorld[i].Close();

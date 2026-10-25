@@ -19,13 +19,16 @@ ZDBTable::ZDBTable(const char *path, const char *name)
     char * buffer=NULL;
     if((buffer=_getcwd(NULL,0))==NULL)
 		return;
-	sprintf_s(env_path,sizeof(env_path)-1,buffer);
+	const errno_t pathResult = strcpy_s(env_path, sizeof(env_path), buffer);
+	free(buffer);
+	if (pathResult != 0)
+		return;
 	#endif
 
 	strcat_s(env_path, "\\"); 
 	strcat_s(env_path, path);
 	int ret = _mkdir(env_path);
-    //gdbenv=NULL;
+    gdbenv=NULL;
 	//MessageBox(NULL,env_path,"TEST",MB_OK | MB_ICONSTOP );
 	//gdbenv = new DB_ENV();
 	//创建并设置数据库环境
@@ -39,7 +42,7 @@ ZDBTable::ZDBTable(const char *path, const char *name)
 		gdbenv->set_lg_bsize(gdbenv,2*1024*1024);            //2M             V S 2010会崩溃
 		gdbenv->set_cachesize(gdbenv,0,64*1024*1024,1); //64M          缓存的大小
 		
-		if(!gdbenv->open(gdbenv,path,DB_CREATE|DB_INIT_LOG|DB_INIT_MPOOL|DB_INIT_TXN|DB_RECOVER|DB_THREAD|DB_PRIVATE,0))  //DB_INIT_LOCK 如果用这个则不能对数据删除操作
+		if(!gdbenv->open(gdbenv,path,DB_CREATE|DB_INIT_LOCK|DB_INIT_LOG|DB_INIT_MPOOL|DB_INIT_TXN|DB_RECOVER|DB_THREAD|DB_PRIVATE,0))  //DB_INIT_LOCK 如果用这个则不能对数据删除操作
 		{//open成功了 = 0;
 			gdbenv->set_flags(gdbenv,DB_AUTO_COMMIT|DB_TXN_NOSYNC,1);
 			index_number = 0;           //设置为0？
@@ -139,20 +142,19 @@ int ZDBTable::open()
 					break;
 			}
 
-			if(index <= index_number) 
-				return 1;										    //成功了
-			else
+			if(index == index_number)
+				return 1;
+			// Do not accept an incomplete secondary-index initialization.
+			// Close all opened secondary handles before closing the primary.
+			for (int i = 0; i < index_number; ++i)
 			{
-				while(--index>0)
+				if (index_db[i])
 				{
-					(index_db[index])->close(index_db[index],0);                       //出错，关闭前面的索引表
-			//		delete index_db[index];
-					index_db[index]=NULL;
+					index_db[i]->close(index_db[i],0);
+					index_db[i] = NULL;
 				}
 			}
-
 			primary_db->close(primary_db,0);
-			//delete primary_db;
 			primary_db=NULL;
 			return -4;
 		}

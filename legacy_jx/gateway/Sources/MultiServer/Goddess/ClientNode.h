@@ -85,6 +85,8 @@ private:
 	void _QueryRoleList( const void *pData, UINT dataLength );
 	void _CreateRole( const void *pData, UINT dataLength );
 	void _SaveRoleInfo( const void *pData, UINT dataLength );
+	void _SaveTradePair( const void *pData, UINT dataLength );
+	void SendTradePairResult(unsigned __int64 uTxId, int nResultCode, const char* szRoleA, const char* szRoleB, unsigned int idA, unsigned int idB);
 	void _DelRole( const void *pData, UINT dataLength );
 	void _CheckRoleName( const void *pData, UINT dataLength );
 	void _GetRoleInfo( const void *pData, UINT dataLength );

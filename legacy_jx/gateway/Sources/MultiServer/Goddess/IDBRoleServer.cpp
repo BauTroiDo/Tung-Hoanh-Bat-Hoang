@@ -785,7 +785,14 @@ int	SaveRoleInfo(char * pRoleBuffer,const char *strUser,BOOL bAutoInsertWhenNoEx
 		//sqlitel_table->deleteBlobData((char *)pName,nKey,true);
 		//pName,strlen(pName)+1,pRoleBuffer,pRoleData->dwDataLen)
 		//sqlitel_table->InsertBlobData((void *)pRoleBuffer,pRoleData->dwDataLen,(char *)pName,nKey,true);
-		sqlitel_table->updateBlobData_n((void *)pRoleBuffer,pRoleData->dwDataLen,(char *)pName,nKey,true);
+		bool bUpdateRes = sqlitel_table->updateBlobData_n((void *)pRoleBuffer,pRoleData->dwDataLen,(char *)pName,nKey,true);
+		if (!bUpdateRes)
+		{
+			snprintf(aStr, sizeof(aStr), "--[SQL][存档失败]: 角色(%s), updateBlobData_n 返回失败--", pName);
+			AddOutputString(hListOutput, aStr);
+			gTraceLogFile(aStr, strlen(aStr));
+			return 0;
+		}
 
 		sprintf_s(aStr,sizeof(aStr)-1,_TEXT("[SQL][存档%d:%d区成功]:姓名:%s,等级:%d,战斗技能数量:%d,生活技能数量:%d,任务数量:%d,物品装备数量:%d"), //*,好友数量:%d*/
 			pRoleData->BaseInfo.isWaiGua,
@@ -1814,3 +1821,14 @@ void AddRoleOutputString(HWND hListCtrl, char* aStr)
 }
 
 
+
+
+int SaveTradePairAtomic(unsigned __int64 uTxId, const char* szRoleA, void* pDataA, int nLenA, unsigned int dwCrcA,
+                        const char* szRoleB, void* pDataB, int nLenB, unsigned int dwCrcB,
+                        unsigned int uGenA, unsigned int uGenB)
+{
+    if (!sqlitel_table)
+        return -14;
+    return sqlitel_table->updateBlobData_atomic_dual_tx(
+        uTxId, pDataA, nLenA, (char*)szRoleA, dwCrcA, pDataB, nLenB, (char*)szRoleB, dwCrcB, uGenA, uGenB, true);
+}

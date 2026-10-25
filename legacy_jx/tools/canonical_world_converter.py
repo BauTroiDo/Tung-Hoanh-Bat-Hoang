@@ -53,7 +53,7 @@ def test_coordinate_roundtrip(sample_count: int = 10000) -> bool:
                 errors += 1
                 if errors <= 5:
                     print(f"Error at ({x}, {y}) -> 3D {p3d} -> recovered ({x_rec}, {y_rec})")
-    
+
     if errors == 0:
         print(f"[PASS] 100% Round-trip accuracy verified across {side * side} points! Tolerance = 0 pixels.")
         return True
@@ -74,10 +74,10 @@ def build_vertical_slice_bundle(output_dir: str) -> Dict[str, str]:
     map_id = 53
     map_name = "Ba Lang Huyen"
     map_type = "Country"
-    
+
     map_dir = os.path.join(output_dir, "maps", str(map_id))
     os.makedirs(map_dir, exist_ok=True)
-    
+
     # 1. Map Metadata
     meta = {
         "schemaVersion": SCHEMA_VERSION,
@@ -106,7 +106,7 @@ def build_vertical_slice_bundle(output_dir: str) -> Dict[str, str]:
     meta_path = os.path.join(map_dir, "map.meta.json")
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2, ensure_ascii=False)
-        
+
     # 2. Regions Index
     regions = {
         "mapId": map_id,

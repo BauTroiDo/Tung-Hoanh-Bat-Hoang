@@ -39,9 +39,9 @@ public:
 	// 旧版接口
 	KRegionSearcher(enumType eSearchType, KSubWorld* pSubWorld, INT nMapX, INT nMapY,
 					INT nRange, INT nSearcherIdx, INT nRelation)
+		: KRegionSearcher(eSearchType, pSubWorld, nMapX, nMapY, nRange,
+						nSearcherIdx, static_cast<NPC_RELATION>(nRelation))
 	{
-		new (this) KRegionSearcher(eSearchType, pSubWorld, nMapX, nMapY, nRange,
-						nSearcherIdx, nRelation);
 	}
 
 	KNpc* GetNextNpc();			// 在方形区域中得到一个Npc。可以安全的删除/移动该返回的Npc，但是不要删除/移动当前Region中的其他Npc（主要是别动链表中下一个Npc）

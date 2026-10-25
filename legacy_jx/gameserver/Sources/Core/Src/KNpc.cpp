@@ -2,6 +2,7 @@
 //	Sword3 KNpc.cpp
 //-----------------------------------------------------------------------
 #include "KCore.h"
+#include "Jx3dM1DevAoiHooks.h"
 //#include <crtdbg.h>
 #include "KNpcAI.h"
 #include "KSkills.h"
@@ -2997,6 +2998,7 @@ VOID KNpc::MovePos(INT nMoveX, INT nMoveY)
 		m_dwRegionID = SubWorld[0].m_Region[m_RegionIndex].m_RegionID;
 #endif
 	}
+    JX3D_M1_DEV_AOI_EMIT_MOVE(m_Index);
 }
 
 
@@ -6524,6 +6526,10 @@ void KNpc::ServeMove(int MoveSpeed)  // ·þÎñÆ÷ÒÆ¶¯
 		}
 
 	}
+    // These movement paths commit coordinates without calling MovePos.
+    if (nOldRegion != m_RegionIndex || nOldMapX != m_MapX || nOldMapY != m_MapY ||
+        nOldOffX != m_OffX || nOldOffY != m_OffY)
+        JX3D_M1_DEV_AOI_EMIT_MOVE(m_Index);
 }
 
 void KNpc::ServeJump(int nSpeed)
@@ -6641,6 +6647,10 @@ void KNpc::ServeJump(int nSpeed)
 		}
 #endif
 	}		
+    // These movement paths commit coordinates without calling MovePos.
+    if (nOldRegion != m_RegionIndex || nOldMapX != m_MapX || nOldMapY != m_MapY ||
+        nOldOffX != m_OffX || nOldOffY != m_OffY)
+        JX3D_M1_DEV_AOI_EMIT_MOVE(m_Index);
 }
 
 void KNpc::SendSerCommand(NPCCMD cmd,int x,int y, int z)

@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "IDBRoleServer.h"
+#include "CRC32.h"
 
 #include "Macro.h"
 
@@ -119,7 +120,8 @@ CClientNode::CClientNode(IServer *pServer, size_t id)
 
 	m_theProcessArray[c2s_roleserver_getrolelist]    = &CClientNode::_QueryRoleList;
 	m_theProcessArray[c2s_roleserver_createroleinfo] = &CClientNode::_CreateRole;
-	m_theProcessArray[c2s_rolekfjhu_saveroleinfo]   = &CClientNode::_SaveRoleInfo;	//存档
+	m_theProcessArray[c2s_rolekfjhu_saveroleinfo]   = &CClientNode::_SaveRoleInfo;
+	m_theProcessArray[c2s_roleserver_savetradepair]  = &CClientNode::_SaveTradePair;	//存档
 	m_theProcessArray[c2s_roleserver_deleteplayer]   = &CClientNode::_DelRole;
 	m_theProcessArray[c2s_roleserver_getroleinfo]    = &CClientNode::_GetRoleInfo;  //选择角色进入游戏时 获取这个角色的信息
 //	m_theProcessArray[c2s_extend] = _RelayExtend;
@@ -501,7 +503,7 @@ void CClientNode::_SaveRoleInfo( const void *pData, UINT dataLength )
 		//	UnlockRoleSelf(szName);
 		//}
 
-	if (pPD->bLeave && pPD->ulIdentity >= 0)	//玩家的索引
+	if (pPD->ulIdentity >= 0) // Final P0: Always acknowledge database save result to GS	//玩家的索引
 	{//通知gs 已经存档
 		TProcessData Info;	
 		Info.nProtoId = s2c_roleserver_saverole_result;
@@ -948,3 +950,89 @@ void CClientNode::UnlockAllRole(size_t ID)
 }
 
 /////////////////////////////////////////////////////////////////////////////////
+
+void CClientNode::SendTradePairResult(unsigned __int64 uTxId, int nResultCode, const char* szRoleA, const char* szRoleB, unsigned int idA, unsigned int idB)
+{
+	TTradePairSaveResult res;
+	memset(&res, 0, sizeof(res));
+	res.nProtoId = s2c_roleserver_savetradepair_result;
+	res.uTxId = uTxId;
+	res.nResultCode = nResultCode;
+	if (szRoleA) strncpy_s(res.szRoleA, sizeof(res.szRoleA), szRoleA, _TRUNCATE);
+	if (szRoleB) strncpy_s(res.szRoleB, sizeof(res.szRoleB), szRoleB, _TRUNCATE);
+	res.ulIdentityA = idA;
+	res.ulIdentityB = idB;
+	if (m_pServer)
+		m_pServer->SendData(m_nIndentity, (const void *)&res, sizeof(res));
+}
+
+void CClientNode::_SaveTradePair( const void *pData, UINT dataLength )
+{
+	ASSERT(m_pServer && pData && dataLength);
+	if (dataLength < sizeof(TTradePairSaveRequest))
+		return;
+
+	TTradePairSaveRequest *pReq = (TTradePairSaveRequest *)pData;
+
+	// P0: Reject malformed trade identity and zero generations before any SQLite write.
+	// Legacy unversioned role saves are not authorized as atomic two-role trades.
+	if (!pReq->uTxId || !pReq->uGenerationA || !pReq->uGenerationB ||
+		!pReq->szRoleA[0] || !pReq->szRoleB[0] ||
+		!memchr(pReq->szRoleA, 0, sizeof(pReq->szRoleA)) ||
+		!memchr(pReq->szRoleB, 0, sizeof(pReq->szRoleB)) ||
+		_stricmp(pReq->szRoleA, pReq->szRoleB) == 0)
+	{
+		SendTradePairResult(pReq->uTxId, -15, NULL, NULL, pReq->ulIdentityA, pReq->ulIdentityB);
+		return;
+	}
+
+	// 1. Check size overflow & packet truncation
+	if (pReq->dwDataLenA > 2000000 || pReq->dwDataLenB > 2000000 ||
+		(size_t)pReq->dwDataLenA + (size_t)pReq->dwDataLenB > dataLength ||
+		sizeof(TTradePairSaveRequest) - 1 + pReq->dwDataLenA + pReq->dwDataLenB > dataLength)
+	{
+		SendTradePairResult(pReq->uTxId, -10, pReq->szRoleA, pReq->szRoleB, pReq->ulIdentityA, pReq->ulIdentityB);
+		return;
+	}
+
+	// 2. Check minimum size of TRoleData blob
+	if (pReq->dwDataLenA < sizeof(TRoleBaseInfo) || pReq->dwDataLenB < sizeof(TRoleBaseInfo))
+	{
+		SendTradePairResult(pReq->uTxId, -10, pReq->szRoleA, pReq->szRoleB, pReq->ulIdentityA, pReq->ulIdentityB);
+		return;
+	}
+
+	void* pBlobA = (void*)(&pReq->pDataBuffer[0]);
+	void* pBlobB = (void*)(&pReq->pDataBuffer[pReq->dwDataLenA]);
+	TRoleData* pRoleA = (TRoleData*)pBlobA;
+	TRoleData* pRoleB = (TRoleData*)pBlobB;
+
+	// 3. Check character names in request match inner blobs
+	if (_strnicmp(pReq->szRoleA, pRoleA->BaseInfo.szName, 32) != 0 ||
+		_strnicmp(pReq->szRoleB, pRoleB->BaseInfo.szName, 32) != 0)
+	{
+		SendTradePairResult(pReq->uTxId, -12, pReq->szRoleA, pReq->szRoleB, pReq->ulIdentityA, pReq->ulIdentityB);
+		return;
+	}
+
+	// 4. Calculate and verify actual CRC32 of snapshots A and B
+	DWORD realCrcA = 0;
+	realCrcA = CRC32(realCrcA, (BYTE*)pBlobA, pReq->dwDataLenA);
+	DWORD realCrcB = 0;
+	realCrcB = CRC32(realCrcB, (BYTE*)pBlobB, pReq->dwDataLenB);
+
+	if (realCrcA != pReq->dwChecksumA || realCrcB != pReq->dwChecksumB)
+	{
+		SendTradePairResult(pReq->uTxId, -11, pReq->szRoleA, pReq->szRoleB, pReq->ulIdentityA, pReq->ulIdentityB);
+		return;
+	}
+
+	// 5. Atomic dual commit to SQLite with receipt & duplicate checking
+	int nResult = SaveTradePairAtomic(
+		pReq->uTxId,
+		pReq->szRoleA, pBlobA, pReq->dwDataLenA, pReq->dwChecksumA,
+		pReq->szRoleB, pBlobB, pReq->dwDataLenB, pReq->dwChecksumB,
+		pReq->uGenerationA, pReq->uGenerationB);
+
+	SendTradePairResult(pReq->uTxId, nResult, pReq->szRoleA, pReq->szRoleB, pReq->ulIdentityA, pReq->ulIdentityB);
+}

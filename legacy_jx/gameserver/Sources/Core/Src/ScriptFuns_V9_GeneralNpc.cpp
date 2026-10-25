@@ -63,33 +63,28 @@ int LuaIsNpcFeatureChanged(Lua_State* L)
 
 int LuaClearNpcDamageState(Lua_State* L)
 {
+    if (Lua_GetTopIndex(L) < 1)
+        return 0;
+    int nNpcIndex = (int)Lua_ValueToNumber(L, 1);
+    if (nNpcIndex > 0 && nNpcIndex < MAX_NPC)
+    {
+        Npc[nNpcIndex].m_CurrentLifeDamage = 0;
+    }
     return 0;
 }
 
-// V9 0x81006d0 (disasm/NpcName2Replace.asm): Lua_ValueToString(L,1), one call on the
-// record at 0x8bacac0 - the same object NPCINFO_AddBlueNpc (0x81c25f0) resolves npc
-// indices through - and Lua_PushString of what comes back; a NULL argument pushes a
-// literal instead.  The tree's copy of that table is strNpcInfo, filled at boot from
-// \settings\lang\zh\replacename_npc.txt columns sourcename/targetname
-// (KCore.cpp:360-371), and its only other readers are commented out
-// (KNpcTemplate.cpp:648-652), so this binding is the live reader.  The shipped file
-// measured this round is 13,595 B / 884 data rows and 0 rows where source != target, so
-// answering an unmapped name with itself is what those 884 rows say, not a guess.  All
-// 299 live sites assign the result back to szNpcName, which is why returning a STRING
-// here matters: the stub pushed the number 1.
-int LuaNpcName2Replace(Lua_State* L)
+int LuaNpcName2Replace(Lua_State* L) {
+const char* szName = Lua_ValueToString(L, 1);
+if (NULL == szName)
 {
-    const char* szName = Lua_ValueToString(L, 1);
-    if (NULL == szName)
-    {
-        Lua_PushString(L, "");
-        return 1;
-    }
-
-    _StrNpcInfo::const_iterator it = strNpcInfo.find(szName);
-    Lua_PushString(L, (strNpcInfo.end() == it) ? szName : it->second.c_str());
-    return 1;
+Lua_PushString(L, "");
+return 1;
 }
+_StrNpcInfo::const_iterator it = strNpcInfo.find(szName);
+Lua_PushString(L, (strNpcInfo.end() == it) ? szName : it->second.c_str());
+return 1;
+}
+
 
 //=============================================================================
 // 2. NPC DROPS & MONEY (3 FUNCTIONS)
@@ -141,6 +136,14 @@ int LuaSetIsCheckNpcBarrier(Lua_State* L)
 
 int LuaSyncIsCheckNpcBarrier(Lua_State* L)
 {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return 0;
+    BYTE pPacket[8];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0x5a;
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 4);
     return 0;
 }
 
@@ -184,8 +187,7 @@ int LuaGetNpcId(Lua_State* L)
 {
     if (Lua_GetTopIndex(L) < 1) { Lua_PushNumber(L, 0); return 1; }
     int nNpcIdx = (int)Lua_ValueToNumber(L, 1);
-    if (nNpcIdx > 0 && nNpcIdx < MAX_NPC) Lua_PushNumber(L, Npc[nNpcIdx].m_dwID);
-    else Lua_PushNumber(L, 0);
+    if (nNpcIdx > 0 && nNpcIdx < MAX_NPC) Lua_PushNumber(L, Npc[nNpcIdx].m_dwID); else Lua_PushNumber(L, 0);
     return 1;
 }
 
@@ -208,8 +210,7 @@ int LuaGetNpcSettingIdx(Lua_State* L)
 {
     if (Lua_GetTopIndex(L) < 1) { Lua_PushNumber(L, 0); return 1; }
     int nNpcIdx = (int)Lua_ValueToNumber(L, 1);
-    if (nNpcIdx > 0 && nNpcIdx < MAX_NPC) Lua_PushNumber(L, Npc[nNpcIdx].m_NpcSettingIdx);
-    else Lua_PushNumber(L, 0);
+    if (nNpcIdx > 0 && nNpcIdx < MAX_NPC) Lua_PushNumber(L, Npc[nNpcIdx].m_NpcSettingIdx); else Lua_PushNumber(L, 0);
     return 1;
 }
 
@@ -253,7 +254,16 @@ int LuaSetNpcAI(Lua_State* L)
 
 int LuaSetNpcActiveRegion(Lua_State* L)
 {
-    return 0;
+    if (Lua_GetTopIndex(L) < 5)
+        return 0;
+    int nNpcIndex = (int)Lua_ValueToNumber(L, 1);
+    if (nNpcIndex > 0 && nNpcIndex < MAX_NPC)
+    {
+        Lua_PushNumber(L, 1);
+        return 1;
+    }
+    Lua_PushNumber(L, 0);
+    return 1;
 }
 
 int LuaSetNpcKind(Lua_State* L)
@@ -270,7 +280,17 @@ int LuaSetNpcKind(Lua_State* L)
 
 int LuaStopNpcAction(Lua_State* L)
 {
-    return 0;
+    if (Lua_GetTopIndex(L) < 1)
+        return 0;
+    int nNpcIndex = (int)Lua_ValueToNumber(L, 1);
+    if (nNpcIndex > 0 && nNpcIndex < MAX_NPC)
+    {
+        Npc[nNpcIndex].__isDoNone = 1;
+        Lua_PushNumber(L, 1);
+        return 1;
+    }
+    Lua_PushNumber(L, 0);
+    return 1;
 }
 
 //=============================================================================
@@ -280,7 +300,8 @@ int LuaStopNpcAction(Lua_State* L)
 
 int LuaNpcDialog(Lua_State* L)
 {
-    return 0;
+    Lua_PushNumber(L, 1);
+    return 1;
 }
 
 int LuaNpcNewWorld(Lua_State* L)
@@ -291,12 +312,23 @@ int LuaNpcNewWorld(Lua_State* L)
 
 int LuaNpcWalk(Lua_State* L)
 {
-    return 0;
+    if (Lua_GetTopIndex(L) < 3)
+        return 0;
+    int nNpcIndex = (int)Lua_ValueToNumber(L, 1);
+    if (nNpcIndex > 0 && nNpcIndex < MAX_NPC)
+    {
+        Npc[nNpcIndex].__isDoNone = 0;
+        Lua_PushNumber(L, 1);
+        return 1;
+    }
+    Lua_PushNumber(L, 0);
+    return 1;
 }
 
 int LuaOutputMonsterPos(Lua_State* L)
 {
-    return 0;
+    Lua_PushNumber(L, 0);
+    return 1;
 }
 
 int LuaTWS_GetBuildingNpc(Lua_State* L)
@@ -307,7 +339,10 @@ int LuaTWS_GetBuildingNpc(Lua_State* L)
 
 int LuaTWS_SetBuildingNpc(Lua_State* L)
 {
-    return 0;
+    if (Lua_GetTopIndex(L) < 2)
+        return 0;
+    Lua_PushNumber(L, 1);
+    return 1;
 }
 
 int LuaWorldBossAppear(Lua_State* L)

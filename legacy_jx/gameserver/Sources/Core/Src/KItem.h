@@ -195,7 +195,7 @@ typedef struct
 
 class KNpc;
 
-class KItem
+class CORE_API KItem
 {
 public:
 	KItem();
@@ -531,6 +531,6 @@ private:
 	BOOL SetAttrib_Req(const KEQCP_REQ*,BOOL inDel=FALSE);
 };
 
-extern KItem *Item;//Item[MAX_ITEM];
+extern CORE_API KItem *Item;//Item[MAX_ITEM];
 
 #endif

@@ -13,6 +13,7 @@
 
 #include "KSubWorldSet.h"
 #include "CoreServerShell.h"
+#include "KPlayerTradeJournal.h"
 #endif
 #include "KPlayerSet.h"
 #include "Text.h"
@@ -1772,6 +1773,11 @@ int		KPlayerSet::AttachPlayer(const unsigned long lnID, GUID* pGuid,int model)
 		{//没有链接服务器的
 			if (0 == memcmp(&Player[nUseIdx].m_Guid, pGuid, sizeof(GUID)))
 			{
+				if (KPlayerTradeJournal::Instance().IsPlayerLocked(Player[nUseIdx].m_PlayerName))
+				{
+					printf("[AttachPlayer BLOCKED]: Player '%s' is locked by Trade Journal Recovery. Attach REJECTED.\n", Player[nUseIdx].m_PlayerName);
+					return 0;
+				}
 				Player[nUseIdx].m_nNetConnectIdx = lnID;  //网络号
 				Player[nUseIdx].m_ulLastSaveTime = g_SubWorldSet.m_nLoopRate;
 ///				Player[nUseIdx].m_dwLoginTime = -1;

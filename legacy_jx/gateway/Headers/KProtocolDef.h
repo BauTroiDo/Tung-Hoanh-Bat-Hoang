@@ -43,6 +43,7 @@ enum s2c_PROTOCOL
 	s2c_notifysvrip,
 	s2c_roleserver_getrolelist_result,
 	s2c_roleserver_saverole_result,
+	s2c_roleserver_savetradepair_result,
 	s2c_roleserver_createrole_result,
 	s2c_roleserver_deleterole_result,
 	s2c_logiclogout,
@@ -222,6 +223,7 @@ enum c2s_PROTOCOL
 	c2s_rolekfjhu_saveroleinfo = 10,
 	c2s_roleserver_createroleinfo,	
 	c2s_gmsvr2gateway_saverole,
+	c2s_roleserver_savetradepair,
 	/*
 	 * This value must be equal to s2c_micropackbegin
 	 */

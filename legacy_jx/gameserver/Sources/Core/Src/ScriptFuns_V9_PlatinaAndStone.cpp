@@ -18,6 +18,7 @@
 #include "KItemSet.h"
 #include "LuaLib.h"
 #include "LuaFuns.h"
+#include <map>
 
 #ifndef MAX_PLAYER
 #define MAX_PLAYER 1200
@@ -122,6 +123,32 @@ int LuaGetPtMagicAttrExValue(Lua_State *L)
 //-----------------------------------------------------------------------------
 // 4. Wish Value System: GetCurEquipWishValue, SetEquipWishValue, GetMaxEquipWishValue
 //-----------------------------------------------------------------------------
+// V9 keeps the wish pair in the item record.  SetEquipWishValue.asm 0x80fcc20 stores arg2 into
+// record +0x2b4 after rejecting arg2 greater than record +0x2ac; GetCurEquipWishValue.asm
+// 0x80fce00 reads +0x2b4 and GetMaxEquipWishValue.asm 0x80fcd80 reads +0x2ac; all three key the
+// record by arg1 * 0x368 + [0x830d300], i.e. the item stride off the item array base.
+// KEY DOMAIN: the Item[] pool slot, not an equipment position.  The only caller passes
+// self.nMantleIdx and hands that same variable to RemoveItemByIndex, GetItemName and SyncItem
+// (global/mantlesystem/mantleupgrade_head.lua:487,493,505,512-513), which is the pool-index
+// family, and V9 multiplies it by the item stride - both sides agree.
+// Neither slot has a KItem member, so the current value is mirrored per item index the way the
+// Fusion / Mask / LeftUsage slots already are (ScriptFuns_V9_GeneralItems.cpp:81-140).  Two
+// deliberate divergences, both stated rather than hidden:
+//   * the +0x2ac ceiling has no carrier (no V9 name in the dumped corpus writes it), so Set
+//     compares against one global ceiling instead of a per-item one.  GetMaxEquipWishValue keeps
+//     its literal 100 on purpose: routing it through V9_EQUIP_WISH_MAX would stop the meter's
+//     constant-answer rule from seeing the debt, and this row is debt, not a fill.
+//   * the mirror is server-side only.  V9's slot rides the item record to the client and the
+//     script calls SyncItem straight after Set, so a client that displays the wish value still
+//     reads the record; and like every V9Item* mirror this map is not persisted with the item.
+//   * both ports bound the index to [0, MAX_ITEM).  V9 has no such check: it multiplies arg1 by
+//     the item stride and touches the record whatever the index says.  A mirrored map has no
+//     backing array to overrun, but an unbounded key would grow it forever, so refuse instead.
+//   * neither port consults a player.  V9 keys the wish value on the item index alone, and so does
+//     the mirror; the unit's usual IsValidPlayer preamble would have been a rejection path the
+//     shipped game does not have.
+static const int V9_EQUIP_WISH_MAX = 100;        // stand-in for the record +0x2ac ceiling
+static std::map<int, int> g_v9EquipWishCur;      // V9 item record +0x2b4
 int LuaGetCurEquipWishValue(Lua_State *L)
 {
     if (Lua_GetTopIndex(L) < 1)
@@ -130,40 +157,35 @@ int LuaGetCurEquipWishValue(Lua_State *L)
         return 1;
     }
 
-    int nPlayerIndex = GetPlayerIndex(L);
-    if (!IsValidPlayer(nPlayerIndex))
+    int nItemIdx = (int)Lua_ValueToNumber(L, 1);
+    if (nItemIdx < 0 || nItemIdx >= MAX_ITEM)
     {
         Lua_PushNumber(L, 0);
         return 1;
     }
 
-    int nEquipPos = (int)Lua_ValueToNumber(L, 1);
-    Lua_PushNumber(L, 0); // Default current wish value
+    std::map<int, int>::const_iterator it = g_v9EquipWishCur.find(nItemIdx);
+    Lua_PushNumber(L, (it == g_v9EquipWishCur.end()) ? 0 : it->second);
     return 1;
 }
-
 int LuaSetEquipWishValue(Lua_State *L)
 {
-    if (Lua_GetTopIndex(L) < 2)
-    {
-        Lua_PushNumber(L, 0);
-        return 1;
-    }
+    // V9 requires exactly two arguments: cmp eax, 2 / jne leaves the stack untouched.
+    if (Lua_GetTopIndex(L) != 2)
+        return 0;
 
-    int nPlayerIndex = GetPlayerIndex(L);
-    if (!IsValidPlayer(nPlayerIndex))
-    {
-        Lua_PushNumber(L, 0);
-        return 1;
-    }
+    int nItemIdx = (int)Lua_ValueToNumber(L, 1);
+    if (nItemIdx < 0 || nItemIdx >= MAX_ITEM)
+        return 0;                                  // V9 rejects a negative index (js)
 
-    int nEquipPos = (int)Lua_ValueToNumber(L, 1);
-    int nVal      = (int)Lua_ValueToNumber(L, 2);
+    int nVal = (int)Lua_ValueToNumber(L, 2);
+    if (nVal < 0 || nVal > V9_EQUIP_WISH_MAX)
+        return 0;                                  // V9: js, then cmp arg2,[+0x2ac] / jg
 
+    g_v9EquipWishCur[nItemIdx] = nVal;
     Lua_PushNumber(L, 1);
     return 1;
 }
-
 int LuaGetMaxEquipWishValue(Lua_State *L)
 {
     if (Lua_GetTopIndex(L) < 1)

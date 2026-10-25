@@ -126,6 +126,10 @@ int LuaTitle_GetTitleTab(Lua_State *L)
     return 1;
 }
 
+// V9 0x81594f0 walks an associative tree keyed by the title id and hands back the name stored at
+// node+0x18, so the argument is a TitleId, not a row.  playertitle.txt is not dense on TitleId
+// (ids 3000-3012 sit at rows 246,247 and 338-348), which is why this resolves the row by the
+// TitleId column instead of the id+1 arithmetic the older call sites use.
 int LuaTitle_GetTitleName(Lua_State *L)
 {
     if (Lua_GetTopIndex(L) < 1)
@@ -135,7 +139,18 @@ int LuaTitle_GetTitleName(Lua_State *L)
     }
 
     int nTitleId = (int)Lua_ValueToNumber(L, 1);
-    Lua_PushString(L, "");
+    char szTitleName[64] = { 0 };
+    for (int nRow = 2; nRow <= g_PlayerTitle.GetHeight(); ++nRow)
+    {
+        int nRowId = 0;
+        if (!g_PlayerTitle.GetInteger(nRow, "TitleId", 0, &nRowId))
+            continue;
+        if (nRowId != nTitleId)
+            continue;
+        g_PlayerTitle.GetString(nRow, "TitleName", "", szTitleName, sizeof(szTitleName));
+        break;
+    }
+    Lua_PushString(L, szTitleName);
     return 1;
 }
 
@@ -268,36 +283,181 @@ int LuaChatRoom_FindRoom(Lua_State *L)
 
 int LuaChatRoom_CloseRoom(Lua_State *L)
 {
-    Lua_PushNumber(L, 1);
+    if (Lua_GetTopIndex(L) < 1)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (!IsValidPlayer(nPlayerIndex))
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    const char *szRoomName = Lua_ValueToString(L, 1);
+    if (!szRoomName || !szRoomName[0])
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    std::lock_guard<std::mutex> lock(g_ChatRoomMutex);
+    for (auto it = g_mapChatRooms.begin(); it != g_mapChatRooms.end(); ++it)
+    {
+        if (it->second.sRoomName == szRoomName && it->second.nOwnerPlayerIndex == nPlayerIndex)
+        {
+            g_mapChatRooms.erase(it);
+            Lua_PushNumber(L, 1);
+            return 1;
+        }
+    }
+    Lua_PushNumber(L, 0);
     return 1;
 }
 
 int LuaChatRoom_KickOut(Lua_State *L)
 {
-    Lua_PushNumber(L, 1);
+    if (Lua_GetTopIndex(L) < 2)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (!IsValidPlayer(nPlayerIndex))
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    const char *szRoomName = Lua_ValueToString(L, 1);
+    const char *szTargetName = Lua_ValueToString(L, 2);
+    if (!szRoomName || !szTargetName)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    std::lock_guard<std::mutex> lock(g_ChatRoomMutex);
+    for (auto &kv : g_mapChatRooms)
+    {
+        if (kv.second.sRoomName == szRoomName && kv.second.nOwnerPlayerIndex == nPlayerIndex)
+        {
+            for (auto it = kv.second.vMembers.begin(); it != kv.second.vMembers.end(); ++it)
+            {
+                int nTargetIdx = *it;
+                if (nTargetIdx > 0 && nTargetIdx < MAX_PLAYER && Player[nTargetIdx].m_nIndex > 0)
+                {
+                    if (strcmp(Npc[Player[nTargetIdx].m_nIndex].Name, szTargetName) == 0)
+                    {
+                        kv.second.vMembers.erase(it);
+                        Lua_PushNumber(L, 1);
+                        return 1;
+                    }
+                }
+            }
+        }
+    }
+    Lua_PushNumber(L, 0);
     return 1;
 }
 
 int LuaChatRoom_Prevent(Lua_State *L)
 {
+    if (Lua_GetTopIndex(L) < 2)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (!IsValidPlayer(nPlayerIndex))
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
     Lua_PushNumber(L, 1);
     return 1;
 }
 
 int LuaChatRoom_UnPrevent(Lua_State *L)
 {
+    if (Lua_GetTopIndex(L) < 2)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (!IsValidPlayer(nPlayerIndex))
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
     Lua_PushNumber(L, 1);
     return 1;
 }
 
 int LuaChatRoom_ChangePassword(Lua_State *L)
 {
-    Lua_PushNumber(L, 1);
+    if (Lua_GetTopIndex(L) < 2)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (!IsValidPlayer(nPlayerIndex))
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    const char *szRoomName = Lua_ValueToString(L, 1);
+    const char *szNewPass = Lua_ValueToString(L, 2);
+    if (!szRoomName || !szNewPass)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    std::lock_guard<std::mutex> lock(g_ChatRoomMutex);
+    for (auto &kv : g_mapChatRooms)
+    {
+        if (kv.second.sRoomName == szRoomName && kv.second.nOwnerPlayerIndex == nPlayerIndex)
+        {
+            kv.second.sPassword = szNewPass;
+            Lua_PushNumber(L, 1);
+            return 1;
+        }
+    }
+    Lua_PushNumber(L, 0);
     return 1;
 }
 
 int LuaChatRoom_AddTime(Lua_State *L)
 {
-    Lua_PushNumber(L, 1);
+    if (Lua_GetTopIndex(L) < 1)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (!IsValidPlayer(nPlayerIndex))
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    const char *szRoomName = Lua_ValueToString(L, 1);
+    if (!szRoomName)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    DWORD dwAddSec = 3600;
+    if (Lua_GetTopIndex(L) >= 2)
+        dwAddSec = (DWORD)Lua_ValueToNumber(L, 2);
+    std::lock_guard<std::mutex> lock(g_ChatRoomMutex);
+    for (auto &kv : g_mapChatRooms)
+    {
+        if (kv.second.sRoomName == szRoomName && kv.second.nOwnerPlayerIndex == nPlayerIndex)
+        {
+            kv.second.dwExpireTime += dwAddSec;
+            Lua_PushNumber(L, 1);
+            return 1;
+        }
+    }
+    Lua_PushNumber(L, 0);
     return 1;
 }

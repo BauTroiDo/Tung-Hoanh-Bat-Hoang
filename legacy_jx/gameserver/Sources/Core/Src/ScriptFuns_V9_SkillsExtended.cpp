@@ -192,12 +192,17 @@ int LuaIsExpSkill(Lua_State* L)
     return 1;
 }
 
-// GetSkillMaxLevel(nSkillId) -> returns max skill level (e.g. 20 or 30)
+// GetSkillMaxLevel(nSkillId) -> max level of that skill id.
+// V9 0x80fdad0: no argument answers -1 (fld1/fchs); only (id-1) <= 0x7cf, i.e. ids 1..2048, reach
+// the skill table at stride 0x11c and everything else answers 0 (eax is zeroed before the branch).
+// The port's own source for that field is the skills.txt column "MaxLevel" read by
+// KSkillManager::Init, so the manager value replaces the literal 20 the stub invented.
 int LuaGetSkillMaxLevel(Lua_State* L)
 {
-    if (Lua_GetTopIndex(L) < 1) { Lua_PushNumber(L, 20); return 1; }
+    if (Lua_GetTopIndex(L) < 1) { Lua_PushNumber(L, -1); return 1; }
     int nSkillId = (int)Lua_ValueToNumber(L, 1);
-    Lua_PushNumber(L, 20);
+    if (nSkillId < 1 || nSkillId > 2048) { Lua_PushNumber(L, 0); return 1; }
+    Lua_PushNumber(L, g_SkillManager.GetSkillMaxLevel(nSkillId));
     return 1;
 }
 
@@ -270,6 +275,28 @@ int LuaSetAForbitSkill(Lua_State* L)
 // SetImmedSkill(nSkillId) -> sets active immediate skill
 int LuaSetImmedSkill(Lua_State* L)
 {
+    if (Lua_GetTopIndex(L) < 2)
+        return 0;
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return 0;
+
+    int nSkillId = (int)Lua_ValueToNumber(L, 1);
+    int nSkillLevel = (int)Lua_ValueToNumber(L, 2);
+
+    BYTE pPacket[32];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0x63;
+    pPacket[4] = 0x16;
+    pPacket[6] = (BYTE)nSkillId;
+    pPacket[7] = 1;
+    *(int*)(pPacket + 12) = 4;
+    *(int*)(pPacket + 16) = nSkillLevel;
+
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+    {
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 0x15);
+    }
     return 0;
 }
 
@@ -315,5 +342,6 @@ int LuaNpcCastSkill(Lua_State* L)
 // ReloadSkill() -> reloads skill setting files
 int LuaReloadSkill(Lua_State* L)
 {
+    g_SkillManager.ClearAndInit();
     return 0;
 }

@@ -1,4 +1,5 @@
 #include "KCore.h"
+#include "Jx3dM1DevAoiHooks.h"
 #include <math.h>
 #include "KRegion.h"
 #include "KMath.h"
@@ -387,6 +388,7 @@ void KSubWorld::Activate()
 	}
 */	
 #endif
+    JX3D_M1_DEV_AOI_EMIT_TICK(m_SubWorldID);
 }
 
 int KSubWorld::GetDistance(int nRx1, int nRy1, int nRx2, int nRy2)

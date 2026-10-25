@@ -68,7 +68,7 @@ class Client3DIsometricScene:
     def load_world_bundle(self):
         map_meta_path = os.path.join(self.bundle_dir, "maps", str(self.map_id), "map.meta.json")
         spawns_path = os.path.join(self.bundle_dir, "maps", str(self.map_id), "spawns.json")
-        
+
         with open(map_meta_path, "r", encoding="utf-8") as f:
             self.meta = json.load(f)
         with open(spawns_path, "r", encoding="utf-8") as f:
@@ -103,7 +103,7 @@ class Client3DIsometricScene:
         if not npc:
             print(f"[Interaction] Entity {npc_entity_id} not found!")
             return False
-        
+
         dist = math.hypot(player.position[0] - npc.position[0], player.position[2] - npc.position[2])
         if dist > 5.0:
             print(f"[Interaction] NPC '{npc.name}' is too far ({dist:.2f}m > 5.0m)! Moving closer...")
@@ -149,7 +149,7 @@ def run_prototype():
     # 1. Simulate Click-to-Move to Blacksmith (Tiem Ren) at [353.125, 0.0, 390.625]
     print("\n--- Phase 1: Click-to-Move & 3D Movement Interpolation ---")
     scene.handle_click_to_move([353.125, 0.0, 390.625])
-    
+
     # Tick 5 simulation frames (dt = 0.1s)
     for frame in range(1, 6):
         player.interpolate_movement(dt=0.1, speed_mps=6.0)
