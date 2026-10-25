@@ -213,6 +213,8 @@ public:
    bool deleteBlobData(char *roleName,unsigned int nkey,bool show=false);
    bool updateBlobData(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);
    bool updateBlobData_n(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);
+   // Opt-in CAS save; legacy save remains unchanged.
+   int updateBlobData_versioned(void *roleData,int len,char *roleName,sqlite3_int64 expected,sqlite3_int64* next);
    bool updateBlobData_atomic_dual(void * roleDataA,int lenA,char *roleNameA, void * roleDataB,int lenB,char *roleNameB,unsigned int nkeyA=0,unsigned int nkeyB=0,bool show=false);
    bool ensureTradeReceiptTable();
    bool isTradeTxCommitted(unsigned __int64 uTxId);

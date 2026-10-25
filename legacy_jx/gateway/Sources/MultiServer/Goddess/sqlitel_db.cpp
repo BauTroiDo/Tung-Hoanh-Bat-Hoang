@@ -5,6 +5,7 @@
 **********************************************************************/
 #include "stdafx.h"
 #include "sqlitel_db.h"
+#include "RoleSaveRevisionCAS.h"
 #ifndef WIN32
 #include <sys/stat.h>
 #else
@@ -1154,7 +1155,7 @@ bool sqlitel_db::ensureTradeReceiptTable()
 		if (zErrMsg) sqlite3_free(zErrMsg);
 		return false;
 	}
-	return true;
+	return JXRoleSaveRevision::Ensure(m_pDb);
 }
 
 bool sqlitel_db::isTradeTxCommitted(unsigned __int64 uTxId)
@@ -1250,6 +1251,17 @@ static std::string EncodeTradeRoleName(const char* role)
 	std::string result(converted);
 	delete[] converted;
 	return result;
+}
+
+// This opt-in entrypoint is used only by a negotiated revisioned
+// save packet; ordinary legacy saves still use updateBlobData_n.
+int sqlitel_db::updateBlobData_versioned(void* data, int len, char* roleName,
+    sqlite3_int64 expected, sqlite3_int64* next)
+{
+    if (!roleName || !roleName[0] || !ensureTradeReceiptTable()) return -14;
+    const std::string utf8Role = EncodeTradeRoleName(roleName);
+    if (utf8Role.empty()) return -14;
+    return JXRoleSaveRevision::Save(m_pDb, utf8Role, data, len, expected, next);
 }
 
 // Returns 1 for a new TxID, -16 for a stale TxID, -14 for SQLite errors.
@@ -1408,7 +1420,9 @@ int sqlitel_db::updateBlobData_atomic_dual_tx(
 		}
 	}
 
-	if (bOkA && bOkB && bOkReceipt && bOkFenceA && bOkFenceB)
+	if (bOkA && bOkB && bOkReceipt && bOkFenceA && bOkFenceB &&
+	    JXRoleSaveRevision::Advance(m_pDb, EncodeTradeRoleName(roleNameA)) &&
+	    JXRoleSaveRevision::Advance(m_pDb, EncodeTradeRoleName(roleNameB)))
 	{
 		if (sqlite3_exec(m_pDb, "COMMIT TRANSACTION;", NULL, NULL, &zErrMsg) == SQLITE_OK)
 		{
