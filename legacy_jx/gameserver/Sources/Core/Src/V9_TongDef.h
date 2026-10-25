@@ -32,8 +32,12 @@ struct KV9TongMember {
     DWORD dwRetireDate;
     int   nWeeklyOffer;
     int   nWeekGoalOffer;
+    int   nTotalOffer;
+    int   nCumulateOffer;
     DWORD dwRights;
     BOOL  bOnline;
+    BOOL  bDirty;
+    int   nPendingSyncDelta;
     std::map<int, int> mapTasks;
     std::map<int, int> mapUTasks;
 
@@ -50,8 +54,12 @@ struct KV9TongMember {
         dwRetireDate = 0;
         nWeeklyOffer = 0;
         nWeekGoalOffer = 0;
+        nTotalOffer = 0;
+        nCumulateOffer = 0;
         dwRights = 0;
         bOnline = TRUE;
+        bDirty = FALSE;
+        nPendingSyncDelta = 0;
     }
 };
 
@@ -272,6 +280,6 @@ struct KV9TongManager {
     }
 };
 
-extern KV9TongManager g_V9TongMgr;
+extern CORE_API KV9TongManager g_V9TongMgr;
 
 #endif // V9_TONG_DEF_H

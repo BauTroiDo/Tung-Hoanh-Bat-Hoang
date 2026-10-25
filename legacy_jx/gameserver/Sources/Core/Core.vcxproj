@@ -826,6 +826,10 @@ if not exist "$(OutDir)libdb181.dll" copy "..\..\Lib\release\libdb181.dll" "$(Ou
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|Win32'"> /LD   /LD </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|x64'"> /LD   /LD </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="Src\KPlayerTradeJournal.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|Win32'"> /LD   /LD </AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|x64'"> /LD   /LD </AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="Src\KSprControl.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|Win32'"> /LD   /LD </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|x64'"> /LD   /LD </AdditionalOptions>
@@ -889,9 +893,6 @@ if not exist "$(OutDir)libdb181.dll" copy "..\..\Lib\release\libdb181.dll" "$(Ou
     <ClCompile Include="Src\KSubWorld.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|Win32'"> /LD   /LD </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|x64'"> /LD   /LD </AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="Src\Jx3dLegacyWorldTickBridge.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Src\KSubWorldSet.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Server Debug|Win32'"> /LD   /LD </AdditionalOptions>
@@ -1200,6 +1201,7 @@ if not exist "$(OutDir)libdb181.dll" copy "..\..\Lib\release\libdb181.dll" "$(Ou
     <ClInclude Include="Src\KPlayerTeam.h" />
     <ClInclude Include="Src\KPlayerTong.h" />
     <ClInclude Include="Src\KPlayerTrade.h" />
+    <ClInclude Include="Src\KPlayerTradeJournal.h" />
     <ClInclude Include="Src\KSprControl.h" />
     <ClInclude Include="Src\KBasPropTbl.h" />
     <ClInclude Include="Src\KBuySell.h" />
@@ -1415,4 +1417,20 @@ if not exist "$(OutDir)libdb181.dll" copy "..\..\Lib\release\libdb181.dll" "$(Ou
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+
+  <ItemDefinitionGroup Condition="'$(Jx3dM1DevAoi)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>JX3D_M1_DEV_AOI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src\M1Portable\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup Condition="'$(Jx3dM1DevAoi)'=='true'">
+    <ClCompile Include="Src\M1Portable\src\WorldRuntime.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+    <ClCompile Include="Src\M1Portable\src\SpatialAoi.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+    <ClCompile Include="Src\M1Portable\src\AoiReplication.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+    <ClCompile Include="Src\M1Portable\src\AoiSessionBridge.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+    <ClCompile Include="Src\M1Portable\src\AoiDeliveryBudget.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+    <ClCompile Include="Src\M1Portable\src\AoiDeliveryPool.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+    <ClCompile Include="Src\M1Portable\src\WorldServerIntegrationAdapter.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+  </ItemGroup>
 </Project>

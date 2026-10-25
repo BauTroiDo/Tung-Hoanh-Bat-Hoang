@@ -104,4 +104,8 @@ int    gTimeStamp(char* sDest, char* pTail);
 
 
 
+
+// Trade Pair Atomic Save
+int SaveTradePairAtomic(unsigned __int64 uTxId, const char* szRoleA, void* pDataA, int nLenA, unsigned int dwCrcA, const char* szRoleB, void* pDataB, int nLenB, unsigned int dwCrcB, unsigned int uGenA = 0, unsigned int uGenB = 0);
+
 #endif // __INCLUDE_IDBROLESERVER_H__

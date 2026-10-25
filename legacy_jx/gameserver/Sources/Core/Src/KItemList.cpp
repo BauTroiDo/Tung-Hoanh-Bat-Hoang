@@ -77,6 +77,8 @@ KItemList::KItemList()
     m_nLastTotalStackedItem = 0;
 	ZeroMemory(m_EquipItem, sizeof(m_EquipItem));		
 	ZeroMemory(m_sBackItems, sizeof(m_sBackItems));
+	m_dwTradeSessionId = 0;
+	m_bHasTradeSnapshot = FALSE;
 	ZeroMemory(m_Items,sizeof(m_Items));
 }
 
@@ -1045,6 +1047,8 @@ BOOL KItemList::Init(int nPlayerIdx)
 	m_PlayerIdx = nPlayerIdx;
 	m_Hand = 0;
 	m_nBackHand = 0;
+	m_dwTradeSessionId = 0;
+	m_bHasTradeSnapshot = FALSE;
 	m_nMaskLock = FALSE;	// 面具锁
 	//m_ItemCount = 0;
 	m_Room[room_equipment].Init(EQUIPMENT_ROOM_WIDTH,EQUIPMENT_ROOM_HEIGHT);
@@ -8251,7 +8255,7 @@ void	KItemList::ClearRoom(int nRoom)
 }
 
 
-void	KItemList::BackupTrade()
+void	KItemList::BackupTrade(DWORD dwSessionId)
 {
 	if ( !m_Room[room_tradeback].m_pArray )
 		m_Room[room_tradeback].Init(m_Room[room_equipment].m_nWidth, m_Room[room_equipment].m_nHeight);
@@ -8262,35 +8266,75 @@ void	KItemList::BackupTrade()
 	memcpy(this->m_sBackItems, this->m_Items, sizeof(PlayerItem) * MAX_PLAYER_ITEM);
 
 	m_nBackHand = m_Hand;
+	m_Room[room_tradeback].SetClientMon(m_Room[room_equipment].GetmServer());
+	m_dwTradeSessionId = dwSessionId;
+	m_bHasTradeSnapshot = TRUE;
 }
 
-void	KItemList::RecoverTrade()
+void	KItemList::InvalidateTradeSnapshot()
 {
+	m_bHasTradeSnapshot = FALSE;
+	m_dwTradeSessionId = 0;
+	m_nBackHand = 0;
+	m_Room[room_tradeback].SetClientMon(0);
+	ZeroMemory(this->m_sBackItems, sizeof(PlayerItem) * MAX_PLAYER_ITEM);
+	if (m_Room[room_tradeback].m_pArray)
+	{
+		ZeroMemory(m_Room[room_tradeback].m_pArray, sizeof(int) * m_Room[room_tradeback].m_nWidth * m_Room[room_tradeback].m_nHeight);
+	}
+}
+
+BOOL	KItemList::HasValidTradeSnapshot(DWORD dwSessionId) const
+{
+	if (!m_bHasTradeSnapshot)
+		return FALSE;
+#ifdef _SERVER
+	if (dwSessionId == 0 || m_dwTradeSessionId != dwSessionId)
+		return FALSE;
+#else
+	if (dwSessionId != 0 && m_dwTradeSessionId != dwSessionId)
+		return FALSE;
+#endif
+	return TRUE;
+}
+
+void	KItemList::RecoverTrade(DWORD dwSessionId)
+{
+	if (!m_bHasTradeSnapshot)
+		return;
+#ifdef _SERVER
+	if (dwSessionId == 0 || m_dwTradeSessionId != dwSessionId)
+		return;
+#else
+	if (dwSessionId != 0 && m_dwTradeSessionId != dwSessionId)
+		return;
+#endif
+	if (!m_Room[room_tradeback].m_pArray || !m_Room[room_equipment].m_pArray)
+		return;
+
 	memcpy(m_Room[room_equipment].m_pArray, m_Room[room_tradeback].m_pArray, sizeof(int) * m_Room[room_tradeback].m_nWidth * m_Room[room_tradeback].m_nHeight);
 
 #ifndef _SERVER
 	int nIdx = 0;
 	while((nIdx = m_UseIdxItemList.GetNext(nIdx)))
 	{
-		if (m_Items[nIdx].nPlace == pos_trade1)   //删除对方的
+		if (m_Items[nIdx].nPlace == pos_trade1)
 		{
 			Remove(m_Items[nIdx].nIdx);
-			//ItemSet.Remove(m_Items[nIdx].nIdx);
 		}
 	}
-/*	for (int i = 0; i < MAX_PLAYER_ITEM; ++i)
-	{
-		if (m_Items[i].nIdx && m_Items[i].nPlace == pos_trade1)
-			Remove(m_Items[i].nIdx);
-	}*/
 #endif
 	memcpy(m_Items, m_sBackItems, sizeof(PlayerItem) * MAX_PLAYER_ITEM);
 	m_Hand = m_nBackHand;
+	m_Room[room_equipment].SetClientMon(m_Room[room_tradeback].GetmServer());
+
+	// Invalidate snapshot immediately upon recovery to prevent replay/duplication
+	InvalidateTradeSnapshot();
 }
-//开始交易时 清楚所有交易框的 东西
-void	KItemList::StartTrade()
+
+void	KItemList::StartTrade(DWORD dwSessionId)
 {
-	BackupTrade();
+	BackupTrade(dwSessionId);
 	ClearRoom(room_trade);
 	ClearRoom(room_trade1);
 }

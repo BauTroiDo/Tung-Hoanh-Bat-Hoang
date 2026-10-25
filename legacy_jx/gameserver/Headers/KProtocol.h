@@ -1951,6 +1951,37 @@ struct TProcessData
 };
 
 
+#pragma pack(push, 1)
+struct TTradePairSaveRequest
+{
+	unsigned char	nProtoId;
+	unsigned __int64 uTxId;
+	char            szRoleA[32];
+	char            szRoleB[32];
+	unsigned int    dwDataLenA;
+	unsigned int    dwDataLenB;
+	unsigned int    dwChecksumA;
+	unsigned int    dwChecksumB;
+	unsigned int    uGenerationA;
+	unsigned int    uGenerationB;
+	unsigned int    ulIdentityA;
+	unsigned int    ulIdentityB;
+	char            pDataBuffer[1];
+};
+
+struct TTradePairSaveResult
+{
+	unsigned char	nProtoId;
+	unsigned __int64 uTxId;
+	int             nResultCode;
+	char            szRoleA[32];
+	char            szRoleB[32];
+	unsigned int    ulIdentityA;
+	unsigned int    ulIdentityB;
+};
+#pragma pack(pop)
+
+
 struct TCheckNameData
 {
 	unsigned char	nProtoId;

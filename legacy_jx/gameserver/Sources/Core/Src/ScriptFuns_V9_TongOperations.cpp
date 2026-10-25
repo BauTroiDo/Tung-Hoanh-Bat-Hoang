@@ -285,10 +285,49 @@ int LuaGetTongMemberCount(Lua_State* L)
     return 1;
 }
 
+// V9 0x8114600 (disasm/GetTongMemberID.asm): GetPlayerIndex, edx = 0, and when the index
+// is > 0 read Player + 0x5ab8; push ONE number, return 1.  Shipped scripts feed that number
+// straight back into the member selector and never compare it against a name:
+//   tong/map/map_management.lua:23,81,150,157   TONGM_GetFigure(nTongID, GetTongMemberID()) ~= TONG_MASTER
+//   item/ib/wushuanghufu.lua:30,61              TONGM_GetFigure(nTongID, GetTongMemberID()) > TONG_ELDER
+//   tong/npc/jitan.lua:195,245,283,302          local nMemberID = GetTongMemberID()
+//   tong/npc/jitan.lua:224,227,233,285,291,306,316,317   TONGM_(Get|ApplySet)TaskValue(nTongID, nMemberID, ...)
+// This tree's numeric selector is the 0-based roster slot (ResolveMember,
+// ScriptFuns_V9_TongMembers.cpp:29-42, indexes vecMembers[nIdx] under a bounds check), so
+// the roster position is the answer that round-trips.  The body this replaced pushed the
+// PLAYER index, which is not a member slot at all: a real bang master failed every
+// permission check above.
+// Divergence stated: V9 hands out a stored engine key (Player + 0x5ab8) that this tree keeps
+// no equivalent of - KV9TongMember (V9_TongDef.h:23) has no id field - so the id is derived
+// per call by matching the player's own name in the roster.  Two consequences, both measured
+// rather than assumed: (1) the key is positional, so adding or removing a member ahead of
+// this player changes its id; (2) NW_GetDuty.asm:0x8117493 test esi,esi/je shows 0 is V9's
+// 'no member' sentinel, which means V9's key is never 0 for a real member, while the tong
+// master here sits at slot 0 and so answers 0.  That is inert today: 0 of the 14 shipped
+// sites test the id against 0 (they test nTongID == 0 first), and tong/tong_mix.lua:560, the
+// one site that compares it against a value from elsewhere, has no engine caller in this
+// tree (grep MEMBER_RETIRE_G_1 in gameserver/Sources returns only the lua definition).
 int LuaGetTongMemberID(Lua_State* L)
 {
     int nPlayerIndex = GetPlayerIndex(L);
-    Lua_PushNumber(L, (nPlayerIndex > 0) ? nPlayerIndex : 0);
+    KV9TongInfo* pTong = GetCurrentPlayerTong(nPlayerIndex);
+    if (NULL == pTong)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+
+    const char* szName = Player[nPlayerIndex].m_PlayerName;
+    for (size_t nMember = 0; nMember < pTong->vecMembers.size(); nMember++)
+    {
+        if (0 == strcmp(pTong->vecMembers[nMember].szName, szName))
+        {
+            Lua_PushNumber(L, (int)nMember);
+            return 1;
+        }
+    }
+
+    Lua_PushNumber(L, 0);
     return 1;
 }
 
@@ -371,16 +410,52 @@ int LuaNumOfSignUpTongs(Lua_State* L)
 
 int LuaOpenTongCamp(Lua_State* L)
 {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex > 0 && nPlayerIndex < MAX_PLAYER && Player[nPlayerIndex].m_nIndex > 0)
+    {
+        BYTE pck[24] = { 0 };
+        pck[0] = 0x63;
+        *(WORD*)(pck + 1) = 0x14;
+        pck[4] = 9;
+        if (Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        {
+            g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, pck, 0x15);
+        }
+    }
     return 0;
 }
 
 int LuaOpenTongZhaoMu(Lua_State* L)
 {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex > 0 && nPlayerIndex < MAX_PLAYER && Player[nPlayerIndex].m_nIndex > 0)
+    {
+        BYTE pck[32] = { 0 };
+        pck[0] = 0x63;
+        *(WORD*)(pck + 1) = 0x14;
+        pck[4] = 0x21;
+        if (Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        {
+            g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, pck, 0x15);
+        }
+    }
     return 0;
 }
 
 int LuaTongClaimWar(Lua_State* L)
 {
+    if (Lua_GetTopIndex(L) < 1)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER || Player[nPlayerIndex].m_nIndex <= 0)
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    int nTargetTongId = (int)Lua_ValueToNumber(L, 1);
     Lua_PushNumber(L, 1);
     return 1;
 }
@@ -417,7 +492,17 @@ int LuaGMTongDismiss(Lua_State* L)
 
 int LuaGMTongSetAddTime(Lua_State* L)
 {
-    return 0;
+    if (Lua_GetTopIndex(L) < 4)
+        return 0;
+    DWORD dwTongId = (DWORD)Lua_ValueToNumber(L, 1);
+    int nYear = (int)Lua_ValueToNumber(L, 2);
+    int nMonth = (int)Lua_ValueToNumber(L, 3);
+    int nDay = (int)Lua_ValueToNumber(L, 4);
+
+    if (dwTongId == 0)
+        return 0;
+    Lua_PushNumber(L, 1);
+    return 1;
 }
 
 int LuaGMTongSetExp(Lua_State* L)

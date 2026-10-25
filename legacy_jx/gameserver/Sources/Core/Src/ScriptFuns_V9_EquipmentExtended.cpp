@@ -117,6 +117,20 @@ int LuaGetPlatinaEquipIndex(Lua_State* L)
 // FantasyGoldEquip(nItemIdx) -> activates dream/fantasy gold item
 int LuaFantasyGoldEquip(Lua_State* L)
 {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return 0;
+
+    BYTE pPacket[16];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0x22;
+    pPacket[1] = 0;
+    pPacket[2] = 1;
+    pPacket[3] = 4;
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+    {
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 8);
+    }
     return 0;
 }
 
@@ -155,7 +169,26 @@ int LuaInlayStarStone(Lua_State* L)
 // GetFusionInEquipInfo(nItemIdx) -> returns fusion info
 int LuaGetFusionInEquipInfo(Lua_State* L)
 {
-    Lua_PushNumber(L, 0);
+    // V9 0x810a6f0: argc must be exactly 1, GetPlayerIndex must be a live player
+    // (sub 1 / cmp 0x4ae / ja), 0 < idx, then lua_newtable and six iterations that read
+    // record +0x240..+0x254 as keys and +0x258..+0x26c as values, skipping keys <= 0, and
+    // lua_settable(L,-3).  A guard failure returns NO value, not a number.
+    // This tree has no carrier for that key/value pair array (KItem.h carries 25 fixed
+    // arrays, none of them a fusion id/value pair; fusion.txt is a TEMPLATE table -
+    // KBPT_Fusion), and the two names that would write it are dead stubs at
+    // ScriptFuns_V9_GeneralCoreB.cpp:1173-1174, so no equipment here can hold a fusion
+    // entry: the honest answer today is an empty table, and the V9 pair storage stays an
+    // ask.  The shape is not cosmetic - five of this name's six script sites write
+    // next(GetFusionInEquipInfo(...)), and luaB_next (lbaselib.c:224) calls
+    // luaL_checktype(L, 1, LUA_TTABLE), so the number the stub pushed raised instead of
+    // taking the callers' 'no fusion info' branch.
+    int nFusionPlayer = GetPlayerIndex(L);
+    if (Lua_GetTopIndex(L) != 1 || nFusionPlayer <= 0 || nFusionPlayer >= MAX_PLAYER)
+        return 0;
+    int nFusionIdx = (int)Lua_ValueToNumber(L, 1);
+    if (nFusionIdx <= 0 || nFusionIdx >= MAX_ITEM)
+        return 0;
+    Lua_NewTable(L);
     return 1;
 }
 

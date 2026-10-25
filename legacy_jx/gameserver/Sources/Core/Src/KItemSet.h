@@ -32,7 +32,7 @@ typedef struct
 	int		nLevelScale;
 } REPAIR_ITEM_PARAM;
 
-class KItemSet
+class CORE_API KItemSet
 {
 private:
 	UINT			m_dwIDCreator;		        //  ID生成器，用于客户端与服务器端的交流
@@ -98,6 +98,6 @@ private:
 	int				FindFreeItemSet();
 };
 
-extern KItemSet	ItemSet;
+extern CORE_API KItemSet	ItemSet;
 #endif
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C2D91B47-3F8A-4E12-B041-7294832A9C01}</ProjectGuid>
+    <RootNamespace>TestPhase3RuntimeVerified</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>C:\Server-Game\SwordOnline\jxOnline\build_out_phase3_runtime_verified\</OutDir>
+    <IntDir>$(Configuration)_rv\</IntDir>
+    <TargetName>test_phase3_runtime_verified</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_SERVER;WIN32;_CONSOLE;_MBCS;WIN32_LEAN_AND_MEAN;_HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Server-Game\SwordOnline\jxOnline\gameserver\Headers;C:\Server-Game\SwordOnline\jxOnline\gameserver\Sources\Core\Src;C:\Server-Game\SwordOnline\jxOnline\gameserver\Sources\engine\src;C:\Server-Game\SwordOnline\jxOnline\gameserver\Sources\engine\include;C:\Server-Game\SwordOnline\jxOnline\gameserver\Sources\Library\LuaLib\src;C:\Server-Game\SwordOnline\jxOnline\header;C:\Server-Game\SwordOnline\jxOnline\gateway\include;C:\Server-Game\SwordOnline\jxOnline\gameserver\Sources\MultiServer\Common;C:\Server-Game\SwordOnline\jxOnline\gateway\Sources\MultiServer\Goddess;C:\Server-Game\SwordOnline\jxOnline;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)test_phase3_runtime_verified.exe</OutputFile>
+      <AdditionalLibraryDirectories>C:\Server-Game\SwordOnline\jxOnline\build_out_phase3_runtime_verified;C:\Server-Game\SwordOnline\jxOnline\gameserver\Lib\release;C:\Server-Game\SwordOnline\jxOnline\gateway\Lib\release_x64\sqlite3;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>CoreServer.lib;engine.lib;lualibdll.lib;sqlite3.lib;ws2_32.lib;kernel32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="gameserver\Sources\test_phase3_runtime_verified.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

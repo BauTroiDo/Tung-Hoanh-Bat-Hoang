@@ -25,3 +25,13 @@ ipch/
 
 # Runtime output (regenerated; game data lives outside this tree)
 *.log
+
+# Local generated-build output; tracked vendor libraries/binaries are unaffected.
+/build_out*/
+/Release/
+/Release_e2e/
+/Release_rv/
+*.recipe
+*.vcxproj.FileListAbsolute.txt
+*.pch
+*.res

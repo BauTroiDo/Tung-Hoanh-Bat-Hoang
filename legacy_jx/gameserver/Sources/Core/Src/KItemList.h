@@ -49,7 +49,9 @@ private:
 	int			m_EquipItem[itempart_num];						// 玩家装备的道具（对应游戏世界中道具数组的索引）
 	int			m_ItemBox[MAX_ITEM_BOX];                        // 装备单对象栏
 	PlayerItem	m_Items[MAX_PLAYER_ITEM];						// 玩家拥有的所有道具（包括装备着的和箱子里放的，对应游戏世界中道具数组的索引）
-	PlayerItem	m_sBackItems[MAX_PLAYER_ITEM];					// 交易过程中 m_Items 的备份
+	PlayerItem	m_sBackItems[MAX_PLAYER_ITEM];
+	DWORD		m_dwTradeSessionId;
+	BOOL		m_bHasTradeSnapshot;					// 交易过程中 m_Items 的备份
 	static int	ms_ActiveEquip[itempart_num][MAX_ITEM_ACTIVE];	// 某个部分的装备所激活的装备
 	static int	ms_ActivedEquip[itempart_num][MAX_ITEM_ACTIVE];	// 某个部分的装备被什么装备激活
 	KLinkArray	m_FreeIdxItemList;
@@ -156,9 +158,11 @@ public:
 	void		SetPlayerIdx(int nIdx);				// 设定玩家索引
 	int			Hand() { return m_Hand; };
 	void		ClearRoom(int nRoom);
-	void		BackupTrade();
-	void		RecoverTrade();
-	void		StartTrade();
+	void		BackupTrade(DWORD dwSessionId = 0);
+	void		RecoverTrade(DWORD dwSessionId = 0);
+	void		StartTrade(DWORD dwSessionId = 0);
+	void		InvalidateTradeSnapshot();
+	BOOL		HasValidTradeSnapshot(DWORD dwSessionId = 0) const;
 	int			GetItemNum(int nGenre, int nDetailType, int nParticular, int nLevel = 1,ITEM_POSITION nRongType=pos_equiproom); // dem so item cung loai
 	int         GetItemCount(int nGenre, int nDetailType, int nParticular = -1,int nlevel = -1, int nSerise = -1, int nRongType=pos_equiproom);
 	int         ConsumeItemCount(int nItemCount,int nGenre, int nDetailType, int nParticular,int nlevel= -1, int nRongType=pos_equiproom);

@@ -1,4 +1,5 @@
 ﻿#include "KCore.h"
+#include "Jx3dM1DevAoiHooks.h"
 #include <math.h>
 #include "KNpc.h"
 #include "KSubWorld.h"
@@ -967,6 +968,7 @@ int KNpcSet::AddServerNpcB(int nNpcSettingIdxInfo, int nSubWorld, int nRegion, i
 	m_UseIdxNpcSet.Insert(i);  //已用表增加一个
 	SubWorld[nSubWorld].m_Region[nRegion].AddNpc(i);//增加节点m_WorldMessage.Send(GWM_NPC_ADD, nRegion, i);
 	SubWorld[nSubWorld].m_Region[nRegion].AddRef(nMapX, nMapY, obj_npc);  //NPC 出现的位置
+	JX3D_M1_DEV_AOI_EMIT_SPAWN(i);
 	//SubWorld[nSubWorld].m_Region[nRegion].AddNpcRef(nMapX,nMapY);
 
 #ifndef _SERVER
@@ -1033,6 +1035,7 @@ void KNpcSet::Remove(int nIdx,BOOL isNeedSyn)
 	}
 }
 #endif
+	JX3D_M1_DEV_AOI_EMIT_REMOVE(nIdx, Npc[nIdx].m_dwID);
 	Npc[nIdx].ClearNpcState();
 	Npc[nIdx].m_SkillList.Clear();
 	Npc[nIdx].Remove(); ////外观删除
@@ -1047,6 +1050,7 @@ void KNpcSet::RemoveAll()
 	while(nIdx)
 	{
 		nIdx1 = m_UseIdxNpcSet.GetNext(nIdx);
+		JX3D_M1_DEV_AOI_EMIT_REMOVE(nIdx, Npc[nIdx].m_dwID);
 		Npc[nIdx].ClearNpcState();
 		Npc[nIdx].m_SkillList.Clear();
 		Npc[nIdx].Remove();

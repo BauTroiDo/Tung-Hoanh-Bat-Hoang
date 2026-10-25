@@ -4,6 +4,7 @@
 #include "KSubWorldSet.h"
 #include "KSubWorld.h"
 #include "KPlayer.h"
+#include "KPlayerTradeJournal.h"
 #include "KSG_StringProcess.h"
 #ifndef _STANDALONE
 //#include "..\MultiServer\Common\Buffer.h"
@@ -43,6 +44,12 @@
 //主要用于在线的存档
 BOOL KPlayer::SavePlayerData(bool bUnLock)
 {
+	if (KPlayerTradeJournal::Instance().IsPlayerLocked(this->m_PlayerName))
+	{
+		printf("[SavePlayerData Blocked]: Player '%s' is locked by Trade Journal Recovery. Skipping save to protect data integrity.\n", this->m_PlayerName);
+		return FALSE;
+	}
+
 	if (!g_pDataClient)
 	{
 		printf("--------------Nhan vat bi ngat ket noi khoi Database qua trinh luu tru bi loi--------------- \n");
@@ -69,13 +76,19 @@ BOOL KPlayer::SavePlayerData(bool bUnLock)
 		 return false;
 	 }
 	 if (pData->nItemCount<=0)
-	 {	 		  
-       printf("XXXXXXXXXXXXXXXXXXXXXX(%s)XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n",pData->BaseInfo.szName);
-	   printf("XXXX Save XXXX Canh bao: Item Count: NULL, vui long kiem tra so luong!! XXXXXXXXXXXXXXXXXX\n");
-	   printf("XXXX Save XXXX Canh bao: Item Count: NULL, vui long kiem tra so luong!! XXXXXXXXXXXXXXXXXX\n");
-	   printf("XXXX Save XXXX Canh bao: Item Count: NULL, vui long kiem tra so luong!! XXXXXXXXXXXXXXXXXX\n");
-	   printf("XXXX Save XXXX Canh bao: Item Count: NULL, vui long kiem tra so luong!! XXXXXXXXXXXXXXXXXX\n");
-	   printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+	 {
+		int nActualRamItems = this->m_ItemList.GetItemCount();
+		if (nActualRamItems > 0)
+		{
+			printf("XXXXXXXXXXXXXXXXXXXXXX(%s)XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n",pData->BaseInfo.szName);
+			printf("XXXX Save XXXX [Serialization Anomaly]: RAM has %d items but serialized count is 0!! XXXXX\n", nActualRamItems);
+			printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		}
+		else
+		{
+			// Legitimate empty inventory: character currently owns 0 items
+			printf("[Save Info]: Character (%s) inventory is empty (0 items).\n", pData->BaseInfo.szName);
+		}
 	 }
 
 	//printf("-----------存档长度C:%d-----------\n", pData->dwDataLen);
@@ -112,7 +125,13 @@ BOOL KPlayer::SavePlayerData(bool bUnLock)
 			nBufferSize+=pBuffer->GetUsed();
 #ifndef _STANDALONE
 			//printf("-----------存档长度A:%d-----------\n", pBuffer->GetUsed());
-			g_pDataClient->SendPackToServer(pBuffer->GetBuffer(), pBuffer->GetUsed());
+			HRESULT hrSend = g_pDataClient->SendPackToServer(pBuffer->GetBuffer(), pBuffer->GetUsed());
+			if (FAILED(hrSend))
+			{
+				try { if (pBuffer) { pBuffer->Release(); pBuffer = NULL; } } catch(...) {}
+				m_theSend_p.DelData(c2s_rolekfjhu_saveroleinfo);
+				return FALSE;
+			}
 #else
 			//printf("-----------存档长度B:%d-----------\n",actLen);
 			g_pDataClient->SendPackToServer(pBuffer, actLen);

@@ -1,4 +1,5 @@
 #include "KCore.h"
+#include "KPlayerTradeJournal.h"
 #ifndef WM_MOUSEHOVER
 #define WM_MOUSEHOVER 0x02A1
 #endif
@@ -19,6 +20,7 @@
 #include "KObj.h"
 #include "KNpcSet.h"
 #include "KSubWorld.h"
+#include "KPlayerAntiAddict.h"
 #include "KPlayer.h"
 #include "Text.h"
 
@@ -66,30 +68,141 @@ extern void V9_ReleaseAllSessions(int);
 
 #define		MAX_APPLY_TEAM_TIME				500
 
-#define		BASE_WALK_SPEED					5    //走速
-#define		BASE_RUN_SPEED					10   //跑速
+#define		BASE_WALK_SPEED					5    //
+#define		BASE_RUN_SPEED					10   //
 
-#define		BASE_ATTACK_SPEED				0       //基本的攻击速度
-#define		BASE_CAST_SPEED					0       //基本的出招速度
+#define		BASE_ATTACK_SPEED				0       //墓俣
+#define		BASE_CAST_SPEED					0       //某俣
 #define		BASE_VISION_RADIUS				120     //
 #define		BASE_HIT_RECOVER				6
 
-#define		TOWN_PORTAL_TIME				1800    //回城时间
+#define		TOWN_PORTAL_TIME				1800    //爻时
 
 
 KPlayer	*Player = NULL;//Player[MAX_PLAYER];
+
+//=============================================================================
+// V9 Anti-Addiction Implementation & Safe Cancel Trade
+//=============================================================================
+KPlayerAntiAddict g_PlayerAntiAddict[MAX_PLAYER];
+
+void AntiAddict_OnPlayerActive(int nPlayerIndex)
+{
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return;
+    if (Player[nPlayerIndex].m_nNetConnectIdx < 0)
+        return;
+
+    g_PlayerAntiAddict[nPlayerIndex].dwOnlineTime++;
+    g_PlayerAntiAddict[nPlayerIndex].dwTiredTime++;
+
+    DWORD dwCurDegree = (DWORD)g_PlayerAntiAddict[nPlayerIndex].GetDegree();
+    if (dwCurDegree != g_PlayerAntiAddict[nPlayerIndex].dwLastDegree)
+    {
+        g_PlayerAntiAddict[nPlayerIndex].dwLastDegree = dwCurDegree;
+        AntiAddict_SendSyncPacket(nPlayerIndex);
+    }
+}
+
+void AntiAddict_OnPlayerRelease(int nPlayerIndex)
+{
+    if (nPlayerIndex > 0 && nPlayerIndex < MAX_PLAYER)
+    {
+        g_PlayerAntiAddict[nPlayerIndex].Clear();
+    }
+}
+
+BOOL AntiAddict_SendSyncPacket(int nPlayerIndex)
+{
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return FALSE;
+    if (!g_pServer || Player[nPlayerIndex].m_nNetConnectIdx < 0)
+        return FALSE;
+
+    BYTE pPacket[16];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0xbd;
+    *(DWORD*)(pPacket + 1) = g_PlayerAntiAddict[nPlayerIndex].dwOnlineTime;
+    *(DWORD*)(pPacket + 5) = g_PlayerAntiAddict[nPlayerIndex].dwTiredTime;
+    *(DWORD*)(pPacket + 9) = g_PlayerAntiAddict[nPlayerIndex].dwRelaxTime;
+
+    return g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 13);
+}
+
+void KPlayer::CancelTradeSafe()
+{
+    // 1. Validate both player indices and existence
+    if (m_nPlayerIndex <= 0 || m_nPlayerIndex >= MAX_PLAYER)
+        return;
+    if (m_cTrade.m_nIsTrading != 1)
+        return;
+
+    int nDestIdx = m_cTrade.m_nTradeDest;
+    if (nDestIdx <= 0 || nDestIdx >= MAX_PLAYER || nDestIdx == m_nPlayerIndex)
+        return;
+
+    // 2. Strict bidirectional link validation: Partner must also be trading with this player
+    if (Player[nDestIdx].m_cTrade.m_nIsTrading != 1 || Player[nDestIdx].m_cTrade.m_nTradeDest != m_nPlayerIndex)
+        return;
+
+    // 3. Trade session validation: Both must belong to the exact same active session (session 0 is strictly forbidden)
+    DWORD dwSession = m_cTrade.m_dwTradeSessionId;
+    if (dwSession == 0 || Player[nDestIdx].m_cTrade.m_dwTradeSessionId != dwSession)
+        return;
+
+    // 4. Pre-condition rollback validation: Both must possess valid rollback snapshots
+    // If either party lacks a valid snapshot, abort without touching either inventory
+    if (!this->m_ItemList.HasValidTradeSnapshot(dwSession) ||
+        !Player[nDestIdx].m_ItemList.HasValidTradeSnapshot(dwSession))
+    {
+        return;
+    }
+
+    // 5. ATOMIC STATE TRANSITION: Mark both trading inactive BEFORE ANY inventory modification
+    m_cTrade.m_nIsTrading = 0;
+    m_cTrade.m_nTradeState = 0;
+    Player[nDestIdx].m_cTrade.m_nIsTrading = 0;
+    Player[nDestIdx].m_cTrade.m_nTradeState = 0;
+
+    // 6. Transactional rollback of both parties
+    this->m_ItemList.RecoverTrade(dwSession);
+    this->m_ItemList.ClearRoom(room_trade);
+    this->m_ItemList.ClearRoom(room_trade1);
+    this->m_cTrade.Release();
+    this->m_cMenuState.RestoreBackupState(m_nPlayerIndex);
+
+    Player[nDestIdx].m_ItemList.RecoverTrade(dwSession);
+    Player[nDestIdx].m_ItemList.ClearRoom(room_trade);
+    Player[nDestIdx].m_ItemList.ClearRoom(room_trade1);
+    Player[nDestIdx].m_cTrade.Release();
+    Player[nDestIdx].m_cMenuState.RestoreBackupState(nDestIdx);
+
+    // 7. Synchronize cancellation to both clients
+    TRADE_DECISION_SYNC sSync;
+    sSync.ProtocolType = s2c_tradedecision;
+    sSync.m_btDecision = 0;
+    if (g_pServer)
+    {
+        if (m_nNetConnectIdx >= 0)
+            g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(TRADE_DECISION_SYNC));
+        if (Player[nDestIdx].m_nNetConnectIdx >= 0)
+            g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx, (BYTE*)&sSync, sizeof(TRADE_DECISION_SYNC));
+    }
+}
+
 int		g_nLastNetMsgLoop;
 
 //-------------------------------------------------------------------------
-//	功能：构造函数
+//	埽旌?
 //-------------------------------------------------------------------------
 KPlayer::KPlayer()
 {
+	m_nPlayerIndex = 0;
 	Release();
 }
 
 //-------------------------------------------------------------------------
-//	功能：析构函数
+//	埽
 //-------------------------------------------------------------------------
 KPlayer::~KPlayer()
 {
@@ -97,10 +210,16 @@ KPlayer::~KPlayer()
 }
 
 //-------------------------------------------------------------------------
-//	功能：清空  退出游戏时候
+//	埽  顺戏时
 //-------------------------------------------------------------------------
 void	KPlayer::Release()
 {
+#ifdef _SERVER
+	if (m_nPlayerIndex > 0 && m_nPlayerIndex < MAX_PLAYER)
+	{
+		AntiAddict_OnPlayerRelease(m_nPlayerIndex);
+	}
+#endif
 	m_nChestPW = 0;
 	m_isGm = 0;
 	m_IsInfindPathState=false;
@@ -162,7 +281,7 @@ void	KPlayer::Release()
 	m_nExp = 0;
 	m_nNextLevelExp = PLAYER_LEVEL_1_EXP;
 	m_bExchangeServer = FALSE;
-	m_CUnlocked = 0;  //默认解锁
+	m_CUnlocked = 0;  //默辖
 	
 	m_dwLeadExp = 0;
 	m_dwLeadLevel = 1;
@@ -171,12 +290,12 @@ void	KPlayer::Release()
 	m_nObjectIdx = 0;
 //	m_bWaitingPlayerFeedBack = false;
 //	m_btTryExecuteScriptTimes = 0;	//
-    m_nForbiddenFlag = 0; //默认是解除禁言
+    m_nForbiddenFlag = 0; //默墙
 	
 #ifdef _SERVER
 	m_IsFirstLogin       = 1;
-	m_TempEnTerMapIndx = 0;          // 客户端传过来的临时登陆地图    
-	m_TempKeyId = 0;                 // 重生点keyiD
+	m_TempEnTerMapIndx = 0;          // 突舜时陆图    
+	m_TempKeyId = 0;                 // keyiD
 	m_bUseReviveIdWhenLogin = 0;
 	m_dwDeathScriptId = 0;
 	m_dwDamageScriptId = 0;
@@ -192,7 +311,7 @@ void	KPlayer::Release()
 	m_sDeathRevivalPos.m_nMpsX = 0;
 	m_sDeathRevivalPos.m_nMpsY = 0;
 	
-	m_sPortalPos.m_nSubWorldId = 0;  //返回点
+	m_sPortalPos.m_nSubWorldId = 0;  //氐
 	m_sPortalPos.m_nTime = 0;
 	m_sPortalPos.m_nMpsX = 0;
 	m_sPortalPos.m_nMpsY = 0;
@@ -201,6 +320,8 @@ void	KPlayer::Release()
 	m_dwLoginTime			= -1;
 	//	m_uLastPingTime			= -1;
 	m_bFinishLoading = FALSE;
+	// The database-owned trade order is keyed by TxID, not this in-memory counter.
+	m_uSaveGeneration = 0;
 	m_uMustSave  = SAVE_IDLE;
 	m_bIsQuiting = FALSE;
 	m_isInGame   =false;
@@ -233,7 +354,7 @@ void	KPlayer::Release()
 	__forbitEnmity = 0;
 }
 //-------------------------------------------------------------------------
-//	功能：设定 m_nPlayerIndex (本函数只允许在PlayerSet的Init中调用)
+//	埽瓒?m_nPlayerIndex (只PlayerSetInit械)
 //-------------------------------------------------------------------------
 void	KPlayer::SetPlayerIndex(int nNo)
 {
@@ -244,16 +365,16 @@ void	KPlayer::SetPlayerIndex(int nNo)
 }
 
 //-------------------------------------------------------------------------
-//	功能：获得本实例在 Player 数组中的位置
+//	埽帽实 Player 械位
 //-------------------------------------------------------------------------
 int		KPlayer::GetPlayerIndex()
 {
 	return m_nPlayerIndex;
 }
 
-#define 	defMAX_SLEEP_TIME	10800     //休眠时间设置 // 3600
+#define 	defMAX_SLEEP_TIME	10800     //时 // 3600
 //-------------------------------------------------------------------------
-//	功能：玩家每次游戏循环都需要处理的东西
+//	埽每戏循要亩
 //-------------------------------------------------------------------------
 void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 {
@@ -262,10 +383,15 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 	if (m_nNetConnectIdx == -1 || m_bExchangeServer)
 		return;
 
+	if ((g_SubWorldSet.GetGameTime() % 18) == 0)
+	{
+		AntiAddict_OnPlayerActive(m_nPlayerIndex);
+	}
+
 	/*if (m_nVipType==0)
 	{
 	  if (m_GameLeftTime>0)
-	  { //包月
+	  { //
 		//if (g_SubWorldSet.GetGameTime()>>4)
 		if (g_SubWorldSet.GetGameTime()-(g_SubWorldSet.GetGameTime()>>4<<4)==0)
 		{
@@ -279,7 +405,7 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 		  if (m_GameLeftTime<=540)
 		  {
 			  char nMsg[64]={0};
-			  sprintf(nMsg,"提示:<c=gyellow>在游戏中还可以在线 %d<c> 秒!",m_GameLeftTime>>4);
+			  sprintf(nMsg,"示:<c=gyellow>戏谢 %d<c> !",m_GameLeftTime>>4);
 			  m_ItemList.msgshow(nMsg);
 		  }
 		}
@@ -288,7 +414,7 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 		m_Isinvalid = TRUE;
 
 	  if  (m_Isinvalid)
-	  {//发送时间到的提示
+	  {//时涞绞?
 		  g_pServer->ShutdownClient(m_nNetConnectIdx);
 	  }
 
@@ -299,15 +425,15 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 		m_nPlayerTime--;
 		//printf("m_nPlayerTime: %d\n",m_nPlayerTime);
 		if (m_nPlayerTime==0)
-		{//称号的时间到期了
-			//UseToolSkills(); //移除称号属性
+		{//坪诺时涞?
+			//UseToolSkills(); //瞥坪
 			for (int i=0;i<5;++i)
 			{
 				int nSkillD=Npc[m_nIndex].m_ExtSkill[i];
 				if (nSkillD>0)
-				{//有技能ID,需要先去除状态
+				{//屑ID,要去状态
 					Npc[m_nIndex].m_ExtSkill[i]=0;
-					Npc[m_nIndex].SetSkillLeftTime(nSkillD,0); //同步客户端删除状态				
+					Npc[m_nIndex].SetSkillLeftTime(nSkillD,0); //同突删状态				
 				}
 			}
 
@@ -326,9 +452,9 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 			{
 				int nSkillD = Npc[m_nIndex].m_ExtSkill[i];
 				if (nSkillD > 0) 
-				{//有技能ID,需要先去除状态
+				{//屑ID,要去状态
 					Npc[m_nIndex].m_ExtSkill[i]=0;
-					Npc[m_nIndex].SetSkillLeftTime(nSkillD,0); //同步客户端删除状态				
+					Npc[m_nIndex].SetSkillLeftTime(nSkillD,0); //同突删状态				
 				}
 			}
 			Npc[m_nIndex].m_NpcTitle = 0;
@@ -336,17 +462,17 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 		}
 	}
 
-	//时间任务的处理
+	//时拇
 	m_TimerTask.Activate(g_PlayerTimerCallBackFun);
 
-	this->SendCurNormalSyncData();     //无限循环同步生命 内力等最大值
+	this->SendCurNormalSyncData();     //循同 值
 	
 	this->m_cChat.TimerAdd();
 	
-	//仇杀倒计时
-	this->m_cPK.Active();	           //无限循环仇杀
+	//杀时
+	this->m_cPK.Active();	           //循杀
 
-	//this->m_cTong.Active();            //无限循环宣战
+	//this->m_cTong.Active();            //循战
 	
 	if (Npc[m_nIndex].m_FightMode == 0 && m_bSleepMode == FALSE && g_SubWorldSet.GetGameTime() - m_nLastNetOperationTime > defMAX_SLEEP_TIME)
 	{
@@ -359,7 +485,7 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 	}
 
 	if  (_minLimitLevel>0 && _maxLimitLevel>0)
-	{//该地图限制了等级 就执行飞出该地图
+	{//玫图说燃 执蟹沙玫图
 		if  (Npc[m_nIndex].m_Level<_minLimitLevel || Npc[m_nIndex].m_Level>_maxLimitLevel)
 		{
 			///mapPos pos;
@@ -371,7 +497,7 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 
 //
 #else
-	// 队伍申请人的处理
+	// 说拇
 	if ( !m_cTeam.m_nFlag )
 	{
 		if (m_cTeam.m_nApplyCaptainID > 0)
@@ -391,7 +517,7 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 			}
 		}
 	}
-	// 队长的处理
+	// 映拇
 	else if (m_cTeam.m_nFigure == TEAM_CAPTAIN)
 	{
 		int i;
@@ -403,7 +529,7 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 				{
 					m_cTeam.m_sApplyList[i].m_dwNpcID = 0;
 					m_cTeam.UpdateInterface();
-					m_cTeam.UpdateamUI(); //显示主界面队伍信息
+					m_cTeam.UpdateamUI(); //示息
 				}
 				else
 				{
@@ -413,7 +539,7 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 						m_cTeam.m_sApplyList[i].m_dwNpcID = 0;
 						m_cTeam.m_sApplyList[i].m_dwTimer = 0;
 						m_cTeam.UpdateInterface();
-						m_cTeam.UpdateamUI(); //显示主界面队伍信息
+						m_cTeam.UpdateamUI(); //示息
 					}
 				}
 			}
@@ -422,10 +548,10 @@ void	KPlayer::Active(int  _minLimitLevel, int  _maxLimitLevel)
 	
 	++m_nSendMoveFrames;
 	
-	// 仇杀倒计时
+	// 杀时
 	this->m_cPK.Active();
 
-	this->m_cTong.Active();            //无限循环宣战
+	this->m_cTong.Active();            //循战
 
 	
 #endif
@@ -454,8 +580,8 @@ void KPlayer::ProcessInputMsg(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch(uMsg)
 	{
-	case WM_MOUSEMOVE:   //鼠标离开
-	case WM_MOUSEHOVER:  //鼠标经过
+	case WM_MOUSEMOVE:   //肟?
+	case WM_MOUSEHOVER:  //昃?
 		if (wParam & MK_LBUTTON)
 			OnButtonMove(LOWORD(lParam), HIWORD(lParam),
 			(wParam & ~(MK_LBUTTON | MK_MBUTTON | MK_RBUTTON)), button_left);
@@ -466,32 +592,32 @@ void KPlayer::ProcessInputMsg(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			OnMouseMove(LOWORD(lParam), HIWORD(lParam));
 		break;
 		
-	case WM_LBUTTONUP:   //左键上
+	case WM_LBUTTONUP:   //
 		OnButtonUp(LOWORD(lParam), HIWORD(lParam), button_left);
 		break;
 		
-	case WM_LBUTTONDOWN: //左键按下
+	case WM_LBUTTONDOWN: //
 		OnButtonDown(LOWORD(lParam), HIWORD(lParam), 
 			(wParam & ~(MK_LBUTTON | MK_MBUTTON | MK_RBUTTON)), button_left);
 		break;
 		
-	case WM_RBUTTONUP:   //右键上
+	case WM_RBUTTONUP:   //壹
 		OnButtonUp(LOWORD(lParam), HIWORD(lParam), button_right);
 		break;	
 		
-	case WM_RBUTTONDOWN: //右键按下
+	case WM_RBUTTONDOWN: //壹
 		OnButtonDown(LOWORD(lParam), HIWORD(lParam),
 			(wParam & ~(MK_LBUTTON | MK_MBUTTON | MK_RBUTTON)), button_right);
 		break;
 	}
 }
-//按下鼠标的时候
+//时
 void KPlayer::OnButtonDown(int x,int y, int Key, MOUSE_BUTTON nButton)
 {
 	m_MouseDown[(int)nButton] = TRUE;
 
-	FindSelectNpc(x, y, relation_all);	 //赋值锁定 NPC 
-	FindSelectObject(x, y);	             //赋值锁定 物品
+	FindSelectNpc(x, y, relation_all);	 //值 NPC 
+	FindSelectObject(x, y);	             //值 品
 	//	Npc[m_nIndex].m_nPeopleIdx = m_nPeapleIdx;
 	ProcessMouse(x, y, Key, nButton);
 }
@@ -508,7 +634,7 @@ void KPlayer::OnButtonUp(int x,int y,MOUSE_BUTTON nButton)
 {
 	m_MouseDown[(int)nButton] = 0;
 }
-//客户端鼠标经过显示的图标
+//突昃示?
 void KPlayer::OnMouseMove(int x,int y)
 {
 	m_nPeapleIdx = 0;
@@ -521,16 +647,16 @@ void KPlayer::OnMouseMove(int x,int y)
 		if (Npc[m_nPeapleIdx].m_Kind == kind_dialoger)
 		{
 			//char nMsg[64];
-			//sprintf(nMsg,"提示: %s 打开面板..", Npc[m_nPeapleIdx].Name);
+			//sprintf(nMsg,"示: %s ..", Npc[m_nPeapleIdx].Name);
 			//m_ItemList.ClientShowMsg(nMsg);
 			CoreDataChanged(GDCNI_SWITCH_CURSOR, NULL, MOUSE_CURSOR_DIALOG);
 		}
 		else if (Npc[m_nPeapleIdx].m_Kind == kind_player && Npc[m_nPeapleIdx].m_BaiTan)
 		{
 			//char nMsg[64];
-			//sprintf(nMsg,"提示: %s 摆摊中..", Npc[m_nPeapleIdx].Name);
+			//sprintf(nMsg,"示: %s 摊..", Npc[m_nPeapleIdx].Name);
 			//m_ItemList.ClientShowMsg(nMsg);
-			CoreDataChanged(GDCNI_SWITCH_CURSOR, NULL, MOUSE_CURSOR_DIALOG);  //设置鼠标指针图标
+			CoreDataChanged(GDCNI_SWITCH_CURSOR, NULL, MOUSE_CURSOR_DIALOG);  //指图
 		}
 		else if (NpcSet.GetRelation(m_nIndex, m_nPeapleIdx) == relation_enemy)
 			CoreDataChanged(GDCNI_SWITCH_CURSOR, NULL, MOUSE_CURSOR_FIGHT);
@@ -549,7 +675,7 @@ void KPlayer::OnMouseMove(int x,int y)
 	else
 		CoreDataChanged(GDCNI_SWITCH_CURSOR, NULL, MOUSE_CURSOR_NORMAL);
 }
-//鼠标行为 鼠标线程
+//为 叱
 void KPlayer::ProcessMouse(int x, int y, int Key, MOUSE_BUTTON nButton)
 {
 
@@ -558,9 +684,9 @@ void KPlayer::ProcessMouse(int x, int y, int Key, MOUSE_BUTTON nButton)
 
 	if (m_ItemList.m_Hand > 0)
 	{
-		if (nButton == button_left) //左键
+		if (nButton == button_left) //
 		{
-			ThrowAwayItem();  //丢弃物品 丢掉物品
+			ThrowAwayItem();  //品 品
 			return;
 		}
 	}
@@ -601,7 +727,7 @@ void KPlayer::ProcessMouse(int x, int y, int Key, MOUSE_BUTTON nButton)
 		return;
 	}
 	
-	if ((Key & MK_SHIFT) || (nButton == button_right))  //强制攻击
+	if ((Key & MK_SHIFT) || (nButton == button_right))  //强乒
 	{
 		if (Npc[m_nIndex].m_ActiveSkillID > 0)
 		{
@@ -615,7 +741,7 @@ void KPlayer::ProcessMouse(int x, int y, int Key, MOUSE_BUTTON nButton)
 			
 			int nTargetIdx = 0;
 			//			m_nPeapleIdx = 0;
-			//按照Object / Enemy / Ally 的优先级找到需要打的对象id
+			//Object / Enemy / Ally 燃业要亩id
 			
 			
 			if (pISkill->IsTargetAlly())
@@ -645,7 +771,7 @@ void KPlayer::ProcessMouse(int x, int y, int Key, MOUSE_BUTTON nButton)
 					nTargetIdx = m_nObjectIdx;
 				}
 			}
-			//如果技能必须指定对象，而当前位置无对象的话，直接退出
+			//鼙指螅肚拔晦赌恢彼
 			if (pISkill->IsTargetOnly() && !nTargetIdx)
             {
 				Npc[m_nIndex].m_nPeopleIdx = 0;
@@ -661,12 +787,12 @@ void KPlayer::ProcessMouse(int x, int y, int Key, MOUSE_BUTTON nButton)
 			}
 		  /*
 			if (Npc[m_nIndex].m_SkillList.GetNextCastTime(Npc[m_nIndex].m_ActiveSkillID)>0 && (Npc[m_nIndex].m_SkillList.GetNextCastTime(Npc[m_nIndex].m_ActiveSkillID)>SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_dwCurrentTime))
-			{//还没解冻
+			{//没舛?
 				return;
 			}
 			
 			if (Npc[m_nIndex].m_HorseType)
-			{//骑马时间限制
+			{//时
 				if (Npc[m_nIndex].m_SkillList.GetHorseNextCastTime(Npc[m_nIndex].m_ActiveSkillID)>0 && (Npc[m_nIndex].m_SkillList.GetHorseNextCastTime(Npc[m_nIndex].m_ActiveSkillID)>SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_dwCurrentTime))
 				return;
 			} */
@@ -679,12 +805,12 @@ void KPlayer::ProcessMouse(int x, int y, int Key, MOUSE_BUTTON nButton)
 				return ;
 			}
 			
-			//无对象，直接发坐标
+			//薅直臃
 			if (!nTargetIdx)
 			{
 				Npc[m_nIndex].SendSerCommand(do_skill, Npc[m_nIndex].m_ActiveSkillID, nX, nY);		
 				SendClientCmdSkill(Npc[m_nIndex].m_ActiveSkillID, nX, nY);
-                return ;   //无对象直接退出 不发技能
+                return ;   //薅直顺 
 			}
 			else
 			{
@@ -711,7 +837,7 @@ void KPlayer::ProcessMouse(int x, int y, int Key, MOUSE_BUTTON nButton)
 	}
 	
 	if (Key == 0 )
-	{//没有键盘键时
+	{//没屑碳时
 		int nRelation = NpcSet.GetRelation(m_nIndex, m_nPeapleIdx);
 		if(nRelation == relation_enemy || nRelation == relation_dialog ||(Npc[m_nPeapleIdx].m_Kind==kind_player && Npc[m_nPeapleIdx].m_BaiTan==1))
 		{
@@ -823,7 +949,7 @@ void KPlayer::FindSelectNpc(int x, int y, int nRelation)
 	if  (nNpcIdx>0)
 	{
 		if (Npc[nNpcIdx].m_Hide.nTime > 0 && NpcSet.GetRelation(m_nIndex,nNpcIdx) == relation_enemy)
-			m_nPeapleIdx = 0; //只对敌人隐身
+			m_nPeapleIdx = 0; //只缘
 		else
 		{
 			m_nPeapleIdx  = nNpcIdx;
@@ -882,7 +1008,7 @@ BOOL KPlayer::IsWaitingRemove()
 
 	return m_bIsQuiting;
 }
-//设置游戏为离开状态
+//戏为肟状?
 void KPlayer::WaitForRemove()
 {
 	m_bIsQuiting = TRUE;
@@ -897,21 +1023,21 @@ BOOL KPlayer::IsLoginTimeOut()
 		return FALSE;
 	
 	if (-1 != m_dwLoginTime && g_SubWorldSet.GetGameTime() - m_dwLoginTime > defPLAYER_LOGIN_TIMEOUT)
-	{//已经登录的
+	{//丫录
 		return TRUE;
 	}
 	
 	return FALSE;
 }
 
-//超时登陆的
+//时陆
 void KPlayer::LoginTimeOut()
 {
     const int nSessionSlot = m_Node.m_nIndex;
     if (Player && nSessionSlot > 0 && nSessionSlot < MAX_PLAYER &&
         this == &Player[nSessionSlot])
         V9_ReleaseAllSessions(nSessionSlot);
-	// 通知聊天好友自己下线了
+	// 通知约
 	m_cChat.OffLine(m_dwID);
 	
 	m_pStatusLoadPlayerInfo = NULL;
@@ -933,7 +1059,7 @@ BOOL KPlayer::Save(BOOL nIsShow)
 
 	TRoleData* pData = (TRoleData *)m_GaemSaveBuffer;
 	
-	if (UpdateDBPlayerInfo((BYTE *)pData,sizeof(m_GaemSaveBuffer),nIsShow) == -1)   //存档，更新数据存档包
+	if (UpdateDBPlayerInfo((BYTE *)pData,sizeof(m_GaemSaveBuffer),nIsShow) == -1)   //娴递存档
 		return FALSE;
 		/*
 		#ifdef _DEBUG
@@ -978,7 +1104,7 @@ BOOL KPlayer::CanSave()
 	{
 		return FALSE;
 	}
-	//超时　或　已经断线　不存档
+	//时丫摺娴?
 	if  (IsLoginTimeOut() || m_uMustSave == SAVE_REQUEST)
 		return FALSE;
 	
@@ -995,17 +1121,17 @@ BOOL KPlayer::SendSyncData(int &nStep, unsigned int &nParam)
 			bRet = SubWorld[Npc[m_nIndex].m_SubWorldIndex].SendSyncData(m_nIndex,m_nNetConnectIdx);
 			if (!bRet)
 			{
-				printf("SubWorld同步世界地图失败 Fail.\n");        //同步世界地图
+				printf("SubWorld同图失 Fail.\n");        //同图
 				break;
 			}
-			bRet = Npc[m_nIndex].SendSyncData(m_nNetConnectIdx);  // 同步NPC帮会等基本信息
+			bRet = Npc[m_nIndex].SendSyncData(m_nNetConnectIdx);  // 同NPC然息
 			if (!bRet)
 			{
-				printf("世界NPC基本信息同步失败 Fail.\n");
+				printf("NPC息同失 Fail.\n");
 				break;
 			}
-			// 这个消息必须在同步世界NPC数据后做，使客户端能找到当前玩家在客户端的Npc索引
-			CURPLAYER_SYNC	sSync;	// 同步当前玩家的自身独特信息给客户端（装备等）
+			// 息同NPC莺使突业前诳突说Npc
+			CURPLAYER_SYNC	sSync;	// 同前业息突耍装龋
 			sSync.ProtocolType = (BYTE)s2c_synonlineplayer;
 			sSync.m_dwID       = Npc[m_nIndex].m_dwID;
 			sSync.m_btLevel    = (WORD)Npc[m_nIndex].m_Level;
@@ -1013,7 +1139,7 @@ BOOL KPlayer::SendSyncData(int &nStep, unsigned int &nParam)
 			sSync.m_btKind     = Npc[m_nIndex].m_Kind;
 			sSync.m_btSeries   = Npc[m_nIndex].m_Series;
 			sSync.m_wLifeMax   = Npc[m_nIndex].m_LifeMax;
-			sSync.m_wNuqiMax   = Npc[m_nIndex].m_NuqiMax;  //怒气值
+			sSync.m_wNuqiMax   = Npc[m_nIndex].m_NuqiMax;  //怒值
 			sSync.m_wStaminaMax = Npc[m_nIndex].m_StaminaMax;
 			sSync.m_wManaMax    = Npc[m_nIndex].m_ManaMax;
 			sSync.m_HeadImage   = Npc[m_nIndex].m_HeadImage;
@@ -1027,12 +1153,12 @@ BOOL KPlayer::SendSyncData(int &nStep, unsigned int &nParam)
 			sSync.m_nExp            = this->m_nExp;
 		//	sSync.m_SUpExp = this->m_nUpExp;//0
 			sSync.m_dwLeadExp       = this->m_dwLeadExp;
-		//	sSync.m_btCUnlocked = this->m_CUnlocked; //是否锁频
+		//	sSync.m_btCUnlocked = this->m_CUnlocked; //欠频
 			sSync.m_btCurFaction    = this->m_cFaction.m_nCurFaction;
 			sSync.m_btFirstFaction  = this->m_cFaction.m_nFirstAddFaction;
 			sSync.m_nFactionAddTimes = this->m_cFaction.m_nAddTimes;
-			sSync.m_wWorldStat       = (WORD)m_nWorldStat;   //世界排名
-			sSync.m_wSectStat        = (WORD)m_nSectStat;     //门派排名
+			sSync.m_wWorldStat       = (WORD)m_nWorldStat;   //
+			sSync.m_wSectStat        = (WORD)m_nSectStat;     //
 			sSync.m_nMoney1          = this->m_ItemList.GetsMon(room_equipment);
 			sSync.m_nMoney2          = this->m_ItemList.GetsMon(room_repository);
 			sSync.m_nXu              = this ->m_ItemList.GetxLient(room_equipment);
@@ -1041,9 +1167,9 @@ BOOL KPlayer::SendSyncData(int &nStep, unsigned int &nParam)
 			if (SUCCEEDED(g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(CURPLAYER_SYNC))))
 			{
                 char nmTong[32],nMapName[64]={0};		  
-				sprintf(nmTong,"%d",m_nWorldStat); //世界排名
+				sprintf(nmTong,"%d",m_nWorldStat); //
 				snprintf(nMapName, sizeof(nMapName), "%s", SubWorld[Npc[m_nIndex].m_SubWorldIndex].nWorldMapInfo[STR_MAP_NAME].c_str());
-                ExecuteScriptC("\\script\\system\\online.lua","OnLine",nmTong,nMapName,m_IsFirstLogin,0,0,0,0,true);  //执行上线脚本
+                ExecuteScriptC("\\script\\system\\online.lua","OnLine",nmTong,nMapName,m_IsFirstLogin,0,0,0,0,true);  //执呓疟
 				bRet = TRUE;
 			}
 			else 
@@ -1066,7 +1192,7 @@ BOOL KPlayer::SendSyncData(int &nStep, unsigned int &nParam)
 		{
 		  try
 		  { 
-			  SendSyncData_Skill();     //同步技能数据
+			  SendSyncData_Skill();     //同
 			  bRet = TRUE;
 		  }
 		  catch (...)
@@ -1090,7 +1216,7 @@ BOOL KPlayer::SendSyncData(int &nStep, unsigned int &nParam)
 
 	return bRet;
 }
-//同步技能数据到客户端
+//同莸突
 BOOL KPlayer::SendSyncData_Skill()
 {
 	SKILL_SEND_ALL_SYNC		sSkill;	
@@ -1112,19 +1238,19 @@ BOOL KPlayer::SendSyncData_Skill()
 		sSkill.m_sAllSkill[j].SkillId    = Npc[m_nIndex].m_SkillList.m_Skills[i].SkillId;
 		sSkill.m_sAllSkill[j].SkillLevel = Npc[m_nIndex].m_SkillList.m_Skills[i].SkillLevel;
 		sSkill.m_sAllSkill[j].SkillAdd   = Npc[m_nIndex].m_SkillList.m_Skills[i].mAddPoint;
-		sSkill.m_sAllSkill[j].CurSkillExp= Npc[m_nIndex].m_SkillList.m_Skills[i].nCurSkillExp; //当前的熟练度
-		//---------------服务端开始增加被动技能状态--------------------------------------
+		sSkill.m_sAllSkill[j].CurSkillExp= Npc[m_nIndex].m_SkillList.m_Skills[i].nCurSkillExp; //前
+		//---------------丝始颖状态--------------------------------------
 		KSkill * pSkill =(KSkill *)g_SkillManager.GetSkill(Npc[m_nIndex].m_SkillList.m_Skills[i].SkillId, Npc[m_nIndex].m_SkillList.m_Skills[i].SkillLevel);
 		if (pSkill) 
 		{
 		   int nReg=0;
 		       nReg = pSkill->NewCanCastSkill(m_nIndex,-1,m_nIndex);
 		   if (pSkill->GetSkillStyle() == SKILL_SS_PassivityNpcState && nReg==1)
-		   {//如果该技能属于被动辅助技能时，无武器限制的 则设置Npc状态  
+		   {//眉诒时频 Npc状态  
 			   pSkill->Cast(m_nIndex, -1, m_nIndex,-1);
 		   } 
            else if  (pSkill->GetSkillStyle() == SKILL_SS_PassivityNpcState && nReg<=0)
-		   {//空手 状态 有武器限制的被动技能 被清除！
+		   {// 状态 频谋 
 		       pSkill->Cast(m_nIndex, -1, m_nIndex,1);
 		   }
 		} 
@@ -1139,16 +1265,16 @@ BOOL KPlayer::SendSyncData_Skill()
 	
 	if (SUCCEEDED(g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSkill, sSkill.m_wProtocolLong + 1)))
 	{
-		//m_ItemList.msgshow("提示:同步技能列表成功!");
+		//m_ItemList.msgshow("示:同斜晒!");
 		return TRUE;
 	}
 	else
 	{
-		printf("-------[技能同步]player Packing skill sync data failed...--------\n");
+		printf("-------[同]player Packing skill sync data failed...--------\n");
 		return FALSE;
 	}
 }
-//服务器端 同步 人物数据--无限循环
+// 同 --循
 void	KPlayer::SendCurNormalSyncData()
 {
 	CURPLAYER_NORMAL_SYNC	sSync;
@@ -1160,9 +1286,9 @@ void	KPlayer::SendCurNormalSyncData()
 	sSync.m_shLifeMax    = Npc[m_nIndex].m_CurrentLifeMax;
 	sSync.m_shStaminaMax = Npc[m_nIndex].m_CurrentStaminaMax;
 	sSync.m_shManaMax    = Npc[m_nIndex].m_CurrentManaMax;
-	//sSync.m_shAngry = Npc[m_nIndex].m_CurrentNuQi;  //当前怒值
+	//sSync.m_shAngry = Npc[m_nIndex].m_CurrentNuQi;  //前怒值
 	sSync.m_shAngryMax   = Npc[m_nIndex].m_CurrentNuQiMax;
-	sSync.m_nForbiddenFlag = m_nForbiddenFlag;  //同步禁言
+	sSync.m_nForbiddenFlag = m_nForbiddenFlag;  //同
 
 	if (!m_cTeam.m_nFlag)
 		sSync.m_btTeamData = 0;
@@ -1177,7 +1303,7 @@ void	KPlayer::SendCurNormalSyncData()
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(CURPLAYER_NORMAL_SYNC));
 }
 
-//退出游戏存档(取消掉了)
+//顺戏娴?取)
 void KPlayer::QuitGame(int nType)
 {
 	int nWorldMapid,nIsNoReturn=0; 
@@ -1205,16 +1331,16 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 	PLAYER_BUY_ITEM_COMMAND* pCommand = (PLAYER_BUY_ITEM_COMMAND *)pProtocol;
 
 	if (pCommand->m_shuishou==-1 && pCommand->m_CityMenber==-1&& pCommand->m_MapID==-1)
-	{//拍卖行,玩家增加东西
+	{//,佣
 		//printf("----Dau gia:%d ----\n",pCommand->m_BuyIdx);
 		/*if (m_ItemList.GetPlayerItemCount()>=MAX_ITEMLIST_CONUT)
 		{
-			m_ItemList.msgshow("Dau gia:<c=yellow>物品超限,请清理储物空间<c>!");
+			m_ItemList.msgshow("Dau gia:<c=yellow>品,占<c>!");
 			return;
 		}*/
 
 		if (pCommand->m_BuyIdx>0 && pCommand->m_BuyIdx<=nMaxSellCount)
-		{//玩家开始增加东西
+		{//铱始佣
 
 			if (iItemDataInfo.count(pCommand->m_BuyIdx)<=0)
 			{
@@ -1226,11 +1352,11 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 				pCommand->m_ItemNum =1;
 
 			int nItemClass = iItemDataInfo[pCommand->m_BuyIdx].iequipgen;
-			int nIsStack   = iItemDataInfo[pCommand->m_BuyIdx].iparamj1;//是否可以叠加
+			int nIsStack   = iItemDataInfo[pCommand->m_BuyIdx].iparamj1;//欠缘
 			UINT nIsSellOut = iItemDataInfo[pCommand->m_BuyIdx].isSellOut;
 			UINT nStartTime= iItemDataInfo[pCommand->m_BuyIdx].addtime;
 			UINT nEndTime  = iItemDataInfo[pCommand->m_BuyIdx].endtime;
-			int nTimeOut   = iItemDataInfo[pCommand->m_BuyIdx].iparamj2;//是否过期
+			int nTimeOut   = iItemDataInfo[pCommand->m_BuyIdx].iparamj2;//欠
 
 			if  (nTimeOut >=1)
 			{
@@ -1244,23 +1370,23 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 				return;
 			}
 			char nDataKey[32]={0};
-			//sprintf(nDataKey,"剑侠%04情缘",pCommand->m_BuyIdx);
+			//sprintf(nDataKey,"%04缘",pCommand->m_BuyIdx);
 			sprintf(nDataKey, "kiem%04hiep", pCommand->m_BuyIdx);
 			if (nStartTime > 0 && nEndTime>0)
-			{//有时间限制的
-				time_t rawtime;                  //定义一个long 型存放秒数
-				time (&rawtime);                 //距离现在的时间（秒）
+			{//时频
+				time_t rawtime;                  //一long 痛
+				time (&rawtime);                 //诘时洌耄
 				if  (rawtime>nEndTime)
 				{
 					iItemDataInfo[pCommand->m_BuyIdx].iparamj2 = 1;
 					if (g_DbItemFile)
-					{//写数据库
-						ZCursorS *item_cursor = g_DbItemFile->search(nDataKey,strlen(nDataKey)+1);	//pName		strlen(szName) + 1  主数据库查询
+					{//写菘
+						ZCursorS *item_cursor = g_DbItemFile->search(nDataKey,strlen(nDataKey)+1);	//pName		strlen(szName) + 1  菘询
 						if (item_cursor)
 						{
 							TDBShopItemData* pItemData = (TDBShopItemData*)item_cursor->data;
 							if (pItemData && item_cursor->size >= (int)sizeof(TDBShopItemData))
-							{//开始修改数据
+							{//始薷
 								pItemData->iparamj2 = 1;
 								if (g_DbItemFile->add(nDataKey,strlen(nDataKey)+1,item_cursor->data,sizeof(TDBShopItemData)))   //pName strlen(szName) +1
 								{
@@ -1276,7 +1402,7 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 			}
 
 			if (nItemClass==0)
-			{//如果是装备
+			{//装
 				if (pCommand->m_ItemNum!=1)
 				{
 					pCommand->m_ItemNum = 1;
@@ -1284,9 +1410,9 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 				}
 			}
 			else
-			{//不是装备
+			{//装
 				if  (!nIsStack && pCommand->m_ItemNum!=1)
-				{//如果不能叠加的　
+				{//艿拥摹
 						m_ItemList.msgshow("Dau gia: Mat hang nay khong the duoc mua ket hop!");
 						return;
 				}
@@ -1295,7 +1421,7 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 			int nItemPiceVal = iItemDataInfo[pCommand->m_BuyIdx].iSellPrice * nItemCount;
 			int nItemPriceKind = iItemDataInfo[pCommand->m_BuyIdx].iPriceKind;
 
-            if (nItemPriceKind==moneyunit_money)  //银两
+            if (nItemPriceKind==moneyunit_money)  //
 			{
 				if (m_ItemList.GetEquipmentMoney() <nItemPiceVal)
 				{
@@ -1357,7 +1483,7 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 				m_ItemList.msgshow("Dau gia: Sai loai tien te");
 			    return;
 			}
-			//----------------------------------开始产生东西 或者 执行脚本
+			//----------------------------------始  执薪疟
 			int nStackNum = nItemCount;
 			int nSeries   = iItemDataInfo[pCommand->m_BuyIdx].iseries;
 			int nLevel    = iItemDataInfo[pCommand->m_BuyIdx].ilevel;
@@ -1390,12 +1516,12 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 			int nIndex = 0;
 
 			if (nGoldIdx<=0)
-			{//蓝装装
+			{//装装
 				 nIndex = ItemSet.AddOther(nItemClass, nSeries, nLevel, nLuck, nDetailType, nParticularType,nItemLevel, g_SubWorldSet.GetGameVersion(),nRandSeed,nItemCount,nEnChance,nPoint,\
 				  0,0,0,0,0,nRongPoint,nRItemLevel,NULL,NULL,IsWhere,TRUE);
 			}
 			else
-			{//其他装备　黄金装备
+			{//装平装
 			  m_ItemList.msgshow("Dau gia: Loi nGoldIdx vui long bao GM");
 			  return;
 			}
@@ -1405,19 +1531,19 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 				return ;
 			}
 			m_ItemList.msgshow("Dau gia:<c=yellow> Item loi vui long bao GM<c>!");
-			//设置节点已经购买过
+			//媒诘丫
 			 time_t nthistime;
 			 time(&nthistime);
 			 iItemDataInfo[pCommand->m_BuyIdx].isSellOut = nthistime;
 
 			 if (g_DbItemFile)
-			 {//写数据库
-				 ZCursorS *item_cursor = g_DbItemFile->search(nDataKey,strlen(nDataKey)+1);	//pName		strlen(szName) + 1  主数据库查询
+			 {//写菘
+				 ZCursorS *item_cursor = g_DbItemFile->search(nDataKey,strlen(nDataKey)+1);	//pName		strlen(szName) + 1  菘询
 				 if (item_cursor)
 				 {
 					 TDBShopItemData* pItemData = (TDBShopItemData*)item_cursor->data;
 					 if (pItemData && item_cursor->size >= (int)sizeof(TDBShopItemData))
-					 {//开始修改数据
+					 {//始薷
 						 pItemData->isSellOut = nthistime;
 						 if (g_DbItemFile->add(nDataKey,strlen(nDataKey)+1,item_cursor->data,sizeof(TDBShopItemData)))   //pName strlen(szName) +1
 						 {
@@ -1427,10 +1553,10 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 				   g_DbItemFile->closeCursor(item_cursor);
 				 }
 			 }
-			//更新数据库数据　或者删除节点　或者　删除数据库
-			 //暂时测试　无处理
-			//----------------开始扣钱------------------------------
-			 if (nItemPriceKind==moneyunit_money)  //银两
+			//菘荨删诘恪∵∩据?
+			 //时浴薮
+			//----------------始钱------------------------------
+			 if (nItemPriceKind==moneyunit_money)  //
 			 {
 				Pay(nItemPiceVal);
 			 }
@@ -1468,7 +1594,7 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 			 }
 			//------------------------------------------------------
 			/*if (Item[nIndex].GetGenre()!=0 && !Item[nIndex].GetIsBang() && Item[nIndex].GetTime()->bYear<=0)
-			{//不是装备的话,包袱里是否有这个物品
+			{//装幕,欠品
 				int nIdx=m_ItemList.IsHaveItem(Item[nIndex].GetGenre(),\
 					Item[nIndex].GetDetailType(),\
 					Item[nIndex].GetParticular(),\
@@ -1477,14 +1603,14 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 
 				if (nIdx>0 && Item[nIdx].IsStack() &&
 					Item[nIndex].CanStack(nIdx) &&
-					(Item[nIdx].GetStackNum()+nStackNum) <= MAX_STACKNUM) //是否可以叠加--手里和包袱里的是否相同
-				{//包袱里的东西可以叠加
-					//Item[nIdx].SetStackNum(Item[nIdx].GetStackNum()+StackNum);             //设置叠加数量
-					//m_ItemList.SynPlayerItem(nIdx);                                        //同步到客户端
+					(Item[nIdx].GetStackNum()+nStackNum) <= MAX_STACKNUM) //欠缘--桶欠同
+				{//亩缘
+					//Item[nIdx].SetStackNum(Item[nIdx].GetStackNum()+StackNum);             //玫
+					//m_ItemList.SynPlayerItem(nIdx);                                        //同突
 					//xep chong item mua
 					printf("da mua item %d HaveItem: %d\n",Item[nIdx].GetGenre(),nIdx);
 					nStackNum=Item[nIdx].GetStackNum()+nStackNum;
-					m_ItemList.Remove(nIdx);//删除包袱的东西
+					m_ItemList.Remove(nIdx);//删亩
 					ItemSet.Remove(nIdx);
 				}
 			}*/
@@ -1492,14 +1618,14 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 			/*if (m_ItemList.GetPlayerItemCount()>=MAX_ITEMLIST_CONUT)
 			{
 				ItemSet.Remove(nIndex);
-				m_ItemList.msgshow("Dau gia:<c=yellow>物品超限,请清理储物空间<c>!");
+				m_ItemList.msgshow("Dau gia:<c=yellow>品,占<c>!");
 				return;
 			}*/
 
 			int	x, y;
 			if (m_ItemList.CheckCanPlaceInEquipment(Item[nIndex].GetWidth(), Item[nIndex].GetHeight(), &x, &y))
-			{//同步客户端（包里）
-				m_ItemList.Add(nIndex,pos_equiproom,x,y,0,0,nStackNum);  //包袱增加装备 同步装备--客户端
+			{//同突耍铮?
+				m_ItemList.Add(nIndex,pos_equiproom,x,y,0,0,nStackNum);  //装 同装--突
 			}
 			else
 			{
@@ -1508,12 +1634,12 @@ void KPlayer::BuyItem(BYTE* pProtocol)
 
 				if (nIdx)
 				{
-					m_ItemList.Remove(nIdx);  //删除客户端的节点了
+					m_ItemList.Remove(nIdx);  //删突说慕诘
 					ItemSet.Remove(nIdx);
 				}
 
-				//同步客户端（手里增加新的节点）
-				m_ItemList.Remove(nIndex);  //删除客户端的节点了
+				//同突耍碌慕诘悖?
+				m_ItemList.Remove(nIndex);  //删突说慕诘
 				ItemSet.Remove(nIndex);
 				return;
 				//Player[nPlayerIndex].m_ItemList.Add(nIndex,pos_hand,0,0,0,0,nStackNum);
@@ -1534,7 +1660,7 @@ void KPlayer::SellItem(BYTE* pProtocol)
 	int nItemIndex = m_ItemList.SearchID(pCommand->m_ID);
 
 	if  (nItemIndex<=0)
-	{//如果不存在了 就删除客户端
+	{// 删突
 		m_ItemList.msgshow("Loi: Vat pham thong tin khong ton tai, Vui long lien he GM!");
 		ITEM_REMOVE_SYNC	sRemove;
 		sRemove.ProtocolType = s2c_removeitem;
@@ -1573,7 +1699,7 @@ void KPlayer::GopItemPlayer(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：获取玩家进入游戏重生点位置
+//	埽取医戏位
 //-------------------------------------------------------------------------
 void KPlayer::GetLoginRevivalPos(int *lpnSubWorld, int *lpnMpsX, int *lpnMpsY)
 {
@@ -1582,7 +1708,7 @@ void KPlayer::GetLoginRevivalPos(int *lpnSubWorld, int *lpnMpsX, int *lpnMpsY)
 	*lpnMpsY     = m_sLoginRevivalPos.m_nMpsY;
 }
 
-//获取玩家的死亡后重生点
+//取业
 void KPlayer::GetDeathRevivalPos(int *lpnSubWorld, int *lpnMpsX, int *lpnMpsY)
 {
 	*lpnSubWorld = m_sDeathRevivalPos.m_nSubWorldID;
@@ -1593,13 +1719,13 @@ void KPlayer::GetDeathRevivalPos(int *lpnSubWorld, int *lpnMpsX, int *lpnMpsY)
 #endif
 
 #ifdef _SERVER
-void	KPlayer::SetTimer(DWORD nTime, int nTimerTaskId)					//时间任务脚本，开启计时器
+void	KPlayer::SetTimer(DWORD nTime, int nTimerTaskId)					//时疟时
 {
 	if (!nTime || !nTimerTaskId) return ;
 	m_TimerTask.SetTimer(nTime, nTimerTaskId);
 }
 
-void	KPlayer::CloseTimer()							//关闭时间计时器
+void	KPlayer::CloseTimer()							//乇时时
 {
 	m_TimerTask.CloseTimer();
 }
@@ -1608,17 +1734,17 @@ void	KPlayer::CloseTimer()							//关闭时间计时器
 
 #ifdef _SERVER
 //------------------------------------------------------------------------------
-//	功能：设定玩家重生点位置(地图 和 坐标必须存在)
+//	埽瓒ㄎ?图  )
 //------------------------------------------------------------------------------
 void	KPlayer::SetRevivalPos(int nSubWorld, int nReviveId)
 {
-	if (nSubWorld >= 0)  //如果小于0，表示沿用当前的
+	if (nSubWorld >= 0)  //小0示玫前
 	{
-        if (g_SubWorldSet.SearchWorld(nSubWorld)>0)  //如果存在这个地图
+        if (g_SubWorldSet.SearchWorld(nSubWorld)>0)  //图
 		    m_sLoginRevivalPos.m_nSubWorldID = nSubWorld;
 		else
-		{//如果不存在
-               int mSubWorld=53,mReviveId=19;        //80县
+		{//
+               int mSubWorld=53,mReviveId=19;        //80
 			   //g_GameSetTing.GetInteger2("ServerConfig","PlayerRevPosId",&mSubWorld,&mReviveId);
 			   mSubWorld =  _gameGlobalSet.PlayerInfo.mSubWorld;
 			   mReviveId =  _gameGlobalSet.PlayerInfo.mReviveId;
@@ -1627,10 +1753,10 @@ void	KPlayer::SetRevivalPos(int nSubWorld, int nReviveId)
 		}
 	}
 	else
-	{//当前地图
+	{//前图
 		m_sLoginRevivalPos.m_nSubWorldID = SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_SubWorldID; 
 	}
-//------------------检查是否存在这个地图的重生点-------------	
+//------------------欠图-------------	
 	KIniFile IniFile;
 
 	g_SetFilePath("\\settings");
@@ -1642,8 +1768,8 @@ void	KPlayer::SetRevivalPos(int nSubWorld, int nReviveId)
 	snprintf(szKeyName, sizeof(szKeyName), "%d", nReviveId);
 	
 	if(!IniFile.IsSectionExist(szSection))
-	{//如果重生文件里米有这个地图的话 就设置默认的
-		int mSubWorld=53,mReviveId=19;        //80县
+	{//募图幕 默系
+		int mSubWorld=53,mReviveId=19;        //80
 		//g_GameSetTing.GetInteger2("ServerConfig","PlayerRevPosId",&mSubWorld,&mReviveId);
 
 		mSubWorld =  _gameGlobalSet.PlayerInfo.mSubWorld;
@@ -1662,21 +1788,21 @@ void	KPlayer::SetRevivalPos(int nSubWorld, int nReviveId)
 	m_sLoginRevivalPos.m_nMpsX    = Pos.x;
 	m_sLoginRevivalPos.m_nMpsY    = Pos.y;	
 
-	m_sDeathRevivalPos            = m_sLoginRevivalPos;  //死亡复活点（结构）
+	m_sDeathRevivalPos            = m_sLoginRevivalPos;  //悖ㄡ构
 }
 
 //------------------------------------------------------------------------------
-//	功能：设定玩家临时死亡重生点位置
+//	埽瓒ㄊ蔽?
 //------------------------------------------------------------------------------
 void KPlayer::SetDeathRevivalPos(int nSubWorld,int nXpos,int nYpos)
 {
-/*	if (nSubWorld >= 0)  //如果小于0，表示沿用当前的
+/*	if (nSubWorld >= 0)  //小0示玫前
 	{
-        if (g_SubWorldSet.SearchWorld(nSubWorld)>0)  //如果存在这个地图
-			m_sLoginRevivalPos.m_nSubWorldID = nSubWorld; = --maplist.ini 里的编号
+        if (g_SubWorldSet.SearchWorld(nSubWorld)>0)  //图
+			m_sLoginRevivalPos.m_nSubWorldID = nSubWorld; = --maplist.ini 谋
 		else
-		{//如果不存在
-			int mSubWorld=53,mReviveId=19;        //80县
+		{//
+			int mSubWorld=53,mReviveId=19;        //80
 			g_GameSetTing.GetInteger2("ServerConfig","PlayerRevPosId",&mSubWorld,&mReviveId);
 			m_sLoginRevivalPos.m_nSubWorldID=mSubWorld;
 			nReviveId=mReviveId;
@@ -1700,23 +1826,23 @@ void KPlayer::SetDeathRevivalPos(int nSubWorld,int nXpos,int nYpos)
 
 #ifdef _SERVER
 //------------------------------------------------------------------------------
-//	功能：收到客户端查询某个npc组队信息的申请后，向这个客户端发送队伍信息
+//	埽盏突瞬询某npc息突朔投息
 //------------------------------------------------------------------------------
 void	KPlayer::S2CSendTeamInfo(BYTE* pProtocol)
 {
 	PLAYER_APPLY_TEAM_INFO	*pApplyTeamInfo = (PLAYER_APPLY_TEAM_INFO*)pProtocol;
 	
-	//------------------------------ 查询自身组队信息 -----------------------------
+	//------------------------------ 询息 -----------------------------
 	if (pApplyTeamInfo->m_dwTarNpcID == Npc[m_nIndex].m_dwID)
 	{
 		SendSelfTeamInfo();
 		return;
 	}
 	
-	//--------------------------- 查询其他 npc 组队信息 -----------------------------
+	//--------------------------- 询 npc 息 -----------------------------
 	PLAYER_SEND_TEAM_INFO	sTeamInfo;
 	PLAYER_APPLY_TEAM_INFO_FALSE	sTeamInfoFalse;
-	// 寻找相应 npc id 的 player 编号
+	// 寻应 npc id  player 
 	int		nPlayer, nRegionNo, i;
 	nPlayer = SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_Region[Npc[m_nIndex].m_RegionIndex].FindPlayer(pApplyTeamInfo->m_dwTarNpcID);
 	if ( nPlayer >= 0)
@@ -1734,7 +1860,7 @@ void	KPlayer::S2CSendTeamInfo(BYTE* pProtocol)
 		goto SendFalse;
 	
 SendMsg:
-	// 寻找队伍
+	// 寻叶
 	KTeam	*pTeam;
 	if ( !Player[nPlayer].m_cTeam.m_nFlag )
 		goto SendFalse;
@@ -1742,7 +1868,7 @@ SendMsg:
 	if (pTeam->m_nCaptain < 0 || !pTeam->IsOpen())
 		goto SendFalse;
 	
-	// 发送队伍消息
+	// 投息
 	sTeamInfo.ProtocolType = (BYTE)s2c_teaminfo;
 	sTeamInfo.m_nCaptain = Npc[Player[pTeam->m_nCaptain].m_nIndex].m_dwID;
 	for (i = 0; i < MAX_TEAM_MEMBER; ++i)
@@ -1754,11 +1880,11 @@ SendMsg:
 	}
 	//	strcpy(sTeamInfo.m_szTeamName, pTeam->m_szName);
 	
-	// 发送
+	// 
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sTeamInfo, sizeof(PLAYER_SEND_TEAM_INFO));
 	return;
 	
-	// 发送失败通知
+	// 失通知
 SendFalse:
 	sTeamInfoFalse.ProtocolType = s2c_teamapplyinfofalse;
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sTeamInfoFalse, sizeof(PLAYER_APPLY_TEAM_INFO_FALSE));
@@ -1768,11 +1894,11 @@ SendFalse:
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：服务器向客户端发送队伍信息
+//	埽突朔投息
 //-------------------------------------------------------------------------
 void	KPlayer::SendSelfTeamInfo()
 {
-	if (m_cTeam.m_nFlag && m_cTeam.m_nID >= 0)	// 发送队伍信息
+	if (m_cTeam.m_nFlag && m_cTeam.m_nID >= 0)	// 投息
 	{
 		int		nNpcIndex;
 		PLAYER_SEND_SELF_TEAM_INFO	sSelfInfo;
@@ -1781,12 +1907,12 @@ void	KPlayer::SendSelfTeamInfo()
 		sSelfInfo.m_dwLeadExp = m_dwLeadExp;
 		sSelfInfo.m_btState = g_Team[m_cTeam.m_nID].m_nState;
 		
-		// 队长
+		// 映
 		nNpcIndex = Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_nIndex;
 		sSelfInfo.m_dwNpcID[0] = Npc[nNpcIndex].m_dwID;
 		sSelfInfo.m_btLevel[0] = (WORD)Npc[nNpcIndex].m_Level;
 		snprintf(sSelfInfo.m_szNpcName[0], sizeof(sSelfInfo.m_szNpcName[0]), "%s", Npc[nNpcIndex].Name);
-		// 队员
+		// 员
 		for (int i = 0; i < MAX_TEAM_MEMBER;++i)
 		{
 			if (g_Team[m_cTeam.m_nID].m_nMember[i] >= 0)
@@ -1802,10 +1928,10 @@ void	KPlayer::SendSelfTeamInfo()
 				sSelfInfo.m_btLevel[i + 1] = 0;
 			}
 		}
-		// 发送消息
+		// 息
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSelfInfo, sizeof(PLAYER_SEND_SELF_TEAM_INFO));
 	}
-	else	// 发送离队信息
+	else	// 息
 	{
 		PLAYER_LEAVE_TEAM	sLeaveTeam;
 		sLeaveTeam.ProtocolType = s2c_teamleave;
@@ -1817,7 +1943,7 @@ void	KPlayer::SendSelfTeamInfo()
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端请求创建一支队伍
+//	埽盏突蟠唇一支
 //-------------------------------------------------------------------------
 BOOL	KPlayer::CreateTeam(BYTE* pProtocol)
 {
@@ -1827,7 +1953,7 @@ BOOL	KPlayer::CreateTeam(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端请求开放、关闭本player队伍是否允许队员加入状态
+//	埽盏突罂放∝闭眕layer欠员状态
 //-------------------------------------------------------------------------
 BOOL	KPlayer::SetTeamState(BYTE* pProtocol)
 {
@@ -1857,7 +1983,7 @@ BOOL	KPlayer::SetTeamState(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端请求加入一支队伍
+//	埽盏突一支
 //-------------------------------------------------------------------------
 BOOL	KPlayer::S2CSendAddTeamInfo(BYTE* pProtocol)
 {
@@ -1873,7 +1999,7 @@ BOOL	KPlayer::S2CSendAddTeamInfo(BYTE* pProtocol)
 	
 	PLAYER_APPLY_ADD_TEAM	*pAddTeam = (PLAYER_APPLY_ADD_TEAM*)pProtocol;
 	
-	// 寻找队长 npc id 的 player 编号
+	// 寻叶映 npc id  player 
 	int		nPlayer, nRegionNo, i;
 	nPlayer = SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_Region[Npc[m_nIndex].m_RegionIndex].FindPlayer(pAddTeam->m_dwTarNpcID);
 	if ( nPlayer >= 0)
@@ -1904,11 +2030,11 @@ SendMsg:
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：队长通知服务器接受某个npc为队伍成员
+//	埽映通知某npc为员
 //-------------------------------------------------------------------------
 BOOL	KPlayer::AddTeamMember(BYTE* pProtocol)
 {
-	// 错误检测(是否组队、是否队长、队伍开放状态、队员数、统率力)
+	// (欠印欠映榭状态员?
 	if (m_cTeam.m_nID<0 || m_cTeam.m_nID >=MAX_PLAYER)
 		return FALSE;
 
@@ -1922,13 +2048,13 @@ BOOL	KPlayer::AddTeamMember(BYTE* pProtocol)
 		return FALSE;
 	}
 	
-	// 从npc id查找player
+	// npc idplayer
 	int		nPlayer, i;
 	PLAYER_ACCEPT_TEAM_MEMBER	*pAccept = (PLAYER_ACCEPT_TEAM_MEMBER*)pProtocol;
 	nPlayer = FindAroundPlayer(pAccept->m_dwNpcID);
 	if (nPlayer < 0)
 		return FALSE;
-	// 对方正处于不能组队状态
+	// 苑诓状态
 	if (!Player[nPlayer].m_cTeam.m_bCanTeamFlag)
 	{
 		SHOW_MSG_SYNC	sMsg;
@@ -1938,41 +2064,41 @@ BOOL	KPlayer::AddTeamMember(BYTE* pProtocol)
 		g_pServer->PackDataToClient(m_nNetConnectIdx,(BYTE *)&sMsg, sMsg.m_wLength + 1);
 		return FALSE;
 	}
-	// 已经在队伍中
+	// 丫诙
 	if (Player[nPlayer].m_cTeam.m_nFlag)
 		return FALSE;
 	if (Player[nPlayer].m_cTeam.m_nApplyCaptainID != Npc[this->m_nIndex].m_dwID)
 		return FALSE;
 
-	// 如果满员就不能再加了 改变队伍状态
+	// 员筒偌 谋状态
 	if (g_Team[m_cTeam.m_nID].m_nMemNum >= MAX_TEAM_MEMBER || g_Team[m_cTeam.m_nID].CheckFull())
 	{
 		g_Team[m_cTeam.m_nID].SetTeamClose();
 		return FALSE;
 	}
 
-	// 队伍添加成员
+	// 映员
 	if (!g_Team[m_cTeam.m_nID].AddMember(nPlayer) )
 		return FALSE;
 
-	// 被接受队员队伍数据处理
+	// 芏员荽
 	Player[nPlayer].m_cTeam.Release();
 	Player[nPlayer].m_cTeam.m_nFlag = 1;
 	Player[nPlayer].m_cTeam.m_nFigure = TEAM_MEMBER;
 	Player[nPlayer].m_cTeam.m_nID = m_cTeam.m_nID;
 	Npc[Player[nPlayer].m_nIndex].SetCurrentCamp(Npc[m_nIndex].m_Camp);
 	
-	// 给各个队员发消息
+	// 员息
 	PLAYER_TEAM_ADD_MEMBER	sAddMem;
 	sAddMem.ProtocolType = s2c_teamaddmember;
 	sAddMem.m_dwNpcID = Npc[Player[nPlayer].m_nIndex].m_dwID;
 	sAddMem.m_btLevel = (WORD)Npc[Player[nPlayer].m_nIndex].m_Level;
 	snprintf(sAddMem.m_szName, sizeof(sAddMem.m_szName), "%s", Npc[Player[nPlayer].m_nIndex].Name);
 	
-	// 给队长发消息
+	// 映息
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sAddMem, sizeof(PLAYER_TEAM_ADD_MEMBER));
 	
-	// 给老队员发消息
+	// 隙员息
 	for (i = 0; i < MAX_TEAM_MEMBER; ++i)
 	{
 		if (g_Team[m_cTeam.m_nID].m_nMember[i] < 0 || g_Team[m_cTeam.m_nID].m_nMember[i] == nPlayer)
@@ -1980,19 +2106,19 @@ BOOL	KPlayer::AddTeamMember(BYTE* pProtocol)
 		g_pServer->PackDataToClient(Player[g_Team[m_cTeam.m_nID].m_nMember[i]].m_nNetConnectIdx, (BYTE*)&sAddMem, sizeof(PLAYER_TEAM_ADD_MEMBER));
 	}
 	
-	// ------------------------------------- 给新队员发消息 --------------------------
+	// ------------------------------------- 露员息 --------------------------
 	int		nNpcIndex;
 	PLAYER_SEND_SELF_TEAM_INFO	sSelfInfo;
 	sSelfInfo.ProtocolType = s2c_teamselfinfo;
 	sSelfInfo.nTeamServerID = m_cTeam.m_nID;
 	sSelfInfo.m_dwLeadExp = Player[nPlayer].m_dwLeadExp;
 	sSelfInfo.m_btState = g_Team[m_cTeam.m_nID].m_nState;
-	// 队长数据
+	// 映
 	nNpcIndex = m_nIndex;
 	sSelfInfo.m_dwNpcID[0] = Npc[nNpcIndex].m_dwID;
 	sSelfInfo.m_btLevel[0] = (WORD)Npc[nNpcIndex].m_Level;
 	snprintf(sSelfInfo.m_szNpcName[0], sizeof(sSelfInfo.m_szNpcName[0]), "%s", Npc[nNpcIndex].Name);
-	// 队员数据
+	// 员
 	for (i = 0; i < MAX_TEAM_MEMBER; ++i)
 	{
 		if (g_Team[m_cTeam.m_nID].m_nMember[i] >= 0)
@@ -2008,7 +2134,7 @@ BOOL	KPlayer::AddTeamMember(BYTE* pProtocol)
 			sSelfInfo.m_btLevel[i + 1] = 0;
 		}
 	}
-	// 发送消息
+	// 息
 	g_pServer->PackDataToClient(Player[nPlayer].m_nNetConnectIdx, (BYTE*)&sSelfInfo, sizeof(PLAYER_SEND_SELF_TEAM_INFO));
 	
 	SHOW_MSG_SYNC	sMsg;
@@ -2018,7 +2144,7 @@ BOOL	KPlayer::AddTeamMember(BYTE* pProtocol)
 	sMsg.m_lpBuf = 0;
 	g_pServer->PackDataToClient(Player[nPlayer].m_nNetConnectIdx,(BYTE *)&sMsg, sMsg.m_wLength + 1);
 	
-	// --------------------------------- 给新队员发消息 end --------------------------
+	// --------------------------------- 露员息 end --------------------------
 	
 	return TRUE;
 }
@@ -2026,18 +2152,18 @@ BOOL	KPlayer::AddTeamMember(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端队员通知离开队伍
+//	埽盏突硕员通知肟?
 //-------------------------------------------------------------------------
 void	KPlayer::LeaveTeam(BYTE* pProtocol)
 {
 	if (!m_cTeam.m_nFlag)
 		return;
 	if (this->m_cTeam.m_nFigure == TEAM_CAPTAIN && g_Team[m_cTeam.m_nID].IsOpen())
-	{//队长离开
+	{//映肟?
 		g_Team[m_cTeam.m_nID].SetTeamClose();
 	}
 	
-	// 非队长离开队伍，发系统消息，队长离开队伍的系统消息处理在DeleteMember里面
+	// 嵌映肟椋系统息映肟系统息DeleteMember
 	if (m_cTeam.m_nFigure != TEAM_CAPTAIN)
 	{
 		SHOW_MSG_SYNC	sMsg;
@@ -2057,14 +2183,14 @@ void	KPlayer::LeaveTeam(BYTE* pProtocol)
 		sMsg.m_lpBuf = 0;
 	}
 	
-	// 服务器端队员离开的处理
+	// 硕员肟?
 	g_Team[m_cTeam.m_nID].DeleteMember(GetPlayerIndex());
 }
 #endif
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端队长通知踢出某个队员
+//	埽盏突硕映通知叱某员
 //-------------------------------------------------------------------------
 void	KPlayer::TeamKickOne(BYTE* pProtocol)
 {
@@ -2077,11 +2203,11 @@ void	KPlayer::TeamKickOne(BYTE* pProtocol)
 	if (nMemNo < 0)
 		return;
 	int		nPlayerNo;
-	// 服务器端队员离开的处理
+	// 硕员肟?
 	nPlayerNo = g_Team[m_cTeam.m_nID].m_nMember[nMemNo];
 	g_Team[m_cTeam.m_nID].DeleteMember(nPlayerNo);
 	
-	// 发消息给客户端
+	// 息突
 	/*
 	int		nLength;
 	SHOW_MSG_SYNC	sMsg;
@@ -2116,7 +2242,7 @@ void	KPlayer::TeamKickOne(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端队长通知把队长身份交给某个队员
+//	埽盏突硕映通知讯映萁某员
 //-------------------------------------------------------------------------
 void	KPlayer::TeamChangeCaptain(BYTE* pProtocol)
 {
@@ -2129,7 +2255,7 @@ void	KPlayer::TeamChangeCaptain(BYTE* pProtocol)
 		return;
 	if (Npc[Player[g_Team[m_cTeam.m_nID].m_nMember[nMember]].m_nIndex].m_Camp == camp_begin && Npc[this->m_nIndex].m_Camp != camp_begin)
 	{
-		// 队长移交失败：对方统帅力不够
+		// 映平失埽苑统帅
 		SHOW_MSG_SYNC	sMsg;
 		sMsg.ProtocolType = s2c_msgshow;
 		sMsg.m_wMsgID = enumMSG_ID_TEAM_CHANGE_CAPTAIN_FAIL2;
@@ -2141,7 +2267,7 @@ void	KPlayer::TeamChangeCaptain(BYTE* pProtocol)
 	}
 	if (g_Team[m_cTeam.m_nID].m_nMemNum > PlayerSet.m_cLeadExp.GetMemNumFromLevel(Player[g_Team[m_cTeam.m_nID].m_nMember[nMember]].m_dwLeadLevel))
 	{
-		// 队长移交失败：对方统帅力不够
+		// 映平失埽苑统帅
 		SHOW_MSG_SYNC	sMsg;
 		sMsg.ProtocolType = s2c_msgshow;
 		sMsg.m_wMsgID = enumMSG_ID_TEAM_CHANGE_CAPTAIN_FAIL;
@@ -2161,7 +2287,7 @@ void	KPlayer::TeamChangeCaptain(BYTE* pProtocol)
 	g_Team[m_cTeam.m_nID].m_nMember[nMember] = nPlayerNo;
 	m_cTeam.m_nFigure = TEAM_MEMBER;
 	Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_cTeam.m_nFigure = TEAM_CAPTAIN;
-	// 改变阵营
+	// 谋营
 	Npc[Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_nIndex].RestoreCurrentCamp();
 	for (i = 0; i < MAX_TEAM_MEMBER; ++i)
 	{
@@ -2171,14 +2297,14 @@ void	KPlayer::TeamChangeCaptain(BYTE* pProtocol)
 		Npc[Player[nPlayerNo].m_nIndex].SetCurrentCamp(Npc[Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_nIndex].m_Camp);
 	}
 	
-	// 给各个队员发消息
+	// 员息
 	PLAYER_TEAM_CHANGE_CAPTAIN	sChangeCaptain;
 	sChangeCaptain.ProtocolType = s2c_teamchangecaptain;
 	sChangeCaptain.m_dwCaptainID = pChange->m_dwNpcID;
 	sChangeCaptain.m_dwMemberID = Npc[m_nIndex].m_dwID;
-	// 给队长发消息
+	// 映息
 	g_pServer->PackDataToClient(Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_nNetConnectIdx, (BYTE*)&sChangeCaptain, sizeof(PLAYER_TEAM_CHANGE_CAPTAIN));
-	// 给队员发消息
+	// 员息
 	for (i = 0; i < MAX_TEAM_MEMBER; ++i)
 	{
 		nPlayerNo = g_Team[m_cTeam.m_nID].m_nMember[i];
@@ -2196,7 +2322,7 @@ void	KPlayer::TeamChangeCaptain(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端队长请求解散队伍
+//	埽盏突硕映散
 //-------------------------------------------------------------------------
 void	KPlayer::TeamDismiss(BYTE* pProtocol)
 {
@@ -2207,30 +2333,30 @@ void	KPlayer::TeamDismiss(BYTE* pProtocol)
 	int		i;
 	SHOW_MSG_SYNC	sMsg;
 	
-	// 队伍解散消息
+	// 散息
 	sMsg.ProtocolType = s2c_msgshow;
 	sMsg.m_wMsgID = enumMSG_ID_TEAM_DISMISS;
 	sMsg.m_wLength = sizeof(SHOW_MSG_SYNC) - 1;
 	g_pServer->PackDataToClient(m_nNetConnectIdx,(BYTE *)&sMsg, sMsg.m_wLength + 1);
 	
-	// 给队长发消息
+	// 映息
 	sLeaveTeam.ProtocolType = s2c_teamleave;
 	sLeaveTeam.m_dwNpcID = Npc[m_nIndex].m_dwID;
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sLeaveTeam, sizeof(PLAYER_LEAVE_TEAM));
-	// 给队员发消息
+	// 员息
 	for (i = 0; i < MAX_TEAM_MEMBER; ++i)
 	{
 		g_pServer->PackDataToClient(Player[g_Team[m_cTeam.m_nID].m_nMember[i]].m_nNetConnectIdx, &sMsg, sMsg.m_wLength + 1);
 		
 		sLeaveTeam.m_dwNpcID = Npc[Player[g_Team[m_cTeam.m_nID].m_nMember[i]].m_nIndex].m_dwID;
 		g_pServer->PackDataToClient(Player[g_Team[m_cTeam.m_nID].m_nMember[i]].m_nNetConnectIdx, (BYTE*)&sLeaveTeam, sizeof(PLAYER_LEAVE_TEAM));
-		// 队员身份改变
+		// 员莞谋
 		Player[g_Team[m_cTeam.m_nID].m_nMember[i]].m_cTeam.m_nFlag = 0;
 		Npc[Player[g_Team[m_cTeam.m_nID].m_nMember[i]].m_nIndex].RestoreCurrentCamp();;
 	}
-	// 队伍清空
+	// 
 	g_Team[m_cTeam.m_nID].Release();
-	// 队长身份改变
+	// 映莞谋
 	m_cTeam.m_nFlag = 0;
 	Npc[m_nIndex].RestoreCurrentCamp();
 }
@@ -2238,7 +2364,7 @@ void	KPlayer::TeamDismiss(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端请求设定PK状态
+//	埽盏突瓒≒K状态
 //-------------------------------------------------------------------------
 void	KPlayer::SetPK(BYTE* pProtocol)
 {
@@ -2253,7 +2379,7 @@ void	KPlayer::SetPK(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端请求获得门派数据
+//	埽盏突
 //-------------------------------------------------------------------------
 void	KPlayer::SendFactionData(BYTE* pProtocol)
 {
@@ -2263,11 +2389,11 @@ void	KPlayer::SendFactionData(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：向客户端发送门派数据
+//	埽突朔
 //-------------------------------------------------------------------------
 void	KPlayer::SendFactionData()
 {
-	// 给客户端发消息
+	// 突朔息
 	PLAYER_FACTION_DATA	sData;
 	sData.ProtocolType = s2c_playerfactiondata;
 	sData.m_btCamp = Npc[m_nIndex].m_Camp;
@@ -2291,7 +2417,7 @@ void KPlayer::GetAboutPos(KMapPos *pMapPos)
 	
 	POINT Pos;
 	int nX, nY,nMap;
-	Npc[m_nIndex].GetMpsPos(&nX, &nY,&nMap);  //人物所站的位置
+	Npc[m_nIndex].GetMpsPos(&nX, &nY,&nMap);  //站位
 	Pos.x = nX;
 	Pos.y = nY;
 	
@@ -2325,14 +2451,14 @@ POINT	Pos[8] =
 	{
 	  nTmpX = nMpsX + Pos[i].x;
 	  nTmpY = nMpsY + Pos[i].y;
-	  if (SubWorld[Npc[m_nIndex].m_SubWorldIndex].GetBarrier(nTmpX, nTmpY)) //有障碍
+	  if (SubWorld[Npc[m_nIndex].m_SubWorldIndex].GetBarrier(nTmpX, nTmpY)) //习
 	     continue;
 	  SubWorld[Npc[m_nIndex].m_SubWorldIndex].Mps2Map(nTmpX, nTmpY, &nR, &nMapX, &nMapY, &nOffX, &nOffY);
-	  if (nR == -1) //区域为空
+	  if (nR == -1) //为
 	     continue;
 	 if (SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_Region[nR].GetRef(nMapX, nMapY, obj_object))
 	 // if (SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_Region[nR].HasObj(nMapX, nMapY))
-	     continue;  //有东西
+	     continue;  //卸
 	  else
 	     break;
 	}
@@ -2361,7 +2487,7 @@ POINT	Pos[8] =
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：寻找玩家周围的某个指定npc id的player index
+//	埽寻围某指npc idplayer index
 //-------------------------------------------------------------------------
 int		KPlayer::FindAroundPlayer(DWORD dwNpcID)
 {
@@ -2387,7 +2513,7 @@ int		KPlayer::FindAroundPlayer(DWORD dwNpcID)
 }
 
 //-------------------------------------------------------------------------
-//	功能：判断某玩家是否在周围
+//	埽卸某欠围
 //-------------------------------------------------------------------------
 BOOL	KPlayer::CheckPlayerAround(int nPlayerIdx)
 {
@@ -2409,7 +2535,7 @@ BOOL	KPlayer::CheckPlayerAround(int nPlayerIdx)
 }
 
 //-------------------------------------------------------------------------
-//	功能：寻找玩家周围的某个指定npc dwid的npc index
+//	埽寻围某指npc dwidnpc index
 //-------------------------------------------------------------------------
 int		KPlayer::FindAroundNpc(DWORD dwNpcID)
 {
@@ -2487,7 +2613,7 @@ int		KPlayer::FindAroundNpcID(DWORD dwNpcID, int nDist)
 #endif
 
 //-------------------------------------------------------------------------
-//	功能：新玩家登陆时根据五行属性产生 力量 敏捷 活力 精力 四项数值   ----没有调用
+//	埽业陆时圆     值   ----没械
 //-------------------------------------------------------------------------
 BOOL	KPlayer::NewPlayerGetBaseAttribute(int Series)
 {
@@ -2500,8 +2626,8 @@ BOOL	KPlayer::NewPlayerGetBaseAttribute(int Series)
 	m_nDexterity = PlayerSet.m_cNewPlayerAttribute.m_nDexterity[Series];
 	m_nVitality = PlayerSet.m_cNewPlayerAttribute.m_nVitality[Series];
 	m_nEngergy = PlayerSet.m_cNewPlayerAttribute.m_nEngergy[Series];
-	m_nLucky = PlayerSet.m_cNewPlayerAttribute.m_nLucky[Series]; //幸运值
-	m_nUpExp = 0;  //杀死敌人获得经验增加
+	m_nLucky = PlayerSet.m_cNewPlayerAttribute.m_nLucky[Series]; //值
+	m_nUpExp = 0;  //杀嘶镁
 	
 	m_nCurStrength = m_nStrength;
 	m_nCurDexterity = m_nDexterity;
@@ -2520,42 +2646,42 @@ BOOL	KPlayer::NewPlayerGetBaseAttribute(int Series)
 }
 
 //-------------------------------------------------------------------------
-//	功能：计算当前力量
+//	埽愕鼻?
 //-------------------------------------------------------------------------
 //void	KPlayer::CalcCurStrength()
-//{	// 还需要考虑 装备、技能、状态 的影响
+//{	// 要 装堋状态 影
 //	m_nCurStrength = m_nStrength;
 //}
 
 //-------------------------------------------------------------------------
-//	功能：计算当前敏捷
+//	埽愕鼻?
 //-------------------------------------------------------------------------
 //void	KPlayer::CalcCurDexterity()
-//{	// 还需要考虑 装备、技能、状态 的影响
+//{	// 要 装堋状态 影
 //	m_nCurDexterity = m_nDexterity;
 //}
 
 //-------------------------------------------------------------------------
-//	功能：计算当前活力
+//	埽愕鼻?
 //-------------------------------------------------------------------------
 //void	KPlayer::CalcCurVitality()
-//{	// 还需要考虑 装备、技能、状态 的影响
+//{	// 要 装堋状态 影
 //	m_nCurVitality = m_nVitality;
 //}
 
 //-------------------------------------------------------------------------
-//	功能：计算当前精力
+//	埽愕鼻?
 //-------------------------------------------------------------------------
 //void	KPlayer::CalcCurEngergy()
-//{	// 还需要考虑 装备、技能、状态 的影响
+//{	// 要 装堋状态 影
 //	m_nCurEngergy = m_nEngergy;
 //}
 
 //-------------------------------------------------------------------------
-//	功能：计算当前运气
+//	埽愕鼻?
 //-------------------------------------------------------------------------
 void	KPlayer::CalcCurLucky()
-{	// 还需要考虑 装备、技能、状态 的影响
+{	// 要 装堋状态 影
 	m_nCurLucky = m_nLucky;
 }
 
@@ -2571,7 +2697,7 @@ void  KPlayer::SyncCurrentBaseAttriibute(int type,int attribute,int curAttribute
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(PLAYER_ATTRIBUTE_SYNC));
 }
 //-------------------------------------------------------------------------
-//	功能：增加基本力量-----力量
+//	埽踊-----
 //-------------------------------------------------------------------------
 void	KPlayer::AddBaseStrength(int nData)
 {
@@ -2589,8 +2715,8 @@ void	KPlayer::AddBaseStrength(int nData)
 		   m_nCurStrength=0;
 
 		UpdataCurData();
-		SetNpcPhysicsDamage();  // 设置物理伤害
-		// 把当前力量传给客户端
+		SetNpcPhysicsDamage();  // 撕
+		// 训前突
 		PLAYER_ATTRIBUTE_SYNC	sSync;
 		sSync.ProtocolType = s2c_playersyncattribute;
 		sSync.m_btAttribute = 0;
@@ -2600,7 +2726,7 @@ void	KPlayer::AddBaseStrength(int nData)
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(PLAYER_ATTRIBUTE_SYNC));
 	}
 }
-//力量
+//
 void	KPlayer::ResetBaseStrength(int nData)
 {		
 	m_nStrength = nData;	
@@ -2615,7 +2741,7 @@ void	KPlayer::ResetBaseStrength(int nData)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：增加基本敏捷----身法
+//	埽踊----
 //-------------------------------------------------------------------------
 void	KPlayer::AddBaseDexterity(int nData)
 {
@@ -2626,12 +2752,12 @@ void	KPlayer::AddBaseDexterity(int nData)
 		m_nCurDexterity += nData;
 		if  (m_nDexterity<0) m_nDexterity=0;
 		if  (m_nCurDexterity<0) m_nCurDexterity=0;
-		SetNpcAttackRating();    // 设置命中
-		SetNpcDefence();         // 设置闪避
+		SetNpcAttackRating();    // 
+		SetNpcDefence();         // 
 		UpdataCurData();
-		SetNpcPhysicsDamage();   // 设置物理伤害
+		SetNpcPhysicsDamage();   // 撕
 		
-		// 把当前力量传给客户端
+		// 训前突
 		PLAYER_ATTRIBUTE_SYNC	sSync;
 		sSync.ProtocolType = s2c_playersyncattribute;
 		sSync.m_btAttribute = 1;
@@ -2641,7 +2767,7 @@ void	KPlayer::AddBaseDexterity(int nData)
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(PLAYER_ATTRIBUTE_SYNC));
 	}
 }
-//外功
+//夤?
 void	KPlayer::ResetBaseDexterity(int nData)
 {
 		m_nDexterity = nData;		
@@ -2659,7 +2785,7 @@ void	KPlayer::ResetBaseDexterity(int nData)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：增加基本活力  ----外功
+//	埽踊  ----夤?
 //-------------------------------------------------------------------------
 void	KPlayer::AddBaseVitality(int nData)
 {
@@ -2674,7 +2800,7 @@ void	KPlayer::AddBaseVitality(int nData)
 		Npc[m_nIndex].AddBaseStaminaMax(PlayerSet.m_cLevelAdd.GetStaminaPerVitality(Npc[m_nIndex].m_Series) * nData);
 		UpdataCurData();
 		
-		// 把当前力量传给客户端
+		// 训前突
 		PLAYER_ATTRIBUTE_SYNC	sSync;
 		sSync.ProtocolType = s2c_playersyncattribute;
 		sSync.m_btAttribute = 2;
@@ -2684,7 +2810,7 @@ void	KPlayer::AddBaseVitality(int nData)
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(PLAYER_ATTRIBUTE_SYNC));
 	}
 }
-//身法
+//
 void	KPlayer::ResetBaseVitality(int nData)
 {	
 	m_nVitality = nData;		
@@ -2700,7 +2826,7 @@ void	KPlayer::ResetBaseVitality(int nData)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：增加基本精力-----内功
+//	埽踊-----诠
 //-------------------------------------------------------------------------
 void	KPlayer::AddBaseEngergy(int nData)
 {
@@ -2713,9 +2839,9 @@ void	KPlayer::AddBaseEngergy(int nData)
 		if  (m_nCurEngergy<0) m_nCurEngergy=0;
 		Npc[m_nIndex].AddBaseManaMax(PlayerSet.m_cLevelAdd.GetManaPerEnergy(Npc[m_nIndex].m_Series) * nData);
 		UpdataCurData();
-		SetNpcPhysicsDamage();   //设置物理伤害
+		SetNpcPhysicsDamage();   //撕
 
-		// 把当前内功传给客户端
+		// 训前诠突
 		PLAYER_ATTRIBUTE_SYNC	sSync;
 		sSync.ProtocolType = s2c_playersyncattribute;
 		sSync.m_btAttribute = 3;
@@ -2725,7 +2851,7 @@ void	KPlayer::AddBaseEngergy(int nData)
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(PLAYER_ATTRIBUTE_SYNC));
 	}
 }
-//内功
+//诠
 void	KPlayer::ResetBaseEngergy(int nData)
 {
 	m_nEngergy = nData;		
@@ -2740,19 +2866,19 @@ void	KPlayer::ResetBaseEngergy(int nData)
 #endif
 
 //-------------------------------------------------------------------------
-//	功能：改变当前力量(当 nData 小于 0 时，减少)
+//	埽谋涞鼻? nData 小 0 时)
 //-------------------------------------------------------------------------
 void	KPlayer::ChangeCurStrength(int nData)
 {
 
 	m_nCurStrength +=nData;
 	if  (m_nCurStrength<0) m_nCurStrength=0;
-	SetNpcPhysicsDamage();  //物理攻击增加
-	// 把当前力量传给客户端
+	SetNpcPhysicsDamage();  //
+	// 训前突
 }
 
 //-------------------------------------------------------------------------
-//	功能：改变当前敏捷(当 nData 小于 0 时，减少)
+//	埽谋涞鼻? nData 小 0 时)
 //-------------------------------------------------------------------------
 void	KPlayer::ChangeCurDexterity(int nData)
 {
@@ -2772,22 +2898,22 @@ void	KPlayer::ChangeCurDexterity(int nData)
 
 
 //-------------------------------------------------------------------------
-//	功能：改变当前活力(当 nData 小于 0 时，减少)  、//增加当前生命 和内力值
+//	埽谋涞鼻? nData 小 0 时)  //拥前 值
 //-------------------------------------------------------------------------
 void	KPlayer::ChangeCurVitality(int nData)	    //状态
 {
 /*	if (nData + m_nAttributePoint < 0)
 return;
 	*/
-	m_nCurVitality += nData;  //外功增加多少点
+	m_nCurVitality += nData;  //夤τ顿?
 	if  (m_nCurVitality<0) m_nCurVitality=0;
 	Npc[m_nIndex].AddCurLifeMax(PlayerSet.m_cLevelAdd.GetLifePerVitality(Npc[m_nIndex].m_Series) * nData);
-	Npc[m_nIndex].AddCurStaminaMax(PlayerSet.m_cLevelAdd.GetStaminaPerVitality(Npc[m_nIndex].m_Series) * nData);	//体力
+	Npc[m_nIndex].AddCurStaminaMax(PlayerSet.m_cLevelAdd.GetStaminaPerVitality(Npc[m_nIndex].m_Series) * nData);	//
 	
 }
 
 //-------------------------------------------------------------------------
-//	功能：改变当前精力(当 nData 小于 0 时，减少) 内功
+//	埽谋涞鼻? nData 小 0 时) 诠
 //-------------------------------------------------------------------------
 void	KPlayer::ChangeCurEngergy(int nData)
 {
@@ -2802,7 +2928,7 @@ return;
 }
 
 //-------------------------------------------------------------------------
-//	功能：增加基本运气
+//	埽踊
 //-------------------------------------------------------------------------
 void	KPlayer::AddBaseLucky(int nData)
 {
@@ -2812,12 +2938,12 @@ void	KPlayer::AddBaseLucky(int nData)
 }
 
 //-------------------------------------------------------------------------
-//	功能：由当前力量计算对应npc的物理伤害(PhysicsDamage)---根据武器的伤害为基点---换装是调用
+//	埽傻前应npc撕(PhysicsDamage)---撕为---装堑
 //-------------------------------------------------------------------------
 void	KPlayer::SetNpcPhysicsDamage()
 {
 /*	int		nMinDamage = 0, nMaxDamage = 0, mLeftskillidex = 0;
-	mLeftskillidex = GetLeftSkill();                         //左键技能
+	mLeftskillidex = GetLeftSkill();                         //
 	KSkill* pOrdinSkill = (KSkill*)g_SkillManager.GetSkill(mLeftskillidex, 1);
 	if (!pOrdinSkill)
 		return;
@@ -2884,7 +3010,7 @@ void	KPlayer::SetNpcPhysicsDamage()
 }
 
 //-------------------------------------------------------------------------
-//	功能：由当前敏捷计算对应npc的攻击命中率(AttackRating)
+//	埽傻前菁应npc墓(AttackRating)
 //-------------------------------------------------------------------------
 void	KPlayer::SetNpcAttackRating()
 {
@@ -2895,7 +3021,7 @@ void	KPlayer::SetNpcAttackRating()
 }
 
 //-------------------------------------------------------------------------
-//	功能：由当前敏捷计算对应npc的防御力
+//	埽傻前菁应npc姆
 //-------------------------------------------------------------------------
 void	KPlayer::SetNpcDefence()
 {
@@ -2908,7 +3034,7 @@ void	KPlayer::SetNpcDefence()
 /*
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：由当前敏捷计算对应npc的行走速度
+//	埽傻前菁应npc俣
 //-------------------------------------------------------------------------
 void	KPlayer::SetNpcWalkSpeed()
 {
@@ -2922,7 +3048,7 @@ Npc[m_nIndex].SetBaseWalkSpeed(nSpeed);
 /*
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：由当前敏捷计算对应npc的跑步速度
+//	埽傻前菁应npc懿俣
 //-------------------------------------------------------------------------
 void	KPlayer::SetNpcRunSpeed()
 {
@@ -2935,7 +3061,7 @@ Npc[m_nIndex].SetBaseRunSpeed(nSpeed);
 
 
 //-------------------------------------------------------------------------
-//	功能：增加经验(原始数据，还未经过处理，需要处理组队的影响)
+//	埽泳(原始荩未要拥影)
 //-------------------------------------------------------------------------
 #ifdef _SERVER
 void	KPlayer::AddExp(int nExp, int nTarLevel,int nGoldType)
@@ -2943,13 +3069,13 @@ void	KPlayer::AddExp(int nExp, int nTarLevel,int nGoldType)
 	if (nExp == 1)
 		return;
 	 
-	if (!m_cTeam.m_nFlag)  //没有组队
+	if (!m_cTeam.m_nFlag)  //没
 	{
 		AddSelfExp(nExp, nTarLevel,nGoldType);
 		return;
 	}
 	 
-	// 已经组队
+	// 丫
 	int	i, j, nShareFlag[MAX_TEAM_MEMBER + 1], nRegion, nTotalLevel = 0, nTotalPlayer = 0;
 	memset(nShareFlag, 0, sizeof(nShareFlag));
 	
@@ -2966,7 +3092,7 @@ void	KPlayer::AddExp(int nExp, int nTarLevel,int nGoldType)
 		&nSelfMpsX,\
 		&nSelfMpsY);
 	
-	// 队长
+	// 映
 	nNpcIdx = Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_nIndex;
 	if (nSelfSubIdx == Npc[nNpcIdx].m_SubWorldIndex)
 	{
@@ -2989,7 +3115,7 @@ void	KPlayer::AddExp(int nExp, int nTarLevel,int nGoldType)
 				goto SharePlace;
 		}
 	}
-	// 队员
+	// 员
 	for (i = 0; i < MAX_TEAM_MEMBER; ++i)
 	{
 		if (g_Team[m_cTeam.m_nID].m_nMember[i] < 0)
@@ -3031,10 +3157,10 @@ SharePlace:
 	float k,nGetExp;
 	k = 100 + nTotalPlayer * 15;	
  
-	// 给队长分配经验
+	// 映渚?
 	if (nShareFlag[0])
 	{
-		nGetExp = (k * Npc[Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_nIndex].m_Level)/nTotalLevel; //总等级
+		nGetExp = (k * Npc[Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_nIndex].m_Level)/nTotalLevel; //艿燃
 
 		if (nGetExp <=0)
 			nGetExp = 1;
@@ -3044,12 +3170,12 @@ SharePlace:
 			nGetExp = 1;
 		Player[g_Team[m_cTeam.m_nID].m_nCaptain].AddSelfExp(nExp * nGetExp / 100, nTarLevel, nGoldType);
 
-		// LeadExp = 怪物提供的经验值 * β * 分享者等级 / 分享者等级和；
+		// LeadExp = 峁┠局?*  * 叩燃 / 叩燃停
 		int		nLeadExp = nExp * k * PlayerSet.m_cLevelAdd.GetLeadExpShare(Npc[m_nIndex].m_Series) * (nTotalLevel - Npc[m_nIndex].m_Level) / (nTotalLevel * 10000);
 		Player[g_Team[m_cTeam.m_nID].m_nCaptain].AddLeadExp(nLeadExp);
 
 	}
-	// 给队员分配经验
+	// 员渚?
 	for (i = 0; i < MAX_TEAM_MEMBER; ++i)
 	{
 		if (!nShareFlag[i + 1])
@@ -3064,32 +3190,32 @@ SharePlace:
 }
 
 
-/* 定义个类型，主要是为了方便返回商和余数 */
+/* 停要为朔惴堤?*/
 /*struct DIV_T
 {
-    // 商 
+    //  
     int quot; 
-    // 余数 
+    //  
     int rem;
 }; */
 
 /* 
-有符号数除法，负数的时候要加上一个偏置量即
+蟹时要一偏
 x / (2^k) = (x < 0 ? (x + (1 << k) - 1) : x) >> k
-这样的话就会向0取整，比如-5 / 2 = -2.5 = -2
+幕突0取-5 / 2 = -2.5 = -2
 */
 /*struct DIV_T xDiv(int a, int b)
 {
-    //符号位，这是一个常数，在编译时候就能计算出来
+    //位一诒时芗
     enum {SIGN_BIT = 1 << ((sizeof(int) << 3) - 1)};
-    //是否为负数 
+    //欠为 
     int neg = a & SIGN_BIT;
-    // 偏置量，负数的话要加上偏置量 
+    // 偏幕要偏 
     int bias = ((1 - !neg) << b) - (1 && neg);
 	
     struct DIV_T tmp;
 	
-    tmp.quot = (a + bias) >> b;     //a除以b
+    tmp.quot = (a + bias) >> b;     //ab
     tmp.rem = a - (tmp.quot << b);
 	
     return tmp;
@@ -3097,9 +3223,9 @@ x / (2^k) = (x < 0 ? (x + (1 << k) - 1) : x) >> k
 }  */
 
 //-------------------------------------------------------------------------
-//	功能：增加经验(不需要再经过队伍分配的处理)
-//  nExp 增加的经验  nTarLevel 被打死的npc的等级
-//	详情参阅 sourcesafe策划库\document\System\战斗经验设定.doc
+//	埽泳(要倬拇)
+//  nExp 拥木  nTarLevel npc牡燃
+//	 sourcesafe呋\document\System\战瓒?doc
 //-------------------------------------------------------------------------
 void	KPlayer::AddSelfExp(int nExp, int nTarLevel,int nGoldType)
 {
@@ -3163,12 +3289,12 @@ void	KPlayer::AddSelfExp(int nExp, int nTarLevel,int nGoldType)
 	if(g_Skill120ExpRate)
 		AddSkillExp(nGetExp * g_Skill120ExpRate / MAX_PERCENT);
 
-	if (m_nExp > m_nNextLevelExp)	// 升级
+	if (m_nExp > m_nNextLevelExp)	// 
 	{
 			LevelUp();
 			return;
 	}
-	else if (m_nExp == m_nNextLevelExp)						// 同步经验
+	else if (m_nExp == m_nNextLevelExp)						// 同
 	{
 		if (Npc[m_nIndex].m_Level < MAX_LEVEL)
 		{
@@ -3222,7 +3348,7 @@ void	KPlayer::setFindPathState(bool ver,bool synclient)
 	 m_IsInfindPathState = ver;
 
 	 if (synclient)
-	 {//是否同步到 客户端
+	 {//欠同 突
 		 PLAYER_FINDPATH_STATE sSync;
 		 sSync.ProtocolType = s2c_findpath_state;
 		 sSync.m_btstate = m_IsInfindPathState;
@@ -3232,7 +3358,7 @@ void	KPlayer::setFindPathState(bool ver,bool synclient)
  }
 #endif
 //-------------------------------------------------------------------------
-//	功能：直接增加经验值，不考虑其他因素
+//	埽直泳值
 //-------------------------------------------------------------------------
 void	KPlayer::DirectAddExp(int nExp)
 {
@@ -3249,11 +3375,11 @@ void	KPlayer::DirectAddExp(int nExp)
 	m_nExp += nExp;
     
 #ifdef _SERVER
-//	printf("-------[直接经验](%s)原始经验(%d)实际增加经验%d点-------\n", Npc[m_nIndex].Name,nExp,nExp);//nGetExp*m_nUpExp/100);
+//	printf("-------[直泳](%s)原始(%d)实泳%d-------\n", Npc[m_nIndex].Name,nExp,nExp);//nGetExp*m_nUpExp/100);
 
-	if (m_nExp >= m_nNextLevelExp)	// 升级
+	if (m_nExp >= m_nNextLevelExp)	// 
 		LevelUp();
-	else								// 同步经验
+	else								// 同
 	{
 		PLAYER_EXP_SYNC	sSyncExp;
 		sSyncExp.ProtocolType = (BYTE)s2c_playerexp;
@@ -3264,7 +3390,7 @@ void	KPlayer::DirectAddExp(int nExp)
 }
 
 //-------------------------------------------------------------------------
-//	功能：玩家升一级
+//	埽一
 //-------------------------------------------------------------------------
 void	KPlayer::LevelUp()
 {
@@ -3277,19 +3403,19 @@ void	KPlayer::LevelUp()
 
 	m_nNextLevelExp = PlayerSet.m_cLevelAdd.GetLevelExp(Npc[m_nIndex].m_Level);
 	
-	// -------------------------- 等级增加时各项属性增加 ----------------------
-	// 增加未分配属性点
-	m_nAttributePoint += PLAYER_LEVEL_ADD_ATTRIBUTE;   //一次增加5点属性
-	// 增加未分配技能点
-	m_nSkillPoint     += PLAYER_LEVEL_ADD_SKILL;       //一级增加1点技能点
+	// -------------------------- 燃时 ----------------------
+	// 未缘
+	m_nAttributePoint += PLAYER_LEVEL_ADD_ATTRIBUTE;   //一5
+	// 未浼架?
+	m_nSkillPoint     += PLAYER_LEVEL_ADD_SKILL;       //一1慵架?
 	
-	// 处理生命、体力、内力值（影响基本生命、体力、内力最大值的因素：等级、属性点，影响当前生命最大值的因素：装备、技能、药物（临时））
+	// 值影值兀燃缘悖影斓鼻爸地Ｗ败∫╋（?
 	LevelAddBaseLifeMax();
 	LevelAddBaseStaminaMax();
 	LevelAddBaseManaMax();
 	// Npc[m_nIndex].ResetLifeReplenish();
 	
-	// 处理各种抗性的变化 火、冰、毒、电、物理  原始
+	// 挚缘谋浠?稹⒈纭? 原始
 	Npc[m_nIndex].m_FireResist				= PlayerSet.m_cLevelAdd.GetFireResist(Npc[m_nIndex].m_Series, Npc[m_nIndex].m_Level);
 	Npc[m_nIndex].m_CurrentFireResist		= Npc[m_nIndex].m_FireResist;
 	Npc[m_nIndex].m_ColdResist				= PlayerSet.m_cLevelAdd.GetColdResist(Npc[m_nIndex].m_Series, Npc[m_nIndex].m_Level);
@@ -3331,19 +3457,19 @@ void	KPlayer::LevelUp()
 	Npc[m_nIndex].m_CurrentPhysicsResistMax	= Npc[m_nIndex].m_PhysicsResistMax;
 */
 	int nOldCurCamp = Npc[m_nIndex].m_CurrentCamp;
-	// 根据装备、技能信息更新当前数据
+	// 装息碌前
 	this->UpdataCurData();
 	SetNpcPhysicsDamage();
 	Npc[m_nIndex].m_CurrentCamp = nOldCurCamp;
 	
-	// 生命、体力、内力值加满
+	// 值
 	Npc[m_nIndex].m_CurrentLife = Npc[m_nIndex].m_CurrentLifeMax;
 	Npc[m_nIndex].m_CurrentStamina = Npc[m_nIndex].m_CurrentStaminaMax;
 	Npc[m_nIndex].m_CurrentMana = Npc[m_nIndex].m_CurrentManaMax;
 	
 #ifdef _SERVER
-	// 给客户端发送数据
-	// 自己的数据
+	// 突朔
+	// 约
 	PLAYER_LEVEL_UP_SYNC	sLevelUp;
 	sLevelUp.ProtocolType		= s2c_playerlevelup;
 	sLevelUp.m_btLevel			= (WORD)Npc[m_nIndex].m_Level;
@@ -3354,14 +3480,14 @@ void	KPlayer::LevelUp()
 	sLevelUp.m_nBaseStaminaMax	= Npc[m_nIndex].m_StaminaMax;
 	sLevelUp.m_nBaseManaMax		= Npc[m_nIndex].m_ManaMax;
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sLevelUp, sizeof(PLAYER_LEVEL_UP_SYNC));
-	// 给队友发送等级数据
+	// 逊偷燃
 	if (m_cTeam.m_nFlag)
 	{
 		PLAYER_TEAMMATE_LEVEL_SYNC	sLevel;
 		sLevel.ProtocolType = s2c_teammatelevel;
 		sLevel.m_btLevel = (WORD)Npc[m_nIndex].m_Level;
 		sLevel.m_dwTeammateID = Npc[m_nIndex].m_dwID;
-		// 给队长发
+		// 映
 		if (m_cTeam.m_nFigure != TEAM_CAPTAIN)
 			g_pServer->PackDataToClient(Player[g_Team[m_cTeam.m_nID].m_nCaptain].m_nNetConnectIdx, (BYTE*)&sLevel, sizeof(PLAYER_TEAMMATE_LEVEL_SYNC));
 		for (int i = 0; i < MAX_TEAM_MEMBER; ++i)
@@ -3480,21 +3606,21 @@ void	KPlayer::SetLevel(int nLevel)
 }
 
 
-// 同步客户端属性状态技能等数据
-void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
+// 同突状态艿
+void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //圆
 {
 	if (m_nIndex <= 0 || m_nIndex >= MAX_NPC)
 		return;
 
 	for (int j = 0 ; j< MAX_NPCSKILL;j++)
 	{
-		int nAdd = 	Npc[m_nIndex].m_SkillList.GetAddPoint(j); //获取该位置的额外技能点
+		int nAdd = 	Npc[m_nIndex].m_SkillList.GetAddPoint(j); //取位玫亩饧架?
 		if (nAdd > 0)
 		{
-			nAdd = -nAdd;  //等于负的
-			Npc[m_nIndex].m_SkillList.QeuipAddPoint(j,nAdd);             //设置该位置技能点为实际技能点
+			nAdd = -nAdd;  //诟
+			Npc[m_nIndex].m_SkillList.QeuipAddPoint(j,nAdd);             //酶位眉艿为实始艿
 #ifdef _SERVER	
-			Npc[m_nIndex].m_SkillList.IncreaseLevel(j,nAdd,FALSE,FALSE); //清楚额外技能等级被动状态
+			Npc[m_nIndex].m_SkillList.IncreaseLevel(j,nAdd,FALSE,FALSE); //饧架等甲刺?
 			int nSkillid= Npc[m_nIndex].m_SkillList.GetSkillId(j);
 			if (nUnEquip && nSkillid>0)
 			{
@@ -3504,7 +3630,7 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 				sSkill.m_nSkillLevel = Npc[m_nIndex].m_SkillList.GetCurrentLevelByIdx(j);
 				sSkill.m_nSkillExp = Npc[m_nIndex].m_SkillList.GetCurSkillExp(j);//muc do luyen
 				sSkill.m_nLeavePoint = Player[Npc[m_nIndex].GetPlayerIdx()].m_nSkillPoint;
-				sSkill.m_nAddPoint   = Npc[m_nIndex].m_SkillList.GetAddPoint(j);	//额外增加的技能点
+				sSkill.m_nAddPoint   = Npc[m_nIndex].m_SkillList.GetAddPoint(j);	//拥募艿
 				if (g_pServer)
 					g_pServer->PackDataToClient(Player[Npc[m_nIndex].GetPlayerIdx()].m_nNetConnectIdx, (BYTE*)&sSkill, sizeof(PLAYER_SKILL_LEVEL_SYNC));
 			}		
@@ -3512,7 +3638,7 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 		}
 
 		Npc[m_nIndex].m_SkillList.m_Skills[j].mAddPoint = 0;
-		Npc[m_nIndex].m_SkillList.m_Skills[j].EnChance = 0;              // 技能的加成
+		Npc[m_nIndex].m_SkillList.m_Skills[j].EnChance = 0;              // 艿募映
 		Npc[m_nIndex].m_SkillList.m_Skills[j].nTempEnChance = 0;
 	}
 
@@ -3523,7 +3649,7 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 	
 	/*if 	(nFomoidx>-1)
 	{
-		if (Npc[m_nIndex].GetCurFoMoSkllLevel(nFomoidx)>=5) //获取神将当前的等级
+		if (Npc[m_nIndex].GetCurFoMoSkllLevel(nFomoidx)>=5) //取窠登澳等
 		{
 			nCurbei=Npc[m_nIndex].GetCurFoMoSkllLevel(nFomoidx)/5;
 		}
@@ -3543,7 +3669,7 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 	Npc[m_nIndex].m_CurrentJumpSpeed	= Npc[m_nIndex].m_JumpSpeed;
 	Npc[m_nIndex].m_CurrentVisionRadius	= Npc[m_nIndex].m_VisionRadius;
 	Npc[m_nIndex].m_CurrentWalkSpeed	= Npc[m_nIndex].m_WalkSpeed;
-	Npc[m_nIndex].m_CurrentNuQiMax		= Npc[m_nIndex].m_NuqiMax;//怒气
+	Npc[m_nIndex].m_CurrentNuQiMax		= Npc[m_nIndex].m_NuqiMax;//怒
 	m_nCurStrength						= m_nStrength;
     if  (m_nCurStrength<0) m_nCurStrength=0;
 	m_nCurDexterity						= m_nDexterity;
@@ -3556,22 +3682,22 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 
 	m_nTempLucky_p                      = 0;
 
-	Npc[m_nIndex].m_TempFireResist = 0;	        // Npc的当前火抗性
-	Npc[m_nIndex].m_TempColdResist = 0;	        // Npc的当前冰抗性
-	Npc[m_nIndex].m_TempPoisonResist = 0;	    // Npc的当前毒抗性
-	Npc[m_nIndex].m_TempLightResist = 0;	    // Npc的当前电抗性
-	Npc[m_nIndex].m_TempPhysicsResist = 0;	    // Npc的当前物理抗性
+	Npc[m_nIndex].m_TempFireResist = 0;	        // Npc牡前
+	Npc[m_nIndex].m_TempColdResist = 0;	        // Npc牡前
+	Npc[m_nIndex].m_TempPoisonResist = 0;	    // Npc牡前
+	Npc[m_nIndex].m_TempLightResist = 0;	    // Npc牡前缈?
+	Npc[m_nIndex].m_TempPhysicsResist = 0;	    // Npc牡前
 	Npc[m_nIndex].m_CurrentHitNpcRecover = 0;
 	Npc[m_nIndex].m_CurrentHitRank       = 0;
 
-	Npc[m_nIndex].m_CurrentColdResist	= Npc[m_nIndex].m_ColdResist;  //原始的防御
+	Npc[m_nIndex].m_CurrentColdResist	= Npc[m_nIndex].m_ColdResist;  //原始姆
 	Npc[m_nIndex].m_CurrentDefend		= Npc[m_nIndex].m_Defend;
 	Npc[m_nIndex].m_CurrentAddDexterity = 0;
 	Npc[m_nIndex].m_CurrentFireResist	= Npc[m_nIndex].m_FireResist;
 	Npc[m_nIndex].m_CurrentLifeReplenish= Npc[m_nIndex].m_LifeReplenish;
 	Npc[m_nIndex].m_CurrentLifeReplenish_p	= 0;
 	Npc[m_nIndex].m_CurrentManaReplenish_p  = 0;
-	Npc[m_nIndex].m_CurrentHitRecover	= Npc[m_nIndex].m_HitRecover;  //Npc的受伤动作时间
+	Npc[m_nIndex].m_CurrentHitRecover	= Npc[m_nIndex].m_HitRecover;  //Npc硕时
 	Npc[m_nIndex].m_CurrentLightResist	= Npc[m_nIndex].m_LightResist;
 	Npc[m_nIndex].m_CurrentManaReplenish= Npc[m_nIndex].m_ManaReplenish;
 	Npc[m_nIndex].m_CurrentPhysicsResist= Npc[m_nIndex].m_PhysicsResist;
@@ -3603,21 +3729,21 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 
 //	Npc[m_nIndex].m_CurrentManaPerEnemy	= 0;
 	Npc[m_nIndex].m_CurrentManaStolen	= 0;
-	Npc[m_nIndex].m_CurrentMeleeDmgRet	= 0;        // 近程反弹
-	Npc[m_nIndex].m_CurrentHulueMeleeDmgRet=0;      // 忽略近程反弹多少点、
-   	Npc[m_nIndex].m_CurrentHulueRangeDmgRet=0;      // 忽略远程程反弹多少点、
-	Npc[m_nIndex].m_CurrentMeleeDmgRetPercent = 0;  // 近程反弹百分比
+	Npc[m_nIndex].m_CurrentMeleeDmgRet	= 0;        // 谭
+	Npc[m_nIndex].m_CurrentHulueMeleeDmgRet=0;      // 越谭俚恪?
+   	Npc[m_nIndex].m_CurrentHulueRangeDmgRet=0;      // 远坛谭俚恪?
+	Npc[m_nIndex].m_CurrentMeleeDmgRetPercent = 0;  // 谭俜直
 	Npc[m_nIndex].m_CurrentTempSpeed=0;
 
 //	Npc[m_nIndex].m_CurrentPiercePercent	= 0;
 	Npc[m_nIndex].m_CurrentPoisonEnhance	= 0;
 
-	Npc[m_nIndex].m_CurrentRangeDmgRet	= 0;         //远程反弹
-	Npc[m_nIndex].m_CurrentRangeDmgRetPercent	= 0; //远程反弹百分比
+	Npc[m_nIndex].m_CurrentRangeDmgRet	= 0;         //远谭
+	Npc[m_nIndex].m_CurrentRangeDmgRetPercent	= 0; //远谭俜直
 	Npc[m_nIndex].m_CurrentRangeEnhance	= 0;
-	Npc[m_nIndex].m_CurrentSlowMissle	= 0;         //子弹减速
+	Npc[m_nIndex].m_CurrentSlowMissle	= 0;         //拥
 	Npc[m_nIndex].m_CurrentStaminaStolen	= 0;
-	Npc[m_nIndex].m_CurrentAddPhysicsDamage = 0;      //外功普点
+	Npc[m_nIndex].m_CurrentAddPhysicsDamage = 0;      //夤φ?
 	m_nUpExp							= 0;
 	Npc[m_nIndex].m_CurrentUpExp        = 0;
 	Npc[m_nIndex].m_CurrentFreezeTimeReducePercent = 0;
@@ -3628,25 +3754,25 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 	Npc[m_nIndex].m_CurrentSerisesEnhance = 0;
 	Npc[m_nIndex].m_CurrentSeriesAbate   = 0;
 	Npc[m_nIndex].m_CurrentDamageReduce = 0;
-	Npc[m_nIndex].m_CurrentdanggeRate = 0;  //档格
-	Npc[m_nIndex].m_CurrentzhongjiRate = 0; //重击
-	 Npc[m_nIndex].m_CurrentcjdanggeRate	= 0;               //拆解档格
-	 Npc[m_nIndex].m_CurrentcjzhongjiRate	= 0;               //拆解重击
-	 Npc[m_nIndex].m_Currentsorbdamage	= 0;                   //抵消伤害
+	Npc[m_nIndex].m_CurrentdanggeRate = 0;  //
+	Npc[m_nIndex].m_CurrentzhongjiRate = 0; //鼗
+	 Npc[m_nIndex].m_CurrentcjdanggeRate	= 0;               //獾?
+	 Npc[m_nIndex].m_CurrentcjzhongjiRate	= 0;               //鼗
+	 Npc[m_nIndex].m_Currentsorbdamage	= 0;                   //撕
 	 Npc[m_nIndex].m_Currentsorbdamage_v=0;
 	 Npc[m_nIndex].m_Currenadddamagev   = 0;
 	 Npc[m_nIndex].m_Currenadddamagep   = 0;
-	 Npc[m_nIndex].m_Currentpoisonres	= 0;                   //=忽略对方毒防:#d1-%
-	 Npc[m_nIndex].m_Currentfireres	= 0;                       //=忽略对方火防:#d1-%
-	 Npc[m_nIndex].m_Currentlightingres	= 0;                   //=忽略对方雷防:#d1-%
-	 Npc[m_nIndex].m_Currentphysicsres	= 0;                   //=忽略对方普防:#d1-%
-	 Npc[m_nIndex].m_Currentcoldres	= 0;                       //=忽略对方冰防:#d1-%
+	 Npc[m_nIndex].m_Currentpoisonres	= 0;                   //=远苑:#d1-%
+	 Npc[m_nIndex].m_Currentfireres	= 0;                       //=远苑:#d1-%
+	 Npc[m_nIndex].m_Currentlightingres	= 0;                   //=远苑追:#d1-%
+	 Npc[m_nIndex].m_Currentphysicsres	= 0;                   //=远苑辗:#d1-%
+	 Npc[m_nIndex].m_Currentcoldres	= 0;                       //=远苑:#d1-%
 	 Npc[m_nIndex].m_Currentallres	= 0; 
-	 Npc[m_nIndex].m_Currentnopkvalue	= 0;                   //=不增加PK值概率:#d1+%
-	 Npc[m_nIndex].m_Currentbossdamage	= 0;                   //=对黄金boss攻击伤害<c=orange>#d1+%<c>
-	 Npc[m_nIndex].m_Currentelementsenhance	= 0;               //=五行强化值：#d1-点。强化对相克五行的克制效果
-     Npc[m_nIndex].m_Currentelementsresist	= 0;               //=五行弱化值：#d1-点。弱化受相克五行的克制效果
-	 Npc[m_nIndex].m_Currentskillenhance=0;                    //技能的加成
+	 Npc[m_nIndex].m_Currentnopkvalue	= 0;                   //=PK值:#d1+%
+	 Npc[m_nIndex].m_Currentbossdamage	= 0;                   //=曰平boss撕<c=orange>#d1+%<c>
+	 Npc[m_nIndex].m_Currentelementsenhance	= 0;               //=强值#d1-恪Ｇ啃的啃?
+     Npc[m_nIndex].m_Currentelementsresist	= 0;               //=值#d1-恪Ｐ的啃?
+	 Npc[m_nIndex].m_Currentskillenhance=0;                    //艿募映
 	  //ZeroMemory(Npc[m_nIndex].m_CurrentSkillEnhance,sizeof(Npc[m_nIndex].m_CurrentSkillEnhance));
 
 	 //std::_EnhanceInfo::iterator it;
@@ -3659,8 +3785,8 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 	 Npc[m_nIndex].nEnhanceInfo.clear();
 	 Npc[m_nIndex].m_CurrentFullManaskillenhance=0;
 	 Npc[m_nIndex].m_TempFullManaskillenhance = 0;
-	 Npc[m_nIndex].m_CurrentautoReviverate=0;                  //复活概率
-	 Npc[m_nIndex].m_CurrentAddmagicphysicsDamageP= 0;// 当前被动内普百分比
+	 Npc[m_nIndex].m_CurrentautoReviverate=0;                  //
+	 Npc[m_nIndex].m_CurrentAddmagicphysicsDamageP= 0;// 前瞻俜直
 	 Npc[m_nIndex].m_CurrentPoisondamagereturnV=0;
 	 Npc[m_nIndex].m_PoisonDamageReturn=0;
 	 Npc[m_nIndex].m_Currentbaopoisondmax_p=0;
@@ -3668,21 +3794,21 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 	 Npc[m_nIndex].m_IgnoreSkill=0;
 	 Npc[m_nIndex].m_CurrentReturnResist=0;
 	 Npc[m_nIndex].m_CurrentCreatnpcv=0;
-	 Npc[m_nIndex].m_CurrentAllJiHuo=0; //是否全身激活
+	 Npc[m_nIndex].m_CurrentAllJiHuo=0; //欠全
 	 Npc[m_nIndex].m_CurrentCreatStatus=0;
 	 Npc[m_nIndex].m_CurrentAttackRatingEnhancep=0;
 	 Npc[m_nIndex].m_CurrentAttackRatingEnhancev=0;
 	 Npc[m_nIndex].m_CurrentIgnorenAttacRating  =0;
-	 Npc[m_nIndex].m_Me2metaldamage_p=0;              //=对金系伤害增加：#d1+%
-	 Npc[m_nIndex].m_Metal2medamage_p=0;              //=减少来自金系的伤害：#d1-%
-	 Npc[m_nIndex].m_Me2wooddamage_p=0;              //=对木系伤害增加：#d1+%
-	 Npc[m_nIndex].m_Wood2medamage_p=0;              //=减少来自木系的伤害：#d1-%
-	 Npc[m_nIndex].m_Me2waterdamage_p=0;              //=对水系伤害增加：#d1+%
-	 Npc[m_nIndex].m_Water2medamage_p=0;              //=减少来自水系的伤害：#d1-%
-	 Npc[m_nIndex].m_Me2firedamage_p=0;              //=对火系伤害增加：#d1+%
-	 Npc[m_nIndex].m_Fire2medamage_p=0;              //=减少来自火系的伤害：#d1-%
-	 Npc[m_nIndex].m_Me2earthdamage_p=0;              //=对土系伤害增加：#d1+%
-	 Npc[m_nIndex].m_Earth2medamage_p=0;              //=减少来自土系的伤害：#d1-%
+	 Npc[m_nIndex].m_Me2metaldamage_p=0;              //=越系撕樱#d1+%
+	 Npc[m_nIndex].m_Metal2medamage_p=0;              //=越系撕#d1-%
+	 Npc[m_nIndex].m_Me2wooddamage_p=0;              //=木系撕樱#d1+%
+	 Npc[m_nIndex].m_Wood2medamage_p=0;              //=木系撕#d1-%
+	 Npc[m_nIndex].m_Me2waterdamage_p=0;              //=水系撕樱#d1+%
+	 Npc[m_nIndex].m_Water2medamage_p=0;              //=水系撕#d1-%
+	 Npc[m_nIndex].m_Me2firedamage_p=0;              //=曰系撕樱#d1+%
+	 Npc[m_nIndex].m_Fire2medamage_p=0;              //=曰系撕#d1-%
+	 Npc[m_nIndex].m_Me2earthdamage_p=0;              //=系撕樱#d1+%
+	 Npc[m_nIndex].m_Earth2medamage_p=0;              //=系撕#d1-%
      Npc[m_nIndex].m_CurrentStunRank_p=0;
 	 Npc[m_nIndex].m_Staticmagicshield_p=0;
 	 Npc[m_nIndex].m_CurrentPiercePercent	= 0;
@@ -3710,8 +3836,8 @@ void	KPlayer::UpdataCurData(int nIsLoign,int nUnEquip) //更新自身的属性参数
 	ZeroMemory(&Npc[m_nIndex].m_AutoDeathSkill, sizeof(KMagicAttrib));
 	ZeroMemory(&Npc[m_nIndex].m_AutoRescueSkill, sizeof(KMagicAttrib));
 
-	 ReCalcEquip();         //重新计算身上的装备
-	 ReCalcState(nIsLoign); //重新计算技能的状态
+	 ReCalcEquip();         //录系装
+	 ReCalcState(nIsLoign); //录慵架底刺?
 }
 
 void KPlayer::ReCalcEquip()
@@ -3724,37 +3850,37 @@ void KPlayer::ReCalcEquip()
 		if (!nIdx)
 			continue;
 
-		if (Item[nIdx].GetIsCanUse()==0)  //不可用的
+		if (Item[nIdx].GetIsCanUse()==0)  //玫
 		    continue;
 
-		int nActive = m_ItemList.GetEquipEnhance(i);  //获取激活的数量
+		int nActive = m_ItemList.GetEquipEnhance(i);  //取
 
-		if (m_ItemList.m_bActiveSet)  //如果是黄金套装激活的 或者 全身激活
+		if (m_ItemList.m_bActiveSet)  //腔平装  全
 		{
-			nActive = 3;              //默认的黄金明属性
+			nActive = 3;              //默系幕平
 		}
-//除马匹
-		if (i != itempart_horse || Npc[m_nIndex].m_bRideHorse)  //除掉马的部位 或 骑着马
+//匹
+		if (i != itempart_horse || Npc[m_nIndex].m_bRideHorse)  //牟位  
 		{
 			int nActiveInfo[2];
 			
 			ZeroMemory(nActiveInfo,sizeof(nActiveInfo));
 			
 			if (Item[nIdx].IsBlue())
-			{//如果是蓝装
+			{//装
 				nActiveInfo[0] = 1;
 				nActiveInfo[1] = Item[nIdx].GetIsWhere();
 				
 			} 
 			else if  (Item[nIdx].IsPurple())
-			{//如果是紫装
+			{//装
 				nActiveInfo[0] = 2;
 				nActiveInfo[1] = Item[nIdx].GetIsWhere();
 			} 
 			else if  (Item[nIdx].IsGold())
-			{//如果是黄装
+			{//腔装
 				nActiveInfo[0] = 3;
-				nActiveInfo[1] = Item[nIdx].GetLevel();//等级
+				nActiveInfo[1] = Item[nIdx].GetLevel();//燃
 			} 
 			else
 			{
@@ -3762,12 +3888,12 @@ void KPlayer::ReCalcEquip()
 				nActiveInfo[1] = 0;
 			}
 			
-			if (Item[nIdx].GetIsCanUse()==1)   //是可以使用的
+			if (Item[nIdx].GetIsCanUse()==1)   //强使玫
 			{     
 			   Item[nIdx].ApplyMagicAttribToNPC(&Npc[m_nIndex], nActive,nActiveInfo);
 			}
 			else if (Item[nIdx].GetIsCanUse()==0 && Item[nIdx].GetGenre()==item_equip && Item[nIdx].GetDetailType()==equip_mask) 
-			{//面具
+			{//
                Item[nIdx].ApplyMagicAttribToNPC(&Npc[m_nIndex], nActive,nActiveInfo);
 			}
 
@@ -3779,18 +3905,18 @@ void KPlayer::ReCalcState(int nIsLoign)
 {
 	_ASSERT(m_nIndex > 0 && m_nIndex < MAX_NPC);
 	
-	Npc[m_nIndex].ReCalcStateEffect();        //重置状态效果
+	Npc[m_nIndex].ReCalcStateEffect();        //状态效
 
-	Npc[m_nIndex].m_SkillList.ReEnChance();   //重置加成
+	Npc[m_nIndex].m_SkillList.ReEnChance();   //眉映
 	
 	if (!nIsLoign)
-	   Npc[m_nIndex].NpcNewInitJinMaiVal();   //重置经脉状态
+	   Npc[m_nIndex].NpcNewInitJinMaiVal();   //镁状态
 	       
-	//Npc[m_nIndex].ReSkillEnhance(m_nLeftSkillID,1); //重置对攻击技能的加成!
+	//Npc[m_nIndex].ReSkillEnhance(m_nLeftSkillID,1); //枚怨艿募映!
 }
 
 //-------------------------------------------------------------------------
-//	功能：增加统率力经验
+//	埽统
 //-------------------------------------------------------------------------
 void	KPlayer::AddLeadExp(int nExp)
 {
@@ -3801,7 +3927,7 @@ void	KPlayer::AddLeadExp(int nExp)
 	m_dwLeadExp += nExp;
 	if (m_dwLeadExp >= (DWORD)PlayerSet.m_cLeadExp.GetLevelExp(m_dwLeadLevel))
 	{
-		// 升级
+		// 
 		m_dwLeadLevel = PlayerSet.m_cLeadExp.GetLevel(m_dwLeadExp, m_dwLeadLevel);
 #ifndef _SERVER
 		m_dwNextLevelLeadExp = PlayerSet.m_cLeadExp.GetLevelExp(m_dwLeadLevel);
@@ -3818,7 +3944,7 @@ void	KPlayer::AddLeadExp(int nExp)
 }
 
 //-------------------------------------------------------------------------
-//	功能：原始玩家升一级加生命
+//	埽原始一
 //-------------------------------------------------------------------------
 void KPlayer::LevelAddBaseLifeMax()
 {
@@ -3827,7 +3953,7 @@ void KPlayer::LevelAddBaseLifeMax()
 }
 
 //-------------------------------------------------------------------------
-//	功能：玩家升一级加体力
+//	埽一
 //-------------------------------------------------------------------------
 void KPlayer::LevelAddBaseStaminaMax()
 {
@@ -3836,7 +3962,7 @@ void KPlayer::LevelAddBaseStaminaMax()
 }
 
 //-------------------------------------------------------------------------
-//	功能：玩家升一级加内力
+//	埽一
 //-------------------------------------------------------------------------
 void KPlayer::LevelAddBaseManaMax()
 {
@@ -3845,7 +3971,7 @@ void KPlayer::LevelAddBaseManaMax()
 }
 
 //-------------------------------------------------------------------------
-//	功能：改变玩家阵营
+//	埽谋营
 //-------------------------------------------------------------------------
 void	KPlayer::ChangePlayerCamp(int nCamp)
 {
@@ -3856,7 +3982,7 @@ void	KPlayer::ChangePlayerCamp(int nCamp)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：向服务器申请查询某个npc所在队伍的信息
+//	埽询某npc诙息
 //-------------------------------------------------------------------------
 void	KPlayer::ApplyTeamInfo(DWORD dwNpcID)
 {
@@ -3870,7 +3996,7 @@ void	KPlayer::ApplyTeamInfo(DWORD dwNpcID)
 }
 
 //-------------------------------------------------------------------------
-//	功能：向服务器报告包袱不足了
+//	埽
 //-------------------------------------------------------------------------
 void	KPlayer::ApplyRoomInfo(int nIsFull)
 {
@@ -3888,7 +4014,7 @@ void	KPlayer::ApplyRoomInfo(int nIsFull)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：向服务器申请查询玩家自身的队伍情况
+//	埽询亩
 //-------------------------------------------------------------------------
 void	KPlayer::ApplySelfTeamInfo()
 {
@@ -3898,7 +4024,7 @@ void	KPlayer::ApplySelfTeamInfo()
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：玩家向服务器申请创建队伍
+//	埽氪?
 //-------------------------------------------------------------------------
 BOOL	KPlayer::ApplyCreateTeam()//char *lpszTeamName)
 {
@@ -3908,20 +4034,20 @@ BOOL	KPlayer::ApplyCreateTeam()//char *lpszTeamName)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：队长向服务器申请开放、关闭队伍是否允许加入成员状态
+//	埽映肟拧乇斩欠员状?
 //-------------------------------------------------------------------------
 BOOL	KPlayer::ApplyTeamOpenClose(BOOL bFlag)
 {
-	if ( !m_cTeam.m_nFlag )					// 未组队
+	if ( !m_cTeam.m_nFlag )					// 未
 		return FALSE;
-	if (m_cTeam.m_nFigure != TEAM_CAPTAIN)	// 不是队长
+	if (m_cTeam.m_nFigure != TEAM_CAPTAIN)	// 嵌映
 		return FALSE;
-	if (this->CheckTrading())	// 处在交易状态
+	if (this->CheckTrading())	// 诮状态
 		return FALSE;
 	
 	if (bFlag)
 	{
-		if (PlayerSet.m_cLeadExp.GetMemNumFromLevel(m_dwLeadLevel) <= g_Team[0].m_nMemNum)	// 统帅力不够
+		if (PlayerSet.m_cLeadExp.GetMemNumFromLevel(m_dwLeadLevel) <= g_Team[0].m_nMemNum)	// 统帅
 			return FALSE;
 	}
 	
@@ -3936,23 +4062,23 @@ BOOL	KPlayer::ApplyTeamOpenClose(BOOL bFlag)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：玩家向服务器申请加入某个队伍
-//	参数：int nNpcIndex 目标队伍队长在客户端Npc数组中的位置
+//	埽某
+//	int nNpcIndex 目映诳突Npc械位
 //-------------------------------------------------------------------------
 void	KPlayer::ApplyAddTeam(int nNpcIndex)
 {
 	if (this->CheckTrading())
 		return;
-	if (m_cTeam.m_nFlag)					// 已经组队，不能申请加入别的队伍
+	if (m_cTeam.m_nFlag)					// 丫樱亩
 		return;
 	
-	// 不同阵营现在可以组队，老手不能加入新人队伍，新人可以加入老手队伍
+	// 同营诳樱植芗硕椋丝约?
 	if (Npc[nNpcIndex].m_Camp == camp_begin && Npc[m_nIndex].m_Camp != camp_begin)
 		return;
-	//	if (Npc[nNpcIndex].m_Camp != Npc[m_nIndex].m_Camp)	// 阵营不同
+	//	if (Npc[nNpcIndex].m_Camp != Npc[m_nIndex].m_Camp)	// 营同
 	//		return;
 	
-	// 判断目标队伍队长是不是处在队伍开放状态
+	// 卸目映遣谴诙榭状?
 	if (Npc[nNpcIndex].GetMenuState() != PLAYER_MENU_STATE_TEAMOPEN)
 		return;
 	
@@ -3977,11 +4103,11 @@ void	KPlayer::ApplyAddTeam(int nNpcIndex)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：玩家通知服务器接受某个npc为队伍成员
+//	埽通知某npc为员
 //-------------------------------------------------------------------------
 void	KPlayer::AcceptTeamMember(DWORD dwNpcID)
 {
-	// 判断状态 （缺少对npc队伍开放状态的检测 not end）
+	// 卸状态 缺俣npc榭状态?not end
 	if ( !m_cTeam.m_nFlag || m_cTeam.m_nFigure != TEAM_CAPTAIN)
 	{
 		ApplySelfTeamInfo();
@@ -3990,7 +4116,7 @@ void	KPlayer::AcceptTeamMember(DWORD dwNpcID)
 	if (dwNpcID == 0)
 		return;
 	
-	// 查找申请列表
+	// 斜
 	int		i;
 	for (i = 0; i < MAX_TEAM_APPLY_LIST; ++i)
 	{
@@ -4001,11 +4127,11 @@ void	KPlayer::AcceptTeamMember(DWORD dwNpcID)
 			break;
 		}
 	}
-	// 如果没找到
+	// 没业
 //	if (i >= MAX_TEAM_APPLY_LIST)
 //		return;
 	
-	// 向服务器发申请
+	// 
 	PLAYER_ACCEPT_TEAM_MEMBER	sAcceptTeam;
 	sAcceptTeam.ProtocolType = c2s_teamacceptmember;
 	sAcceptTeam.m_dwNpcID = dwNpcID;
@@ -4016,13 +4142,13 @@ void	KPlayer::AcceptTeamMember(DWORD dwNpcID)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：队长删除加入队伍申请列表中的某个npc
+//	埽映删斜械某npc
 //-------------------------------------------------------------------------
 void	KPlayer::TeamDropApplyOne(DWORD dwNpcID)
 {
 	if (dwNpcID == 0)
 		return;
-	// 查找申请列表
+	// 斜
 	int		i;
 	for (i = 0; i < MAX_TEAM_APPLY_LIST; ++i)
 	{
@@ -4040,7 +4166,7 @@ void	KPlayer::TeamDropApplyOne(DWORD dwNpcID)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：通知服务器本玩家离开队伍
+//	埽通知肟?
 //-------------------------------------------------------------------------
 void	KPlayer::LeaveTeam()
 {
@@ -4053,7 +4179,7 @@ void	KPlayer::LeaveTeam()
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：队长通知服务器踢除某个队员
+//	埽映通知叱某员
 //-------------------------------------------------------------------------
 void	KPlayer::TeamKickMember(DWORD dwNpcID)
 {
@@ -4070,7 +4196,7 @@ void	KPlayer::TeamKickMember(DWORD dwNpcID)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：队长向服务器申请把自己的队长身份交给别的队员
+//	埽映约亩映萁亩员
 //-------------------------------------------------------------------------
 void	KPlayer::ApplyTeamChangeCaptain(DWORD dwNpcID)
 {
@@ -4087,7 +4213,7 @@ void	KPlayer::ApplyTeamChangeCaptain(DWORD dwNpcID)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：队长向服务器申请解散队伍
+//	埽映散
 //-------------------------------------------------------------------------
 void	KPlayer::ApplyTeamDismiss()
 {
@@ -4103,7 +4229,7 @@ void	KPlayer::ApplyTeamDismiss()
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：玩家向服务器申请打开、关闭pk开关
+//	埽蚩∝眕k
 //-------------------------------------------------------------------------
 void	KPlayer::ApplySetPK(BOOL bPK)
 {
@@ -4117,7 +4243,7 @@ void	KPlayer::ApplySetPK(BOOL bPK)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：玩家向服务器申请门派数据
+//	埽
 //-------------------------------------------------------------------------
 void	KPlayer::ApplyFactionData()
 {
@@ -4130,7 +4256,7 @@ void	KPlayer::ApplyFactionData()
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：客户端发送聊天语句给服务器
+//	埽突朔
 //-------------------------------------------------------------------------
 void	KPlayer::SendChat(KUiMsgParam *pMsg, char *lpszSentence)
 {
@@ -4142,10 +4268,10 @@ void	KPlayer::SendChat(KUiMsgParam *pMsg, char *lpszSentence)
 	
 	if (pMsg->eGenre == MSG_G_CHAT)
 	{
-		Npc[m_nIndex].SetChatInfo(pMsg->szName, lpszSentence, nLength);  //处理自己聊天内容 赋值给 m_szChatBuffer
+		Npc[m_nIndex].SetChatInfo(pMsg->szName, lpszSentence, nLength);  //约 值 m_szChatBuffer
 		//char m_szChatBuffer[256]={0};
 		//Npc[m_nIndex].GetstrInfo(STR_CHATBUFF_CLIENT,m_szChatBuffer);
-		m_cChat.SendSentence(pMsg,Npc[m_nIndex].m_szChatBuffer);        //发送给服务器
+		m_cChat.SendSentence(pMsg,Npc[m_nIndex].m_szChatBuffer);        //透
 	}
 	else if (pMsg->eGenre == MSG_G_CMD)	// not end
 	{
@@ -4156,7 +4282,7 @@ void	KPlayer::SendChat(KUiMsgParam *pMsg, char *lpszSentence)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：队长向服务器申请增加四项属性中某一项的点数(0=Strength 1=Dexterity 2=Vitality 3=Engergy)
+//	埽映某一牡(0=Strength 1=Dexterity 2=Vitality 3=Engergy)
 //-------------------------------------------------------------------------
 void	KPlayer::ApplyAddBaseAttribute(int nAttribute, int nNo)
 {
@@ -4175,12 +4301,12 @@ void	KPlayer::ApplyAddBaseAttribute(int nAttribute, int nNo)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：向服务器申请某个技能升级
+//	埽某
 //-------------------------------------------------------------------------
 BOOL	KPlayer::ApplyAddSkillLevel(int nSkillID, int nAddPoint)
 {
 	int nListidx = Npc[m_nIndex].m_SkillList.FindSame(nSkillID);
-	if (!nListidx) //查找是否有这个技能
+	if (!nListidx) //欠
 		return FALSE;
 	if (m_nSkillPoint < nAddPoint || nAddPoint + Npc[m_nIndex].m_SkillList.GetLevelByListidx(nListidx) >=MAX_SKILLLEVEL)
 		return FALSE;
@@ -4188,7 +4314,7 @@ BOOL	KPlayer::ApplyAddSkillLevel(int nSkillID, int nAddPoint)
 	PLAYER_ADD_SKILL_POINT_COMMAND	sSkill;
 	sSkill.ProtocolType = c2s_playerapplyaddskillpoint;
 	sSkill.m_nSkillID = nSkillID;
-	sSkill.m_nAddPoint= nAddPoint; //增加的技能点
+	sSkill.m_nAddPoint= nAddPoint; //拥募艿
 	
 	if (g_pClient)
 		g_pClient->SendPackToServer(&sSkill, sizeof(PLAYER_ADD_SKILL_POINT_COMMAND));
@@ -4196,22 +4322,22 @@ BOOL	KPlayer::ApplyAddSkillLevel(int nSkillID, int nAddPoint)
 	return TRUE;
 }
 #endif
-//客户端 
+//突 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：向服务器申请使用某个物品（鼠标右键点击该物品，只能用于吃药）
+//	埽使某品壹品只诔药
 //-------------------------------------------------------------------------
 BOOL	KPlayer::ApplyUseItem(int nItemID, ItemPos SrcPos)
 {
 	if (this->CheckTrading())
 		return FALSE;
 
-	int nRet = m_ItemList.UseItem(nItemID,SrcPos.nX,SrcPos.nY);  //同意使用物品
+	int nRet = m_ItemList.UseItem(nItemID,SrcPos.nX,SrcPos.nY);  //同使品
 	if (nRet == 0)
 		return FALSE;
 	
-	if (nRet == REQUEST_EQUIP_ITEM)         //物品装备---右键换装-设置
-	{//等于装备
+	if (nRet == REQUEST_EQUIP_ITEM)         //品装---壹装-
+	{//装
 	/*	PLAYER_EQUIP_ITEM_COMMAND sEquip;
 		sEquip.m_nItemID = nItemID;
 			int nDetail = Item[pInfo->Obj.uId].GetDetailType();
@@ -4267,7 +4393,7 @@ BOOL KPlayer::ApplyAutoMoveItem(int nItemID, ItemPos SrcPos,int destRoom)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：客户端鼠标点击obj检起某个物品，向服务器发消息
+//	埽突obj某品息
 //-------------------------------------------------------------------------
 void	KPlayer::PickUpObj(int nObjIndex)
 {
@@ -4288,7 +4414,7 @@ void	KPlayer::PickUpObj(int nObjIndex)
 		sPickUp.m_btPosY = 0;
 
 		 if (Npc[m_nIndex].m_AutoplayId==1)
-		 {//挂机状态			
+		 {//一状态			
 			if (m_Autoplay.nShiQuNum>m_Autoplay.nVal && m_Autoplay.nShiQuNum%m_Autoplay.nVal==0)
 			{
                 Object[nObjIndex].m_AttackerDwid=Npc[m_nIndex].m_dwID;
@@ -4306,18 +4432,18 @@ void	KPlayer::PickUpObj(int nObjIndex)
 		 }
 	}
 	else
-	{//其他的物品
+	{//品
 		ItemPos	sItemPos;
 		if (FALSE == m_ItemList.SearchPosition(Object[nObjIndex].m_nItemWidth, Object[nObjIndex].m_nItemHeight, &sItemPos))
 		{
 			if (FALSE == m_ItemList.SearchItemPosition(Object[nObjIndex].m_nItemWidth, Object[nObjIndex].m_nItemHeight, &sItemPos,room_equipmentex))
 			{
 				if (Npc[m_nIndex].m_AutoplayId==1)
-				{ //挂机状态
+				{ //一状态
 					Object[nObjIndex].m_AttackerDwid=Npc[m_nIndex].m_dwID;
 					Object[nObjIndex].m_IsHaveAttack=1;
 					Object[nObjIndex].m_AttackerTime=18*60*10;
-					//开始发送命令告诉服务器包袱不足了
+					//始叻
 					ApplyRoomInfo(1);
 				}
 				
@@ -4325,16 +4451,16 @@ void	KPlayer::PickUpObj(int nObjIndex)
 				return;
 			}
 			
-			int nItemEX = Npc[m_nIndex].m_ExItemId; //字母袋是否开启
+			int nItemEX = Npc[m_nIndex].m_ExItemId; //母欠
 			
 			if (nItemEX==0)
 			{
 				if (Npc[m_nIndex].m_AutoplayId==1)
-				{ //挂机状态
+				{ //一状态
 					Object[nObjIndex].m_AttackerDwid=Npc[m_nIndex].m_dwID;
 					Object[nObjIndex].m_IsHaveAttack=1;
 					Object[nObjIndex].m_AttackerTime=18*60*10;
-					//开始发送命令告诉服务器包袱不足了
+					//始叻
 					ApplyRoomInfo(1);
 				}
 				
@@ -4345,7 +4471,7 @@ void	KPlayer::PickUpObj(int nObjIndex)
 		}
 	
 		 if (Npc[m_nIndex].m_AutoplayId==1)
-		 {//挂机状态			
+		 {//一状态			
 			if (m_Autoplay.nShiQuNum>m_Autoplay.nVal && m_Autoplay.nShiQuNum%m_Autoplay.nVal==0)
 			{
                 Object[nObjIndex].m_AttackerDwid=Npc[m_nIndex].m_dwID;
@@ -4363,14 +4489,14 @@ void	KPlayer::PickUpObj(int nObjIndex)
 		 }
 
 /*		  char msg[64];
-          sprintf(msg,"测试:禁止捡:%d,dwidx:%d",Object[nObjIndex].m_IsHaveAttack,Object[nObjIndex].m_AttackerDwid);
+          sprintf(msg,":止:%d,dwidx:%d",Object[nObjIndex].m_IsHaveAttack,Object[nObjIndex].m_AttackerDwid);
           m_ItemList.ClientShowMsg(msg);
 */
 		sPickUp.ProtocolType = c2s_playerpickupitem;
 		sPickUp.m_nObjID = Object[nObjIndex].m_nID;
 		sPickUp.m_btPosType = sItemPos.nPlace;
-		sPickUp.m_btPosX = sItemPos.nX;  //包袱容器的位置
-		sPickUp.m_btPosY = sItemPos.nY;  //包袱容器的位置
+		sPickUp.m_btPosX = sItemPos.nX;  //位
+		sPickUp.m_btPosY = sItemPos.nY;  //位
 	}
 	
 	if (g_pClient)
@@ -4381,7 +4507,7 @@ void	KPlayer::PickUpObj(int nObjIndex)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：客户端鼠标点击obj检起某个钱，向服务器发消息
+//	埽突obj某钱息
 //-------------------------------------------------------------------------
 void	KPlayer::PickUpMoney(int nObjIndex,int rid)
 {
@@ -4394,11 +4520,11 @@ void	KPlayer::PickUpMoney(int nObjIndex,int rid)
       Npc[rid].m_nObjectIdx=0;
 	  return;
 	}
-	//m_ItemList.ClientShowMsg("测试怪物捡钱！！");
-	PLAYER_PICKUP_ITEM_COMMAND	sPickUp; //对象
-	if (Object[nObjIndex].m_nKind == Obj_Kind_Money) //掉在地上的东西类型为==钱
+	//m_ItemList.ClientShowMsg("怨钱");
+	PLAYER_PICKUP_ITEM_COMMAND	sPickUp; //
+	if (Object[nObjIndex].m_nKind == Obj_Kind_Money) //诘系亩为==钱
 	{
-		sPickUp.ProtocolType = c2s_playerpickupitem; //捡东西协议标识
+		sPickUp.ProtocolType = c2s_playerpickupitem; //协识
 		sPickUp.m_nObjID = Object[nObjIndex].m_nID;
 		sPickUp.m_btPosType = 0;
 		sPickUp.m_btPosX = 0;
@@ -4414,7 +4540,7 @@ void	KPlayer::PickUpMoney(int nObjIndex,int rid)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：客户端鼠标点击obj检起某个装备，向服务器发消息
+//	埽突obj某装息
 //-------------------------------------------------------------------------
 void	KPlayer::PickUpItem(int nObjIndex,int rid)
 {
@@ -4427,55 +4553,55 @@ void	KPlayer::PickUpItem(int nObjIndex,int rid)
 		Npc[rid].m_nObjectIdx=0;
 		return;
 	}
-	PLAYER_PICKUP_ITEM_COMMAND	sPickUp; //对象
-	if (Object[nObjIndex].m_nKind == Obj_Kind_Item) //掉在地上的东西类型为==装备
+	PLAYER_PICKUP_ITEM_COMMAND	sPickUp; //
+	if (Object[nObjIndex].m_nKind == Obj_Kind_Item) //诘系亩为==装
 	{
 		ItemPos	sItemPos;
 
 		if (FALSE == m_ItemList.SearchPosition(Object[nObjIndex].m_nItemWidth, Object[nObjIndex].m_nItemHeight, &sItemPos) )
-		{//检测包袱
+		{//
 			if (FALSE == m_ItemList.SearchItemPosition(Object[nObjIndex].m_nItemWidth, Object[nObjIndex].m_nItemHeight, &sItemPos,room_equipmentex))
 			{
 				if (Npc[m_nIndex].m_AutoplayId==1)
-				{ //挂机状态
+				{ //一状态
 					Object[nObjIndex].m_AttackerDwid=Npc[m_nIndex].m_dwID;
 					Object[nObjIndex].m_IsHaveAttack=1;
 					Object[nObjIndex].m_AttackerTime=18*60*10;
-					//开始发送命令告诉服务器包袱不足了
+					//始叻
 					ApplyRoomInfo(1);
 				}
 
-				m_ItemList.ClientShowMsg("提示:转存子母袋失败,空间不足！");
+				m_ItemList.ClientShowMsg("示:转母失,占洳汇！");
 				return;
 			}
 
-			int nItemEX = Npc[m_nIndex].m_ExItemId; //字母袋是否开启
+			int nItemEX = Npc[m_nIndex].m_ExItemId; //母欠
 
           	if (nItemEX==0)
 			{
 				if (Npc[m_nIndex].m_AutoplayId==1)
-				{ //挂机状态
+				{ //一状态
 					Object[nObjIndex].m_AttackerDwid=Npc[m_nIndex].m_dwID;
 					Object[nObjIndex].m_IsHaveAttack=1;
 					Object[nObjIndex].m_AttackerTime=18*60*10;
-					//开始发送命令告诉服务器包袱不足了
+					//始叻
 					ApplyRoomInfo(1);
 				}
 
-				m_ItemList.ClientShowMsg("提示:转存子母袋失败,子母袋还未开启！");
+				m_ItemList.ClientShowMsg("示:转母失,母未");
 				return;
 			}	
 		}
 
          if (Npc[m_nIndex].m_AutoplayId==1)
-		 {//挂机状态			
+		 {//一状态			
 			if (m_Autoplay.nShiQuNum>m_Autoplay.nVal && m_Autoplay.nShiQuNum%m_Autoplay.nVal==0)
 			{
                 Object[nObjIndex].m_AttackerDwid=Npc[m_nIndex].m_dwID;
                 Object[nObjIndex].m_IsHaveAttack=1;
 			    Object[nObjIndex].m_AttackerTime=18*60*10;
 				m_Autoplay.nShiQuNum=0;
-				m_ItemList.ClientShowMsg("<c=yellow>助手<c>:捡取物品超时,取消捡取!");
+				m_ItemList.ClientShowMsg("<c=yellow><c>:取品时,取取!");
 				return;
 			}
 			  m_Autoplay.nShiQuNum++;
@@ -4487,8 +4613,8 @@ void	KPlayer::PickUpItem(int nObjIndex,int rid)
 
 		sPickUp.ProtocolType = c2s_playerpickupitem;
 		sPickUp.m_nObjID = Object[nObjIndex].m_nID;
-		sPickUp.m_btPosType = sItemPos.nPlace;  //目标容器
-		sPickUp.m_btPosX = sItemPos.nX;         //目标位置
+		sPickUp.m_btPosType = sItemPos.nPlace;  //目
+		sPickUp.m_btPosX = sItemPos.nX;         //目位
 		sPickUp.m_btPosY = sItemPos.nY;
 	}
 	
@@ -4500,7 +4626,7 @@ void	KPlayer::PickUpItem(int nObjIndex,int rid)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：客户端鼠标点击obj，向服务器发消息   执行脚本
+//	埽突obj息   执薪疟
 //-------------------------------------------------------------------------
 void	KPlayer::ObjMouseClick(int nObjIndex)
 {
@@ -4519,21 +4645,21 @@ void	KPlayer::ObjMouseClick(int nObjIndex)
 #endif
 
 #ifndef _SERVER
-// DownPos 是面板上的物品的当前坐标，UpPos 必须是手上物品放到面板上的坐标
+// DownPos 系品牡前辏琔pPos 品诺系
 void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 {
-	if (this->CheckTrading() && DownPos.nPlace == pos_traderoom)  //交易栏
+	if (this->CheckTrading() && DownPos.nPlace == pos_traderoom)  //
 	{
 		if (this->m_cTrade.m_nTradeLock)
 			return;
 		
-		// 任务物品的限制
+		// 品
 		//int	nHandIdx = m_ItemList.Hand();
 
 	/*	if (nHandIdx && Item[nHandIdx].GetGenre() == item_task ||(Item[nHandIdx].GetTime()->bYear>0 && Item[nHandIdx].GetIsWhere()==0) || Item[nHandIdx].GetIsBang())
 		{
 			KSystemMessage	sMsg;
-			sprintf(sMsg.szMessage, MSG_TRADE_TASK_ITEM);//禁止任务交易
+			sprintf(sMsg.szMessage, MSG_TRADE_TASK_ITEM);//止
 			sMsg.eType = SMT_NORMAL;
 			sMsg.byConfirmType = SMCT_NONE;
 			sMsg.byPriority = 0;
@@ -4544,7 +4670,7 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 		}*/
 	}
 	
-	if (!CheckTrading() && DownPos.nPlace == pos_immediacy)//单对象容器检测  目标容器检测
+	if (!CheckTrading() && DownPos.nPlace == pos_immediacy)//  目
 	{
 		int nHandIdx = m_ItemList.Hand();
 		if (nHandIdx)
@@ -4563,34 +4689,34 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 			}
 		}
 	}
-	else if (!CheckTrading() && DownPos.nPlace == pos_dazao)  //单容器打造栏已经有同样物品了
+	else if (!CheckTrading() && DownPos.nPlace == pos_dazao)  //丫同品
 	{
 		int nHandIdx = m_ItemList.Hand();
 		if (nHandIdx)
-		{//单容器材料检测开始
+		{//霞饪?
 			//g_CompEquip.
-			if (nIsComp==-1) //提炼面板
+			if (nIsComp==-1) //
 			{
-				//m_ItemList.ClientShowMsg("升级玄晶矿石材料检测");
+				//m_ItemList.ClientShowMsg("石霞");
 				//return;
 			 }
-			else if (nIsComp==-2) //提炼面板
+			else if (nIsComp==-2) //
 			{
-				//m_ItemList.ClientShowMsg("升级属性矿石材料检测");
+				//m_ItemList.ClientShowMsg("钥石霞");
 				//return;
 			 }
-		    else if (nIsComp==1) //提炼面板
+		    else if (nIsComp==1) //
 			 {
-				 //m_ItemList.ClientShowMsg("提炼玄晶矿石材料检测");
+				 //m_ItemList.ClientShowMsg("石霞");
 				 //return;
 			 }
-			else if (nIsComp==2) //提取面板
+			else if (nIsComp==2) //取
 			{
-				 int nGenre=Item[nHandIdx].GetGenre();                //类别
-                 int nPart=Item[nHandIdx].GetDetailType();            //详细类别
-				 int nParticular= Item[nHandIdx].GetParticular();    //具体类别
+				 int nGenre=Item[nHandIdx].GetGenre();                //
+                 int nPart=Item[nHandIdx].GetDetailType();            //细
+				 int nParticular= Item[nHandIdx].GetParticular();    //
 
-				 /*if (DownPos.nX==1) //装备框大框
+				 /*if (DownPos.nX==1) //装
 				 {
                      int nPartTyep[15],nReg=0;
 
@@ -4599,7 +4725,7 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 					 g_CompEquip.GetInt15s(2,"Position_2",nPartTyep);
 
                      for (int i=0;i<14;++i)
-					 {//检测可放置的装备的部位
+					 {//煞玫装牟位
 						 if (nPartTyep[i]==nPart)
 						 {
                               nReg=1;
@@ -4609,19 +4735,19 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 
 					 if (!Item[nHandIdx].IsBlue())
 					 {
-				       m_ItemList.ClientShowMsg("提示:材料不对,请放蓝装!");
+				       m_ItemList.ClientShowMsg("示:喜,装!");
 					   ZeroMemory(nPartTyep,sizeof(nPartTyep));
 				        return;
 					 }
 					 if (nGenre!=0 || nReg==0)
 					 {
-						 m_ItemList.ClientShowMsg("提示:蓝装类型不对,请重新放置!");
+						 m_ItemList.ClientShowMsg("示:装筒,路!");
 						 ZeroMemory(nPartTyep,sizeof(nPartTyep));
 						 return;
 					 }
 
 				 }
-				 if (DownPos.nX==3) //小框1
+				 if (DownPos.nX==3) //小1
 				 {
                       
                      int nPartTyep[3];
@@ -4629,50 +4755,50 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
                      g_CompEquip.GetInt3s(4,"Distill",nPartTyep);
 					 if (nGenre!=nPartTyep[0] || nPart!=nPartTyep[1] || nParticular!=nPartTyep[2])
 					 {
-					     m_ItemList.ClientShowMsg("提示:材料不对,请放玄晶矿石!");
+					     m_ItemList.ClientShowMsg("示:喜,石!");
 						 ZeroMemory(nPartTyep,sizeof(nPartTyep));
 						  return;
 					 }
 					
 				 }
-				 if (DownPos.nX==4) //小框2
+				 if (DownPos.nX==4) //小2
 				 {
 					int nPartTyep[2];
 					ZeroMemory(nPartTyep,sizeof(nPartTyep));
 					g_CompEquip.GetInt3s(5,"Distill",nPartTyep);
 					if (nGenre!=2 || nPart!=1 || nParticular>nPartTyep[1] || nParticular<nPartTyep[0])
 					{
-						m_ItemList.ClientShowMsg("提示:材料不对,请放属性原矿!");
+						m_ItemList.ClientShowMsg("示:喜,原!");
 						ZeroMemory(nPartTyep,sizeof(nPartTyep));
 						return;
 					}
 				 }*/
               //   return;
 			 }
-			 else if (nIsComp==3) //打造紫装
+			 else if (nIsComp==3) //装
 			 {
-				 //m_ItemList.ClientShowMsg("打造材料检测");
+				 //m_ItemList.ClientShowMsg("霞");
 				 //return;
 			 }
-			 else if (nIsComp==4) //镶套紫装
+			 else if (nIsComp==4) //装
 			 {
-				 //m_ItemList.ClientShowMsg("镶套材料检测");
+				 //m_ItemList.ClientShowMsg("撞霞");
 				 //return;
 			 }
-			 else if (nIsComp==5) //图谱
+			 else if (nIsComp==5) //图
 			 {
-				 //m_ItemList.ClientShowMsg("图谱材料检测");
+				 //m_ItemList.ClientShowMsg("图撞霞");
 				 //return;
 			 }
-			 else if (nIsComp==12) //神将
+			 else if (nIsComp==12) //
 			 {
-				 //m_ItemList.ClientShowMsg("神将面板");
+				 //m_ItemList.ClientShowMsg("");
 
 			   if (DownPos.nX>=53 && DownPos.nX<=77)
 			   {
 				 char nMsg[64];  
 				 if (Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_TongBanNum)
-				 {//已经召唤了宠物的	 
+				 {//丫倩顺	 
 					 int nNpcIdx=0;
 					     nNpcIdx =NpcSet.SearchID(Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_TongBanNum);
 					 if (nNpcIdx>0)
@@ -4680,14 +4806,14 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 					 }
 					 else
 					 {
-						 sprintf(nMsg,"<c=yellow>神将<c>:同伴没有召唤,不能装备!");
+						 sprintf(nMsg,"<c=yellow><c>:同没倩,装!");
 						 m_ItemList.ClientShowMsg(nMsg);
 						 return;
 					 }
 				 }
 				 else
 				 {
-					 sprintf(nMsg,"<c=yellow>神将<c>:同伴没有召唤,不能装备!");
+					 sprintf(nMsg,"<c=yellow><c>:同没倩,装!");
 					 m_ItemList.ClientShowMsg(nMsg);
 					 return;
 				 }
@@ -4695,44 +4821,44 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 			 } 
 		}
 	}
-	else if (!CheckTrading() && DownPos.nPlace == pos_cailiao)  //检测 材料栏
+	else if (!CheckTrading() && DownPos.nPlace == pos_cailiao)  // 
 	{
 		int nHandIdx = m_ItemList.Hand();
 		if (nHandIdx)
-		{//多对象容器材料检测开始,在服务端进行检查
+		{//霞饪?诜私屑
 			//g_CompEquip.
-			/*int nGenre=Item[nHandIdx].GetGenre();                //类别
-			int nPart=Item[nHandIdx].GetDetailType();            //详细类别
-			int nParticular= Item[nHandIdx].GetParticular();     //具体类别
+			/*int nGenre=Item[nHandIdx].GetGenre();                //
+			int nPart=Item[nHandIdx].GetDetailType();            //细
+			int nParticular= Item[nHandIdx].GetParticular();     //
             */
-             if (nIsComp==1) //提炼
+             if (nIsComp==1) //
 			 {
-				// m_ItemList.ClientShowMsg("提炼材料检测");
+				// m_ItemList.ClientShowMsg("霞");
 				// return;
 			 }
-			 else if (nIsComp==2) //提取
+			 else if (nIsComp==2) //取
 			 {
-				// m_ItemList.ClientShowMsg("提取材料检测");
+				// m_ItemList.ClientShowMsg("取霞");
 				// return;
 			 }
-			 else if (nIsComp==3) //打造紫装
+			 else if (nIsComp==3) //装
 			 {
-				 //m_ItemList.ClientShowMsg("打造材料检测");
+				 //m_ItemList.ClientShowMsg("霞");
 				 //return;
 			 }
-			 else if (nIsComp==4) //镶套紫装
+			 else if (nIsComp==4) //装
 			 {
-				 //m_ItemList.ClientShowMsg("镶套材料检测");
+				 //m_ItemList.ClientShowMsg("撞霞");
 				//return;
 			 }
-			 else if (nIsComp==5) //图谱
+			 else if (nIsComp==5) //图
 			 {
-				 //m_ItemList.ClientShowMsg("图谱材料检测");
+				 //m_ItemList.ClientShowMsg("图撞霞");
 				 //return;
 			 }
-			 else if (nIsComp==8) //融合
+			 else if (nIsComp==8) //诤
 			 {
-				 //m_ItemList.ClientShowMsg("提示:面板关闭中...");
+				 //m_ItemList.ClientShowMsg("示:乇...");
 				 //return;
 			 }
 /*
@@ -4743,7 +4869,7 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 				sMsg.byConfirmType = SMCT_NONE;
 				sMsg.byPriority = 0;
 				sMsg.byParamSize = 0;
-				sprintf(sMsg.szMessage, "%s(%d)", "提示:<c=yellow>材料栏已经有同类型的物品了!<c>",nIsComp);
+				sprintf(sMsg.szMessage, "%s(%d)", "示:<c=yellow>丫同偷品!<c>",nIsComp);
 				sMsg.nMsgLen = TEncodeText(sMsg.szMessage, strlen(sMsg.szMessage));
 				CoreDataChanged(GDCNI_SYSTEM_MESSAGE, (unsigned int)&sMsg, 0);
 				return;
@@ -4752,11 +4878,11 @@ void	KPlayer::MoveItem(ItemPos DownPos, ItemPos UpPos,int nIsComp)
 		}
 	}
 	
-	SendClientCmdMoveItem(&DownPos,&UpPos,nIsComp); //DownPos 目标容器
+	SendClientCmdMoveItem(&DownPos,&UpPos,nIsComp); //DownPos 目
 }
 #endif
 #ifndef _SERVER
-// DownPos 是面板上的物品的当前坐标，UpPos 必须是手上物品放到面板上的坐标
+// DownPos 系品牡前辏琔pPos 品诺系
 void	KPlayer::MoveSkill(ItemPos DownPos, ItemPos UpPos)
 {
 	if (!CheckTrading() && DownPos.nPlace == pos_immediacy)
@@ -4771,7 +4897,7 @@ void	KPlayer::MoveSkill(ItemPos DownPos, ItemPos UpPos)
 				sMsg.byConfirmType = SMCT_NONE;
 				sMsg.byPriority = 0;
 				sMsg.byParamSize = 0;
-				sprintf(sMsg.szMessage, "提示：快捷栏已经有同样的技能啦！");
+				sprintf(sMsg.szMessage, "示丫同募");
 				sMsg.nMsgLen = TEncodeText(sMsg.szMessage, strlen(sMsg.szMessage));
 				CoreDataChanged(GDCNI_SYSTEM_MESSAGE, (unsigned int)&sMsg, 0);
 				return;
@@ -4782,26 +4908,26 @@ void	KPlayer::MoveSkill(ItemPos DownPos, ItemPos UpPos)
 //	SendClientCmdMoveItem(&DownPos, &UpPos);
 }
 #endif
-//丢弃物品 丢掉物品
+//品 品
 #ifndef _SERVER
 int	KPlayer::ThrowAwayItem()
 {
 	if (this->CheckTrading())
 	{
-	    Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("提示:正在交易中,不能丢弃物品!");
+	    Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("示:诮,芏品!");
 		return 0;
 	}
 
 	if (!m_ItemList.Hand())
 	{
 
-	    //Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("物品为空！！！！");
+	    //Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("品为眨");
 		return 0;
 	}
 /*	else
 	{
 	   char msg[64];
-	   sprintf(msg,"物品索引:%d..",m_ItemList.Hand());
+	   sprintf(msg,"品:%d..",m_ItemList.Hand());
 	   Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg(msg);
 	}*/
 	int	nIdx =m_ItemList.Hand();
@@ -4809,12 +4935,12 @@ int	KPlayer::ThrowAwayItem()
 	if (/*Item[nIdx].GetTime()->bYear>0 || */Item[nIdx].GetIsBang())
 	{
        int nReg=0;
-	       g_GameSetTing.GetInteger("SYSTEM","ThrowAwayItem",1,&nReg);	//设置是否启用丢弃限制
+	       g_GameSetTing.GetInteger("SYSTEM","ThrowAwayItem",1,&nReg);	//欠枚
 
      if (!nReg)
 	 { 
 		KSystemMessage	sMsg;
-		sprintf(sMsg.szMessage,"警告:<c=green>(限时/绑定)装备不能丢弃!<c>");
+		sprintf(sMsg.szMessage,":<c=green>(时/)装芏!<c>");
 		sMsg.eType = SMT_NORMAL;
 		sMsg.byConfirmType = SMCT_NONE;
 		sMsg.byPriority = 0;
@@ -4947,7 +5073,7 @@ BOOL	KPlayer::TradeMoveMoney(int nMoney)
 		return FALSE;
 	if (this->m_cTrade.m_nTradeLock)
 		return FALSE;
-	// 钱数量错误
+	// 钱
 	if (nMoney < 0 || nMoney > m_ItemList.GetEquipmentMoney())
 		return FALSE;
 	
@@ -4964,8 +5090,8 @@ BOOL	KPlayer::TradeMoveMoney(int nMoney)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：交易确定或取消
-//	if nDecision == 0 推出交易  if nDecision == 1 确定交易  if nDecision == 2 取消交易确定
+//	埽确取
+//	if nDecision == 0 瞥  if nDecision == 1 确  if nDecision == 2 取确
 //-------------------------------------------------------------------------
 void	KPlayer::TradeDecision(int nDecision)
 {
@@ -4992,7 +5118,7 @@ void	KPlayer::TradeDecision(int nDecision)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：交易锁定或取消锁定
+//	埽取
 //-------------------------------------------------------------------------
 void	KPlayer::TradeApplyLock(int nLockOrNot)
 {
@@ -5015,25 +5141,25 @@ void	KPlayer::TradeApplyLock(int nLockOrNot)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到服务器通知有人申请加入队伍
+//	埽盏通知
 //-------------------------------------------------------------------------
 void	KPlayer::s2cApplyAddTeam(BYTE* pProtocol)
 {
-	// 状态检查 (还需要检查 npc 的队伍开放状态 not end)
+	// 状态 (要 npc 亩榭状?not end)
 	if ( !m_cTeam.m_nFlag || m_cTeam.m_nFigure != TEAM_CAPTAIN)
 	{
 		ApplySelfTeamInfo();
 		return;
 	}
 	
-	// 寻找 npc
+	// 寻 npc
 	PLAYER_APPLY_ADD_TEAM	*pAddTeam = (PLAYER_APPLY_ADD_TEAM*)pProtocol;
 	int nNpcNo = NpcSet.SearchID(pAddTeam->m_dwTarNpcID);
 	if (nNpcNo == 0)
 		return;
 	
 	int i, nFreeListNo;
-	// 如果已经存在，更新
+	// 丫冢
 	for (i = 0; i < MAX_TEAM_APPLY_LIST; ++i)
 	{
 		if (m_cTeam.m_sApplyList[i].m_dwNpcID == pAddTeam->m_dwTarNpcID)
@@ -5042,11 +5168,11 @@ void	KPlayer::s2cApplyAddTeam(BYTE* pProtocol)
 			m_cTeam.m_sApplyList[i].m_dwTimer = MAX_APPLY_TEAM_TIME;
 			snprintf(m_cTeam.m_sApplyList[i].m_szName, sizeof(m_cTeam.m_sApplyList[i].m_szName), "%s", Npc[nNpcNo].Name);
 			m_cTeam.UpdateInterface();
-			m_cTeam.UpdateamUI(); //显示主界面队伍信息
+			m_cTeam.UpdateamUI(); //示息
 			return;
 		}
 	}
-	// 寻找申请人list空位
+	// 寻list位
 	for (i = 0; i < MAX_TEAM_APPLY_LIST; ++i)
 	{
 		if (m_cTeam.m_sApplyList[i].m_dwNpcID == 0)
@@ -5055,7 +5181,7 @@ void	KPlayer::s2cApplyAddTeam(BYTE* pProtocol)
 			break;
 		}
 	}
-	if (i >= MAX_TEAM_APPLY_LIST)	// 没找到申请人空位
+	if (i >= MAX_TEAM_APPLY_LIST)	// 没业丝位
 		return;
 	
 	m_cTeam.m_sApplyList[nFreeListNo].m_dwNpcID = pAddTeam->m_dwTarNpcID;
@@ -5064,10 +5190,10 @@ void	KPlayer::s2cApplyAddTeam(BYTE* pProtocol)
 	snprintf(m_cTeam.m_sApplyList[nFreeListNo].m_szName, sizeof(m_cTeam.m_sApplyList[nFreeListNo].m_szName), "%s", Npc[nNpcNo].Name);
 	
 	m_cTeam.UpdateInterface();
-	m_cTeam.UpdateamUI(); //显示主界面队伍信息
-//-------------------------------------------------//自动应答
+	m_cTeam.UpdateamUI(); //示息
+//-------------------------------------------------//远应
     //pPlayer = (KUiPlayerItem*)(&m_pHandlingMsg[1]);
-			//g_pCoreShell->TeamOperation(TEAM_OI_APPLY_RESPONSE,(unsigned int)pPlayer, (nSelAction == 0));	//nSelAction=0：答应, nSelAction=1：拒绝
+			//g_pCoreShell->TeamOperation(TEAM_OI_APPLY_RESPONSE,(unsigned int)pPlayer, (nSelAction == 0));	//nSelAction=0应, nSelAction=1芫
    if (Player[CLIENT_PLAYER_INDEX].m_Autoplay.nCteam.nIsHuiDa==1 && Player[CLIENT_PLAYER_INDEX].m_Autoplay.nCteam.nIsDuiZhang==1)
    {
       Player[CLIENT_PLAYER_INDEX].AcceptTeamMember(pAddTeam->m_dwTarNpcID);
@@ -5095,17 +5221,17 @@ void	KPlayer::s2cApplyAddTeam(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：加入门派
+//	埽
 //-------------------------------------------------------------------------
 BOOL	KPlayer::AddFaction(char *lpszFactionName)
 {
 	if ( !m_cFaction.AddFaction(Npc[m_nIndex].m_Series, lpszFactionName))
 		return FALSE;
 	
-	// 改变阵营
+	// 谋营
 	Npc[m_nIndex].SetCamp(m_cFaction.GetGurFactionCamp());
 	
-	// 给客户端发消息
+	// 突朔息
 	SendFactionData();
 	
 	return TRUE;
@@ -5114,17 +5240,17 @@ BOOL	KPlayer::AddFaction(char *lpszFactionName)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：加入门派
+//	埽
 //-------------------------------------------------------------------------
 BOOL	KPlayer::AddFaction(int nFactionID)
 {
 	if ( !m_cFaction.AddFaction(Npc[m_nIndex].m_Series, nFactionID) )
 		return FALSE;
 	
-	// 改变阵营
+	// 谋营
 	Npc[m_nIndex].SetCamp(m_cFaction.GetGurFactionCamp());
 	
-	// 给客户端发消息
+	// 突朔息
 	SendFactionData();
 	
 	return TRUE;
@@ -5133,16 +5259,16 @@ BOOL	KPlayer::AddFaction(int nFactionID)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：离开门派
+//	埽肟?
 //-------------------------------------------------------------------------
 BOOL	KPlayer::LeaveCurFaction()
 {
 	m_cFaction.LeaveFaction();
 	
-	// 改变阵营
+	// 谋营
 	Npc[m_nIndex].SetCamp(camp_free);
 	
-	// 给客户端发消息
+	// 突朔息
 	PLAYER_LEAVE_FACTION	sLeave;
 	sLeave.ProtocolType = s2c_playerleavefaction;
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sLeave, sizeof(PLAYER_LEAVE_FACTION));
@@ -5153,7 +5279,7 @@ BOOL	KPlayer::LeaveCurFaction()
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：开放当前门派某个等级的技能
+//	埽诺前某燃募
 //-------------------------------------------------------------------------
 BOOL	KPlayer::CurFactionOpenSkill(int nLevel)
 {
@@ -5172,7 +5298,7 @@ BOOL	KPlayer::CurFactionOpenSkill(int nLevel)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：清空任务临时变量
+//	埽时
 //-------------------------------------------------------------------------
 void	KPlayer::TaskClearTempVal()
 {
@@ -5182,7 +5308,7 @@ void	KPlayer::TaskClearTempVal()
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：得到任务完成情况
+//	埽玫
 //-------------------------------------------------------------------------
 int		KPlayer::TaskGetSaveVal(int nNo)
 {
@@ -5192,7 +5318,7 @@ int		KPlayer::TaskGetSaveVal(int nNo)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：设定任务完成情况
+//	埽瓒?
 //-------------------------------------------------------------------------
 void	KPlayer::TaskSetSaveVal(int nNo, BOOL bFlag)
 {
@@ -5202,7 +5328,7 @@ void	KPlayer::TaskSetSaveVal(int nNo, BOOL bFlag)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：得到任务临时过程控制变量值
+//	埽玫时炭票值
 //-------------------------------------------------------------------------
 int		KPlayer::TaskGetClearVal(int nNo)
 {
@@ -5212,7 +5338,7 @@ int		KPlayer::TaskGetClearVal(int nNo)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：设定任务临时过程控制变量值
+//	埽瓒ㄊ碧科敝?
 //-------------------------------------------------------------------------
 void	KPlayer::TaskSetClearVal(int nNo, int nVal)
 {
@@ -5220,25 +5346,25 @@ void	KPlayer::TaskSetClearVal(int nNo, int nVal)
 }
 #endif
 
-//设置快捷技能 --默认
+//每菁 --默
 #ifndef _SERVER
 void	KPlayer::SetDefaultImmedSkill()  
 {
-	//获取玩家左右键技能为默认物理技能
+	//取壹为默
 	int nDetailType = Player[CLIENT_PLAYER_INDEX].m_ItemList.GetWeaponType();
 	int nParticularType = Player[CLIENT_PLAYER_INDEX].m_ItemList.GetWeaponParticular();
 	
-	//近身武器
+	//
 	if (nDetailType == 0)
 	{
 		Player[CLIENT_PLAYER_INDEX].SetLeftSkill(g_nMeleeWeaponSkill[nParticularType]);
 		Player[CLIENT_PLAYER_INDEX].SetRightSkill(g_nMeleeWeaponSkill[nParticularType]);
-	}//远程武器
+	}//远
 	else if (nDetailType == 1)
 	{
 		Player[CLIENT_PLAYER_INDEX].SetLeftSkill(g_nRangeWeaponSkill[nParticularType]);
 		Player[CLIENT_PLAYER_INDEX].SetRightSkill(g_nRangeWeaponSkill[nParticularType]);
-	}//空手
+	}//
 	else if (nDetailType == -1)
 	{
 		Player[CLIENT_PLAYER_INDEX].SetLeftSkill(g_nHandSkill);
@@ -5246,7 +5372,7 @@ void	KPlayer::SetDefaultImmedSkill()
 	}
 
 }
-//设置快捷栏拾取技能
+//每拾取
 void	KPlayer::SetShiquSkill(int nSkillID)
 {
 
@@ -5265,17 +5391,17 @@ void KPlayer::SetLeftSkill(int nSkillID,BOOL nIsNoLogin)
 	if (Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_SkillList.GetCurrentLevel(nSkillID) < 0) 
 		return;
 
-    Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].ReSkillEnhance(m_nLeftSkillID,0); //先减去上一次左键技能加成
+    Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].ReSkillEnhance(m_nLeftSkillID,0); //燃去一芗映
 
-	//写内挂技能编号
+	//写诠壹鼙
 	if (nIsNoLogin)
 	{
-		 Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("<c=gyellow>助手<c>:保存自动挂机技能成功!");
+		 Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("<c=gyellow><c>:远一艹晒!");
 		 KIniFile nAutoConfig;
 		
 		 char nConfig[128]={0};
 					   
-		 sprintf(nConfig,"\\FsAi\\配置\\%s_配置.ini",Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].Name);
+		 sprintf(nConfig,"\\FsAi\\\\%s_.ini",Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].Name);
 					   
 		 if  (nAutoConfig.Load(nConfig))
 		 { 
@@ -5283,7 +5409,7 @@ void KPlayer::SetLeftSkill(int nSkillID,BOOL nIsNoLogin)
 		 }
 		 else
 		 {
-			 Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("<c=gyellow>助手<c>:配置不存在!");
+			 Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("<c=gyellow><c>:貌!");
 
 		 }
 		 nAutoConfig.Save(nConfig);
@@ -5303,7 +5429,7 @@ void KPlayer::SetLeftSkill(int nSkillID,BOOL nIsNoLogin)
 	if (g_pClient)
 		g_pClient->SendPackToServer(&sLeftSkill, sizeof(SKILL_LEFT_SYNC));
     
-	//界面处理
+	//娲?
 	KUiGameObject Info;
 	Info.uGenre = CGOG_SKILL_SHORTCUT;
 	Info.uId = m_nLeftSkillID;
@@ -5318,18 +5444,18 @@ void	KPlayer::SetRightSkill(int nSkillID)
 
 	m_nRightSkillID = nSkillID;
 	m_nRightListidx = Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_SkillList.FindSame(m_nRightSkillID);
-	// 检查是否是光环技能
+	// 欠枪饣?
 	ISkill * pOrdinSkill = g_SkillManager.GetSkill(nSkillID, 1);
 
 	if (!pOrdinSkill) 
         return;
 	
 	if (pOrdinSkill->IsAura())
-	{//如果是光环技能 就立即使用
+	{//枪饣?使
 		Npc[m_nIndex].SetAuraSkill(nSkillID);
 	}
 	else
-	{//否则，设置为不是光环技能
+	{//为枪饣?
 		Npc[m_nIndex].SetAuraSkill(0);
 	}
      
@@ -5338,7 +5464,7 @@ void	KPlayer::SetRightSkill(int nSkillID)
 	Info.uId = m_nRightSkillID;
 	CoreDataChanged(GDCNI_PLAYER_IMMED_ITEMSKILL, (unsigned int)&Info, -2);
 }
-//换装 更新空手武器限制技能数据
+//装 驴萍
 void KPlayer::UpdateWeaponSkill()
 {
 	if (m_nLeftSkillID > 0)
@@ -5348,18 +5474,18 @@ void KPlayer::UpdateWeaponSkill()
             return;
 		
 		if (m_nLeftSkillID==1 || m_nLeftSkillID==2 || m_nLeftSkillID==53)
-		{//设置左键技能 id
+		{// id
 			SetLeftSkill(Npc[m_nIndex].GetCurActiveWeaponSkill());
 		}
 		
 	}
 	if (m_nRightSkillID > 0)
-	{//设置右键技能 id
+	{//壹 id
 		ISkill * pISkill = (KSkill *) g_SkillManager.GetSkill(m_nRightSkillID, 1);
 		if (!pISkill) 
             return;
 		
-		//if (pISkill->IsPhysical()) //外功系设置
+		//if (pISkill->IsPhysical()) //夤ο?
 		if (m_nRightSkillID==1 || m_nRightSkillID==2 || m_nRightSkillID==53)
 		{
 			SetRightSkill(Npc[m_nIndex].GetCurActiveWeaponSkill());
@@ -5370,7 +5496,7 @@ void KPlayer::UpdateWeaponSkill()
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：设定当前聊天频道
+//	埽瓒ㄇ捌?
 //-------------------------------------------------------------------------
 void	KPlayer::SetChatCurChannel(int nChannelNo)
 {
@@ -5380,7 +5506,7 @@ void	KPlayer::SetChatCurChannel(int nChannelNo)
 
 #ifndef _SERVER
 //-------------------------------------------------------------------------
-//	功能：邀请加入队伍
+//	埽
 //-------------------------------------------------------------------------
 void	KPlayer::TeamInviteAdd(DWORD dwNpcID)
 {
@@ -5390,7 +5516,7 @@ void	KPlayer::TeamInviteAdd(DWORD dwNpcID)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端发来的聊天语句
+//	埽盏突朔
 //-------------------------------------------------------------------------
 void	KPlayer::ServerSendChat(BYTE* pProtocol)
 {
@@ -5400,13 +5526,13 @@ void	KPlayer::ServerSendChat(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端要求增加基本属性点(0=Strength 1=Dexterity 2=Vitality 3=Engergy)
+//	埽盏突要踊缘(0=Strength 1=Dexterity 2=Vitality 3=Engergy)
 //-------------------------------------------------------------------------
 void	KPlayer::AddBaseAttribute(BYTE* pProtocol)
 {
 	PLAYER_ADD_BASE_ATTRIBUTE_COMMAND	*pAdd = (PLAYER_ADD_BASE_ATTRIBUTE_COMMAND*)pProtocol;
 	
-	//执行一个判断脚本 来是否往下执行
+	//执一卸辖疟 欠执
 	int reg=ExecuteScript_Direct("\\script\\global\\global_setting.lua","main_attributeSet",true,"dd",pAdd->m_btAttribute,pAdd->m_nAddNo);
 	if  (reg<=0)
 	{
@@ -5421,46 +5547,47 @@ void	KPlayer::AddBaseAttribute(BYTE* pProtocol)
 	switch (pAdd->m_btAttribute)
 	{
 	case ATTRIBUTE_STRENGTH:
-		AddBaseStrength(pAdd->m_nAddNo);  //力量
+		AddBaseStrength(pAdd->m_nAddNo);  //
 		break;
 	case ATTRIBUTE_DEXTERITY:
-		AddBaseDexterity(pAdd->m_nAddNo);  //身法
+		AddBaseDexterity(pAdd->m_nAddNo);  //
 		break;
 	case ATTRIBUTE_VITALITY:
-		AddBaseVitality(pAdd->m_nAddNo);   //外功
+		AddBaseVitality(pAdd->m_nAddNo);   //夤?
 		break;
 	case ATTRIBUTE_ENGERGY:
-		AddBaseEngergy(pAdd->m_nAddNo);    //  内功
+		AddBaseEngergy(pAdd->m_nAddNo);    //  诠
 		break;
 	}
 }
-//重置基本属性
+//没
 void	KPlayer::ResetBaseAttribute(BYTE* pProtocol)
 {
 	PLAYER_ADD_BASE_ATTRIBUTE_COMMAND	*pAdd = (PLAYER_ADD_BASE_ATTRIBUTE_COMMAND*)pProtocol;
 	switch (pAdd->m_btAttribute)
 	{
-	case ATTRIBUTE_STRENGTH:  //力量
+	case ATTRIBUTE_STRENGTH:  //
 		ResetBaseStrength(pAdd->m_nAddNo);
 		break;
-	case ATTRIBUTE_DEXTERITY: //外功
+	case ATTRIBUTE_DEXTERITY: //夤?
 		ResetBaseDexterity(pAdd->m_nAddNo);
 		break;
-	case ATTRIBUTE_VITALITY:  //身法
+	case ATTRIBUTE_VITALITY:  //
 		ResetBaseVitality(pAdd->m_nAddNo);
 		break;
-	case ATTRIBUTE_ENGERGY:   //内力
+	case ATTRIBUTE_ENGERGY:   //
 		ResetBaseEngergy(pAdd->m_nAddNo);
 		break;
 	}
 }
 #endif
 
-#define MAX_ORDINSKILL_LEVEL_ALWAYS  20//不包括其它情况对技能等级的变动之外的，一般最大技能等级
+#define MAX_ORDINSKILL_LEVEL_ALWAYS  20//约艿燃谋涠之模一艿?
+
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端要求增加某个技能的点数   升级技能
+//	埽盏突要某艿牡   
 //-------------------------------------------------------------------------
 void	KPlayer::AddSkillPoint(BYTE* pProtocol)
 {
@@ -5471,20 +5598,20 @@ void	KPlayer::AddSkillPoint(BYTE* pProtocol)
 	if (nSkillIndex == 0)
 		return;
 
-	int nSkillLevel = Npc[m_nIndex].m_SkillList.GetSkillIdxLevel(nSkillIndex);  //获取技能当前的等级
+	int nSkillLevel = Npc[m_nIndex].m_SkillList.GetSkillIdxLevel(nSkillIndex);  //取艿前牡燃
 	
 	if (m_nSkillPoint >= pAdd->m_nAddPoint && nSkillLevel + pAdd->m_nAddPoint <= MAX_SKILLLEVEL)
 	{
 		ISkill * pSkill = NULL;
 		if (nSkillLevel == 0)
-			pSkill =  g_SkillManager.GetSkill(pAdd->m_nSkillID, 1);  //获取技能的基本数据
+			pSkill =  g_SkillManager.GetSkill(pAdd->m_nSkillID, 1);  //取艿幕
 		else
 			pSkill =  g_SkillManager.GetSkill(pAdd->m_nSkillID, nSkillLevel);
 
 		if (pSkill)
 		{
 			char szMsg[125]={0};
-			//执行一个判断脚本 来是否往下执行
+			//执一卸辖疟 欠执
 			int reg=ExecuteScript_Direct("\\script\\Global\\global_setting.lua","main_Skillset",true,"ddddsd",pAdd->m_nSkillID,nSkillLevel,nSkillIndex,pAdd->m_nAddPoint,pSkill->GetSkillName(),pSkill->GetSkillStyle());
 			if  (reg<=0)
 			{
@@ -5494,20 +5621,20 @@ void	KPlayer::AddSkillPoint(BYTE* pProtocol)
 				KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, strCoreInfo[MESSAGE_SYSTEM_ANNOUCE_HEAD].c_str(), (char *)szMsg, nLength);
 				return;
 			}
-			//有对应的技能升级脚本,优先执行脚本
+			//卸应募疟,执薪疟
 			if (pSkill->GetSkillLevelUpScriptId())
 			{
-				ExecuteScriptB(pSkill->GetSkillLevelUpScriptId(), "main", pAdd->m_nAddPoint,"空",FALSE);
+				ExecuteScriptB(pSkill->GetSkillLevelUpScriptId(), "main", pAdd->m_nAddPoint,"",FALSE);
 				nSkillLevel = Npc[m_nIndex].m_SkillList.GetSkillIdxLevel(nSkillIndex);
 			}
 			else
 			{
 				switch(pSkill->GetSkillStyle())
 				{
-				  case SKILL_SS_Missles:			            //	子弹类		本技能用于发送子弹类
+				  case SKILL_SS_Missles:			            //	拥		诜拥
 				  case SKILL_SS_Melee:
-				  case SKILL_SS_InitiativeNpcState:	    //	主动类		本技能用于改变当前Npc的主动状态
-				  case SKILL_SS_PassivityNpcState:		//	被动类		本技能用于改变Npc的被动状态
+				  case SKILL_SS_InitiativeNpcState:	    //			诟谋涞鼻癗pc状态
+				  case SKILL_SS_PassivityNpcState:		//			诟谋Npc谋状态
 					{
 						int nWantToBeLevel = nSkillLevel + pAdd->m_nAddPoint;
 						
@@ -5540,15 +5667,15 @@ void	KPlayer::AddSkillPoint(BYTE* pProtocol)
 						}
 
 						//printf("nWantToBeLevel: %d nLevelSkillMax: %d nLevelSkillMaxAdd: %d AddPointSkill: %d Level hien tai: %d\n",nWantToBeLevel,nLevelSkillMax,nLevelSkillMaxAdd,AddPointSkill,nSkillLevel);
-						//减去额外的技能点
+						//去募艿
 						//if ((nWantToBeLevel - Npc[m_nIndex].m_SkillList.GetAddPoint(nSkillIndex)) <= g_SkillManager.GetSkillMaxLevel(pAdd->m_nSkillID)+/*m_cReBorn.GetReBornNum()**/m_cReBorn.GetReBornSkillMaxLevel()+/*m_cVip.GetRoleVipNum()**/m_cVip.GetRoleVipSkillMaxLevel() &&  Npc[m_nIndex].m_Level >= ((KSkill*)pSkill)->GetSkillReqLevel())
 						if (nLevelSkillMax > 1 && nWantToBeLevel <= (nLevelSkillMax + nLevelSkillMaxAdd + AddPointSkill ) && nWantToBeLevel <= Npc[m_nIndex].m_Level - ((KSkill*)pSkill)->GetSkillReqLevel() + 1)
 						{
 							if (!Npc[m_nIndex].m_SkillList.IncreaseLevel(nSkillIndex, pAdd->m_nAddPoint,FALSE,TRUE))
 							   return;
 			
-							m_nSkillPoint -= pAdd->m_nAddPoint; //剩余技能点减少
-							nSkillLevel   += pAdd->m_nAddPoint; //技能等级增加
+							m_nSkillPoint -= pAdd->m_nAddPoint; //剩嗉架?
+							nSkillLevel   += pAdd->m_nAddPoint; //艿燃
 						}
 						else 
 						{
@@ -5577,8 +5704,8 @@ void	KPlayer::AddSkillPoint(BYTE* pProtocol)
 									if (!Npc[m_nIndex].m_SkillList.IncreaseLevel(nSkillIndex, pAdd->m_nAddPoint,FALSE,TRUE))
 									   return;
 			
-									m_nSkillPoint -= pAdd->m_nAddPoint; //剩余技能点减少
-									nSkillLevel   += pAdd->m_nAddPoint; //技能等级增加
+									m_nSkillPoint -= pAdd->m_nAddPoint; //剩嗉架?
+									nSkillLevel   += pAdd->m_nAddPoint; //艿燃
 								}
 								else
 								{ 
@@ -5596,7 +5723,7 @@ void	KPlayer::AddSkillPoint(BYTE* pProtocol)
 							KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, strCoreInfo[MESSAGE_SYSTEM_ANNOUCE_HEAD].c_str(), (char *)szMsg, nLength);	
 					}
 					break;
-				case SKILL_SS_Thief:  //偷窃类技能
+				case SKILL_SS_Thief:  //偷嗉?
 					{
 						return;
 					}break;
@@ -5604,8 +5731,8 @@ void	KPlayer::AddSkillPoint(BYTE* pProtocol)
 				}	
 			}
 
-			UpdataCurData();  //更新数据
-			// 把当前此技能的点数和剩余技能点发给客户端
+			UpdataCurData();  //
+			// 训前思艿牡剩嗉架点发突
 			PLAYER_SKILL_LEVEL_SYNC	sSkill;
 			sSkill.ProtocolType  = s2c_playerskilllevel;
 			sSkill.m_nSkillID    = pAdd->m_nSkillID;
@@ -5659,10 +5786,10 @@ void	KPlayer::IncSkillExp(int nSkillId, int nAddExp)
 
 
 #endif
-//地上物品 与 身上物品公用一个索引
+//品  品一
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：服务器端拣物品  执行脚本
+//	埽思品  执薪疟
 //-------------------------------------------------------------------------
 BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 {
@@ -5674,18 +5801,18 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 		return FALSE;
 	
 	if (Object[nObjIndex].m_nBelong > 0)
-	{//别人的东西
+	{//说亩
 		if (!m_cTeam.m_nFlag)
-		{//不是组队的
+		{//拥
 			if (Object[nObjIndex].m_nBelong != m_nPlayerIndex)
-			{//不是自己的东西
+			{//约亩
 				SHOW_MSG_SYNC	sMsg;
 				sMsg.ProtocolType = s2c_msgshow;
 
 				if (Object[nObjIndex].m_nKind == Obj_Kind_Money)
-					sMsg.m_wMsgID = enumMSG_ID_MONEY_CANNOT_PICKUP;	//不能拾取别人的银两
+					sMsg.m_wMsgID = enumMSG_ID_MONEY_CANNOT_PICKUP;	//拾取说
 				else
-					sMsg.m_wMsgID = enumMSG_ID_OBJ_CANNOT_PICKUP; //不能拾取别人的物品
+					sMsg.m_wMsgID = enumMSG_ID_OBJ_CANNOT_PICKUP; //拾取说品
 
 				sMsg.m_wLength = sizeof(SHOW_MSG_SYNC) - 1;
 				g_pServer->PackDataToClient(m_nNetConnectIdx,(BYTE *)&sMsg, sMsg.m_wLength + 1);
@@ -5694,7 +5821,7 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 			}
 		}
 		else
-		{//组队的
+		{//拥
 			if (Object[nObjIndex].m_nKind == Obj_Kind_Money)
 			{
 				if (!g_Team[m_cTeam.m_nID].CheckIn(Object[nObjIndex].m_nBelong))
@@ -5713,7 +5840,7 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 					return FALSE;
 
 				if (!g_Team[m_cTeam.m_nID].CheckIn(Object[nObjIndex].m_nBelong))
-				{//不能捡起别人的东西
+				{//芗说亩
 					SHOW_MSG_SYNC	sMsg;
 					sMsg.ProtocolType = s2c_msgshow;
 					sMsg.m_wMsgID = enumMSG_ID_OBJ_CANNOT_PICKUP;
@@ -5730,13 +5857,13 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 		}
 	}
 	else if (Object[nObjIndex].m_nBelong == -2)
-	{//系统设置不允许捡的东西
+	{//系统貌亩
 		    m_ItemList.msgshow("Vat pham nay bi he thong cam!");
 			printf("Vat pham nay bi he thong cam!");
 			return FALSE;
 	}
 
-	// 判断距离
+	// 卸暇
 	if (Object[nObjIndex].m_nSubWorldID != Npc[m_nIndex].m_SubWorldIndex)
 		return FALSE;
 	SubWorld[Object[nObjIndex].m_nSubWorldID].NewMap2Mps(
@@ -5757,7 +5884,7 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 		&nNpcY);
 	//nhat vat pham qua xa
 /*	if (PLAYER_PICKUP_SERVER_DISTANCE < (nNpcX - nObjX) * (nNpcX - nObjX) + (nNpcY - nObjY) * (nNpcY - nObjY))
-	{ //捡东西距离检测
+	{ //
 		SHOW_MSG_SYNC	sMsg;
 		sMsg.ProtocolType = s2c_msgshow;
 		sMsg.m_wMsgID = enumMSG_ID_OBJ_TOO_FAR;
@@ -5768,10 +5895,10 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 */
 	int mReg=0;
 	char nMapName[64]={0};
-		//mReg=NpcSet.CheckForBit(nItemInfo,"GuiShuItem",3); //是否可以改名的东西
+		//mReg=NpcSet.CheckForBit(nItemInfo,"GuiShuItem",3); //欠愿亩
 	snprintf(nMapName, sizeof(nMapName), "%s", SubWorld[Npc[m_nIndex].m_SubWorldIndex].nWorldMapInfo[STR_MAP_NAME].c_str());
-	if (Item[Object[nObjIndex].m_nItemDataID].GetGenre()!=0 && Item[Object[nObjIndex].m_nItemDataID].GetIsUse()/* && (strcmpi(Item[Object[nObjIndex].m_nItemDataID].GetWonName(),"系统") == 0)*/)  //如果是立即使用
-	{//不是装备 是立即使用物品 物品的脚本
+	if (Item[Object[nObjIndex].m_nItemDataID].GetGenre()!=0 && Item[Object[nObjIndex].m_nItemDataID].GetIsUse()/* && (strcmpi(Item[Object[nObjIndex].m_nItemDataID].GetWonName(),"系统") == 0)*/)  //使
+	{//装 使品 品慕疟
 		int nRegn=1;
 		nRegn = Object[nObjIndex].ExecScriptFiled(m_nPlayerIndex,\
 		      Item[Object[nObjIndex].m_nItemDataID].GetScript(),\
@@ -5782,7 +5909,7 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 		     Item[Object[nObjIndex].m_nItemDataID].GetWonName(),\
 			                                                0);
 		if (!nRegn)
-		{//删除了物品  
+		{//删品  
 			m_ItemList.Remove(Object[nObjIndex].m_nItemDataID,0,0,0,FALSE);
 			ItemSet.Remove(Object[nObjIndex].m_nItemDataID);
 		    Object[nObjIndex].m_nItemDataID = 0;
@@ -5800,7 +5927,7 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 		}   
 	}
 	else if (Object[nObjIndex].m_nKind!=Obj_Kind_Money)
-	{//不是钱的东西 执行全局捡东西脚本
+	{//钱亩 执全旨疟
 		//char m_gGoldScritp[200];
 		//sprintf(m_gGoldScritp,"\\script\\Global\\goldpickup.lua");
 	    Object[nObjIndex].ExecScriptFiled(m_nPlayerIndex,\
@@ -5815,9 +5942,9 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 
 	switch (Object[nObjIndex].m_nKind)
 	{
-	case Obj_Kind_Item:				// 掉在地上的装备
-		{//捡东西 捡装备
-			//---------------------------------------------------//检测包袱空间
+	case Obj_Kind_Item:				// 诘系装
+		{// 装
+			//---------------------------------------------------//占
 			int xPos=0,yPos=0,n_TempRoom=room_equipment;
 			switch(pPickUp->m_btPosType)
 			{
@@ -5832,7 +5959,7 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 			}
 
 			if (!m_ItemList.CheckCanPlaceInEquipment(Item[Object[nObjIndex].m_nItemDataID].GetWidth(),Item[Object[nObjIndex].m_nItemDataID].GetHeight(),&xPos,&yPos,n_TempRoom))
-			{//另外查询服务器空间
+			{//询占
 				m_ItemList.msgshow("khoang trong khong du!");
 				return FALSE;
 			}
@@ -5843,16 +5970,16 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 				return FALSE;
 			}
 			//xep chong
-			m_nRoomFull=0;	        //设置包袱为空闲
+			m_nRoomFull=0;	        //冒为
 			int StackNum =Item[Object[nObjIndex].m_nItemDataID].GetStackNum();
 
             if (StackNum<=0)
                 StackNum=1;
-            //---------------------------------------------------开始检测包袱是否有这个物品 是否能叠加
+            //---------------------------------------------------始欠品 欠艿
              /*if  (Item[Object[nObjIndex].m_nItemDataID].GetGenre()!=0 &&
 				 !Item[Object[nObjIndex].m_nItemDataID].GetIsBang() &&
 				 Item[Object[nObjIndex].m_nItemDataID].GetTime()->bYear<=0) 
-			 {//不是装备的话,包袱里是否有这个物品  是否可以自动叠加
+			 {//装幕,欠品  欠远
 				 int nIdx=m_ItemList.IsHaveItem(Item[Object[nObjIndex].m_nItemDataID].GetGenre(),\
 					                                      Item[Object[nObjIndex].m_nItemDataID].GetDetailType(),\
 														  Item[Object[nObjIndex].m_nItemDataID].GetParticular(),\
@@ -5862,22 +5989,22 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 				if (nIdx>0 && Item[nIdx].IsStack() &&
 					Item[Object[nObjIndex].m_nItemDataID].CanStack(nIdx) &&
 					(Item[nIdx].GetStackNum()+StackNum) <= MAX_STACKNUM
-					) //是否可以叠加--手里和包袱里的是否相同
+					) //欠缘--桶欠同
 
-				{//包袱里的东西可以叠加  
+				{//亩缘  
                     //StackNum=Item[nIdx].GetStackNum()+StackNum;
 					printf("nhat item 1%d , HaveItem: %d\n",Item[nIdx].GetGenre(),nIdx);
 					//m_ItemList.Remove(nIdx,0,0,0,FALSE);
 					//ItemSet.Remove(nIdx);
 				}
 			}*/
-			//---------------------------------------------------//服务器端产生东西
+			//---------------------------------------------------//瞬
 			int nItemIdx = m_ItemList.Add(Object[nObjIndex].m_nItemDataID,pPickUp->m_btPosType,xPos,yPos,0,0,StackNum);//pPickUp->m_btPosX 
 			
-			if (nItemIdx <= 0)  //大于所有容器的物品
+			if (nItemIdx <= 0)  //品
 				return FALSE;
 
-			// 去掉Object[nObjIndex]与道具的关联。避免ItemSet的Remove被Object的Remove调用
+			// 去Object[nObjIndex]叩墓ItemSetRemoveObjectRemove
 			Object[nObjIndex].m_nItemDataID = 0;
 			Object[nObjIndex].m_nItemWidth  = 0;
 			Object[nObjIndex].m_nItemHeight = 0;
@@ -5887,12 +6014,12 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
             Object[nObjIndex].m_AttackerTime=0;
 
 			//ObjSet.Remove(nObjIndex);
-			Object[nObjIndex].Remove(FALSE);   //删除地上的东西	
+			Object[nObjIndex].Remove(FALSE);   //删系亩	
 			//ObjSet.resetLeftTime(nObjIndex,0);
 		}
 		break;
-	case Obj_Kind_Money:			// 掉在地上的钱
-		if (!Earn(Object[nObjIndex].m_nMoneyNum) )  //增加钱
+	case Obj_Kind_Money:			// 诘系钱
+		if (!Earn(Object[nObjIndex].m_nMoneyNum) )  //钱
 			return FALSE;
 		Object[nObjIndex].SyncRemove(TRUE);
 
@@ -5909,7 +6036,7 @@ BOOL	KPlayer::ServerPickUpItem(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端要求使用某个物品(鼠标右键点击)
+//	埽盏突要使某品(壹)
 //-------------------------------------------------------------------------
 void	KPlayer::EatItem(BYTE* pProtocol)
 {
@@ -5923,11 +6050,11 @@ void	KPlayer::AutoItem(BYTE* pProtocol)
 	PLAYER_AUTOMUVE_ITEM_COMMAND	*pMove = (PLAYER_AUTOMUVE_ITEM_COMMAND*)pProtocol;
 	char nItemInfo[128];
 	int nItemIdx=m_ItemList.SearchID(pMove->m_nItemID);
-	//这里处理一下是否有相同的物品
+	//锎σ磺吠?
 	if (nItemIdx<=0 || nItemIdx>=MAX_ITEM)
 	{
 #ifdef _SERVER
-		//客户端存在这个异常的物品 需要删除掉.
+		//突舜斐Ｆ?要删.
 		ITEM_REMOVE_SYNC	sRemove;
 		sRemove.ProtocolType = s2c_removeitem;
 		sRemove.m_ID         = pMove->m_nItemID;
@@ -5948,7 +6075,7 @@ void	KPlayer::AutoItem(BYTE* pProtocol)
 		m_ItemList.msgshow("Item A khong ton tai, vui long bao gm!");
 		snprintf(nItemInfo, sizeof(nItemInfo),"----Item A Acc:%s Name:%s co dau hieu bat thuong check Player::AutoItem!-----",m_AccoutName,m_PlayerName);
 #ifdef _SERVER
-		//客户端存在这个异常的物品 需要删除掉.
+		//突舜斐Ｆ?要删.
 		ITEM_REMOVE_SYNC	sRemove;
 		sRemove.ProtocolType = s2c_removeitem;
 		sRemove.m_ID         = pMove->m_nItemID;
@@ -5958,7 +6085,7 @@ void	KPlayer::AutoItem(BYTE* pProtocol)
 		sRemove.m_model   = 0;
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sRemove, sizeof(ITEM_REMOVE_SYNC));
 
-		snprintf(nItemInfo, sizeof(nItemInfo),"----AutoItem:账号:%s角色:%s,涉嫌复制物品:%s[+%d],删除异常物品成功A!-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
+		snprintf(nItemInfo, sizeof(nItemInfo),"----AutoItem:撕:%s色:%s,痈品:%s[+%d],删斐Ｆ飞笰!-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
 		g_LogFile.gTraceLogFile(nItemInfo,strlen(nItemInfo));
 
 		if (m_ItemList.Remove(nItemIdx,0,0,0,FALSE))
@@ -5994,7 +6121,7 @@ void	KPlayer::AutoItem(BYTE* pProtocol)
 		sRemove.m_model   = 0;
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sRemove, sizeof(ITEM_REMOVE_SYNC));
 
-		sprintf(nItemInfo,"----AutoItem:账号:%s角色:%s,涉嫌复制物品:%s[+%d],删除异常物品成功B!-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
+		sprintf(nItemInfo,"----AutoItem:撕:%s色:%s,痈品:%s[+%d],删斐Ｆ飞笲!-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
 		g_LogFile.gTraceLogFile(nItemInfo,strlen(nItemInfo));
 
 		if (m_ItemList.Remove(nItemIdx,0,0,0,FALSE))
@@ -6011,7 +6138,7 @@ void	KPlayer::AutoItem(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端要求使用某个物品(鼠标右键点击)
+//	埽盏突要使某品(壹)
 //-------------------------------------------------------------------------
 //void	KPlayer::UseItem(BYTE* pProtocol)
 //{
@@ -6041,11 +6168,11 @@ int	KPlayer::ServerMoveItem(BYTE* pProtocol)
 		if (this->m_cTrade.m_nTradeLock)
 			return -3;
 	}
-	//服务器端开始交换物品
-	//printf("-------物品交还中--------- \n");
+	//丝始品
+	//printf("-------品--------- \n");
 	m_ItemList.ExchangeItem(&DownPos, &UpPos,IsMianBan);
 	
-	//完成物品交换就解锁
+	//品徒
 	BYTE byFinished = s2c_itemexchangefinish;
 	if (g_pServer)
 		g_pServer->PackDataToClient(m_nNetConnectIdx,&byFinished, sizeof(BYTE));
@@ -6053,7 +6180,7 @@ int	KPlayer::ServerMoveItem(BYTE* pProtocol)
 	return TRUE;
 }
 #endif
-//服务器检测人物自己丢弃物品时的归属
+//约品时墓
 #ifdef _SERVER
 
 BOOL KPlayer::CheckGmName()
@@ -6063,7 +6190,7 @@ BOOL KPlayer::CheckGmName()
    for (int i=1;i<nGmRows;++i)
    { 
 	  char nGmName[ACC_LENGTH];
-      g_GMSetting.GetString(i,1,"无",nGmName,sizeof(nGmName));
+      g_GMSetting.GetString(i,1,"",nGmName,sizeof(nGmName));
       if (stricmp(m_AccoutName,nGmName) == 0) //Player[nIndex].m_AccoutName
 	  { 
 		nIsGM=TRUE;
@@ -6084,7 +6211,7 @@ BOOL KPlayer::CheckCanTradeName()
 	for (int i=1;i<nGmRows;++i)
 	{ 
 		char nGmName[ACC_LENGTH];
-		nSname.GetString(i,1,"无",nGmName,sizeof(nGmName));
+		nSname.GetString(i,1,"",nGmName,sizeof(nGmName));
 		if (stricmp(m_AccoutName,nGmName) == 0) //Player[nIndex].m_AccoutName
 		{ 
 			nIsGM=TRUE;
@@ -6127,7 +6254,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 	{
        int nReg=0;
 	   nReg =  _gameGlobalSet.PlayerInfo.isThrowAwayItem;
-	      // g_GameSetTing.GetInteger("SYSTEM","ThrowAwayItem",1,&nReg);	//设置是否启用丢弃限制
+	      // g_GameSetTing.GetInteger("SYSTEM","ThrowAwayItem",1,&nReg);	//欠枚
        if (!nReg)
 	   {    
 	      char msg[80];
@@ -6140,7 +6267,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 	GetAboutPos(&sMapPos);
 
 	if (m_ItemList.Remove(nItemIdx,0,0,0,FALSE))
-	{//删除手里的东西成功的话 ，就表示丢弃成功！
+	{//删亩晒幕 捅示晒
 		int		nObj;
 		KObjItemInfo	sInfo;
 		sInfo.m_nItemID     = nItemIdx;
@@ -6154,9 +6281,9 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 		if (pThrow->m_ItemDwidx)
 		    sInfo.m_sHaveAttack=1;  
 		else
-		    sInfo.m_sHaveAttack=0;                     //是否设置为攻击无效了
-	    //sInfo.m_AttackerDwid=0;                      //上次攻击着的DWID
-		nObj = ObjSet.Add(Item[nItemIdx].GetObjIdx(),sMapPos,sInfo);  //同步客户端地上东西
+		    sInfo.m_sHaveAttack=0;                     //欠为效
+	    //sInfo.m_AttackerDwid=0;                      //洗喂诺DWID
+		nObj = ObjSet.Add(Item[nItemIdx].GetObjIdx(),sMapPos,sInfo);  //同突说隙
 
 		if (nObj >= 0)
 		{
@@ -6164,35 +6291,35 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 			//ZeroMemory(mItemType,sizeof(mItemType));
             //ZeroMemory(mItemBelong,sizeof(mItemBelong));
 			//mItemBelong[0] = Item[nItemIdx].GetGenre();
-            //mItemBelong[1] = Item[nItemIdx].GetDetailType();  //具体
-            //mItemBelong[2] = Item[nItemIdx].GetParticular();  //详细
-			   mprgType=CheckThisItem(Item[nItemIdx].GetGenre(),"IsPickType");  //禁止捡起的类型
-            //mprgBelong = NpcSet.CheckForBit(mItemBelong,"ItemBelong",3);  //是否有归属者
+            //mItemBelong[1] = Item[nItemIdx].GetDetailType();  //
+            //mItemBelong[2] = Item[nItemIdx].GetParticular();  //细
+			   mprgType=CheckThisItem(Item[nItemIdx].GetGenre(),"IsPickType");  //止
+            //mprgBelong = NpcSet.CheckForBit(mItemBelong,"ItemBelong",3);  //欠泄
 
-			if (mprgType==1)  //有大类在禁止列表
-			{//系统禁止的大类
+			if (mprgType==1)  //写诮止斜
+			{//系统止拇
 				 Object[nObj].SetEntireBelong(-2);
 			}
             else
-			{//如果不是这个大类 就检测个人的 
+			{// 图说 
 			   //if (mprgBelong==1)
-			   //{//有具体的东西在禁止列表
+			   //{//芯亩诮止斜
                //Object[nObj].SetEntireBelong(this->m_nPlayerIndex);
 			   //}
 			   //else
-			   //设置所有人都可以捡
+			   //硕约
 				Object[nObj].SetItemBelong(-1);
 			}
 		}
 	}
 	else
 	{
-	// 通知客户端买进的东西放不下
+	// 通知突亩挪
 	   m_ItemList.msgshow("Xoa muc khong thanh cong!");
 	}
   }
   else if (pThrow->m_Kind==1)
-  {//外挂丢东西 和　手游客户端丢东西
+  {//叶 汀慰突硕
     GetAboutPos(&sMapPos); 
 	char nItemInfo[128];
 
@@ -6200,7 +6327,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 	int inidx    = m_ItemList.SearchItemsIdx(pThrow->m_ItemDwidx);
 
 	if  (nItemIdx<=0 || nItemIdx>=MAX_ITEM)
-	{//物品不存在
+	{//品
 	   m_ItemList.msgshow("Loi vui long bao GM 2133333!");
 #ifdef _SERVER
 	   ITEM_REMOVE_SYNC	sRemove;
@@ -6211,7 +6338,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 	   sRemove.m_dy         = 0;
 	   sRemove.m_model   = 0;
 	   g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sRemove, sizeof(ITEM_REMOVE_SYNC));
-	   snprintf(nItemInfo, sizeof(nItemInfo),"----ServerThrowAwayItem:账号:%s角色:%s,涉嫌复制物品,删除异常物品成功!C-----",m_AccoutName,m_PlayerName);
+	   snprintf(nItemInfo, sizeof(nItemInfo),"----ServerThrowAwayItem:撕:%s色:%s,痈品,删斐Ｆ飞?C-----",m_AccoutName,m_PlayerName);
 	   g_LogFile.gTraceLogFile(nItemInfo,strlen(nItemInfo));
 #endif
 	   return;
@@ -6220,9 +6347,9 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 	int inPlace=m_ItemList.m_Items[inidx].nPlace;
 
 	if  (inPlace<=0 || inPlace>=pos_count) 
-	{//位置不对，有这个物品
+	{//位貌裕品
 		m_ItemList.msgshow("Loi vui long bao GM ma loi 3333131313");
-		//同步客户端删除客户端物品
+		//同突删突品
 #ifdef _SERVER
 		ITEM_REMOVE_SYNC	sRemove;
 		sRemove.ProtocolType = s2c_removeitem;
@@ -6233,7 +6360,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 		sRemove.m_model   = 0;
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sRemove, sizeof(ITEM_REMOVE_SYNC));
 
-		snprintf(nItemInfo, sizeof(nItemInfo),"----ServerThrowAwayItem:账号:%s角色:%s,涉嫌复制物品:%s[+%d],删除异常物品成功!A-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
+		snprintf(nItemInfo, sizeof(nItemInfo),"----ServerThrowAwayItem:撕:%s色:%s,痈品:%s[+%d],删斐Ｆ飞?A-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
 		g_LogFile.gTraceLogFile(nItemInfo,strlen(nItemInfo));
 
 		if (m_ItemList.Remove(nItemIdx,0,0,0,FALSE))
@@ -6243,9 +6370,9 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 	}
 
 	if (pThrow->m_nPlace!=inPlace || pThrow->m_X!=m_ItemList.m_Items[inidx].nX || pThrow->m_Y!=m_ItemList.m_Items[inidx].nY)
-	{//有这个物品 但是位置信息不对
+	{//品 位息
 		m_ItemList.msgshow("Loi vui long bao GM ma loi 5555555");
-		//同步客户端删除客户端物品
+		//同突删突品
 #ifdef _SERVER
 		ITEM_REMOVE_SYNC	sRemove;
 		sRemove.ProtocolType = s2c_removeitem;
@@ -6256,7 +6383,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 		sRemove.m_model   =0;
 		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sRemove, sizeof(ITEM_REMOVE_SYNC));
 
-		snprintf(nItemInfo, sizeof(nItemInfo),"----ServerThrowAwayItem:账号:%s角色:%s,涉嫌复制物品:%s[+%d],删除异常物品成功!B-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
+		snprintf(nItemInfo, sizeof(nItemInfo),"----ServerThrowAwayItem:撕:%s色:%s,痈品:%s[+%d],删斐Ｆ飞?B-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
 		g_LogFile.gTraceLogFile(nItemInfo,strlen(nItemInfo));
 
 		if (m_ItemList.Remove(nItemIdx,0,0,0,FALSE))
@@ -6265,14 +6392,14 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 #endif
 		return;
 	}
-	    //m_ItemList.m_Items[inidx].nPlace;//所在容器的类型
+	    //m_ItemList.m_Items[inidx].nPlace;//
         //nItemidx  = m_ItemList.SearchItemsIdx(nItemDwID);
 	if (m_ItemList.Remove(nItemIdx,0,0,0,FALSE))
 	{
        int nLevel=Item[nItemIdx].GetLevel();
        int nYlevel=1; 
 	  if (pThrow->m_IsAuToFenJie==1 && Item[nItemIdx].GetGenre()==item_equip && (Item[nItemIdx].IsBlue()||Item[nItemIdx].IsPurple()||Item[nItemIdx].GetGoldId()>0) &&  nLevel>=_gameGlobalSet.gameItemInfo.nInFenJie[0])
-	  {//自动分解的话
+	  {//远纸幕
 			
 			int nIndex = ItemSet.AddOther(item_task,0,1,0,_gameGlobalSet.gameItemInfo.nInFenJie[2],0,0,0,0,GetRandomNumber(1,nLevel),0,0,0,0,0,0,0);
 	
@@ -6282,9 +6409,9 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
            int nStackNum =Item[nIndex].GetStackNum();
 	       if (nStackNum<=0)
 	          nStackNum=1;
-//---------------------------------------------------开始检测包袱是否有这个物品 是否能叠加
+//---------------------------------------------------始欠品 欠艿
             /* if (Item[nIndex].GetGenre()!=0 && !Item[nIndex].GetIsBang() && Item[nIndex].GetTime()->bYear<=0)
-			 {//不是装备的话,包袱里是否有这个物品
+			 {//装幕,欠品
 				 int nIdx=m_ItemList.IsHaveItem(Item[nIndex].GetGenre(),\
 					                                      Item[nIndex].GetDetailType(),\
 														  Item[nIndex].GetParticular(),\
@@ -6293,8 +6420,8 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
                
 				if (nIdx>0 && Item[nIdx].IsStack() &&
 					Item[nIndex].CanStack(nIdx) &&
-					(Item[nIdx].GetStackNum()+nStackNum) <= MAX_STACKNUM) //是否可以叠加--手里和包袱里的是否相同
-				{//包袱里的东西可以叠加		
+					(Item[nIdx].GetStackNum()+nStackNum) <= MAX_STACKNUM) //欠缘--桶欠同
+				{//亩缘		
 					printf("throw item %d , HaveItem: %d\n",Item[nIdx].GetGenre(),nIdx);
                     //nStackNum=Item[nIdx].GetStackNum()+nStackNum;
 					m_ItemList.Remove(nIdx,0,0,0,FALSE);
@@ -6304,10 +6431,10 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 			 
 	       int x, y,nRoomType=room_equipment;
 
-		   if (inPlace==pos_equiproom)	//包袱
+		   if (inPlace==pos_equiproom)	//
 			   nRoomType=room_equipment;
 
-		   if(inPlace==pos_equiproomex)	//字母袋
+		   if(inPlace==pos_equiproomex)	//母
  			   nRoomType=room_equipmentex;
 		  
 	       if (m_ItemList.CheckCanPlaceInEquipment(Item[nIndex].GetWidth(),Item[nIndex].GetHeight(),&x,&y,nRoomType))
@@ -6332,7 +6459,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 	     
 	  }
 	  else
-	  {//如果没有开启分解　就丢地上　或　直接删除
+	  {//没锌纸狻⊥断≈鄙?
 		int nIsOpenClearItem =1;
 		   // g_GameSetTing.GetInteger("Item","IsOpenClearItem",1,&nIsOpenClearItem);
 		nIsOpenClearItem = _gameGlobalSet.SubWorldInfo.nIsOpenClearItem;
@@ -6344,7 +6471,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 
         if (!Npc[m_nIndex].m_AutoplayId)
 		{
-			snprintf(nItemInfo, sizeof(nItemInfo),"----[正常]ServerThrowAwayItem:账号:%s角色:%s,手动丢弃物品:%s[+%d],-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
+			snprintf(nItemInfo, sizeof(nItemInfo),"----[]ServerThrowAwayItem:撕:%s色:%s,侄品:%s[+%d],-----",m_AccoutName,m_PlayerName,Item[nItemIdx].GetName(),Item[nItemIdx].GetEnChance());
 			g_LogFile.gTraceLogFile(nItemInfo,strlen(nItemInfo));
 		}
 		
@@ -6360,23 +6487,23 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 		sInfo.m_nMovieFlag  = 1;
 		sInfo.m_nSoundFlag  = 1;
 		if (pThrow->m_isAttack)
-			sInfo.m_sHaveAttack = 1;                      //是否设置为攻击无效了
+			sInfo.m_sHaveAttack = 1;                      //欠为效
 		else
 			sInfo.m_sHaveAttack = 0; 
-	    //sInfo.m_AttackerDwid=Npc[m_nIndex].m_dwID;   //上次攻击着的DWID
-		nObj = ObjSet.Add(Item[nItemIdx].GetObjIdx(),sMapPos,sInfo);  //同步客户端地上东西
+	    //sInfo.m_AttackerDwid=Npc[m_nIndex].m_dwID;   //洗喂诺DWID
+		nObj = ObjSet.Add(Item[nItemIdx].GetObjIdx(),sMapPos,sInfo);  //同突说隙
         
 		if (nObj >= 0)
 		{
 			int mprgType=0;
-			   mprgType=CheckThisItem(Item[nItemIdx].GetGenre(),"IsPickType");  //禁止捡起的类型
-			if (mprgType==1)  //有大类在禁止列表
-			{//系统禁止的大类
+			   mprgType=CheckThisItem(Item[nItemIdx].GetGenre(),"IsPickType");  //止
+			if (mprgType==1)  //写诮止斜
+			{//系统止拇
 				 Object[nObj].SetEntireBelong(-2);
 			}
             else
-			{//如果不是这个大类 就检测个人的 
-			   //设置所有人都可以捡
+			{// 图说 
+			   //硕约
 				Object[nObj].SetItemBelong(-1); 
 			}
 		}
@@ -6384,7 +6511,7 @@ void	KPlayer::ServerThrowAwayItem(BYTE* pProtocol)
 		   ItemSet.Remove(nItemIdx);
 	  }
 	}
-	else// 通知客户端买进的东西放不下
+	else// 通知突亩挪
 		m_ItemList.msgshow("Xoa Item khong thanh cong!");
   }
 }
@@ -6412,7 +6539,7 @@ BOOL KPlayer::CheckThisItem(int nSetings,char *nKey)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端消息设定聊天订阅频道
+//	埽盏突息瓒於┢
 //-------------------------------------------------------------------------
 void	KPlayer::ChatSetTakeChannel(BYTE* pProtocol)
 {
@@ -6423,7 +6550,7 @@ void	KPlayer::ChatSetTakeChannel(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端请求转发聊天添加好友信息
+//	埽盏突转雍息
 //-------------------------------------------------------------------------
 void	KPlayer::ChatTransmitApplyAddFriend(BYTE* pProtocol)
 {
@@ -6447,7 +6574,7 @@ void	KPlayer::ChatTransmitApplyAddFriend(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端消息添加聊天好友
+//	埽盏突息
 //-------------------------------------------------------------------------
 BOOL	KPlayer::ChatAddFriend(BYTE* pProtocol)
 {
@@ -6484,7 +6611,7 @@ AddFalse:
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端消息拒绝添加聊天好友
+//	埽盏突息芫
 //-------------------------------------------------------------------------
 void	KPlayer::ChatRefuseFriend(BYTE* pProtocol)
 {
@@ -6512,7 +6639,7 @@ void	KPlayer::ChatRefuseFriend(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：玩家登录时收到客户端请求重新发送所有聊天好友数据（带名字）
+//	埽业录时盏突路荩郑
 //-------------------------------------------------------------------------
 void	KPlayer::ChatResendAllFriend(BYTE* pProtocol)
 {
@@ -6527,7 +6654,7 @@ void	KPlayer::ChatResendAllFriend(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：玩家登录时收到客户端请求发送某个聊天好友数据（带名字）
+//	埽业录时盏突某荩郑
 //-------------------------------------------------------------------------
 void	KPlayer::ChatSendOneFriendData(BYTE* pProtocol)
 {
@@ -6539,7 +6666,7 @@ void	KPlayer::ChatSendOneFriendData(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端申请删除某个聊天好友
+//	埽盏突删某
 //-------------------------------------------------------------------------
 void	KPlayer::ChatDeleteFriend(BYTE* pProtocol)
 {
@@ -6551,7 +6678,7 @@ void	KPlayer::ChatDeleteFriend(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端申请再次删除某个聊天好友
+//	埽盏突俅删某
 //-------------------------------------------------------------------------
 void	KPlayer::ChatRedeleteFriend(BYTE* pProtocol)
 {
@@ -6563,7 +6690,7 @@ void	KPlayer::ChatRedeleteFriend(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端申请进入待交易状态
+//	埽盏突状态
 //-------------------------------------------------------------------------
 void	KPlayer::TradeApplyOpen(BYTE* pProtocol)
 {
@@ -6595,7 +6722,7 @@ void	KPlayer::TradeApplyOpen(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端申请取消待交易状态
+//	埽盏突取状态
 //-------------------------------------------------------------------------
 void	KPlayer::TradeApplyClose(BYTE* pProtocol)
 {
@@ -6605,12 +6732,17 @@ void	KPlayer::TradeApplyClose(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：收到客户端申请开始交易
+//	埽盏突肟?
 //-------------------------------------------------------------------------
 void	KPlayer::TradeApplyStart(BYTE* pProtocol)
 {
 	if (__forBitTrade || this->CheckTrading())
 		return;
+	if (KPlayerTradeJournal::Instance().IsPlayerLocked(this->m_PlayerName))
+	{
+		printf("[TradeApplyStart Blocked]: Player '%s' is locked by Trade Journal Recovery.\n", this->m_PlayerName);
+		return;
+	}
 
 	
 	TRADE_APPLY_START_COMMAND	*pStart = (TRADE_APPLY_START_COMMAND*)pProtocol;
@@ -6627,12 +6759,12 @@ void	KPlayer::TradeApplyStart(BYTE* pProtocol)
 	if (Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_BaiTan == 1 || Npc[Player[nPlayer].m_nIndex].m_BaiTan == 1)
 		return;
 
-	this->m_cTrade.m_nApplyIdx = nPlayer; // 对方的 player id
-	//发往对方
+	this->m_cTrade.m_nApplyIdx = nPlayer; // 苑 player id
+	//苑
 	TRADE_APPLY_START_SYNC	sApply;
 	sApply.ProtocolType = s2c_tradeapplystart;
-	sApply.m_nDestIdx = this->m_nPlayerIndex; //本人的 player id
-	sApply.m_dwNpcId  = Npc[m_nIndex].m_dwID; //本人的 m_dwID
+	sApply.m_nDestIdx = this->m_nPlayerIndex; //说 player id
+	sApply.m_dwNpcId  = Npc[m_nIndex].m_dwID; //说 m_dwID
 	if (g_pServer)
 		g_pServer->PackDataToClient(Player[nPlayer].m_nNetConnectIdx, (BYTE*)&sApply, sizeof(TRADE_APPLY_START_SYNC));
 }
@@ -6640,7 +6772,7 @@ void	KPlayer::TradeApplyStart(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：
+//	埽
 //-------------------------------------------------------------------------
 void	KPlayer::TradeMoveMoney(BYTE* pProtocol)
 {
@@ -6675,7 +6807,7 @@ void KPlayer::CheckItemAddtoEquipment(int nRoomCount)
 		//_ASSERT(nPos < m_ItemList.m_Room[room_give].m_nWidth * m_Room[room_give].m_nHeight);
 		//Remove(nItemIdx);
 		//ItemSet.Remove(nItemIdx);
-		//printf("------第%d个物品:%s------- \n",nPos,Item[nItemIdx].GetName());
+		//printf("------%d品:%s------- \n",nPos,Item[nItemIdx].GetName());
 		int	x, y;
 		if (m_ItemList.CheckCanPlaceInEquipment(Item[nItemIdx].GetWidth(), Item[nItemIdx].GetHeight(),&x,&y))
 		{
@@ -6691,19 +6823,19 @@ void KPlayer::CheckItemAddtoEquipment(int nRoomCount)
 				 m_ItemList.m_Items[nItemsIndex].nPlace = pos_equiproom;
 				 m_ItemList.m_Items[nItemsIndex].nX     = x;
 				 m_ItemList.m_Items[nItemsIndex].nY     = y;
-				 printf("------增加成功第%d个物品:%s------- \n",nPos,Item[nItemIdx].GetName());
+				 printf("------映晒%d品:%s------- \n",nPos,Item[nItemIdx].GetName());
 			 }
-		     /*if (m_ItemList.Add(nItemIdx,pos_equiproom,x,y)) //重新产生
-			 {//删除原来的
+		     /*if (m_ItemList.Add(nItemIdx,pos_equiproom,x,y)) //虏
+			 {//删原
 				 m_ItemList.Remove(nItemIdx);
 				 ItemSet.Remove(nItemIdx);
-				 printf("------增加成功第%d个物品:%s------- \n",nPos,Item[nItemIdx].GetName());
+				 printf("------映晒%d品:%s------- \n",nPos,Item[nItemIdx].GetName());
 			 }*/
 		}
-		else //包袱空间不足 就删除东西
+		else //占洳?删
 			if (nItemIdx)
 			{
-				printf("------删除第%d个物品:%s------- \n",nPos,Item[nItemIdx].GetName());
+				printf("------删%d品:%s------- \n",nPos,Item[nItemIdx].GetName());
 				//Item[nItemIdx].Remove();
 				m_ItemList.Remove(nItemIdx);
 				ItemSet.Remove(nItemIdx);
@@ -6724,19 +6856,24 @@ void KPlayer::KickOutGame()
 		g_pServer->PackDataToClient(m_nNetConnectIdx,(BYTE*)&sOut, sizeof(KICK_OUT_GAME_COMMAND));
 }
 //-------------------------------------------------------------------------
-//	功能：执行或取消交易
+//	埽执谢取
 //-------------------------------------------------------------------------
 void	KPlayer::TradeDecision(BYTE* pProtocol)
 {
 	if (__forBitTrade || !CheckTrading())
 		return;
+	if (KPlayerTradeJournal::Instance().IsPlayerLocked(this->m_PlayerName))
+	{
+		printf("[TradeDecision Blocked]: Player '%s' is locked by Trade Journal Recovery.\n", this->m_PlayerName);
+		return;
+	}
 
 	if (Player[this->m_cTrade.m_nTradeDest].m_nNetConnectIdx<=-1 || this->m_nNetConnectIdx<=-1)
 		return;
 	
 	TRADE_DECISION_COMMAND	*pDecision = (TRADE_DECISION_COMMAND*)pProtocol;
 	
-	if (pDecision->m_btDecision == 2)	// 己方锁定
+	if (pDecision->m_btDecision == 2)	// 
 	{
 		if (this->m_cTrade.m_nTradeLock == 0)
 		{
@@ -6748,11 +6885,11 @@ void	KPlayer::TradeDecision(BYTE* pProtocol)
 		SyncTradeState();
 		return;
 	}
-	else if (pDecision->m_btDecision == 3)	// 锁定取消
+	else if (pDecision->m_btDecision == 3)	// 取
 	{
 		if (this->m_cTrade.m_nTradeLock == 1)
 		{
-			// 取消己方锁定的同时也取消了对方的锁定
+			// 取同时也取硕苑
 			this->m_cTrade.m_nTradeLock = 0;
 			this->m_cTrade.m_nTradeState = 0;
 			Player[m_cTrade.m_nTradeDest].m_cTrade.m_nTradeLock = 0;
@@ -6761,7 +6898,7 @@ void	KPlayer::TradeDecision(BYTE* pProtocol)
 		SyncTradeState();
 		return;
 	}
-	else if (pDecision->m_btDecision == 4)	// 取消确定
+	else if (pDecision->m_btDecision == 4)	// 取确
 	{
 		if (m_cTrade.m_nTradeLock == 1 && Player[m_cTrade.m_nTradeDest].m_cTrade.m_nTradeLock == 1)
 		{
@@ -6770,44 +6907,21 @@ void	KPlayer::TradeDecision(BYTE* pProtocol)
 		}
 		return;
 	}
-	else if (pDecision->m_btDecision <= 0)	// 取消交易
+	else if (pDecision->m_btDecision <= 0)
 	{
-		int	nDestIdx;
-		nDestIdx = this->m_cTrade.m_nTradeDest;
-		// 取消交易的数据恢复
-		this->m_ItemList.RecoverTrade();
-		this->m_ItemList.ClearRoom(room_trade);
-		this->m_ItemList.ClearRoom(room_trade1);
-		this->m_cTrade.Release();
-		Player[nDestIdx].m_ItemList.RecoverTrade();
-		Player[nDestIdx].m_ItemList.ClearRoom(room_trade);
-		Player[nDestIdx].m_ItemList.ClearRoom(room_trade1);
-		Player[nDestIdx].m_cTrade.Release();
-		
-		TRADE_DECISION_SYNC	sSync;
-		sSync.ProtocolType = s2c_tradedecision;
-		sSync.m_btDecision = 0;
-		g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(TRADE_DECISION_SYNC));
-		g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx, (BYTE*)&sSync, sizeof(TRADE_DECISION_SYNC));
-		
-		// 取消交易的状态恢复(备份状态一定不会是 trading)(己方)
-		this->m_cMenuState.RestoreBackupState(m_nPlayerIndex);
-		
-		// 取消交易的状态恢复(备份状态一定不会是 trading)(对方)
-		Player[nDestIdx].m_cMenuState.RestoreBackupState(nDestIdx);
-		
+		CancelTradeSafe();
 		return;
 	}
-	else if (pDecision->m_btDecision == 1)	// 执行交易
+	else if (pDecision->m_btDecision == 1)	// 执薪
 	{
-		// 如果双方没有同时锁定，不能确定
+		// 双没同时确
 		if (this->m_cTrade.m_nTradeLock != 1 ||
 			Player[m_cTrade.m_nTradeDest].m_cTrade.m_nTradeLock != 1)
 		{
 			SyncTradeState();
 			return;
 		}
-		// 对方还没确定，通知对方自己已确定
+		// 苑没确通知苑约确
 		else if (Player[m_cTrade.m_nTradeDest].m_cTrade.m_nTradeState == 0)
 		{
 			m_cTrade.m_nTradeState = 1;
@@ -6816,231 +6930,263 @@ void	KPlayer::TradeDecision(BYTE* pProtocol)
 			
 			return;
 		}
-		// 对方已确定，执行交易
+		// 苑确执薪
 		else
 		{
-			// 执行交易之前，先检测一下是否有错误-----------------
-			// -------------------- 检查 money --------------------
-			int	nSM1, nSM2, nDM1, nDM2;
-			int	nDestIdx = m_cTrade.m_nTradeDest;  //对方的playerid
-			nSM1 = m_ItemList.GetsMon(room_equipment);
-			nSM2 = m_ItemList.GetsMon(room_trade);
-
-			nDM1 = Player[nDestIdx].m_ItemList.GetsMon(room_equipment);
-			nDM2 = Player[nDestIdx].m_ItemList.GetsMon(room_trade);
-			if (nSM2 < 0 || nSM1 + nDM2 - nSM2 < 0)
-			{//我的钱
-				this->m_ItemList.TradeMoveMoney(0);
-				// 通知客户端钱有问题 not end
-				return;
-			}
-			if (nDM2 < 0 || nDM1 + nSM2 - nDM2 < 0)
-			{//对方的钱
-				Player[nDestIdx].m_ItemList.TradeMoveMoney(0);
-				// 通知客户端钱有问题 not end
-				return;
-			}
-			// ------------------ 检查 money end ------------------
-
-			// --------- 检查双方物品栏能否接受买进的物品 ---------
-			int	nSelfCanGet, nDestCanGet;
-			
-			// 判断己方物品栏能否接受买进的物品
-			Player[nDestIdx].m_ItemList.GetTradeRoomItemInfo();
-			nSelfCanGet = m_ItemList.TradeCheckCanPlace();
-			ItemSet.BackItemInfo(); //把自己交易栏的东西 复制进对方的交易栏 
-            //------------开始检测是否有绑定物品----------
-            
-          int nPos;//nIsHave=0;
-
-		  /*for (nPos=0;nPos<T,RADE_ROOM_WIDTH * TRADE_ROOM_HEIGHT;nPos++)
-			{//对方物品检测
-				if (!ItemSet.m_psBackItemInfo[nPos].m_nIdx)
-					continue;
-				 if (Item[ItemSet.m_psBackItemInfo[nPos].m_nIdx].GetIsBang())
-				 {//如果有绑定的物品
-				     nIsHave=1;
-					 break;
-				 }
-			}
-
-            if (nIsHave && !Player[nDestIdx].CheckGmName() && !CheckGmName())   
+			// 执薪之前燃一欠写-----------------
+			// --------------------  money --------------------
+			int	nDestIdx = m_cTrade.m_nTradeDest;
+			if (nDestIdx <= 0 || nDestIdx >= MAX_PLAYER || nDestIdx == m_nPlayerIndex)
 			{
-			    Player[nDestIdx].m_cTrade.m_nTradeState = 0;
-				this->m_cTrade.m_nTradeState = 0;
-                Player[nDestIdx].m_ItemList.msgshow("提示:交易中有绑定物品,取消交易!");
-				m_ItemList.msgshow("提示:对方有绑定物品,取消交易!");
-				SyncTradeState();
-				return;  
+				CancelTradeSafe();
+				return;
 			}
-
-			nIsHave=0;
-
-			for (nPos=0;nPos<TRADE_ROOM_WIDTH * TRADE_ROOM_HEIGHT;nPos++)
-			{//自己物品检测
-				if (!ItemSet.m_psItemInfo[nPos].m_nIdx)
-					continue;
-				 if (Item[ItemSet.m_psItemInfo[nPos].m_nIdx].GetIsBang())
-				 {//如果有绑定的物品
-				     nIsHave=1;
-					 break;
-				 }
+			// Round 4 P0: 1. Pre-commit session and snapshot validation
+			DWORD dwSelfSession = m_cTrade.m_dwTradeSessionId;
+			DWORD dwDestSession = Player[nDestIdx].m_cTrade.m_dwTradeSessionId;
+			if (dwSelfSession == 0 || dwDestSession == 0 || dwSelfSession != dwDestSession)
+			{
+				CancelTradeSafe();
+				return;
 			}
-
-			if (nIsHave && !CheckGmName() && !Player[nDestIdx].CheckGmName())   
-			{//自己不是GM 并且对方也不是GM
-			    Player[nDestIdx].m_cTrade.m_nTradeState = 0;
-				this->m_cTrade.m_nTradeState = 0;
-                Player[nDestIdx].m_ItemList.msgshow("提示:对方有绑定物品,取消交易!");
-				m_ItemList.msgshow("提示:交易中有绑定物品,取消交易!");
-				SyncTradeState();
-				return;  
-			} */
-			//------------检测绑定结束--------------------
-			// 判断对方物品栏能否接受买进的物品
+			if (!this->m_ItemList.HasValidTradeSnapshot(dwSelfSession) ||
+				!Player[nDestIdx].m_ItemList.HasValidTradeSnapshot(dwDestSession))
+			{
+				CancelTradeSafe();
+				return;
+			}
+			// Round 4 P0: Checked 64-bit arithmetic on money (overflow & balance protection)
+			long long llSM1 = (long long)m_ItemList.GetsMon(room_equipment);
+			long long llSM2 = (long long)m_ItemList.GetsMon(room_trade);
+			long long llDM1 = (long long)Player[nDestIdx].m_ItemList.GetsMon(room_equipment);
+			long long llDM2 = (long long)Player[nDestIdx].m_ItemList.GetsMon(room_trade);
+			if (llSM1 < 0 || llSM2 < 0 || llDM1 < 0 || llDM2 < 0 || llSM2 > llSM1 || llDM2 > llDM1)
+			{
+				CancelTradeSafe();
+				return;
+			}
+			long long llNewSelfMoney = llSM1 - llSM2 + llDM2;
+			long long llNewDestMoney = llDM1 - llDM2 + llSM2;
+			if (llNewSelfMoney < 0 || llNewSelfMoney > 2000000000LL ||
+				llNewDestMoney < 0 || llNewDestMoney > 2000000000LL)
+			{
+				CancelTradeSafe();
+				return;
+			}
+			// Round 4 P0: Room placement check
+			Player[nDestIdx].m_ItemList.GetTradeRoomItemInfo();
+			int nSelfCanGet = m_ItemList.TradeCheckCanPlace();
+			ItemSet.BackItemInfo();
 			this->m_ItemList.GetTradeRoomItemInfo();
-			nDestCanGet = Player[nDestIdx].m_ItemList.TradeCheckCanPlace();
-			
+			int nDestCanGet = Player[nDestIdx].m_ItemList.TradeCheckCanPlace();
 			if (!nSelfCanGet || !nDestCanGet)
 			{
-				if (!nSelfCanGet)
-				{
-					this->m_cTrade.m_nTradeState = 0;
-					
-					// 通知客户端买进的东西放不下
-					SHOW_MSG_SYNC	sMsg;
-					sMsg.ProtocolType = s2c_msgshow;
-					sMsg.m_wLength = sizeof(SHOW_MSG_SYNC) - 1 ;
-					sMsg.m_wMsgID = enumMSG_ID_TRADE_SELF_ROOM_FULL;
-					g_pServer->PackDataToClient(m_nNetConnectIdx, &sMsg, sMsg.m_wLength + 1);
-					sMsg.m_wMsgID = enumMSG_ID_TRADE_DEST_ROOM_FULL;
-					g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx,(BYTE *)&sMsg, sMsg.m_wLength + 1);
-				}
-				if (!nDestCanGet)
-				{
-					Player[nDestIdx].m_cTrade.m_nTradeState = 0;
-					
-					// 通知客户端买进的东西放不下
-					SHOW_MSG_SYNC	sMsg;
-					sMsg.ProtocolType = s2c_msgshow;
-					sMsg.m_wLength = sizeof(SHOW_MSG_SYNC) - 1;
-					sMsg.m_wMsgID = enumMSG_ID_TRADE_SELF_ROOM_FULL;
-					g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx, &sMsg, sMsg.m_wLength + 1);
-					sMsg.m_wMsgID = enumMSG_ID_TRADE_DEST_ROOM_FULL;
-					g_pServer->PackDataToClient(m_nNetConnectIdx,(BYTE *)&sMsg, sMsg.m_wLength + 1);
-				}
-
+				this->m_cTrade.m_nTradeState = 0;
+				Player[nDestIdx].m_cTrade.m_nTradeState = 0;
+				SHOW_MSG_SYNC sMsg;
+				sMsg.ProtocolType = s2c_msgshow;
+				sMsg.m_wLength = sizeof(SHOW_MSG_SYNC) - 1;
+				sMsg.m_wMsgID = !nSelfCanGet ? enumMSG_ID_TRADE_SELF_ROOM_FULL : enumMSG_ID_TRADE_DEST_ROOM_FULL;
+				if (m_nNetConnectIdx >= 0) g_pServer->PackDataToClient(m_nNetConnectIdx, &sMsg, sMsg.m_wLength + 1);
+				if (Player[nDestIdx].m_nNetConnectIdx >= 0) g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx, (BYTE*)&sMsg, sMsg.m_wLength + 1);
 				SyncTradeState();
-
 				return;
 			}
-			// ------- 检查双方物品栏能否接受买进的物品 end -------
-			// 通知客户端交易完成
-			TRADE_DECISION_SYNC	sSync;
-			sSync.ProtocolType = s2c_tradedecision;
-			sSync.m_btDecision = 1;
-			g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sSync, sizeof(TRADE_DECISION_SYNC));
-			g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx, (BYTE*)&sSync, sizeof(TRADE_DECISION_SYNC));
-			
-			// 服务器端结束交易状态
-			m_cMenuState.SetState(m_nPlayerIndex, PLAYER_MENU_STATE_NORMAL);
-			Player[nDestIdx].m_cMenuState.SetState(nDestIdx, PLAYER_MENU_STATE_NORMAL);
-			this->m_cTrade.Release();
-			Player[nDestIdx].m_cTrade.Release();
-			char nTrapInfo[256]={0};
-			// 交易中金钱的交换
-			if (nSM2 <= nDM2)
+			// Round 4 P0: Bound and locked item protection
+			for (int nP = 0; nP < TRADE_ROOM_WIDTH * TRADE_ROOM_HEIGHT; ++nP)
 			{
-				this->Earn(nDM2 - nSM2);
-				Player[nDestIdx].Pay(nDM2 - nSM2);
-/*
-				sprintf(nTrapInfo,"-Giao dich Tien: Tai khoan: %s (%s), Goi hang: %d, Giao hang: %d, [%d] luong bac duoc giao dich vao Tai khoan: %s (%s)-",
-					Player[nDestIdx].m_AccoutName,Npc[Player[nDestIdx].m_nIndex].Name,nDM1,nDM2,nDM2 - nSM2,
-					m_AccoutName,Npc[m_nIndex].Name);
-*/
-				ExecuteScript4("\\script\\System\\player\\loggiaodich.lua","Tien", nDestIdx, nDM1, nDM2, nDM2 - nSM2);
+				int nBackIdx = ItemSet.m_psBackItemInfo[nP].m_nIdx;
+				if (nBackIdx > 0 && nBackIdx < MAX_ITEM && Item[nBackIdx].GetIsBang())
+				{
+					CancelTradeSafe();
+					return;
+				}
+				int nSelfIdx = ItemSet.m_psItemInfo[nP].m_nIdx;
+				if (nSelfIdx > 0 && nSelfIdx < MAX_ITEM && Item[nSelfIdx].GetIsBang())
+				{
+					CancelTradeSafe();
+					return;
+				}
+			}
+			// Final P0: Pre-trade WAL snapshot serialization for durable transaction journal
+			this->Save();
+			Player[nDestIdx].Save();
+			uint32_t dwPreLenSelf = ((TRoleData*)m_GaemSaveBuffer)->dwDataLen;
+			uint32_t dwPreLenDest = ((TRoleData*)Player[nDestIdx].m_GaemSaveBuffer)->dwDataLen;
+			this->m_uSaveGeneration++;
+			Player[nDestIdx].m_uSaveGeneration++;
+			uint64_t uTxId = KPlayerTradeJournal::Instance().BeginTransaction(
+				m_nPlayerIndex, m_PlayerName, m_GaemSaveBuffer, dwPreLenSelf,
+				nDestIdx, Player[nDestIdx].m_PlayerName, Player[nDestIdx].m_GaemSaveBuffer, dwPreLenDest,
+				this->m_uSaveGeneration, Player[nDestIdx].m_uSaveGeneration);
+			if (uTxId == 0)
+			{
+				this->m_ItemList.RecoverTrade(dwSelfSession);
+				Player[nDestIdx].m_ItemList.RecoverTrade(dwDestSession);
+				this->m_ItemList.ClearRoom(room_trade);
+				Player[nDestIdx].m_ItemList.ClearRoom(room_trade);
+				this->m_cTrade.Release();
+				this->m_cMenuState.RestoreBackupState(m_nPlayerIndex);
+				Player[nDestIdx].m_cTrade.Release();
+				Player[nDestIdx].m_cMenuState.RestoreBackupState(nDestIdx);
+				TRADE_DECISION_SYNC sCancelSync;
+				sCancelSync.ProtocolType = s2c_tradedecision;
+				sCancelSync.m_btDecision = 0;
+				if (m_nNetConnectIdx >= 0)
+					g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sCancelSync, sizeof(TRADE_DECISION_SYNC));
+				if (Player[nDestIdx].m_nNetConnectIdx >= 0)
+					g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx, (BYTE*)&sCancelSync, sizeof(TRADE_DECISION_SYNC));
+				return;
+			}
+			// 2. In-memory money exchange
+			if (llSM2 <= llDM2)
+			{
+				this->Earn((int)(llDM2 - llSM2));
+				Player[nDestIdx].Pay((int)(llDM2 - llSM2));
+				ExecuteScript4("\\script\\System\\player\\loggiaodich.lua", "Tien", nDestIdx, (int)llDM1, (int)llDM2, (int)(llDM2 - llSM2));
 			}
 			else
-			{ 
-				this->Pay(nSM2 - nDM2);
-				Player[nDestIdx].Earn(nSM2 - nDM2);
-/*				sprintf(nTrapInfo,"-Giao dich Tien: Tai khoan: %s (%s), Goi hang: %d, Giao hang: %d, [%d] luong bac duoc giao dich vao Tai khoan: %s (%s)-",
-					m_AccoutName,Npc[m_nIndex].Name,nSM1,nSM2,nSM2 - nDM2, Player[nDestIdx].m_AccoutName,Npc[Player[nDestIdx].m_nIndex].Name);
-*/ 
-				ExecuteScript4("\\script\\System\\player\\loggiaodich.lua","Tien", nDestIdx, nSM1, nSM2, nSM2 - nDM2);
-			} 
-		
-			g_LogFile.gTraceLogFile(nTrapInfo,strlen(nTrapInfo));
-
-			//--------------- 交易中物品的交换 ---------------------
-			// 对方的物品给己方
-			//int		nPos;
-			nPos = 0;
-		
+			{
+				this->Pay((int)(llSM2 - llDM2));
+				Player[nDestIdx].Earn((int)(llSM2 - llDM2));
+				ExecuteScript4("\\script\\System\\player\\loggiaodich.lua", "Tien", nDestIdx, (int)llSM1, (int)llSM2, (int)(llSM2 - llDM2));
+			}
+			// 3. In-memory item exchange with strict Remove/Add validation
+			bool bItemTransferFailed = false;
+			int nPos = 0;
 			while (1)
 			{
 				if (nPos >= TRADE_ROOM_WIDTH * TRADE_ROOM_HEIGHT)
 					break;
-				if (!ItemSet.m_psBackItemInfo[nPos].m_nIdx)
+				int nBackIdx = ItemSet.m_psBackItemInfo[nPos].m_nIdx;
+				if (!nBackIdx)
 					break;
-
-				// 对方去除此物品
-				Player[nDestIdx].m_ItemList.Remove(ItemSet.m_psBackItemInfo[nPos].m_nIdx);
-				// 己方得到此物品
-				m_ItemList.Add(
-					ItemSet.m_psBackItemInfo[nPos].m_nIdx,
+				if (nBackIdx <= 0 || nBackIdx >= MAX_ITEM || Item[nBackIdx].GetID() == 0)
+				{
+					bItemTransferFailed = true;
+					break;
+				}
+				if (!Player[nDestIdx].m_ItemList.Remove(nBackIdx))
+				{
+					bItemTransferFailed = true;
+					break;
+				}
+				int nAddResult = m_ItemList.Add(
+					nBackIdx,
 					pos_equiproom,
 					ItemSet.m_psBackItemInfo[nPos].m_nX,
-					ItemSet.m_psBackItemInfo[nPos].m_nY, 0,0,Item[ItemSet.m_psBackItemInfo[nPos].m_nIdx].GetStackNum(), TRUE);//khong xep chong
-/*				sprintf(nTrapInfo,"-Thong tin giao dich: Tai khoan: %s, Nhan vat: %s, giao dich [%s] toi Tai khoan: %s, Nhan vat: %s-",
-					Player[nDestIdx].m_AccoutName,Npc[Player[nDestIdx].m_nIndex].Name,Item[ItemSet.m_psBackItemInfo[nPos].m_nIdx].GetName(),
-					m_AccoutName,Npc[m_nIndex].Name);
-				g_LogFile.gTraceLogFile(nTrapInfo,strlen(nTrapInfo));
-*/
-				ExecuteScript2("\\script\\System\\player\\loggiaodich.lua","Item", nDestIdx, ItemSet.m_psBackItemInfo[nPos].m_nIdx);
+					ItemSet.m_psBackItemInfo[nPos].m_nY, 0, 0, Item[nBackIdx].GetStackNum(), TRUE);
+				if (nAddResult <= 0)
+				{
+					bItemTransferFailed = true;
+					break;
+				}
+				ExecuteScript2("\\script\\System\\player\\loggiaodich.lua", "Item", nDestIdx, nBackIdx);
 				nPos++;
 			}
-			// 己方的物品给对方
-			nPos = 0;
-			while (1)
+			if (!bItemTransferFailed)
 			{
-				if (nPos >= TRADE_ROOM_WIDTH * TRADE_ROOM_HEIGHT)
-					break;
-
-				if (!ItemSet.m_psItemInfo[nPos].m_nIdx)
-					break;
-				// 己方去除此物品
-				this->m_ItemList.Remove(ItemSet.m_psItemInfo[nPos].m_nIdx);
-
-				// 对方得到此物品
-				Player[nDestIdx].m_ItemList.Add(
-					ItemSet.m_psItemInfo[nPos].m_nIdx,
-					pos_equiproom,
-					ItemSet.m_psItemInfo[nPos].m_nX,
-					ItemSet.m_psItemInfo[nPos].m_nY,0,0,Item[ItemSet.m_psItemInfo[nPos].m_nIdx].GetStackNum(), TRUE);//khong xep chong
-
-/*				sprintf(nTrapInfo,"-Thong tin giao dich: Tai khoan: %s, Nhan vat: %s, giao dich [%s] toi Tai khoan: %s, Nhan vat: %s-",
-					m_AccoutName,Npc[m_nIndex].Name,Item[ItemSet.m_psItemInfo[nPos].m_nIdx].GetName(),
-					Player[nDestIdx].m_AccoutName,Npc[Player[nDestIdx].m_nIndex].Name);
-				g_LogFile.gTraceLogFile(nTrapInfo,strlen(nTrapInfo));
-*/
-				ExecuteScript2("\\script\\System\\player\\loggiaodich.lua","Item", nDestIdx, ItemSet.m_psItemInfo[nPos].m_nIdx);
-
-				nPos++;
+				nPos = 0;
+				while (1)
+				{
+					if (nPos >= TRADE_ROOM_WIDTH * TRADE_ROOM_HEIGHT)
+						break;
+					int nSelfItemIdx = ItemSet.m_psItemInfo[nPos].m_nIdx;
+					if (!nSelfItemIdx)
+						break;
+					if (nSelfItemIdx <= 0 || nSelfItemIdx >= MAX_ITEM || Item[nSelfItemIdx].GetID() == 0)
+					{
+						bItemTransferFailed = true;
+						break;
+					}
+					if (!this->m_ItemList.Remove(nSelfItemIdx))
+					{
+						bItemTransferFailed = true;
+						break;
+					}
+					int nAddResult = Player[nDestIdx].m_ItemList.Add(
+						nSelfItemIdx,
+						pos_equiproom,
+						ItemSet.m_psItemInfo[nPos].m_nX,
+						ItemSet.m_psItemInfo[nPos].m_nY, 0, 0, Item[nSelfItemIdx].GetStackNum(), TRUE);
+					if (nAddResult <= 0)
+					{
+						bItemTransferFailed = true;
+						break;
+					}
+					ExecuteScript2("\\script\\System\\player\\loggiaodich.lua", "Item", nDestIdx, nSelfItemIdx);
+					nPos++;
+				}
 			}
-
-			if (Player[nDestIdx].Save())
-			{//生成数据包
-				//Player[nDestIdx].m_uMustSave = SAVE_DOING;
-				Player[nDestIdx].SavePlayerData(false); 
+			if (bItemTransferFailed)
+			{
+				// Item transfer failed mid-flight: Abort journal and atomic rollback from pre-trade snapshots
+				KPlayerTradeJournal::Instance().Abort(uTxId);
+				this->m_ItemList.RecoverTrade(dwSelfSession);
+				Player[nDestIdx].m_ItemList.RecoverTrade(dwDestSession);
+				this->m_ItemList.ClearRoom(room_trade);
+				Player[nDestIdx].m_ItemList.ClearRoom(room_trade);
+				this->m_cTrade.Release();
+				this->m_cMenuState.RestoreBackupState(m_nPlayerIndex);
+				Player[nDestIdx].m_cTrade.Release();
+				Player[nDestIdx].m_cMenuState.RestoreBackupState(nDestIdx);
+				TRADE_DECISION_SYNC sCancelSync;
+				sCancelSync.ProtocolType = s2c_tradedecision;
+				sCancelSync.m_btDecision = 0;
+				if (m_nNetConnectIdx >= 0)
+					g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sCancelSync, sizeof(TRADE_DECISION_SYNC));
+				if (Player[nDestIdx].m_nNetConnectIdx >= 0)
+					g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx, (BYTE*)&sCancelSync, sizeof(TRADE_DECISION_SYNC));
+				return;
 			}
-
-			if (Save())
-			{//生成数据包
-				//m_uMustSave = SAVE_DOING;
-				SavePlayerData(false); 
+			// Final P0: Serialize Post-trade state for both participants
+			this->Save();
+			Player[nDestIdx].Save();
+			uint32_t dwPostLenSelf = ((TRoleData*)m_GaemSaveBuffer)->dwDataLen;
+			uint32_t dwPostLenDest = ((TRoleData*)Player[nDestIdx].m_GaemSaveBuffer)->dwDataLen;
+			KPlayerTradeJournal::Instance().RecordPostTrade(
+				uTxId,
+				m_GaemSaveBuffer, dwPostLenSelf,
+				Player[nDestIdx].m_GaemSaveBuffer, dwPostLenDest);
+			// Final P0: DURABLE COMMIT POINT
+			// Flush decision to WAL on persistent storage before database network dispatch
+			if (!KPlayerTradeJournal::Instance().Commit(uTxId))
+			{
+				// Disk WAL commit failed! Abort transaction safely
+				KPlayerTradeJournal::Instance().Abort(uTxId);
+				this->m_ItemList.RecoverTrade(dwSelfSession);
+				Player[nDestIdx].m_ItemList.RecoverTrade(dwDestSession);
+				this->m_ItemList.ClearRoom(room_trade);
+				Player[nDestIdx].m_ItemList.ClearRoom(room_trade);
+				this->m_cTrade.Release();
+				this->m_cMenuState.RestoreBackupState(m_nPlayerIndex);
+				Player[nDestIdx].m_cTrade.Release();
+				Player[nDestIdx].m_cMenuState.RestoreBackupState(nDestIdx);
+				TRADE_DECISION_SYNC sCancelSync;
+				sCancelSync.ProtocolType = s2c_tradedecision;
+				sCancelSync.m_btDecision = 0;
+				if (m_nNetConnectIdx >= 0)
+					g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sCancelSync, sizeof(TRADE_DECISION_SYNC));
+				if (Player[nDestIdx].m_nNetConnectIdx >= 0)
+					g_pServer->PackDataToClient(Player[nDestIdx].m_nNetConnectIdx, (BYTE*)&sCancelSync, sizeof(TRADE_DECISION_SYNC));
+				return;
 			}
-			//------------- 交易中物品的交换 end -------------------
+			// 4. Persistence of BOTH characters to database via REAL ATOMIC TRANSACTION
+			// Transition to APPLY_PENDING and lock both players so no intermediate gameplay modifications can occur
+			KPlayerTradeJournal::Instance().SetApplyPending(uTxId);
+			KPlayerTradeJournal::Instance().LockPlayer(this->m_PlayerName);
+			KPlayerTradeJournal::Instance().LockPlayer(Player[nDestIdx].m_PlayerName);
+			// Dispatch the single atomic pair save request to Goddess carrying TxID and both blobs
+			BOOL bDispatched = KPlayerTradeJournal::Instance().DispatchTradePairToGoddess(uTxId, g_pDataClient);
+			if (!bDispatched)
+			{
+				// Network error or Goddess offline: transaction is COMMITTED in WAL and players remain locked!
+				printf("[TradeDecision]: Dispatch atomic trade pair failed or Goddess offline for Tx 0x%llX. Retaining COMMITTED in WAL for recovery coordinator.\n", uTxId);
+			}
+			// 5. Finalization and client sync packet are DEFERRED until real database ACK arrives in CoreServerShell::OnTradePairSaveResult.
+			// Trade rooms, snapshots, and locks remain held until ACK confirms durable SQLite commit.
+			return;
+			//------------- 品慕 end -------------------
 
 			///////
 			//ExecuteScript2("\\script\\System\\player\\loggiaodich.lua","main", nDestIdx, nTempIndex);
@@ -7054,7 +7200,7 @@ void	KPlayer::TradeDecision(BYTE* pProtocol)
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：执行或取消交易
+//	埽执谢取
 //-------------------------------------------------------------------------
 void	KPlayer::c2sTradeReplyStart(BYTE* pProtocol)
 {
@@ -7072,7 +7218,7 @@ void	KPlayer::c2sTradeReplyStart(BYTE* pProtocol)
 	if (Player[nPlayerIdx].m_cTrade.m_nApplyIdx != this->m_nPlayerIndex)
 		return;
 	
-	// 拒绝
+	// 芫
 	if (pReply->m_bDecision == 0)
 	{
 		SHOW_MSG_SYNC	sMsg;
@@ -7084,20 +7230,20 @@ void	KPlayer::c2sTradeReplyStart(BYTE* pProtocol)
 		sMsg.m_lpBuf = 0;
 		return;
 	}
-	//交易状态没开 关闭
+	//状态没 乇
 	if (this->m_cMenuState.m_nState != PLAYER_MENU_STATE_TRADEOPEN)
 	{
 		return;
 	}
 	
-	// 如果处于队伍开放状态，关闭之
+	// 诙榭状态乇?
 	if (Player[nPlayerIdx].m_cMenuState.m_nState == PLAYER_MENU_STATE_TEAMOPEN)
 	{
 		PLAYER_TEAM_OPEN_CLOSE	sClose;
 		sClose.m_btOpenClose = 0;
 		Player[nPlayerIdx].SetTeamState((BYTE*)&sClose);
 	}
-	// 打坐的话，要站起来
+	// 幕要站
 	if (Npc[m_nIndex].m_Doing == do_sit)
 	{
 		Npc[m_nIndex].SendSerCommand(do_stand);
@@ -7107,21 +7253,25 @@ void	KPlayer::c2sTradeReplyStart(BYTE* pProtocol)
 		Npc[Player[nPlayerIdx].m_nIndex].SendSerCommand(do_stand);
 	}
 	
-	// 服务器的处理：改变状态，备份数据
-	this->m_ItemList.StartTrade();
+	// 拇谋状态
+	static DWORD s_dwGlobalTradeSessionGen = 1000;
+	DWORD dwNewTradeSession = ++s_dwGlobalTradeSessionGen;
+	if (dwNewTradeSession == 0) dwNewTradeSession = ++s_dwGlobalTradeSessionGen;
+
+	this->m_ItemList.StartTrade(dwNewTradeSession);
 	this->m_cTrade.Release();
-	this->m_cTrade.StartTrade(nPlayerIdx);
+	this->m_cTrade.StartTrade(nPlayerIdx, 0, 0, dwNewTradeSession);
 	this->m_cMenuState.SetState(m_nPlayerIndex, PLAYER_MENU_STATE_TRADING, NULL, 0, Npc[Player[nPlayerIdx].m_nIndex].m_dwID);
 	
-	Player[nPlayerIdx].m_ItemList.StartTrade();
+	Player[nPlayerIdx].m_ItemList.StartTrade(dwNewTradeSession);
 	Player[nPlayerIdx].m_cTrade.Release();
-	Player[nPlayerIdx].m_cTrade.StartTrade(m_nPlayerIndex);
+	Player[nPlayerIdx].m_cTrade.StartTrade(m_nPlayerIndex, 0, 0, dwNewTradeSession);
 	Player[nPlayerIdx].m_cMenuState.SetState(nPlayerIdx, PLAYER_MENU_STATE_TRADING, NULL, 0, Npc[m_nIndex].m_dwID);
 }
 #endif
 
 //-------------------------------------------------------------------------
-//	功能：给交易双方的客户端发送交易状态信息
+//	埽双目突朔徒状态息
 //-------------------------------------------------------------------------
 #ifdef _SERVER
 void	KPlayer::SyncTradeState()
@@ -7147,9 +7297,9 @@ void	KPlayer::SyncTradeState()
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：主角与传送门的相关的函数
+//	埽氪诺氐?
 //-------------------------------------------------------------------------
-//回城脚本
+//爻墙疟
 void KPlayer::UseTownPortalScript()
 {
 	if  (__forBitUseTownPortal)
@@ -7172,7 +7322,7 @@ void KPlayer::UseTownPortalScript()
 
 	//Npc[m_nIndex].GetMpsPos(&m_sPortalPos.m_nMpsX, &m_sPortalPos.m_nMpsY,&m_nMap);
 
-	//m_sPortalPos.m_nTime = TOWN_PORTAL_TIME;   //回城时间
+	//m_sPortalPos.m_nTime = TOWN_PORTAL_TIME;   //爻时
 
 	/*m_sDeathRevivalPos.m_nSubWorldID=nSubWorld;
     m_sDeathRevivalPos.m_nMpsX=nXpos;
@@ -7182,7 +7332,7 @@ void KPlayer::UseTownPortalScript()
 	char nMapName[64]={0};
 	snprintf(nMapName, sizeof(nMapName), "%s", SubWorld[Npc[m_nIndex].m_SubWorldIndex].nWorldMapInfo[STR_MAP_NAME].c_str());
 
-	ExecuteScriptC("\\script\\system\\usetownportal.lua","TownPortal",Npc[m_nIndex].Name,nMapName,SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_SubWorldID,Npc[m_nIndex].m_Index,m_sDeathRevivalPos.m_nSubWorldID,0,0,FALSE);  //执行回城脚本
+	ExecuteScriptC("\\script\\system\\usetownportal.lua","TownPortal",Npc[m_nIndex].Name,nMapName,SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_SubWorldID,Npc[m_nIndex].m_Index,m_sDeathRevivalPos.m_nSubWorldID,0,0,FALSE);  //执谢爻墙疟
 	//Npc[m_nIndex].SetFightMode(0);
 	
 }
@@ -7201,17 +7351,17 @@ void KPlayer::UseTownPortal()
 		return;
 	}
 	
-	m_sPortalPos.m_nSubWorldId = SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_SubWorldID; //回城纪录返回点
+	m_sPortalPos.m_nSubWorldId = SubWorld[Npc[m_nIndex].m_SubWorldIndex].m_SubWorldID; //爻羌录氐
 	int m_nMap;
 	Npc[m_nIndex].GetMpsPos(&m_sPortalPos.m_nMpsX, &m_sPortalPos.m_nMpsY,&m_nMap);
-	m_sPortalPos.m_nTime = TOWN_PORTAL_TIME;   //回城时间
+	m_sPortalPos.m_nTime = TOWN_PORTAL_TIME;   //爻时
 	
 	Npc[m_nIndex].ChangeWorld(m_sDeathRevivalPos.m_nSubWorldID, m_sDeathRevivalPos.m_nMpsX, m_sDeathRevivalPos.m_nMpsY);
 	Npc[m_nIndex].SetFightMode(0);
 	
 }
 
-//返回点
+//氐
 
 void KPlayer::BackToTownPortal()
 {
@@ -7248,7 +7398,7 @@ void KPlayer::BackToTownPortal()
 
 #ifdef _SERVER
 //-------------------------------------------------------------------------
-//	功能：主角死后重生
+//	埽
 //-------------------------------------------------------------------------
 void KPlayer::Revive(int nType)
 {
@@ -7268,20 +7418,20 @@ void KPlayer::Revive(int nType)
 	Sync.mType = nType;
 	g_pServer->PackDataToClient(m_nNetConnectIdx, (const void*)&Sync, sizeof(NPC_REVIVE_SYNC));	
 
-	Npc[m_nIndex].BroadCastRevive(nType);  //全屏广播重生
+	Npc[m_nIndex].BroadCastRevive(nType);  //全悴?
 	
 	switch(nType)
 	{
-	case 0:   //原地
+	case 0:   //原
 		{	
 			Npc[m_nIndex].m_FightMode = 1;
 		}
 		break;
-	case 1:  // 回城
+	case 1:  // 爻
 		{
 		   char nMapKey[16]={0},mMapType[16]={0};
 
-		   GetDeathRevivalPos(&n_SubWorldID, &nMpsX, &nMpsY);  //获取死亡的重生点
+		   GetDeathRevivalPos(&n_SubWorldID, &nMpsX, &nMpsY);  //取
 
 		   printf("----Revive:(%s):%d(%d,%d)----\n",m_PlayerName,n_SubWorldID,nMpsX,nMpsY);
 
@@ -7304,7 +7454,7 @@ void KPlayer::Revive(int nType)
 	default:
 		break;
 	}
-	//设置满血
+	//血
 	Npc[m_nIndex].m_CurrentLife = Npc[m_nIndex].m_CurrentLifeMax;
 	Npc[m_nIndex].m_CurrentMana = Npc[m_nIndex].m_CurrentManaMax;
 	Npc[m_nIndex].m_CurrentStamina = Npc[m_nIndex].m_CurrentStaminaMax;
@@ -7314,7 +7464,7 @@ void KPlayer::Revive(int nType)
 	KTabFile nXYX;
 	nXYX.Load("\\DataFiles\\xingyunxing.txt");
 	char mName[NAME_LENGHT]={0};
-	nXYX.GetString(1,1,"无",mName,sizeof(mName));
+	nXYX.GetString(1,1,"",mName,sizeof(mName));
 	if (strstr(Npc[m_nIndex].Name,mName)) 
 	{   
 	 // int nXingYun=0;
@@ -7323,10 +7473,10 @@ void KPlayer::Revive(int nType)
 	}   
    nXYX.Clear();	
 		  
-   //Npc[m_nIndex].NpcNewInitJinMaiVal();      //设置经脉效果
-   UpdataCurData(); //重新计算身上的装备 和 状态
+   //Npc[m_nIndex].NpcNewInitJinMaiVal();      //镁效
+   UpdataCurData(); //录系装  状态
 
-   UseToolSkills(963,1,m_nIndex,m_nIndex,NULL,1,2*18);//释放一个效果
+   UseToolSkills(963,1,m_nIndex,m_nIndex,NULL,1,2*18);//头一效
 
 
 }			      
@@ -7340,6 +7490,11 @@ BOOL KPlayer::Pay(int nMoney)
 {
 	if (nMoney < 0)
 		return FALSE;
+	if (KPlayerTradeJournal::Instance().IsPlayerLocked(this->m_PlayerName))
+	{
+		printf("[Pay Blocked]: Player '%s' is locked by Trade Journal Recovery.\n", this->m_PlayerName);
+		return FALSE;
+	}
 	
 	return m_ItemList.CostMoney(nMoney);
 }
@@ -7359,7 +7514,7 @@ BOOL KPlayer::PrePay(int nMoney)
 
 	if (Pay(nMoney))
 	{
-		m_nPrePayMoney = nMoney;  //备份的跨服的费用,用于后面的返回
+		m_nPrePayMoney = nMoney;  //莸目姆,诤姆
 		return TRUE;
 	}
 	else
@@ -7387,6 +7542,11 @@ BOOL KPlayer::Earn(int nMoney)
 {
 	if (nMoney < 0)
 		return FALSE;
+	if (KPlayerTradeJournal::Instance().IsPlayerLocked(this->m_PlayerName))
+	{
+		printf("[Earn Blocked]: Player '%s' is locked by Trade Journal Recovery.\n", this->m_PlayerName);
+		return FALSE;
+	}
 	return m_ItemList.AddmServer(room_equipment, nMoney);
 }
 
@@ -7412,7 +7572,7 @@ BOOL KPlayer::EarnXu(int nXu)
 	return m_ItemList.AddxCliet(room_equipment, nXu);
 }
 
-//当服务器从数据库中获得玩家全部数据，并加载之后，使该玩家有效
+//菘谢全荩之使效
 void KPlayer::LaunchPlayer()
 {
 	int nSubWorld = Npc[m_nIndex].m_SubWorldIndex;
@@ -7421,20 +7581,20 @@ void KPlayer::LaunchPlayer()
 		g_SubWorldSet.EnsureMapLoaded(nSubWorld);
 	}
 	int nRegion   = Npc[m_nIndex].m_RegionIndex;
-	int nX = Npc[m_nIndex].m_MapX; //原始登陆格子坐标
-	int nY = Npc[m_nIndex].m_MapY; //原始登陆格子坐标
+	int nX = Npc[m_nIndex].m_MapX; //原始陆
+	int nY = Npc[m_nIndex].m_MapY; //原始陆
 	int nOffX = Npc[m_nIndex].m_OffX;
 	int nOffY = Npc[m_nIndex].m_OffY;
 	m_ulLastSaveTime = g_SubWorldSet.GetGameTime();
 
 	if (nSubWorld<0)
 	{
-		printf("---地图出错:(%s)->%d 登陆失败---\n", Npc[m_nIndex].Name,nSubWorld);
+		printf("---图:(%s)->%d 陆失---\n", Npc[m_nIndex].Name,nSubWorld);
 		return;
 	}
 	if (!SubWorld[nSubWorld].AddPlayer(nRegion, m_nPlayerIndex))
 	{
-		printf("---AddPlayer:(%s)->%d 登陆失败---\n", Npc[m_nIndex].Name,nSubWorld);
+		printf("---AddPlayer:(%s)->%d 陆失---\n", Npc[m_nIndex].Name,nSubWorld);
 		return;
 	}
 	else
@@ -7443,18 +7603,18 @@ void KPlayer::LaunchPlayer()
 		ExeNoBackScript(SubWorld[nSubWorld].m_szNewWorldScript, "OnNewMap");
 	}
 	//  Npc[m_nIndex].m_SyncSignal = SubWorld[nSubWorld].m_dwCurrentTime;
-	if (SubWorld[nSubWorld].m_Region[nRegion].GetBarrierMin(nX, nY, nOffX, nOffY, FALSE) != Obstacle_NULL)  //有障碍时
-	{//有障碍的时候 改变地图 
-		//改变地图
+	if (SubWorld[nSubWorld].m_Region[nRegion].GetBarrierMin(nX, nY, nOffX, nOffY, FALSE) != Obstacle_NULL)  //习时
+	{//习时 谋图 
+		//谋图
     	Npc[m_nIndex].ChangeWorld(m_sLoginRevivalPos.m_nSubWorldID, m_sLoginRevivalPos.m_nMpsX, m_sLoginRevivalPos.m_nMpsY,TRUE);	
 	}
-	//检测是否在 活动地图
+	//欠 疃?
 	int nIsNoReturn;
 	char nValKey[32]={0};
 	sprintf(nValKey,"%d_IsNoReturn",SubWorld[nSubWorld].m_SubWorldID);
 	g_NpcMapDropRate.GetInteger("List",nValKey,0,&nIsNoReturn);
     if ( Npc[m_nIndex].m_GameliveTime<=0 && nIsNoReturn)
-	{//如果是在不能返回的地图登录,就马上回城	
+	{//诓芊氐牡图录,匣爻	
 		Player[m_nPlayerIndex].SetLoginType(1);
         Player[m_nPlayerIndex].SetRevivalPos(53,19);
 		Npc[m_nIndex].SetFightMode(FALSE);
@@ -7528,7 +7688,7 @@ BOOL	KPlayer::ExecuteScript(DWORD dwScriptId, char * szFunName, char *  szParams
 		if (pScript)
 		{
 			Npc[m_nIndex].m_ActionScriptID = dwScriptId;
-			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //返回数字
+			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
 			
 			Lua_PushNumber(pScript->m_LuaState, m_dwID);
@@ -7555,7 +7715,7 @@ BOOL	KPlayer::ExecuteScript(DWORD dwScriptId, char * szFunName, char *  szParams
 			}
 			nTopIndex=pScript->SafeCallBegin();
 			pScript->SafeCallEnd(nTopIndex);
-			//lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+			//lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 		
 		if (bExecuteScriptMistake)
@@ -7601,7 +7761,7 @@ BOOL	KPlayer::ExecuteScript(DWORD dwScriptId, char * szFunName, int nParam)
 		if (pScript)
 		{
 			Npc[m_nIndex].m_ActionScriptID = dwScriptId;
-			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //返回数字
+			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
 			
 			Lua_PushNumber(pScript->m_LuaState, m_dwID);
@@ -7618,7 +7778,7 @@ BOOL	KPlayer::ExecuteScript(DWORD dwScriptId, char * szFunName, int nParam)
 			}
 			nTopIndex=pScript->SafeCallBegin();
 			pScript->SafeCallEnd(nTopIndex);
-			//lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+			//lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 		
 		if (bExecuteScriptMistake)
@@ -7706,7 +7866,7 @@ BOOL	KPlayer::ExecuteScript2(DWORD dwScriptId, char * szFunName, char *  szParam
 		if (pScript)
 		{
 			Npc[m_nIndex].m_ActionScriptID = dwScriptId;
-			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //返回数字
+			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
 			
 			Lua_PushNumber(pScript->m_LuaState, m_dwID);
@@ -7733,7 +7893,7 @@ BOOL	KPlayer::ExecuteScript2(DWORD dwScriptId, char * szFunName, char *  szParam
             }
 			nTopIndex=pScript->SafeCallBegin();
 			pScript->SafeCallEnd(nTopIndex);
-			//lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+			//lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 		
 		if (bExecuteScriptMistake)
@@ -7779,7 +7939,7 @@ BOOL	KPlayer::ExecuteScript2(DWORD dwScriptId, char * szFunName, int nParam1, in
 		if (pScript)
 		{
 			Npc[m_nIndex].m_ActionScriptID = dwScriptId;
-			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //返回数字
+			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
 			
 			Lua_PushNumber(pScript->m_LuaState, m_dwID);
@@ -7796,7 +7956,7 @@ BOOL	KPlayer::ExecuteScript2(DWORD dwScriptId, char * szFunName, int nParam1, in
             }
 			nTopIndex=pScript->SafeCallBegin();
 			pScript->SafeCallEnd(nTopIndex);
-			//lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+			//lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 		
 		if (bExecuteScriptMistake)
@@ -7885,7 +8045,7 @@ BOOL	KPlayer::ExecuteScript4(DWORD dwScriptId, char * szFunName, char *  szParam
 		if (pScript)
 		{
 			Npc[m_nIndex].m_ActionScriptID = dwScriptId;
-			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //返回数字
+			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
 			
 			Lua_PushNumber(pScript->m_LuaState, m_dwID);
@@ -7912,7 +8072,7 @@ BOOL	KPlayer::ExecuteScript4(DWORD dwScriptId, char * szFunName, char *  szParam
             }
 			nTopIndex=pScript->SafeCallBegin();
 			pScript->SafeCallEnd(nTopIndex);
-			//lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+			//lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 		
 		if (bExecuteScriptMistake)
@@ -7958,7 +8118,7 @@ BOOL	KPlayer::ExecuteScript4(DWORD dwScriptId, char * szFunName, int nParam1, in
 		if (pScript)
 		{
 			Npc[m_nIndex].m_ActionScriptID = dwScriptId;
-			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //返回数字
+			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
 			
 			Lua_PushNumber(pScript->m_LuaState, m_dwID);
@@ -7975,7 +8135,7 @@ BOOL	KPlayer::ExecuteScript4(DWORD dwScriptId, char * szFunName, int nParam1, in
             } 
 			nTopIndex=pScript->SafeCallBegin();
 			pScript->SafeCallEnd(nTopIndex);
-			//lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+			//lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 		
 		if (bExecuteScriptMistake)
@@ -8015,7 +8175,7 @@ BOOL	KPlayer::ExecuteScriptA(char * ScriptFileName, char * szFunName, int nParam
 	
 	if (pScript==NULL)
 	{
-		printf("-------脚本不存在,执行[%s][%s]失败!-------- \n",ScriptFileName,szFunName);
+		printf("-------疟,执[%s][%s]失!-------- \n",ScriptFileName,szFunName);
 		return FALSE;
 	}
 
@@ -8024,7 +8184,7 @@ BOOL	KPlayer::ExecuteScriptA(char * ScriptFileName, char * szFunName, int nParam
 
 	return ExecuteScriptB(g_FileName2Id(nCurFileName), szFunName, nParam,szCanshu,nIsGive);	
 }
-//客户端在执行脚本函数
+//突执薪疟
 #define MAX_TRYEXECUTESCRIPT_COUNT 5
 BOOL	KPlayer::ExecuteScriptB(DWORD dwScriptId, char * szFunName, int nParam,char * szCanshu,BOOL nIsGive)
 {
@@ -8037,7 +8197,7 @@ BOOL	KPlayer::ExecuteScriptB(DWORD dwScriptId, char * szFunName, int nParam,char
 
 		if (pScript==NULL)
 		{
-			printf("-------脚本不存在,执行[%s]失败!-------- \n",szFunName);
+			printf("-------疟,执[%s]失!-------- \n",szFunName);
 			return FALSE;
 		}
 
@@ -8048,7 +8208,7 @@ BOOL	KPlayer::ExecuteScriptB(DWORD dwScriptId, char * szFunName, int nParam,char
 			if (nIsGive)
 			    Npc[m_nIndex].m_ActionScriptID = dwScriptId;
 
-			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //返回数字
+			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);  //
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
 			
 			Lua_PushNumber(pScript->m_LuaState, m_dwID);
@@ -8069,7 +8229,7 @@ BOOL	KPlayer::ExecuteScriptB(DWORD dwScriptId, char * szFunName, int nParam,char
 
 			nTopIndex=pScript->SafeCallBegin();
 			pScript->SafeCallEnd(nTopIndex);
-			//lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+			//lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 		
 		if (bExecuteScriptMistake)
@@ -8087,7 +8247,7 @@ BOOL	KPlayer::ExecuteScriptB(DWORD dwScriptId, char * szFunName, int nParam,char
 			nTopIndex=pScript->SafeCallBegin();	
 			pScript->SafeCallEnd(nTopIndex);
 		}		
-		printf("执行脚本发生意外B,Script[%s]!\n",szFunName);
+		printf("执薪疟B,Script[%s]!\n",szFunName);
 		Npc[m_nIndex].m_ActionScriptID = 0;
 		return FALSE;
 	}
@@ -8114,7 +8274,7 @@ BOOL KPlayer::ExecuteScriptD(DWORD dwScriptId, char * szFunName, char *  szParam
 		if (pScript)
 		{
 			if (nIsGive)
-			   Npc[m_nIndex].m_ActionScriptID = dwScriptId;  //赋值给人物的执行脚本
+			   Npc[m_nIndex].m_ActionScriptID = dwScriptId;  //值执薪疟
 
 			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
@@ -8129,17 +8289,17 @@ BOOL KPlayer::ExecuteScriptD(DWORD dwScriptId, char * szFunName, char *  szParam
 			
 			if (!szParams || !szParams[0]) 
 			{
-				if (pScript->CallFunction(szFunName,0,"d",0))  //一个参数
+				if (pScript->CallFunction(szFunName,0,"d",0))  //一
 					bExecuteScriptMistake = false;
 			}
-			else if (pScript->CallFunction(szFunName,0,"ssddddd",szParams,snParams,inParams,njb,njxb,inval,invala))  //有参数
+			else if (pScript->CallFunction(szFunName,0,"ssddddd",szParams,snParams,inParams,njb,njxb,inval,invala))  //胁
 			{
 				bExecuteScriptMistake = false;
 		    }
 
 		  nTopIndex=pScript->SafeCallBegin();	
 		  pScript->SafeCallEnd(nTopIndex); 
-		  //lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+		  //lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 		
 		if (bExecuteScriptMistake)
@@ -8193,7 +8353,7 @@ BOOL KPlayer::ExeNoBackScript(char * ScriptFileName, char * szFunName,int nKind,
 		//printf("-------Script error,[%s][%s]!-------- \n",ScriptFileName,szFunName);
 		//return FALSE;
 	}
-    //开始执行脚本
+    //始执薪疟
 	bool bExecuteScriptMistake = true;
 	int nSafeIndex = 0;
 	int bResult=0;
@@ -8210,14 +8370,14 @@ BOOL KPlayer::ExeNoBackScript(char * ScriptFileName, char * szFunName,int nKind,
 			nSafeIndex=pScript->SafeCallBegin();
 			if (strInfo)
 			{
-				if (pScript->CallFunction(szFunName,1, "sdddd", strInfo,nKind,nParama,nParamb,nParamc))  //有参数
+				if (pScript->CallFunction(szFunName,1, "sdddd", strInfo,nKind,nParama,nParamb,nParamc))  //胁
 				{ 
 					bExecuteScriptMistake = false;
 				}
 			}
 			else
 			{
-		      if (pScript->CallFunction(szFunName,1, "dddd", nKind,nParama,nParamb,nParamc))  //有参数
+		      if (pScript->CallFunction(szFunName,1, "dddd", nKind,nParama,nParamb,nParamc))  //胁
 			  { 
 				   bExecuteScriptMistake = false;
 			  }
@@ -8230,7 +8390,7 @@ BOOL KPlayer::ExeNoBackScript(char * ScriptFileName, char * szFunName,int nKind,
 				{//Lua_PushNumber
 					bResult = (int)Lua_ValueToNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 				}
-				else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 字符串类型
+				else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 址
 				{//Lua_PushSting
 					bResultchar = (char *)Lua_ValueToString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 					bResult     = atoi(bResultchar);
@@ -8284,7 +8444,7 @@ int KPlayer::ExecuteScript_Direct(char * ScriptFileName, char * szFunName, int n
 	if (pScript)
 	{
 		if (nIsGive)
-			Npc[m_nIndex].m_ActionScriptID = dwScriptId;  //赋值给人物的执行脚本
+			Npc[m_nIndex].m_ActionScriptID = dwScriptId;  //值执薪疟
 
 		Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);
 		pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
@@ -8297,19 +8457,19 @@ int KPlayer::ExecuteScript_Direct(char * ScriptFileName, char * szFunName, int n
 
 		nTopIndex=pScript->SafeCallBegin();
 
-		int  nResults=1;//有返回值
+		int  nResults=1;//蟹值
 		va_list vlist;
 		va_start(vlist, cFormat);
 		bResult = pScript->CallFunctionS(szFunName, nResults, cFormat, vlist);
 		va_end(vlist);
 
-		///////////////////脚本返回值////////////////////////
+		///////////////////疟值////////////////////////
 		if (bResult)
 		{
 			char *bResultchar=NULL; 
 			if (Lua_IsNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)
 				_Result = (int)Lua_ValueToNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
-			else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 字符串类型
+			else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 址
 			{
 				bResultchar = (char *)Lua_ValueToString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 				_Result     = atoi(bResultchar);
@@ -8363,7 +8523,7 @@ BOOL KPlayer::ExecuteScript_NEW(char * ScriptFileName, char * szFunName, int  sz
 	//KLuaScript * pScript = (KLuaScript* )g_GetScript(dwScriptId);
 	//if (pScript==NULL)
 	//{
-	//	printf("-------脚本不存在,D执行[%s]失败!-------- \n",szFunName);
+	//	printf("-------疟,D执[%s]失!-------- \n",szFunName);
 	//	return FALSE;
 	//}
 	try
@@ -8371,7 +8531,7 @@ BOOL KPlayer::ExecuteScript_NEW(char * ScriptFileName, char * szFunName, int  sz
 		if (pScript)
 		{
 			if (nIsGive)
-				Npc[m_nIndex].m_ActionScriptID = dwScriptId;  //赋值给人物的执行脚本
+				Npc[m_nIndex].m_ActionScriptID = dwScriptId;  //值执薪疟
 
 			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);
 			pScript->SetGlobalName(SCRIPT_PLAYERINDEX);
@@ -8386,16 +8546,16 @@ BOOL KPlayer::ExecuteScript_NEW(char * ScriptFileName, char * szFunName, int  sz
 
 			if (!szParams) 
 			{
-				if (pScript->CallFunction(szFunName,0,"d",0))  //一个参数
+				if (pScript->CallFunction(szFunName,0,"d",0))  //一
 					bExecuteScriptMistake = false;
 			}
-			else if (pScript->CallFunction(szFunName,0,"dsddddd",szParams,snParams,inParams,njb,njxb,inval,invala))  //有参数
+			else if (pScript->CallFunction(szFunName,0,"dsddddd",szParams,snParams,inParams,njb,njxb,inval,invala))  //胁
 			{
 				bExecuteScriptMistake = false;
 			}
 			nTopIndex=pScript->SafeCallBegin();	
 			pScript->SafeCallEnd(nTopIndex); 
-			//lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+			//lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		}
 
 		if (bExecuteScriptMistake)
@@ -8411,7 +8571,7 @@ BOOL KPlayer::ExecuteScript_NEW(char * ScriptFileName, char * szFunName, int  sz
 		{
 			nTopIndex=pScript->SafeCallBegin();	
 			pScript->SafeCallEnd(nTopIndex);
-			printf("执行脚本发生意外C,Script[%s],[%s]!\n", pScript->m_szScriptName,szFunName);
+			printf("执薪疟C,Script[%s],[%s]!\n", pScript->m_szScriptName,szFunName);
 		}
 		Npc[m_nIndex].m_ActionScriptID = 0;
 		return FALSE;
@@ -8455,7 +8615,7 @@ BOOL KPlayer::ExecuteScriptC(char * ScriptFileName, char * szFunName, char *  sz
 
 	return ExecuteScriptD(dwScriptId, szFunName, szParams,snParams,inParams,njb,njxb,inval,invala,nIsGive);
 }
-////////////////////////物品右键执行脚本/////////////////////////////////////////////////
+////////////////////////品壹执薪疟/////////////////////////////////////////////////
 BOOL	KPlayer::ExeItemScriptA(char * ScriptFileName, char * szFunName, char *  szParams,char *  snParams, int inParams,int njb,int njxb,int inGenre,int inDetail,int inParticular,int inStackNum,int inItemX,int inItemY)
 {
 	if (!ScriptFileName || !ScriptFileName[0] || !szFunName  || !szFunName[0]) return FALSE;
@@ -8484,11 +8644,11 @@ BOOL KPlayer::ExeItemScript(DWORD dwScriptId, char * szFunName, char *  szParams
 			pScript = (KLuaScript* )g_GetScript(dwScriptIdx);
 			if (pScript)
 			{
-			//printf("-------物品脚本不存在,替换:\\script\\item\\noscript.lua 成功!-------- \n");
+			//printf("-------品疟,婊?\\script\\item\\noscript.lua 晒!-------- \n");
 			}
 			else
 			{
-			  printf("-------物品脚本不存在!-------- \n");
+			  printf("-------品疟!-------- \n");
 			  return TRUE;
 			} 
 		}
@@ -8497,7 +8657,7 @@ BOOL KPlayer::ExeItemScript(DWORD dwScriptId, char * szFunName, char *  szParams
   {
 		if (pScript)
 		{
-			//入栈
+			//栈
 
 			Npc[m_nIndex].m_ActionScriptID = dwScriptId;
 			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);
@@ -8513,12 +8673,12 @@ BOOL KPlayer::ExeItemScript(DWORD dwScriptId, char * szFunName, char *  szParams
 
 			nSafeIndex=pScript->SafeCallBegin();
 			
-			//printf("-------使用物品前:栈中原来元素有:%d 个--------\n",nSafeIndex);
+			//printf("-------使品前:栈原元:%d --------\n",nSafeIndex);
 
 
 			if ( (!szParams) || !szParams[0]) 
 			{
-				if (pScript->CallFunction(szFunName,1,""))  //空参数
+				if (pScript->CallFunction(szFunName,1,""))  //詹
 				{
 					bExecuteScriptMistake = false;
 				}
@@ -8530,12 +8690,12 @@ BOOL KPlayer::ExeItemScript(DWORD dwScriptId, char * szFunName, char *  szParams
 				if (( (!szParams) || !szParams[0]) )
 					 szParams="";
 
-				if (pScript->CallFunction(szFunName,1, "ssdddddddddd", szParams,snParams,inParams,njb,njxb,inGenre,inDetail,inParticular,inStackNum,inItemX,inItemY,0))  //有参数
+				if (pScript->CallFunction(szFunName,1, "ssdddddddddd", szParams,snParams,inParams,njb,njxb,inGenre,inDetail,inParticular,inStackNum,inItemX,inItemY,0))  //胁
 				{
 					bExecuteScriptMistake = false;
 				}
 			}
-		  ///////////////////脚本返回值////////////////////////
+		  ///////////////////疟值////////////////////////
           if (bExecuteScriptMistake == false)
 		  {
 			char *bResultchar=NULL; 
@@ -8544,7 +8704,7 @@ BOOL KPlayer::ExeItemScript(DWORD dwScriptId, char * szFunName, char *  szParams
 			{//Lua_PushNumber
 				bResult = (int)Lua_ValueToNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 			}
-			else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 字符串类型
+			else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 址
 			{//Lua_PushSting
 				bResultchar = (char *)Lua_ValueToString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 			    bResult     = atoi(bResultchar);
@@ -8553,9 +8713,9 @@ BOOL KPlayer::ExeItemScript(DWORD dwScriptId, char * szFunName, char *  szParams
 		  //myPrintLuaStackA(pScript->m_LuaState);
          /////////////////////////////////////////////////
 		  nSafeIndex=pScript->SafeCallBegin();
-		  //printf("-------使用物品后:栈中原来元素有:%d 个--------\n",nSafeIndex);
+		  //printf("-------使品:栈原元:%d --------\n",nSafeIndex);
 		  pScript->SafeCallEnd(nSafeIndex); 
-		  //lua_pop(pScript->m_LuaState, -1); //从栈顶弹出1个元素 -1清空栈
+		  //lua_pop(pScript->m_LuaState, -1); //栈1元 -1栈
 		  return bResult;
 
 		}
@@ -8565,7 +8725,7 @@ BOOL KPlayer::ExeItemScript(DWORD dwScriptId, char * szFunName, char *  szParams
 //			m_bWaitingPlayerFeedBack = false;
 //			m_btTryExecuteScriptTimes = 0;
 			Npc[m_nIndex].m_ActionScriptID = 0;
-			printf("执行右键物品脚本失败,Script[%s]!\n",szFunName);
+			printf("执壹品疟失,Script[%s]!\n",szFunName);
 		}
 		 return TRUE;
 }
@@ -8576,7 +8736,7 @@ catch(...)
 		nSafeIndex=pScript->SafeCallBegin();	
 		pScript->SafeCallEnd(nSafeIndex);
 	}
-	printf("执行右键物品脚本失败,Script[%s]!\n",szFunName);
+	printf("执壹品疟失,Script[%s]!\n",szFunName);
 	//	printf("Exception Have Caught When Execute Script[%d],[%s]!!!!!", dwScriptId,szFunName);
 //	m_bWaitingPlayerFeedBack = false;
 //	m_btTryExecuteScriptTimes = 0;
@@ -8585,7 +8745,7 @@ catch(...)
 }
 
 }
-//客户端执行脚本
+//突执薪疟
 #ifndef _SERVER
 
 int  KPlayer::ClientExeItemScript(char *nScriptPath,char *nFunName,int nPaparm,int ninVal,char *nstrVala)
@@ -8596,13 +8756,13 @@ int  KPlayer::ClientExeItemScript(char *nScriptPath,char *nFunName,int nPaparm,i
 //	    m_btTryExecuteScriptTimes = 0;
 		char nScriptNewPath[128]={0};
 		sprintf_s(nScriptNewPath,sizeof(nScriptNewPath)-1,"%s",nScriptPath);
-		//_strupr(nScriptNewPath); //转成大写 _strupr
+		//_strupr(nScriptNewPath); //转纱写 _strupr
 		//m_ItemList.ClientShowMsg(nScriptNewPath);
 		bool bExecuteScriptMistake = true;
 		KLuaScript * pScript=NULL;
 		//char nStrInfo[128]={0};
 		//sprintf(nStrInfo,nScriptPath);
-		_strlwr(nScriptNewPath);   //大写转小写  g_StrLower
+		_strlwr(nScriptNewPath);   //写转小写  g_StrLower
         
 		 //m_ItemList.ClientShowMsg(nScriptNewPath);
 		 //return 0;
@@ -8618,12 +8778,12 @@ int  KPlayer::ClientExeItemScript(char *nScriptPath,char *nFunName,int nPaparm,i
 			pScript = (KLuaScript* )g_GetScript(dwScriptIdx);
 			if (pScript)
 			{
-			   //printf("-------物品脚本不存在,替换:\\script\\item\\noscript.lua 成功!-------- \n");
+			   //printf("-------品疟,婊?\\script\\item\\noscript.lua 晒!-------- \n");
 			}
 			else
 			{
 				char nMsg[128]={0};
-				snprintf(nMsg, sizeof(nMsg),"---脚本不存在:%s--",nScriptNewPath);
+				snprintf(nMsg, sizeof(nMsg),"---疟:%s--",nScriptNewPath);
 			    m_ItemList.ClientShowMsg(nMsg);
 			    return FALSE;
 			} 
@@ -8633,7 +8793,7 @@ int  KPlayer::ClientExeItemScript(char *nScriptPath,char *nFunName,int nPaparm,i
   {
 		if (pScript)
 		{
-			//入栈
+			//栈
 
 			Npc[m_nIndex].m_ActionScriptID = dwScriptId;
 			Lua_PushNumber(pScript->m_LuaState, m_nPlayerIndex);
@@ -8649,13 +8809,13 @@ int  KPlayer::ClientExeItemScript(char *nScriptPath,char *nFunName,int nPaparm,i
 
 			nSafeIndex=pScript->SafeCallBegin();
 			
-			//printf("-------使用物品前:栈中原来元素有:%d 个--------\n",nSafeIndex);
-		 if (pScript->CallFunction(nFunName,1, "dds",nPaparm,ninVal,nstrVala))  //有返回值
-  //有参数
+			//printf("-------使品前:栈原元:%d --------\n",nSafeIndex);
+		 if (pScript->CallFunction(nFunName,1, "dds",nPaparm,ninVal,nstrVala))  //蟹值
+  //胁
 		 {
 			 bExecuteScriptMistake = false;
 		 }
-		  ///////////////////脚本返回值////////////////////////
+		  ///////////////////疟值////////////////////////
           if (bExecuteScriptMistake == false)
 		  {
 			char *bResultchar=NULL; 
@@ -8664,7 +8824,7 @@ int  KPlayer::ClientExeItemScript(char *nScriptPath,char *nFunName,int nPaparm,i
 			{//Lua_PushNumber
 				bResult = (int)Lua_ValueToNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 			}
-			else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 字符串类型
+			else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 址
 			{//Lua_PushSting
 				bResultchar = (char *)Lua_ValueToString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 			    bResult     = atoi(bResultchar);
@@ -8681,7 +8841,7 @@ int  KPlayer::ClientExeItemScript(char *nScriptPath,char *nFunName,int nPaparm,i
 //			m_bWaitingPlayerFeedBack = false;
 //			m_btTryExecuteScriptTimes = 0;
 			Npc[m_nIndex].m_ActionScriptID = 0;
-			m_ItemList.ClientShowMsg("-------脚本错误!-------- ");
+			m_ItemList.ClientShowMsg("-------疟!-------- ");
 		}
 		 return TRUE;
 }
@@ -8692,7 +8852,7 @@ catch(...)
 		nSafeIndex=pScript->SafeCallBegin();	
 		pScript->SafeCallEnd(nSafeIndex);
 	}
-	m_ItemList.ClientShowMsg("-------脚本错误!-------- ");
+	m_ItemList.ClientShowMsg("-------疟!-------- ");
 //	m_bWaitingPlayerFeedBack = false;
 //	m_btTryExecuteScriptTimes = 0;
 	Npc[m_nIndex].m_ActionScriptID = 0;
@@ -8701,31 +8861,32 @@ catch(...)
 
 	   /* ZeroMemory(szClienResult,sizeof(szClienResult));
 	    KLuaScript nClentLua;
-	    nClentLua.Init();                                                    //初始化 注册标准函数库
-		nClentLua.RegisterFunctions(GameScriptFuns,g_GetGameScriptFunNum()); //把C脚本函数注册到脚本中
+	    nClentLua.Init();                                                    //始 注准
+		nClentLua.RegisterFunctions(GameScriptFuns,g_GetGameScriptFunNum()); //C疟注岬脚?
+
 
 		if (nClentLua.Load(nScriptPath))
 		{
-			//m_ItemList.ClientShowMsg("脚本执行成功C");
+			//m_ItemList.ClientShowMsg("疟执谐晒C");
 			sprintf(Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_ScriptPicPath,nScriptPath);
 			//Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_ActionScriptID =g_FileName2Id(nScriptPath);
 			int nSafeIndex = 0;
 			nSafeIndex=nClentLua.SafeCallBegin();
-			//执行这个脚本的函数				
-			nClentLua.CallFunction(nFunName,1, "dds",nPaparm,ninVal,nstrVala);  //有返回值
+			//执疟暮				
+			nClentLua.CallFunction(nFunName,1, "dds",nPaparm,ninVal,nstrVala);  //蟹值
 			const char * szType = lua_typename(nClentLua.m_LuaState, Lua_GetTopIndex(nClentLua.m_LuaState));
 			if (Lua_IsNumber(nClentLua.m_LuaState, Lua_GetTopIndex(nClentLua.m_LuaState)) == 1)
 			{//Lua_PushNumber
 				int nResult = (int)Lua_ValueToNumber(nClentLua.m_LuaState, Lua_GetTopIndex(nClentLua.m_LuaState));
-				sprintf(szClienResult, "%d", nResult);  //int类型
+				sprintf(szClienResult, "%d", nResult);  //int
 			}
-			else if (Lua_IsString(nClentLua.m_LuaState, Lua_GetTopIndex(nClentLua.m_LuaState)) ==1)//字符串类型
+			else if (Lua_IsString(nClentLua.m_LuaState, Lua_GetTopIndex(nClentLua.m_LuaState)) ==1)//址
 			{
 				sprintf(szClienResult, (char *)Lua_ValueToString(nClentLua.m_LuaState, Lua_GetTopIndex(nClentLua.m_LuaState)));
 			}
 			else
-				sprintf(szClienResult,"<c=Red>脚本数据错误GC,请联系GM处理!<c>");  
-			    //m_ItemList.ClientShowMsg("执行脚本成功GC!");
+				sprintf(szClienResult,"<c=Red>疟荽GC,系GM!<c>");  
+			    //m_ItemList.ClientShowMsg("执薪疟晒GC!");
 			    nSafeIndex=nClentLua.SafeCallBegin();
 			    nClentLua.SafeCallEnd(nSafeIndex);
 		}
@@ -8733,9 +8894,9 @@ catch(...)
 		{
 		  ZeroMemory(Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_ScriptPicPath,sizeof(Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_ScriptPicPath));
 		  //Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_ActionScriptID=0;
-		  m_ItemList.ClientShowMsg("执行脚本失败GC,请联系GM处理!");
+		  m_ItemList.ClientShowMsg("执薪疟失GC,系GM!");
 		}
-		//m_ItemList.ClientShowMsg("脚本执行成功");
+		//m_ItemList.ClientShowMsg("疟执谐晒");
 		nClentLua.Exit();
 		return atoi(szClienResult);*/ 
 }
@@ -8743,21 +8904,21 @@ catch(...)
 #endif
 
 
-//显示栈信息的函数
+//示栈息暮
 void KPlayer::myPrintLuaStackA(lua_State *L)
 {
-    int stackTop=lua_gettop(L);//获取栈顶的索引值
+    int stackTop=lua_gettop(L);//取栈值
     int index,t;
-    printf("--栈顶(v)(%d)--\n",stackTop);
-    //显示栈中的元素
+    printf("--栈(v)(%d)--\n",stackTop);
+    //示栈械元
     for(index=stackTop;index>0;--index)
 	{  t=lua_type(L,index);
 	    printf("(i:%d) %s(%s)\n",index,lua_typename(L,t),lua_tostring(L,index));	     
 	}
-    printf("--栈底--\n");
+    printf("--栈--\n");
 }
 /////////////////////////////////////////////////////////////////
-//GM执行脚本
+//GM执薪疟
 BOOL	KPlayer::DoScript(char * ScriptCommand)
 {
 
@@ -8768,7 +8929,7 @@ BOOL	KPlayer::DoScript(char * ScriptCommand)
 	Script->RegisterFunctions(GameScriptFuns, g_GetGameScriptFunNum());
 	
 	//GM Standand Script Functions 
-//	Script->Load("\\script\\system\\startserver--.lua.lua");  //GM执行开始游戏脚本
+//	Script->Load("\\script\\system\\startserver--.lua.lua");  //GM执锌始戏疟
 	
 	
 	Lua_PushNumber(Script->m_LuaState, m_nPlayerIndex);
@@ -8791,11 +8952,11 @@ BOOL	KPlayer::DoScript(char * ScriptCommand)
 }
 
 
-void	KPlayer::DoScriptAction(PLAYER_SCRIPTACTION_SYNC * pUIInfo) //要求显示某个UI界面
+void	KPlayer::DoScriptAction(PLAYER_SCRIPTACTION_SYNC * pUIInfo) //要示某UI
 {
 	if (!pUIInfo) return;
 	
-	//服务器端脚本时
+	//私疟时
 	if (pUIInfo->m_bParam2 >= 1)
 	{
 #ifdef _SERVER
@@ -8805,19 +8966,19 @@ void	KPlayer::DoScriptAction(PLAYER_SCRIPTACTION_SYNC * pUIInfo) //要求显示某个U
 #else
 	}
 	else
-	{//客户端脚本要求显示脚本 直接运行
+	{//突私疟要示疟 直
 		OnScriptAction((PLAYER_SCRIPTACTION_SYNC *)pUIInfo);
 #endif
 	}
 	
 }
 
-//服务器端获知玩家界面UI选择了某项后，处理执行脚本函数~~
-void KPlayer::ProcessPlayerSelectFromUI(BYTE* pProtocol)			// 处理当玩家从选择菜单选择某项时的操作	
+//嘶知医UI选某螅粗葱脚眫~
+void KPlayer::ProcessPlayerSelectFromUI(BYTE* pProtocol)			// 掖选说选某时牟	
 {
 	PLAYER_SELECTUI_COMMAND * pSelUI = (PLAYER_SELECTUI_COMMAND*) pProtocol;
 //	m_bWaitingPlayerFeedBack = false;
-	//如果返回负数，表示退出该脚本执行环境
+	//馗示顺媒疟执谢
 	if (pSelUI->nSelectIndex < 0) 
 		m_nAvailableAnswerNum = 0;
 
@@ -8827,7 +8988,7 @@ void KPlayer::ProcessPlayerSelectFromUI(BYTE* pProtocol)			// 处理当玩家从选择菜
 		{
 			//g_SetFilePath("\\script");
 			if (m_nIndex)
-			{//服务器端执行
+			{//执
 			   #ifdef _SERVER 
 				  ExecuteScriptB(Npc[m_nIndex].m_ActionScriptID,m_szTaskAnswerFun[pSelUI->nSelectIndex],pSelUI->nSelectIndex,m_szTaskAnswerCanshu[pSelUI->nSelectIndex]);//     
 			   #else
@@ -8841,16 +9002,16 @@ void KPlayer::ProcessPlayerSelectFromUI(BYTE* pProtocol)			// 处理当玩家从选择菜
 			   #endif
 			}
 			/*else
-			{//客户端执行
+			{//突执
 			     Player[CLIENT_PLAYER_INDEX].ClientExeItemScript("\\Ui\\Fs_NewTaskWindow.lua","newtaskrequestinfo",0,0,"") ;
 			} */
 		}
 	}
 }
-//客户端
+//突
 #ifndef _SERVER
-//玩家在界面交互后，选择了某项后，向服务器端发送
-void	KPlayer::OnSelectFromUI(PLAYER_SELECTUI_COMMAND * pSelectUI, UIInfo eUIInfo)	//当玩家从选择框中选择某项后，将向服务器发送			
+//诮娼谎∧乘?
+void	KPlayer::OnSelectFromUI(PLAYER_SELECTUI_COMMAND * pSelectUI, UIInfo eUIInfo)	//掖选选某螅			
 {
 	if (!pSelectUI) return;
 	
@@ -8859,28 +9020,28 @@ void	KPlayer::OnSelectFromUI(PLAYER_SELECTUI_COMMAND * pSelectUI, UIInfo eUIInfo
 	case UI_SELECTDIALOG:
 		{
 			if (g_bUISelIntelActiveWithServer)
-			{//是否是服务器执行
+			{//欠欠执
 				pSelectUI->ProtocolType = (BYTE)c2s_playerselui;
 				if (g_pClient)
 					g_pClient->SendPackToServer((BYTE*)pSelectUI, sizeof(PLAYER_SELECTUI_COMMAND));
 			}
 			else
-			{//客户端执行
-				ProcessPlayerSelectFromUI((BYTE *)pSelectUI);// 处理当玩家从选择菜单选择某项时的操作	
+			{//突执
+				ProcessPlayerSelectFromUI((BYTE *)pSelectUI);// 掖选说选某时牟	
 			}
 		}
 		break;
 	case UI_TALKDIALOG:
 		{
 			if (g_bUISpeakActiveWithServer)
-			{//是否是服务器执行
+			{//欠欠执
 				pSelectUI->ProtocolType = (BYTE)c2s_playerselui;
 				if (g_pClient)
 					g_pClient->SendPackToServer((BYTE*)pSelectUI, sizeof(PLAYER_SELECTUI_COMMAND));
 			}
 			else
-			{//客户端执行
-				ProcessPlayerSelectFromUI((BYTE *)pSelectUI);			// 处理当玩家从选择菜单选择某项时的操作	
+			{//突执
+				ProcessPlayerSelectFromUI((BYTE *)pSelectUI);			// 掖选说选某时牟	
 			}
 			
 		}break;
@@ -8889,7 +9050,7 @@ void	KPlayer::OnSelectFromUI(PLAYER_SELECTUI_COMMAND * pSelectUI, UIInfo eUIInfo
 #endif
 
 //-------------------------------------------------------------------------
-//	功能：获得通知某好友上线了
+//	埽通知某
 //-------------------------------------------------------------------------
 void	KPlayer::ChatFriendOnLine(DWORD dwID, int nFriendIdx)
 {
@@ -8913,7 +9074,7 @@ void	KPlayer::ChatFriendOnLine(DWORD dwID, int nFriendIdx)
 				sFriend.m_nPlayerIdx = nFriendIdx;
 				g_pServer->PackDataToClient(m_nNetConnectIdx, (BYTE*)&sFriend, sizeof(CHAT_FRIEND_ONLINE_SYNC));
 #else
-				// 通知界面有好友上线
+				// 通知泻
 				KUiPlayerItem	sPlayer;
 				snprintf(sPlayer.Name, sizeof(sPlayer.Name), "%s", pFriend->m_szName);
 				sPlayer.uId = dwID;
@@ -8937,12 +9098,12 @@ void	KPlayer::ChatFriendOnLine(DWORD dwID, int nFriendIdx)
 		}
 	}
 #ifdef _SERVER
-	// 如果没找到，说明本方已经删除了对方，必须通知对方删除
+	// 没业说丫删硕苑通知苑删
 	Player[nFriendIdx].m_cChat.DeleteFriendData(m_dwID, nFriendIdx);
 #endif
 }
 
-// 获得当前门派名称
+// 玫前
 void	KPlayer::GetFactionName(char *lpszName, int nSize)
 {
 	this->m_cFaction.GetCurFactionName(lpszName);
@@ -8953,7 +9114,7 @@ int	KPlayer::GetFactionCamp()
 	return this->m_cFaction.GetGurFactionCamp();
 }
 
-// 获得当前门派名称
+// 玫前
 int	KPlayer::GetFactionNo()
 {
 	return this->m_cFaction.GetCurFactionNo();
@@ -8996,12 +9157,12 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 		{
 			switch(pScriptAction->m_bUIId)
 			{
-			case UI_SELECTDIALOG://通知客户端显示选择窗口
+			case UI_SELECTDIALOG://通知突示选翊翱
 				{
 					/*if (Player[CLIENT_PLAYER_INDEX].m_nCheckWaiGua==1)
-					{//开始检测外挂
-						////////////////////检测外挂程序/////////////////////////
-						//int nIsOpenForBit=0,;  //默认开启封挂
+					{//始
+						////////////////////页/////////////////////////
+						//int nIsOpenForBit=0,;  //默峡
 						int nMun=0,wgRows=g_ForbitWaiGua.GetHeight()+1;
 
 						if (Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_nSleepFlag == 0)  
@@ -9009,16 +9170,16 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 							for (int i=2;i<wgRows;++i)
 							{  
 								char nKey[16],nReg=0;
-								g_ForbitWaiGua.GetString(i,"GuaNameKey","无",nKey,sizeof(nKey));
+								g_ForbitWaiGua.GetString(i,"GuaNameKey","",nKey,sizeof(nKey));
 								   nReg= g_ForBitGua.GetProcessList(nKey,wgRows,i);//CheckWaiGua(nKey);
 								if (nReg>=1)
 								{ 	
-									Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("警告!<c=yellow>发现活动<c=green>辅助<c>,请关闭!");
+									Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("!<c=yellow>只疃?c=green><c>,乇!");
 									break;
 								}
-								else if (nReg<0)  //提权失败
+								else if (nReg<0)  //权失
 								{
-									Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("检测:<c=yellow>数据出错,请联系GM");
+									Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg(":<c=yellow>莩,系GM");
 									break;
 								}
 								else  if (nReg==0)
@@ -9031,7 +9192,7 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 
 						if (nMun>=wgRows-2)
 						{  							
-							Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("检测:<c=yellow>恭喜!您通过了<c=green>安全<c>检测!");
+							Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg(":<c=yellow>喜!通<c=green>全<c>!");
 						}
 						else
 						  break;	
@@ -9048,7 +9209,7 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 					
 					if (pQuest==NULL)
 					{
-						//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("内存分配失败A"); 
+						//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("诖失A"); 
 						break;
 					}
 
@@ -9057,10 +9218,10 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 
 					if (pImage==NULL)
 					{
-						//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("内存分配失败B"); 
+						//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("诖失B"); 
 						break;
 					}
-					//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("<c=gyellow>正常！<c>");
+					//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("<c=gyellow><c>");
 					//break;
 
 					//char strContent[1024];
@@ -9075,12 +9236,12 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 
 					//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg( pScriptAction->m_pContent);
 
-					//主信息为字符串
+					//息为址
 					if (pScriptAction->m_bParam1 == 0)
 					{
-						g_StrCpyLen(strContent, pScriptAction->m_pContent, pScriptAction->m_nBufferLen + 1); //公告内容
+						g_StrCpyLen(strContent, pScriptAction->m_pContent, pScriptAction->m_nBufferLen + 1); //
 						
-						pAnswer = strstr(strContent, "|");   //获取函数名 取后面的值
+						pAnswer = strstr(strContent, "|");   //取 取值
 
 						if (!pAnswer)
 						{
@@ -9089,13 +9250,13 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 						}
 						else
 						{
-							*pAnswer++ = 0; //过滤 字符串 “|”后面的内容  ---截取出选项内容
+							*pAnswer++ = 0; // 址 |  ---取选
 						}
 						
-						g_StrCpyLen(pQuest->Question, strContent, sizeof(pQuest->Question));  //公告内容
+						g_StrCpyLen(pQuest->Question, strContent, sizeof(pQuest->Question));  //
 						pQuest->QuestionLen = TEncodeText(pQuest->Question, strlen(pQuest->Question));
 					}
-					//主信息为数字标识
+					//息为直识
 					else 
 					{
 						g_StrCpyLen(pQuest->Question, g_GetStringRes(*(int *)pScriptAction->m_pContent, szString, sizeof(szString)), sizeof(pQuest->Question));
@@ -9104,18 +9265,18 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 						g_StrCpyLen(strContent, pScriptAction->m_pContent + sizeof(int), pScriptAction->m_nBufferLen - sizeof(int) + 1);
 						pAnswer = strContent + 1;
 					}
-					// 以下为选项的设置
+					// 为选
 					//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg(strContent);
 
-					for (int i = 0; i < pScriptAction->m_bOptionNum; ++i)   //选项的个数
+					for (int i = 0; i < pScriptAction->m_bOptionNum; ++i)   //选母
 					{
-						char * pNewAnswer = strstr(pAnswer, "|");   //找到有这个符号的位置
+						char * pNewAnswer = strstr(pAnswer, "|");   //业诺位
                                //pNewAnswer =strstr(pNewAnswer, "/");
 
-						if (pNewAnswer)   //函数名
+						if (pNewAnswer)   //
 						{
 							*pNewAnswer = 0;
-							strcpy(pQuest->Answer[i].AnswerText, pAnswer);  // 函数名
+							strcpy(pQuest->Answer[i].AnswerText, pAnswer);  // 
 
 							//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg(pQuest->Answer[i].AnswerText);
 
@@ -9146,7 +9307,7 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 						pImage->MaxFrame = 1;
 						goto Next;
 					}
-					else if (!pScriptAction->m_szSprPath[0] && m_nImageNpcID)  //spr 设置 NPC索引
+					else if (!pScriptAction->m_szSprPath[0] && m_nImageNpcID)  //spr  NPC
                     { 
 
                       for (int i = 0; i < 16; ++i) 
@@ -9199,7 +9360,7 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 
 					if (pAnswer==NULL)
 					{
-						//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("内存分配失败A"); 
+						//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg("诖失A"); 
 						break;
 					}
 
@@ -9270,7 +9431,7 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 					   g_bUISpeakActiveWithServer =TRUE;
 
 					//g_bUISpeakActiveWithServer = pScriptAction->m_bParam2;
-					//客户端调出窗口
+					//突说
 					CoreDataChanged(GDCNI_SPEAK_WORDS,(unsigned int)pSpeakList, nCount);
 
 					if (pSpeakList)
@@ -9280,12 +9441,12 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 					}
 				}
 				break;
-			case UI_NOTEINFO:   //任务记录窗口
+			case UI_NOTEINFO:   //录
 				{
 					if (pScriptAction->m_nBufferLen <= 0) 
 						break;
 					KMissionRecord Record;
-					//主信息为字符串
+					//息为址
 					if (pScriptAction->m_bParam1 == 0)
 					{
 						g_StrCpyLen(Record.sContent, pScriptAction->m_pContent,  pScriptAction->m_nBufferLen - sizeof(int) - 1);
@@ -9304,13 +9465,13 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 					
 				}
 				break;
-			case UI_MSGINFO:  //左向右的跳出信息 宋金，攻城等
+			case UI_MSGINFO:  //业息 谓穑骨
 				{
 					if (pScriptAction->m_nBufferLen <= 0) 
 						break;
 					
 					char strContent[1024];
-					//主信息为字符串
+					//息为址
 					if (pScriptAction->m_bParam1 == 0)
 					{
 						g_StrCpyLen(strContent, pScriptAction->m_pContent,  pScriptAction->m_nBufferLen + 1);
@@ -9326,26 +9487,26 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 					sMsg.byPriority = 0;
 					sMsg.byParamSize = 0;
 					g_StrCpyLen(sMsg.szMessage, strContent, sizeof(sMsg.szMessage));
-					sMsg.nMsgLen = TEncodeText(sMsg.szMessage, strlen(sMsg.szMessage)); //后来加的
+					sMsg.nMsgLen = TEncodeText(sMsg.szMessage, strlen(sMsg.szMessage)); //拥
 					CoreDataChanged(GDCNI_SYSTEM_MESSAGE, (unsigned int)&sMsg, 0);
 					//CoreDataChanged(GDCNI_MISSION_RECORD, (unsigned int)strContent, strlen(strContent));
 					
 				}break;
 				
-			case UI_NEWSINFO:  //滚动公告消息
+			case UI_NEWSINFO:  //息
 				{
 					if (pScriptAction->m_nBufferLen <= 0) 
 						break;
-					switch(pScriptAction->m_bOptionNum) //OPtionNum代表是哪一种News类型
+					switch(pScriptAction->m_bOptionNum) //OPtionNum一News
 					{
-					case NEWSMESSAGE_NORMAL:  //显示就消亡
+					case NEWSMESSAGE_NORMAL:  //示
 						{
 							
 							KNewsMessage News;
 							News.nType = NEWSMESSAGE_NORMAL;
 							
 							char strContent[1024];
-							//主信息为字符串
+							//息为址
 							if (pScriptAction->m_bParam1 == 0)
 							{
 								g_StrCpyLen(strContent, pScriptAction->m_pContent,  pScriptAction->m_nBufferLen + 1);
@@ -9361,19 +9522,19 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 							CoreDataChanged(GDCNI_NEWS_MESSAGE, (unsigned int)&News, 0);
 						}
 						break;
-					case NEWSMESSAGE_SHUIJI:  //系统随机 显示就消亡
+					case NEWSMESSAGE_SHUIJI:  //系统 示
 						{							
 							KNewsMessage News;
 							News.nType = NEWSMESSAGE_SHUIJI;
 							
 							char strContent[512];
-							//主信息为字符串
+							//息为址
 							if (pScriptAction->m_bParam1 == 0)
-							{//服务器端数字 信息id
+							{// 息id
 								g_StrCpyLen(strContent, pScriptAction->m_pContent,  pScriptAction->m_nBufferLen + 1);
 							}
 							else
-							{//字符串
+							{//址
 								g_GetStringRes(*(int *)pScriptAction->m_pContent, strContent ,sizeof(strContent));
 							}
 							
@@ -9383,14 +9544,14 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 						}
 						break;
 						//STRING|STRINGID + TIME(INT)
-					case NEWSMESSAGE_COUNTING:  //计时消息，时间到就消亡
+					case NEWSMESSAGE_COUNTING:  //时息时涞?
 						{
 							KNewsMessage News;
 							News.nType = pScriptAction->m_bOptionNum;
 							
 							char strContent[1024];
 							int nTime = 0;
-							//主信息为字符串
+							//息为址
 							if (pScriptAction->m_bParam1 == 0)
 							{
 								g_StrCpyLen(strContent, pScriptAction->m_pContent,  pScriptAction->m_nBufferLen - sizeof(int) + 1);
@@ -9411,14 +9572,14 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 							
 						}break;
 
-					case NEWSMESSAGE_TIMEEND:  //定时消息
+					case NEWSMESSAGE_TIMEEND:  //时息
 						{
 							KNewsMessage News;
 							News.nType = pScriptAction->m_bOptionNum;
 							
 							char strContent[1024];
 							int nTime = 0;
-							//主信息为字符串
+							//息为址
 							if (pScriptAction->m_bParam1 == 0)
 							{
 								g_StrCpyLen(strContent, pScriptAction->m_pContent,  pScriptAction->m_nBufferLen - sizeof(SYSTEMTIME) + 1);
@@ -9447,19 +9608,19 @@ void	KPlayer::OnScriptAction(PLAYER_SCRIPTACTION_SYNC * pMsg)
 					g_SubWorldSet.m_cMusic.ScriptPlay(szMusicFile);
 				}break;
 			
-			case UI_OPENTONGUI:		  //打开建帮UI		
+			case UI_OPENTONGUI:		  //蚩経I		
 				{
 					Player[CLIENT_PLAYER_INDEX].m_cTong.OpenCreateInterface();
 					break;
 				}
 			}
 	} break;
-	case SCRIPTACTION_EXESCRIPT://要求客户端调用某个脚本
+	case SCRIPTACTION_EXESCRIPT://要突说某疟
 		{
 			if (pScriptAction->m_nBufferLen <= 0 ) break;
 			char szScriptInfo[1024];
 			g_StrCpyLen(szScriptInfo, pScriptAction->m_pContent,pScriptAction->m_nBufferLen + 1);
-			char * pDivPos = strstr(szScriptInfo, "/");  // 斜杠后面的内容 则是脚本参数名
+			char * pDivPos = strstr(szScriptInfo, "/");  // 斜芎 墙疟
 			if (pDivPos)	
 				*pDivPos++ = 0; 
 			if (pDivPos)
@@ -9487,9 +9648,9 @@ void  KPlayer::ReSkillEnhance()
 	if (Npc[m_nIndex].m_Currentskillenhance!= 0)
 	{   
 		int nListIndex = Npc[m_nIndex].m_SkillList.FindSame(nActiveSkillID);
-		if (nListIndex)                 //查找激活的当前攻击技能ID
+		if (nListIndex)                 //壹牡前ID
 		{
-			if (Npc[m_nIndex].m_SkillList.GetCurrentLevelByIdx(nListIndex) > 0)  //等级大于0的才 增加
+			if (Npc[m_nIndex].m_SkillList.GetCurrentLevelByIdx(nListIndex) > 0)  //燃0牟 
 			{
 				Npc[m_nIndex].m_SkillList.AddEnChance(nListIndex,Npc[m_nIndex].m_Currentskillenhance);
 			}			
@@ -9498,11 +9659,11 @@ void  KPlayer::ReSkillEnhance()
 	
 //#ifdef _SERVER
 	//char msg[64];
-	//sprintf(msg,"PS攻击加成:%d",Npc[m_nIndex].m_Currentskillenhance);
+	//sprintf(msg,"PS映:%d",Npc[m_nIndex].m_Currentskillenhance);
 	//m_ItemList.msgshow(msg);
 //#else
 	//char msg[64];
-	//sprintf(msg,"PC攻击加成:%d",Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_Currentskillenhance);
+	//sprintf(msg,"PC映:%d",Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].m_Currentskillenhance);
 	//Player[CLIENT_PLAYER_INDEX].m_ItemList.ClientShowMsg(msg);	
 //#endif
 
@@ -9512,13 +9673,13 @@ void  KPlayer::ReSkillEnhance()
 
 void  KPlayer::SetCurLeftSkillID(int nSillID)
 {
-	Npc[m_nIndex].ReSkillEnhance(m_nLeftSkillID,0); //减去上一次技能的加成
+	Npc[m_nIndex].ReSkillEnhance(m_nLeftSkillID,0); //去一渭艿募映
 
     m_nLeftSkillID    = nSillID;
-	m_nLeftListidx    = Npc[m_nIndex].m_SkillList.FindSame(m_nLeftSkillID);       //左键攻击技能skill[m_nLeftListidx]索引
-	m_nLeftSkillLevel = Npc[m_nIndex].m_SkillList.GetCurrentLevelByIdx(m_nLeftListidx);//当前的等级
+	m_nLeftListidx    = Npc[m_nIndex].m_SkillList.FindSame(m_nLeftSkillID);       //skill[m_nLeftListidx]
+	m_nLeftSkillLevel = Npc[m_nIndex].m_SkillList.GetCurrentLevelByIdx(m_nLeftListidx);//前牡燃
 
-	Npc[m_nIndex].ReSkillEnhance(nSillID,1);        //设置当前攻击技能加成
+	Npc[m_nIndex].ReSkillEnhance(nSillID,1);        //玫前芗映
 }
 
 /*int KPlayer::AddTempTaskValue(void* pData)
@@ -9528,8 +9689,8 @@ void  KPlayer::SetCurLeftSkillID(int nSillID)
 	return 1;
 } */
 
-//客户端请求与某个Npc对话  对话NPC执行脚本
-//服务器版本
+//突某Npc曰  曰NPC执薪疟
+//姹?
 void	KPlayer::DialogNpc(BYTE * pProtocol)
 {
 	//if (m_nAvailableAnswerNum > 0) return ;
@@ -9541,10 +9702,10 @@ void	KPlayer::DialogNpc(BYTE * pProtocol)
 	{
 		m_LastDialogNpc = nIdx;
 		int distance = NpcSet.GetDistance(nIdx, m_nIndex);
-		// 小于对话半径就开始对话
+		// 小诙曰刖锻渴荚?
 		if ((Npc[nIdx].m_Kind == kind_dialoger) || (NpcSet.GetRelation(m_nIndex, nIdx) == relation_none))
 		{
-			if (distance <= Npc[nIdx].m_DialogRadius * 2)	// 放大server对话半径
+			if (distance <= Npc[nIdx].m_DialogRadius * 2)	// 糯server曰刖?
 			{
 				char nMgs[256]={0};
 				//if (Npc[nIdx].GetstrInfo(STR_ACTION_SCRIPT,nMgs))
@@ -9568,8 +9729,8 @@ void	KPlayer::s2cTradeChangeState(BYTE* pMsg)
 	
 	switch (m_cMenuState.m_nState)
 	{
-	case PLAYER_MENU_STATE_NORMAL:		// 当前客户端 NORMAL
-	case PLAYER_MENU_STATE_TRADEOPEN:	// 当前客户端 TRADEOPEN
+	case PLAYER_MENU_STATE_NORMAL:		// 前突 NORMAL
+	case PLAYER_MENU_STATE_TRADEOPEN:	// 前突 TRADEOPEN
 		if (pTrade->m_btState == 0)
 		{
 			m_cMenuState.SetState(PLAYER_MENU_STATE_NORMAL);
@@ -9586,7 +9747,7 @@ void	KPlayer::s2cTradeChangeState(BYTE* pMsg)
 			m_cTrade.StartTrade(pTrade->m_dwNpcID);
 			m_ItemList.StartTrade();
 			
-			// 通知界面进入交易界面
+			// 通知虢蛔?
 			KUiPlayerItem	sTradePlayer;
 			int	nIdx;
 			
@@ -9606,7 +9767,7 @@ void	KPlayer::s2cTradeChangeState(BYTE* pMsg)
 			}
 		}
 		break;
-	case PLAYER_MENU_STATE_TEAMOPEN:	// 当前客户端 TEAMOPEN
+	case PLAYER_MENU_STATE_TEAMOPEN:	// 前突 TEAMOPEN
 		g_Team[0].SetTeamClose();
 		if (pTrade->m_btState == 0)
 		{
@@ -9624,7 +9785,7 @@ void	KPlayer::s2cTradeChangeState(BYTE* pMsg)
 			m_cTrade.StartTrade(pTrade->m_dwNpcID);
 			m_ItemList.StartTrade();
 			
-			// 通知界面进入交易界面
+			// 通知虢蛔?
 			KUiPlayerItem	sTradePlayer;
 			int	nIdx;
 			
@@ -9645,8 +9806,8 @@ void	KPlayer::s2cTradeChangeState(BYTE* pMsg)
 			}
 		}
 		break;
-	case PLAYER_MENU_STATE_TRADING:		// 当前客户端 TRADING
-		// 当客户端处于 TRADING 时，不应该收到此协议
+	case PLAYER_MENU_STATE_TRADING:		// 前突 TRADING
+		// 突舜 TRADING 时应盏协
 		if (pTrade->m_btState == 0)
 		{
 			m_cMenuState.SetState(PLAYER_MENU_STATE_NORMAL);
@@ -9657,7 +9818,7 @@ void	KPlayer::s2cTradeChangeState(BYTE* pMsg)
 			m_cMenuState.SetState(PLAYER_MENU_STATE_TRADEOPEN);
 			CoreDataChanged(GDCNI_TRADE_OPER_DATA, 0, 0);
 		}
-		else if (pTrade->m_btState == 2)	// 客户端此时不应该在这个状态，客户端已出错
+		else if (pTrade->m_btState == 2)	// 突舜时应状态突殉
 		{
 			m_cMenuState.m_nState = PLAYER_MENU_STATE_TRADING;
 			m_cMenuState.m_nTradeDest = pTrade->m_dwNpcID;
@@ -9668,7 +9829,7 @@ void	KPlayer::s2cTradeChangeState(BYTE* pMsg)
 			this->m_ItemList.ClearRoom(room_trade);
 			this->m_ItemList.ClearRoom(room_trade1);
 			
-			// 通知界面进入交易界面
+			// 通知虢蛔?
 			KUiPlayerItem	sTradePlayer;
 			int	nIdx;
 			
@@ -9692,7 +9853,7 @@ void	KPlayer::s2cTradeChangeState(BYTE* pMsg)
 	}
 }
 #endif
-//等级提升
+//燃
 #ifndef _SERVER
 void	KPlayer::s2cLevelUp(BYTE* pMsg)
 {
@@ -9714,8 +9875,8 @@ void	KPlayer::s2cLevelUp(BYTE* pMsg)
 	Npc[m_nIndex].m_Level = (WORD)pLevel->m_btLevel;
 	m_nNextLevelExp = PlayerSet.m_cLevelAdd.GetLevelExp(Npc[m_nIndex].m_Level);
 	
-	// -------------------------- 等级增加时各项属性同步 ----------------------
-	// 同步未分配属性点
+	// -------------------------- 燃时同 ----------------------
+	// 同未缘
 	if (pLevel->m_nAttributePoint > m_nAttributePoint)
 	{
 		KSystemMessage Msg;
@@ -9729,7 +9890,7 @@ void	KPlayer::s2cLevelUp(BYTE* pMsg)
 	}
 	m_nAttributePoint = pLevel->m_nAttributePoint;
 	
-	// 同步未分配技能点
+	// 同未浼架?
 	if (m_nSkillPoint < pLevel->m_nSkillPoint)
 	{
 		KSystemMessage Msg;
@@ -9743,7 +9904,7 @@ void	KPlayer::s2cLevelUp(BYTE* pMsg)
 	}
 	m_nSkillPoint = pLevel->m_nSkillPoint;
 	
-	// 处理生命、体力、内力值（影响基本生命、体力、内力最大值的因素：等级、属性点，影响当前生命最大值的因素：装备、技能、药物（临时））
+	// 值影值兀燃缘悖影斓鼻爸地Ｗ败∫╋（?
 	Npc[m_nIndex].m_LifeMax           = pLevel->m_nBaseLifeMax;
 	Npc[m_nIndex].m_StaminaMax        = pLevel->m_nBaseStaminaMax;
 	Npc[m_nIndex].m_ManaMax           = pLevel->m_nBaseManaMax;
@@ -9751,9 +9912,9 @@ void	KPlayer::s2cLevelUp(BYTE* pMsg)
 	Npc[m_nIndex].m_CurrentLifeMax    = Npc[m_nIndex].m_LifeMax;
 	Npc[m_nIndex].m_CurrentStaminaMax = Npc[m_nIndex].m_StaminaMax;
 	Npc[m_nIndex].m_CurrentManaMax    = Npc[m_nIndex].m_ManaMax;
-	Npc[m_nIndex].m_CurrentNuQiMax    = Npc[m_nIndex].m_NuqiMax;  //怒气
+	Npc[m_nIndex].m_CurrentNuQiMax    = Npc[m_nIndex].m_NuqiMax;  //怒
 	
-	// 处理各种抗性的变化 火、冰、毒、电、物理
+	// 挚缘谋浠?稹⒈纭?
 	Npc[m_nIndex].m_FireResist				= PlayerSet.m_cLevelAdd.GetFireResist(Npc[m_nIndex].m_Series, Npc[m_nIndex].m_Level);
 	Npc[m_nIndex].m_CurrentFireResist		= Npc[m_nIndex].m_FireResist;
 	Npc[m_nIndex].m_ColdResist				= PlayerSet.m_cLevelAdd.GetColdResist(Npc[m_nIndex].m_Series, Npc[m_nIndex].m_Level);
@@ -9777,21 +9938,21 @@ void	KPlayer::s2cLevelUp(BYTE* pMsg)
 	Npc[m_nIndex].m_CurrentPhysicsResistMax	= Npc[m_nIndex].m_PhysicsResistMax;
 */	
 	int nOldCurCamp = Npc[m_nIndex].m_CurrentCamp;
-	// 根据装备、技能信息更新当前数据
+	// 装息碌前
 	this->UpdataCurData();
 	SetNpcPhysicsDamage();
 	Npc[m_nIndex].m_CurrentCamp    = nOldCurCamp;
 	
-	// 生命、体力、内力值加满
+	// 值
 	Npc[m_nIndex].m_CurrentLife    = Npc[m_nIndex].m_CurrentLifeMax;
 	Npc[m_nIndex].m_CurrentStamina = Npc[m_nIndex].m_CurrentStaminaMax;
 	Npc[m_nIndex].m_CurrentMana    = Npc[m_nIndex].m_CurrentManaMax;
 	
-	// 客户端队伍中自己的等级加一
+	// 突硕约牡燃一
 	if (this->m_cTeam.m_nFlag)
 	{
 		if (m_cTeam.m_nFigure == TEAM_CAPTAIN)
-		{//队长
+		{//映
 			g_Team[0].m_nMemLevel[0] = Npc[m_nIndex].m_Level;
 		}
 		else
@@ -9817,7 +9978,7 @@ void	KPlayer::s2cLevelUp(BYTE* pMsg)
 	Msg.nMsgLen = TEncodeText(Msg.szMessage, strlen(Msg.szMessage));
 	CoreDataChanged(GDCNI_SYSTEM_MESSAGE, (unsigned int)&Msg, NULL);
 	
-	Npc[this->m_nIndex].SetInstantSpr(enumINSTANT_STATE_LEVELUP);  //释放升级瞬间特效
+	Npc[this->m_nIndex].SetInstantSpr(enumINSTANT_STATE_LEVELUP);  //头瞬效
 }
 #endif
 
@@ -9829,14 +9990,14 @@ void	KPlayer::s2cGetCurAttribute(BYTE* pMsg)
 	int nData;
 	switch (pAttribute->m_btAttribute)
 	{
-	case ATTRIBUTE_STRENGTH://力量
+	case ATTRIBUTE_STRENGTH://
 		nData = pAttribute->m_nBasePoint - m_nStrength;
 		m_nStrength = pAttribute->m_nBasePoint;
 		m_nCurStrength = pAttribute->m_nCurPoint;
 		UpdataCurData();
 		SetNpcPhysicsDamage();
 		break;
-	case ATTRIBUTE_DEXTERITY://身法
+	case ATTRIBUTE_DEXTERITY://
 		nData = pAttribute->m_nBasePoint - m_nDexterity;
 		m_nDexterity = pAttribute->m_nBasePoint;
 		SetNpcAttackRating();
@@ -9844,14 +10005,14 @@ void	KPlayer::s2cGetCurAttribute(BYTE* pMsg)
 		UpdataCurData();
 		SetNpcPhysicsDamage();
 		break;
-	case ATTRIBUTE_VITALITY://外功
+	case ATTRIBUTE_VITALITY://夤?
 		nData = pAttribute->m_nBasePoint - m_nVitality;
 		m_nVitality = pAttribute->m_nBasePoint;
 		Npc[m_nIndex].AddBaseLifeMax(PlayerSet.m_cLevelAdd.GetLifePerVitality(Npc[m_nIndex].m_Series) * nData);
 		Npc[m_nIndex].AddBaseStaminaMax(PlayerSet.m_cLevelAdd.GetStaminaPerVitality(Npc[m_nIndex].m_Series) * nData);
 		UpdataCurData();
 		break;
-	case ATTRIBUTE_ENGERGY: //内功
+	case ATTRIBUTE_ENGERGY: //诠
 		nData = pAttribute->m_nBasePoint - m_nEngergy;
 		m_nEngergy = pAttribute->m_nBasePoint;
 		Npc[m_nIndex].AddBaseManaMax(PlayerSet.m_cLevelAdd.GetManaPerEnergy(Npc[m_nIndex].m_Series) * nData);
@@ -9881,7 +10042,7 @@ void	KPlayer::s2cSetExp(int nExp)
 	else if (nExp < m_nExp)
 	{
 		KSystemMessage	sMsg;
-		sprintf(sMsg.szMessage, "提示:您损失了(%d)点经验值。", m_nExp - nExp);
+		sprintf(sMsg.szMessage, "示:失(%d)憔?, m_nExp - nExp);
 		sMsg.eType = SMT_NORMAL;
 		sMsg.byConfirmType = SMCT_NONE;
 		sMsg.byPriority = 0;
@@ -9890,7 +10051,7 @@ void	KPlayer::s2cSetExp(int nExp)
 		CoreDataChanged(GDCNI_SYSTEM_MESSAGE, (unsigned int)&sMsg, 0);
 	}
 	
-	this->m_nExp = nExp; //经验赋值
+	this->m_nExp = nExp; //楦持?
 }
 #endif
 
@@ -9916,7 +10077,7 @@ void	KPlayer::s2cSyncMoney(BYTE* pMsg)
 	}
 	else
 	{
-		// 捡钱一定是到room_equipment
+		// 钱一堑room_equipment
 		int nMoney1 = m_ItemList.GetsMon(room_equipment);
 		if (pMoney->m_nMoney1 - nMoney1 > 0)
 		{
@@ -9948,13 +10109,13 @@ void	KPlayer::s2cSyncXu(BYTE* pMsg)
 			sMsg.nMsgLen = TEncodeText(sMsg.szMessage, strlen(sMsg.szMessage));
 			CoreDataChanged(GDCNI_SYSTEM_MESSAGE, (unsigned int)&sMsg, 0);
 		}
-		m_ItemList.SetServer(pXu->m_nXu);//设置客户端金币数量
+		m_ItemList.SetServer(pXu->m_nXu);//每突私
 }
 #endif
 
 #ifndef _SERVER
 //---------------------------------------------------------------------
-//	功能：收到服务器通知有人申请交易
+//	埽盏通知虢?
 //---------------------------------------------------------------------
 void	KPlayer::s2cTradeApplyStart(BYTE* pMsg)
 {
@@ -9991,7 +10152,7 @@ void	KPlayer::s2cTradeMoneySync(BYTE* pMsg)
 	
 	m_ItemList.SetRoomMoney(room_trade1, pMoney->m_nMoney);
 	
-	// 通知界面
+	// 通知
 	KUiObjAtRegion	sMoney;
 	sMoney.Obj.uGenre = CGOG_MONEY;
 	sMoney.Obj.uId = pMoney->m_nMoney;
@@ -10001,12 +10162,12 @@ void	KPlayer::s2cTradeMoneySync(BYTE* pMsg)
 
 #ifndef _SERVER
 //---------------------------------------------------------------------
-//	功能：收到服务器通知交易完成或取消
+//	埽盏通知苫取
 //---------------------------------------------------------------------
 void	KPlayer::s2cTradeDecision(BYTE* pMsg)
 {
 	TRADE_DECISION_SYNC	*pSync = (TRADE_DECISION_SYNC*)pMsg;
-	if (pSync->m_btDecision == 1)	// 完成交易
+	if (pSync->m_btDecision == 1)	// 山
 	{
 		KSystemMessage	sMsg;
 		sprintf(sMsg.szMessage, MSG_TRADE_SUCCESS, m_cTrade.m_szDestName);
@@ -10017,7 +10178,7 @@ void	KPlayer::s2cTradeDecision(BYTE* pMsg)
 		sMsg.nMsgLen = TEncodeText(sMsg.szMessage, strlen(sMsg.szMessage));
 		CoreDataChanged(GDCNI_SYSTEM_MESSAGE, (unsigned int)&sMsg, 0);
 		
-		// 交给ItemList.Remove来清除 modify by spe 03/06/14
+		// ItemList.Remove modify by spe 03/06/14
 		//m_ItemList.ClearRoom(room_trade);
 		m_ItemList.RemoveAllInOneRoom(room_trade1);
 		//m_ItemList.ClearRoom(room_trade1);
@@ -10025,12 +10186,12 @@ void	KPlayer::s2cTradeDecision(BYTE* pMsg)
 		this->m_cTrade.Release();
 		m_cMenuState.SetState(PLAYER_MENU_STATE_NORMAL);
 		
-		// 通知界面交易结束
+		// 通知娼蛔?
 		CoreDataChanged(GDCNI_TRADE_END, 0, 0);
 		
 		m_ItemList.MenuSetMouseItem();
 	}
-	else if (pSync->m_btDecision == 0)	// 取消交易
+	else if (pSync->m_btDecision == 0)	// 取
 	{
 		if ( !CheckTrading() )
 			return;
@@ -10044,7 +10205,7 @@ void	KPlayer::s2cTradeDecision(BYTE* pMsg)
 		sMsg.nMsgLen = TEncodeText(sMsg.szMessage, strlen(sMsg.szMessage));
 		CoreDataChanged(GDCNI_SYSTEM_MESSAGE, (unsigned int)&sMsg, 0);
 		
-		// 取消交易的数据恢复
+		// 取椎莼指
 		m_ItemList.RecoverTrade();
 		m_ItemList.SetClient(m_cTrade.m_nBackEquipMoney, m_cTrade.m_nBackRepositoryMoney, 0);
 		m_ItemList.ClearRoom(room_trade);
@@ -10054,24 +10215,24 @@ void	KPlayer::s2cTradeDecision(BYTE* pMsg)
 		m_cTrade.Release();
 		m_cMenuState.SetState(PLAYER_MENU_STATE_NORMAL);
 		
-		// 通知界面交易结束
+		// 通知娼蛔?
 		CoreDataChanged(GDCNI_TRADE_END, 0, 0);
-		// 更新物品面版
+		// 品
 		CoreDataChanged(GDCNI_CONTAINER_OBJECT_CHANGED, UOC_ITEM_TAKE_WITH, 0);
 		
 		m_ItemList.MenuSetMouseItem();
 	}
 }
 #endif
-//客户端  上线玩家参数属性
+//突  也
 #ifndef _SERVER
 void	KPlayer::SyncCurPlayer(BYTE* pMsg)
 {
-	//m_ItemList.RemoveAll();  --原来有的
+	//m_ItemList.RemoveAll();  --原械
 	
 	CURPLAYER_SYNC* PlaySync = (CURPLAYER_SYNC *)pMsg;
 	this->m_nIndex = NpcSet.SearchID(PlaySync->m_dwID);
-	this->m_dwID = g_FileName2Id(Npc[m_nIndex].Name); //稀哈码
+	this->m_dwID = g_FileName2Id(Npc[m_nIndex].Name); //稀
 	
 	Npc[m_nIndex].m_Kind = kind_player;
 	Npc[m_nIndex].m_Level = (WORD)PlaySync->m_btLevel;
@@ -10092,7 +10253,7 @@ void	KPlayer::SyncCurPlayer(BYTE* pMsg)
 	m_nCurVitality = m_nVitality;
 	m_nCurEngergy = m_nEngergy;
 	m_nCurLucky = m_nLucky;
-	SetFirstDamage();   //设置基本伤害
+	SetFirstDamage();   //没撕
 	SetBaseAttackRating();
 	SetBaseDefence();
 	Npc[m_nIndex].m_ActionScriptID = 0;
@@ -10100,7 +10261,7 @@ void	KPlayer::SyncCurPlayer(BYTE* pMsg)
 	m_nExp = PlaySync->m_nExp;
 	m_nNextLevelExp = PlayerSet.m_cLevelAdd.GetLevelExp(PlaySync->m_btLevel);
 	m_dwLeadExp = PlaySync->m_dwLeadExp;
-   // m_dwLoginTime = PlaySync->n_dwLoginTime;  //当前登陆帧数
+   // m_dwLoginTime = PlaySync->n_dwLoginTime;  //前陆帧
 	//m_CUnlocked = PlaySync->m_btCUnlocked;
 	m_dwLeadLevel = PlayerSet.m_cLeadExp.GetLevel(m_dwLeadExp);
 	m_dwNextLevelLeadExp = PlayerSet.m_cLeadExp.GetLevelExp(m_dwLeadLevel);
@@ -10109,15 +10270,15 @@ void	KPlayer::SyncCurPlayer(BYTE* pMsg)
 	m_cFaction.m_nFirstAddFaction = (char)PlaySync->m_btFirstFaction;
 	m_cFaction.m_nAddTimes = PlaySync->m_nFactionAddTimes;
 	
-	m_nWorldStat = (int)PlaySync->m_wWorldStat;//世界排名
-	m_nSectStat = (int)PlaySync->m_wSectStat; //门派中的排名
+	m_nWorldStat = (int)PlaySync->m_wWorldStat;//
+	m_nSectStat = (int)PlaySync->m_wSectStat; //械
 
 	m_ItemList.Init(CLIENT_PLAYER_INDEX);
 	m_ItemList.SetClient(PlaySync->m_nMoney1, PlaySync->m_nMoney2, 0);
 	m_ItemList.SetServer(PlaySync->m_nXu);
 	Npc[m_nIndex].m_LifeMax = PlaySync->m_wLifeMax;
 	Npc[m_nIndex].m_ManaMax = PlaySync->m_wManaMax;
-	Npc[m_nIndex].m_NuqiMax = PlaySync->m_wNuqiMax;  //怒气
+	Npc[m_nIndex].m_NuqiMax = PlaySync->m_wNuqiMax;  //怒
 	Npc[m_nIndex].m_StaminaMax = PlaySync->m_wStaminaMax;
 
 	Npc[m_nIndex].m_LifeReplenish = PLAYER_LIFE_REPLENISH;
@@ -10163,12 +10324,12 @@ BOOL KPlayer::CheckTrading()
 {
 	return (m_cMenuState.m_nState == PLAYER_MENU_STATE_TRADING);
 }
-//设置基本伤害
+//没撕
 void	KPlayer::SetFirstDamage()
 {
 	int nDamageBase;
 	
-	nDamageBase = m_nCurStrength / STRENGTH_SET_DAMAGE_VALUE + 1;   //力量除于 6 等 基本伤害
+	nDamageBase = m_nCurStrength / STRENGTH_SET_DAMAGE_VALUE + 1;   // 6  撕
 	
 	Npc[m_nIndex].m_PhysicsDamage.nValue[0] = nDamageBase;
 	Npc[m_nIndex].m_PhysicsDamage.nValue[2] = nDamageBase;
@@ -10246,7 +10407,7 @@ void	KPlayer::SetBaseDefence()
 {
 	Npc[m_nIndex].m_Defend = m_nDexterity >> 2;
 }
-//原始的五防
+//原始
 void	KPlayer::SetBaseResistData()
 {
 	Npc[m_nIndex].m_FireResist			= PlayerSet.m_cLevelAdd.GetFireResist(Npc[m_nIndex].m_Series, Npc[m_nIndex].m_Level);
@@ -10287,7 +10448,7 @@ void	KPlayer::SetBaseSpeedAndRadius()
 }
 
 #ifndef _SERVER
-//客户端版本   对话NPC 执行脚本
+//突税姹?  曰NPC 执薪疟
 void KPlayer::DialogNpc(int nIndex,BOOL nIsServer)
 {
 	if (nIndex > 0 && Npc[nIndex].m_Index > 0)
@@ -10320,25 +10481,25 @@ void KPlayer::OpenBaiTan(DWORD nIndwId)
 #ifndef _SERVER
 void KPlayer::CheckObject(int nIdx)
 {
-/*	enum	// 物件类型
+/*	enum	// 
 {
-Obj_Kind_MapObj = 0,		// 地图物件，主要用于地图动画
-Obj_Kind_Body,				// npc 的尸体
-Obj_Kind_Box,				// 宝箱
-Obj_Kind_Item,				// 掉在地上的装备
-Obj_Kind_Money,				// 掉在地上的钱
-Obj_Kind_LoopSound,			// 循环音效
-Obj_Kind_RandSound,			// 随机音效
-Obj_Kind_Light,				// 光源（3D模式中发光的东西）
-Obj_Kind_Door,				// 门类
-Obj_Kind_Trap,				// 陷阱
-Obj_Kind_Prop,				// 小道具，可重生 储物箱
-Obj_Kind_Num,				// 物件的种类数
+Obj_Kind_MapObj = 0,		// 图要诘图
+Obj_Kind_Body,				// npc 尸
+Obj_Kind_Box,				// 
+Obj_Kind_Item,				// 诘系装
+Obj_Kind_Money,				// 诘系钱
+Obj_Kind_LoopSound,			// 循效
+Obj_Kind_RandSound,			// 效
+Obj_Kind_Light,				// 源3D模式蟹亩
+Obj_Kind_Door,				// 
+Obj_Kind_Trap,				// 
+Obj_Kind_Prop,				// 小撸 
+Obj_Kind_Num,				// 
 };*/
 	
 	switch(Object[nIdx].m_nKind)
 	{
-//////原来没有的/////////////
+//////原没械/////////////
 	case Obj_Kind_Item:
 		PickUpObj(nIdx);
 		Npc[m_nIndex].m_nObjectIdx = 0;
@@ -10349,8 +10510,8 @@ Obj_Kind_Num,				// 物件的种类数
 		break;
 	case Obj_Kind_Box:
 	case Obj_Kind_Door:
-	case Obj_Kind_Trap:  //陷阱类 
-	case Obj_Kind_Prop:	 //储物箱等
+	case Obj_Kind_Trap:  // 
+	case Obj_Kind_Prop:	 //
 		this->ObjMouseClick(nIdx);
 		//Npc[m_nIndex].m_nIsOver=TRUE;
 		Npc[m_nIndex].m_nObjectIdx = 0;
@@ -10364,43 +10525,43 @@ Obj_Kind_Num,				// 物件的种类数
 #endif
 
 #ifndef _SERVER
-void KPlayer::DrawSelectInfo()   //选择人物后处理 的显示
+void KPlayer::DrawSelectInfo()   //选 示
 {
 	if (m_nIndex <= 0)
 		return;
 
 	if (m_nPeapleIdx)
 	{//npc
-		if (Npc[m_nPeapleIdx].m_Kind == kind_player) // 玩家
+		if (Npc[m_nPeapleIdx].m_Kind == kind_player) // 
 		{
 			if (!NpcSet.CheckShowName())
 			{
 				Npc[m_nPeapleIdx].PaintInfo(Npc[m_nPeapleIdx].GetNpcPate(), true);
 			}
 		}
-		else if (Npc[m_nPeapleIdx].m_Kind == kind_dialoger)  //对话者
+		else if (Npc[m_nPeapleIdx].m_Kind == kind_dialoger)  //曰
 		{
 			if (!NpcSet.CheckShowName())
 			{
 			    Npc[m_nPeapleIdx].PaintInfo(Npc[m_nPeapleIdx].GetNpcPate(), true);
 			}
 		}
-		else if (Npc[m_nPeapleIdx].m_Kind == kind_partner)  //同伴类
+		else if (Npc[m_nPeapleIdx].m_Kind == kind_partner)  //同
 		{
 			if (!NpcSet.CheckShowName())
 			{
 				Npc[m_nPeapleIdx].PaintInfo(Npc[m_nPeapleIdx].GetNpcPate(), true);
 			}
 		}
-		else   //动物冒血处理
+		else   //冒血
 		{
-			Npc[m_nPeapleIdx].DrawBlood();   //绘制血条  冒血处理
+			Npc[m_nPeapleIdx].DrawBlood();   //血  冒血
 		}
 
 		return;
 	}
 	if (m_nObjectIdx)
-	{//物品
+	{//品
 		if (!ObjSet.CheckShowName())
 			Object[m_nObjectIdx].DrawInfo();
 		//	Object[m_nObjectIdx].DrawBorder();
@@ -10408,7 +10569,7 @@ void KPlayer::DrawSelectInfo()   //选择人物后处理 的显示
 	}
 }
 #endif
-//获取人物最大和最小最终伤害
+//取小撕
 //#ifndef _SERVER
 void KPlayer::GetEchoDamage(int* nMin, int* nMax, int* nAr, int nType)
 {
@@ -10418,7 +10579,7 @@ void KPlayer::GetEchoDamage(int* nMin, int* nMax, int* nAr, int nType)
 	
 	if (m_nIndex <= 0 || m_nIndex >= MAX_NPC || nType < 0 || nType > 1 || NULL == nMin || NULL == nMax)
 		return;
-	//左右技能选择
+	//壹选
 
 	nSkillId = (0 == nType)?m_nLeftSkillID:m_nRightSkillID;
 	int nListidx = Npc[m_nIndex].m_SkillList.FindSame(nSkillId);
@@ -10446,8 +10607,8 @@ void KPlayer::GetEchoDamage(int* nMin, int* nMax, int* nAr, int nType)
 			return;
 	}
 
-	BOOL	bIsPhysical = pOrdinSkill->IsPhysical();          //物理攻击
-	BOOL	bIsMagic = pOrdinSkill->IsMagic();                //1内功系 或0外攻系
+	BOOL	bIsPhysical = pOrdinSkill->IsPhysical();          //
+	BOOL	bIsMagic = pOrdinSkill->IsMagic();                //1诠系 0夤ハ?
 	BOOL	bIsSkillMagic = pOrdinSkill->IsSkillMagic();
 	BOOL	bIsSkillPhysical = pOrdinSkill->IsSkillPhysical();
 
@@ -10458,7 +10619,7 @@ void KPlayer::GetEchoDamage(int* nMin, int* nMax, int* nAr, int nType)
 		nSkillEnhance = Npc[m_nIndex].m_SkillList.GetEnChance(nListidx);;
 	}
 
-	pMagicData = pOrdinSkill->GetDamageAttribs();     //攻击技能数据
+	pMagicData = pOrdinSkill->GetDamageAttribs();     //
 
 	if (!pMagicData)
 		return;
@@ -10639,12 +10800,12 @@ void KPlayer::GetEchoDamage(int* nMin, int* nMax, int* nAr, int nType)
 
 //#endif
 
-//换装是调用函数设置物理伤害
+//装堑煤撕
 void KPlayer::SetNpcDamageAttrib()
 {
 	SetNpcPhysicsDamage();
 }
-//设置跨服的 目标地图点
+//每 目图
 #ifdef _SERVER
 void KPlayer::TobeExchangeServer(DWORD dwMapID, int nX, int nY,BOOL isChange)
 {
@@ -10678,12 +10839,12 @@ BOOL KPlayer::IsExchangingServer()
 	return m_bExchangeServer;
 }
 #endif
-//服务器端 打开
+// 
 #ifdef _SERVER
 
 void KPlayer::Market(int nId,int shopID) 
 { 
-	BuySell.OpenSMarket(nId, shopID);  //买卖ID
+	BuySell.OpenSMarket(nId, shopID);  //ID
 }
 #endif
 
@@ -10693,21 +10854,21 @@ void KPlayer::String(int nbutton)
 	{//stringbox
 	    //char scriptName[128]={0}; 
 		//sprintf(scriptName,"\\script\\system\\input.lua");
-		//ExecuteScriptA(scriptName,"main",nbutton,"空"); 
+		//ExecuteScriptA(scriptName,"main",nbutton,""); 
 		ExeNoBackScript("\\script\\system\\input.lua","main",nbutton,0,0,0);
 	}
 #endif
 
-//挂机
+//一
 #ifdef _SERVER
 void KPlayer::SAutoplay(int nbutton,int nBtyeVal,int nBtyeVala)
 {
    if (nbutton==0 || nbutton==1)
    {
-      Npc[m_nIndex].m_AutoplayId=(BYTE)nbutton;  //挂机
+      Npc[m_nIndex].m_AutoplayId=(BYTE)nbutton;  //一
 
-	  m_Autoplay.nIsNoBlue          = EGetByte(nBtyeVal,1);  //是否过滤蓝怪
-	  m_Autoplay.nIsOpenPicjkup     = EGetByte(nBtyeVal,2);  //是否开启拾取
+	  m_Autoplay.nIsNoBlue          = EGetByte(nBtyeVal,1);  //欠
+	  m_Autoplay.nIsOpenPicjkup     = EGetByte(nBtyeVal,2);  //欠拾取
 	  m_Autoplay.nAutoMoney         = EGetByte(nBtyeVal,3);
 	  m_Autoplay.nAutoEques         = EGetByte(nBtyeVal,4);
 
@@ -10716,11 +10877,11 @@ void KPlayer::SAutoplay(int nbutton,int nBtyeVal,int nBtyeVala)
 	  m_Autoplay.nAutoTool          = EGetByte(nBtyeVala,3);
 	  /*
 	  AutoPlayCmd.ByteVal=ESetByte(AutoPlayCmd.ByteVal,3,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoMoney);//钱
-	  AutoPlayCmd.ByteVal=ESetByte(AutoPlayCmd.ByteVal,4,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoEques);//装备
+	  AutoPlayCmd.ByteVal=ESetByte(AutoPlayCmd.ByteVal,4,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoEques);//装
 
-	  AutoPlayCmd.ByteVala=ESetByte(AutoPlayCmd.ByteVala,1,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoMoneyAndEques);//钱和装备
-	  AutoPlayCmd.ByteVala=ESetByte(AutoPlayCmd.ByteVala,2,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoTuPu);//图谱
-	  AutoPlayCmd.ByteVala=ESetByte(AutoPlayCmd.ByteVala,3,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoTool);//道具
+	  AutoPlayCmd.ByteVala=ESetByte(AutoPlayCmd.ByteVala,1,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoMoneyAndEques);//钱装
+	  AutoPlayCmd.ByteVala=ESetByte(AutoPlayCmd.ByteVala,2,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoTuPu);//图
+	  AutoPlayCmd.ByteVala=ESetByte(AutoPlayCmd.ByteVala,3,Player[CLIENT_PLAYER_INDEX].m_Autoplay.nAutoTool);//
 	  
 	  */
 	  //m_cTask.GetTaskByte(nBtyeVal,2);
@@ -10728,7 +10889,7 @@ void KPlayer::SAutoplay(int nbutton,int nBtyeVal,int nBtyeVala)
 
     char scriptName[128]={0}; 
 	sprintf(scriptName,"%s","\\script\\system\\autoplayer.lua");
-	ExecuteScriptA(scriptName,"main",nbutton,"无",FALSE); //99编号以后为抽奖所用
+	ExecuteScriptA(scriptName,"main",nbutton,"",FALSE); //99院为榻?
 }
 #endif
 
@@ -10767,10 +10928,10 @@ void KPlayer::script(int nId,int nXuHao)
 		sprintf(scriptName,"\\script\\laotou\\quest_point.lua");
 		ExecuteScriptA(scriptName,"main",0,"",FALSE); 	
 	}
-	else if (nId == 10)  //为股子所用
+	else if (nId == 10)  //为
 	{
 		sprintf(scriptName,"\\script\\system\\guzi_xiazhu.lua");
-		ExecuteScriptA(scriptName,"main",nXuHao,"空"); 	
+		ExecuteScriptA(scriptName,"main",nXuHao,""); 	
 	}
 	
 }
@@ -10784,20 +10945,20 @@ void KPlayer::pkvalue(int nId)
 	{
 		char scriptName[255]; 
 		sprintf(scriptName,"\\script\\special\\trangthai.lua");  //datau
-		ExecuteScriptA(scriptName,"main",1,"空"); 
+		ExecuteScriptA(scriptName,"main",1,""); 
 	}
 	else if (nId == 2)
 	{
 		char scriptName[255]; 
 		sprintf(scriptName,"\\script\\special\\trangthai.lua");
-		ExecuteScriptA(scriptName,"main",2,"空"); 	
+		ExecuteScriptA(scriptName,"main",2,""); 	
 	}
 	
 	else if (nId == 3)
 	{
 		char scriptName[255]; 
 		sprintf(scriptName,"\\script\\special\\trangthai.lua");
-		ExecuteScriptA(scriptName,"main",3,"空"); 	
+		ExecuteScriptA(scriptName,"main",3,""); 	
 	}	
 	
 }
@@ -10805,25 +10966,25 @@ void KPlayer::pkvalue(int nId)
 
 
 #ifdef _SERVER
-void	KPlayer::SetChestLock(BOOL unlockFlag)   //检查是否锁住屏幕
+void	KPlayer::SetChestLock(BOOL unlockFlag)   //欠住幕
 {
 	if (unlockFlag)
 	{
 		m_CUnlocked = 1;
 		/*char szMsg[100];
-		sprintf(szMsg, "<c=cyan>您已经解锁,可以操作界面了!<c>");
+		sprintf(szMsg, "<c=cyan>丫,圆!<c>");
 		int nLength=0; 
 		nLength = TEncodeText(szMsg, strlen(szMsg));
-		KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, "屏锁:", (char *) szMsg, nLength);*/
+		KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, ":", (char *) szMsg, nLength);*/
 	}
 	else
 	{
 		m_CUnlocked = 0;
 		/*char szMsg[100];
-		sprintf(szMsg, "<c=cyan>屏幕已经锁定,禁止操作部分界面!<c>");
+		sprintf(szMsg, "<c=cyan>幕丫,止纸!<c>");
 		int nLength=0; 
 		nLength = TEncodeText(szMsg, strlen(szMsg));
-		KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, "屏锁:", (char *) szMsg, nLength );*/
+		KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, ":", (char *) szMsg, nLength );*/
 	}
 
 	PLAYER_CHESTPW_SYNC	pChestSync;
@@ -10836,26 +10997,26 @@ void	KPlayer::SetChestLock(BOOL unlockFlag)   //检查是否锁住屏幕
 #endif
 
 #ifdef _SERVER
-BOOL	KPlayer::CheckChestPW(int iPassword) //检查屏锁密码
+BOOL	KPlayer::CheckChestPW(int iPassword) //
 {
 	if (iPassword == m_nChestPW)
 	{
 		// Mat khau ruong chinh xac
 		//char szMsg[100];
-		//sprintf(szMsg, "<c=cyan>输入密码正确,解锁！<c>");
+		//sprintf(szMsg, "<c=cyan>确,<c>");
 		//int nLength=0; 
 		//nLength = TEncodeText(szMsg, strlen(szMsg));
-		//KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, "屏锁:", (char *) szMsg, nLength);
+		//KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, ":", (char *) szMsg, nLength);
 		return TRUE;
 	}
 	else
 	{
 		// Mat khau ruong SAI
 		//char szMsg[100];
-		//sprintf(szMsg, "<c=cyan>输入密码不正确,请检查!<c>");
+		//sprintf(szMsg, "<c=cyan>氩蝗?!<c>");
 		//int nLength=0; 
 		//nLength = TEncodeText(szMsg, strlen(szMsg));
-		//KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, "屏锁:", (char *) szMsg, nLength);
+		//KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, ":", (char *) szMsg, nLength);
 		return FALSE;
 	}
 }
@@ -10868,10 +11029,10 @@ void	KPlayer::SetChestPW(int newPW)
 	
 	// Thong bao cho Client
 	//char szMsg[100];
-	//sprintf(szMsg, "<c=cyan>设置屏锁密码完成!<c>");
+	//sprintf(szMsg, "<c=cyan>!<c>");
 	//int nLength=0; 
 		//nLength = TEncodeText(szMsg, strlen(szMsg));
-	//KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, "屏锁:", (char *) szMsg, nLength);
+	//KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, ":", (char *) szMsg, nLength);
 	
 	PLAYER_CHESTPW_SYNC	pChestSync;
 	pChestSync.ProtocolType = s2c_chestpwsync;
@@ -10883,7 +11044,7 @@ void	KPlayer::SetChestPW(int newPW)
 #endif
 
 #ifdef _SERVER
-void	KPlayer::SetNewPW(int resetPW) //设置新的屏锁密码
+void	KPlayer::SetNewPW(int resetPW) //碌
 {
 	if (resetPW <= 0)
 		resetPW = 0;
@@ -10893,10 +11054,10 @@ void	KPlayer::SetNewPW(int resetPW) //设置新的屏锁密码
 	
 	// Thong bao cho Client
 	//char szMsg[100];
-	//sprintf(szMsg, "<c=cyan>重置屏锁密码完成!<c>");
+	//sprintf(szMsg, "<c=cyan>!<c>");
 	//int nLength=0; 
 		//nLength = TEncodeText(szMsg, strlen(szMsg));
-	//KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, "屏锁:", (char *) szMsg,nLength);
+	//KPlayerChat::SendSystemInfo(1, m_nPlayerIndex, ":", (char *) szMsg,nLength);
 
 	PLAYER_CHESTPW_SYNC	pChestSync;
 	pChestSync.ProtocolType = s2c_chestpwsync;
@@ -10931,7 +11092,7 @@ void KPlayer::SetLastNetOperationTime(DWORD nTime)
 
 #ifdef _SERVER
 BOOL	KPlayer::CreateTong(int nCamp, char *lpszTongName, char* lpszTitle)
-{//帮会创建成功
+{//岽瓷?
 	return this->m_cTong.Create(nCamp, lpszTongName, lpszTitle);
 }
 #endif
@@ -10977,7 +11138,7 @@ void KPlayer::RepairItem(DWORD dwItemID)
 	int nDur    = Item[nIdx].GetDurability();
 
 	if (Pay(nCost) && m_nNetConnectIdx >= 0)
-	{////修理磨损警告
+	{////磨鹁
 		Item[nIdx].SetDurability(nMaxDur);
         Item[nIdx].SetIsCanUse(1);
 		ITEM_DURABILITY_CHANGE	IDC;
@@ -10985,7 +11146,7 @@ void KPlayer::RepairItem(DWORD dwItemID)
 		IDC.dwItemID = dwItemID;
 		IDC.nChange  = nMaxDur - nDur;
 
-		if (m_ItemList.CheckIsOutTime(nIdx)) //是辨识装备 并且是过期的
+		if (m_ItemList.CheckIsOutTime(nIdx)) //潜识装 枪诘
            IDC.nCanUse  = 0;
 		else
            IDC.nCanUse  = 1;
@@ -10995,13 +11156,13 @@ void KPlayer::RepairItem(DWORD dwItemID)
 	}
 }
 #endif
-//拆分物品
+//品
 //xep chong BreakItem
 #ifdef _SERVER
 void KPlayer::BreakItem(DWORD dwItemID, int nNum) 
 {
 	int nIdx   = m_ItemList.SearchID(dwItemID);
-	//检测包袱是否有足够的空间
+	//欠愎荒空?
 	/*int ncount = m_ItemList.GetFreePositionCount(Item[nIdx].GetWidth(),Item[nIdx].GetHeight(),room_equipment);
 	
 	if (ncount<nNum)
@@ -11078,7 +11239,7 @@ void KPlayer::SetExtGameTime(DWORD nPoint)
 
 UINT KPlayer::GetExtPoint()
 {
-	return m_nExtPoint;  //扩展点 会员充值
+	return m_nExtPoint;  //展 员值
 }
 
 BOOL KPlayer::PayExtPoint(int nPoint)
@@ -11102,20 +11263,20 @@ void KPlayer::SetExtPoint(DWORD nPoint, LONG nChangePoint)
 
 void KPlayer::SetLeftTineAndVipType(DWORD nLeftTime,int nVipType,LONG nChangeExtTime)
 {
-	if (m_nLeftTime>=0) //剩余时间
+	if (m_nLeftTime>=0) //剩时
 	    m_nLeftTime = nLeftTime;
 
-	m_nVipType  = nVipType;	 //会员类型
-	m_nChangeExtTime = nChangeExtTime;	//变动的时间
+	m_nVipType  = nVipType;	 //员
+	m_nChangeExtTime = nChangeExtTime;	//涠?
 }
 
-//要改变的时间
+//要谋时
 long KPlayer::GetExtTimeChanged()
 {
 	return m_nChangeExtTime;
 }
 
-//恢复原来称号=========
+//指原坪=========
 void  KPlayer::ResSetNpcTitle()
 {
 	int i,nSkillD,nSkillevel;
@@ -11131,9 +11292,9 @@ void  KPlayer::ResSetNpcTitle()
 	{
 		nSkillD=Npc[m_nIndex].m_ExtSkill[i];
 		if (nSkillD>0)
-		{//有技能ID,需要先去除状态
+		{//屑ID,要去状态
 			Npc[m_nIndex].m_ExtSkill[i]=0;
-			Npc[m_nIndex].SetSkillLeftTime(nSkillD,0); //同步客户端删除状态			
+			Npc[m_nIndex].SetSkillLeftTime(nSkillD,0); //同突删状态			
 		}
 	}
 	
@@ -11167,22 +11328,22 @@ void KPlayer::UseToolSkills(int sKillID,int sLevel,int nNpcIdx,int nDesNpcIdx,KM
 		  {	   
 			  if (pSkill)
 			  { 
-				  if (pSkill->GetSkillStyle()!=SKILL_SS_Missles)	////0为子弹 2 为主动 3 为被动
-				  { //使用非子弹 类技能  （包括被动 主动技能状态）
+				  if (pSkill->GetSkillStyle()!=SKILL_SS_Missles)	////0为拥 2 为 3 为
+				  { //使梅拥 嗉?  状态
 					  //if (pSkill->GetSkillStyle()==SKILL_SS_PassivityNpcState)
 					  //   nTime=-1;
-					  // printf("执行技能%s{%d)等级(%d)--\n",pSkill->GetSkillName(),sKillID,sLevel);
-					   pSkill->CastToolStateSkill(nNpcIdx,0,0,nTime);  //是否
+					  // printf("执屑%s{%d)燃(%d)--\n",pSkill->GetSkillName(),sKillID,sLevel);
+					   pSkill->CastToolStateSkill(nNpcIdx,0,0,nTime);  //欠
 				  } 
 				  else
-				  {//就是子弹技能	0;	//攻击技能
+				  {//拥	0;	//
 					 if(pSkill->Cast(nNpcIdx, -1,nDesNpcIdx,nTime,SKILL_SLT_Npc,nBeiVal))//,20,SKILL_SLT_Npc
                          pSkill->CastSkill(nNpcIdx,sKillID,-1,Npc[nNpcIdx].m_dwID,sLevel,nTime,nBeiVal);  
 				  } 
 			  }	  
 		  }
 		  else
-			Npc[nNpcIdx].SetToolStateSkillEffect(nNpcIdx,sKillID,sLevel,pData,0,nTime);  //设置技能光环效果	
+			Npc[nNpcIdx].SetToolStateSkillEffect(nNpcIdx,sKillID,sLevel,pData,0,nTime);  //眉芄饣沸?
 }
 
 void KPlayer::SetPlayerTitleSkills()
@@ -11198,9 +11359,9 @@ void KPlayer::SetPlayerTitleSkills()
 	{
 		nSkillD=Npc[m_nIndex].m_ExtSkill[i];
 		if (nSkillD>0)
-		{//有技能ID,需要先去除状态
+		{//屑ID,要去状态
 			Npc[m_nIndex].m_ExtSkill[i]=0;
-			Npc[m_nIndex].SetSkillLeftTime(nSkillD,0); //同步客户端删除状态			
+			Npc[m_nIndex].SetSkillLeftTime(nSkillD,0); //同突删状态			
 		}
 	}
 	
@@ -11267,7 +11428,7 @@ UINT  KPlayer::GetLeftTime()
 
 void KPlayer::SendMSGroup()
 {
-	// 给客户端发消息
+	// 突朔息
 	PLAYER_MISSION_DATA	sData;
 	sData.ProtocolType = s2c_playermissiondata;
 	sData.m_nMissionGroup = Npc[m_nIndex].m_nMissionGroup;
@@ -11286,7 +11447,7 @@ void KPlayer::SendMSRank(TMissionLadderSelfInfo* SelfData, TMissionLadderInfo* R
 	{
 		//memcpy(&sData.MissionRank[i], &RankData[i], sizeof(RankData[i]));
 		memcpy(&sData.MissionRank[i], &RankData[i], sizeof(RankData[i]));
-		///printf("--包大小 ：%u --\n",sizeof(PLAYER_MISSION_RANKDATA)); //1209	 //1024
+		///printf("--小 %u --\n",sizeof(PLAYER_MISSION_RANKDATA)); //1209	 //1024
 	}
 
 	if (g_pServer && m_nNetConnectIdx != -1)
@@ -11322,7 +11483,7 @@ void KPlayer::SendMSRank(TMissionLadderSelfInfo* SelfData, TMissionLadderInfo* R
 }
 
 
-//同步玩家的某种类型 给客户端
+//同业某 突
 void   KPlayer::GetTypeData(int nType)
 {
 
@@ -11371,7 +11532,7 @@ BOOL KPlayer::AddAndPayExtTime(long nTime)
 	{
 		m_nLeftTime = 0;
 	}
-	m_nChangeExtTime  += nTime;    //需要改变的是多少
+	m_nChangeExtTime  += nTime;    //要谋嵌
 	return TRUE;
 }
 
@@ -11385,31 +11546,31 @@ BOOL KPlayer::AddAndPayExtPoint(long nPoint)
        m_nExtPoint = 0;
    }
 
-	m_nChangeExtPoint += nPoint;    //需要改变的是多少
+	m_nChangeExtPoint += nPoint;    //要谋嵌
 	return TRUE;
 }
 
-//获取要改变的扩展点
+//取要谋展
 long KPlayer::GetExtPointChanged()
 {
 	return m_nChangeExtPoint;
 }
 
 int KPlayer::ComItem( int nIdx1,int nIdx2,int nIdx3 ,int nKind)
-{//提炼
+{//
 	int nReg=0;
 	char nMapName[64]={0};
 	snprintf(nMapName, sizeof(nMapName), "%s", SubWorld[Npc[m_nIndex].m_SubWorldIndex].nWorldMapInfo[STR_MAP_NAME].c_str());
 	nReg=ExeItemScriptA("\\script\\system\\orecomp.lua","maincompore",Npc[m_nIndex].Name,nMapName,nKind,nIdx1,nIdx2,nIdx3,0,0,0,0,0);
-	//Item[nIdx1].GetBaseMagic(); //属性的行数
+	//Item[nIdx1].GetBaseMagic(); //缘
 	return nReg;
 }
 
-//打造紫装 和 图谱
-int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造紫装装备 nMin为辅助物品额外数据
+//装  图
+int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //装装 nMin为品
 {
 	int nIndex;
-//开始提取属性石头
+//始取石头
 	if (nKind == 1)  
 	{
 		int nReg=0;
@@ -11421,8 +11582,8 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		return nReg;
 
 	}
-// 打造紫装孔
-	else if (nKind == 2)  // 打造紫装
+// 装
+	else if (nKind == 2)  // 装
 	{
 		int nReg=0;
 		char nMapName[64]={0};
@@ -11433,13 +11594,13 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		return nReg;
 
 	}
-//  纹钢黄金
+//  聘只平
 	else if (nKind == 4)  
 	{
-		int nPlace = Item[nId3].GetParticular() - 200; //详细类别
+		int nPlace = Item[nId3].GetParticular() - 200; //细
 
 		nMin = nMin / 2;
-		nMin += Item[nId2].GetLevel() + Item[nId3].GetLevel() - 9;  //属性矿石 和 神秘
+		nMin += Item[nId2].GetLevel() + Item[nId3].GetLevel() - 9;  //钥石  
 		
 		int nMax = nMin + Item[nId2].GetLevel();
 
@@ -11460,7 +11621,7 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		int nSerise = Item[nId1].GetSeries();
 		int nRoint = Item[nId1].IsRong();
 		
-		int nItemClass		= Item[nId1].GetGenre(); //道具种类
+		int nItemClass		= Item[nId1].GetGenre(); //
 		int nDetailType		= Item[nId1].GetDetailType();
 		int nParticularType	= Item[nId1].GetParticular();
 		int nLevel			= Item[nId1].GetLevel();
@@ -11470,12 +11631,12 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		int nItemLevel[2];
 		
 		KTabFile tabMagic;
-		tabMagic.Load("\\Settings\\item\\magicattriblevel_rong.txt"); //熔炼的属性列表
+		tabMagic.Load("\\Settings\\item\\magicattriblevel_rong.txt"); //斜
 		
 		int nRow;
 		char szTmp[8];
-		snprintf(szTmp, sizeof(szTmp),"%d",Item[nId3].GetBaseMagic()); //属性矿石
-		nRow = tabMagic.FindRow(szTmp); //找到魔法属性的这行
+		snprintf(szTmp, sizeof(szTmp),"%d",Item[nId3].GetBaseMagic()); //钥石
+		nRow = tabMagic.FindRow(szTmp); //业魔缘
 /*		for (int l = 0;l < tabMagic.GetHeight();l++)
 		{
 			tabMagic.GetInteger(l,1,0,&szTmp);
@@ -11497,10 +11658,10 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		nMinRow +=  nAdd;
 		tabMagic.Clear();
 
-		tabMagic.Load(TABFILE_MAGICATTRIB_PATH); //这个要修改
+		tabMagic.Load(TABFILE_MAGICATTRIB_PATH); //要薷
 		int nMagic;
-		tabMagic.GetInteger(nMinRow,Item[nId1].GetDetailType() + 15,0,&nMagic);//具体类别+13？得到对应的 装备类型 入 头 或靴子 等
-		if (nMagic <= 0)//是否可以熔炼的
+		tabMagic.GetInteger(nMinRow,Item[nId1].GetDetailType() + 15,0,&nMagic);//+13玫应 装  头 靴 
+		if (nMagic <= 0)//欠
 			return 0;
 		tabMagic.Clear();
 		for (int k = 0;k < 2;++k)
@@ -11527,10 +11688,10 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		int nStackNum = 1;
 		int nEnChance = Item[nId1].GetEnChance();
 		
-		// 产生装备
+		// 装
 		nIndex = ItemSet.AddOther(nItemClass,nSeries,nLevel,nLuck,nDetailType,nParticularType,nItemLevel,0,0,1,0,0,nRoint);
 	}
-// 镶套紫装 
+// 装 
 	else if (nKind == 3)   
 	{   
         int nReg=0;
@@ -11541,7 +11702,7 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
         return nReg;
 
     }     
-//熔炼镶套 蓝装 紫装 黄装
+// 装 装 装
    else if (nKind == 6)   
 	{
 		nMin = nMin / 2;
@@ -11556,7 +11717,7 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		
 		if (::GetRandomNumber(nMin,nMax) < 3) 
 		{
-			m_ItemList.Remove(nId2);  //移除装备
+			m_ItemList.Remove(nId2);  //瞥装
 			ItemSet.Remove(nId3);
 			m_ItemList.Remove(nId3);
 			ItemSet.Remove(nId3);
@@ -11574,33 +11735,33 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		int nParticularType	= Item[nId1].GetParticular();
 		int nLevel			= Item[nId1].GetLevel();
 		int nSeries			= Item[nId1].GetSeries();
-		//int nRongmun        = Item[nId1].GetRongNum();//取属性数量值
+		//int nRongmun        = Item[nId1].GetRongNum();//取值
 		int nGoldID        = Item[nId1].GetGoldId();
 		int nEnChance       = Item[nId1].GetEnChance();   //         m_CommonAttrib.nEnChance
 
-		UINT nRandomID      = Item[nId1].GetItemParam()->uRandomSeed; // 随机种子
+		UINT nRandomID      = Item[nId1].GetItemParam()->uRandomSeed; // 
 		int nVersionID      = Item[nId1].GetItemParam()->nVersion;
 		int nLuck			= Item[nId1].GetItemParam()->nLuck;
 
         int nItemLevel[6]; 
 		int nPlace;
-        //确定属性石头类别
+        //确石头
 		if  (nGoldID>0)  
-        nPlace = Item[nId3].GetParticular() - 200;  //属性矿石在 装备TXT中的位置-起始位置  黄装
+        nPlace = Item[nId3].GetParticular() - 200;  //钥石 装TXT械位-始位  装
         else if(npiont>0)
-        nPlace = Item[nId3].GetParticular() - 200;  //属性矿石在 装备TXT中的位置-起始位置  紫装
+        nPlace = Item[nId3].GetParticular() - 200;  //钥石 装TXT械位-始位  装
         else
-        nPlace = Item[nId3].GetParticular() - 200;  //属性矿石在 装备TXT中的位置-起始位置  蓝装
-        //同步魔法属性
+        nPlace = Item[nId3].GetParticular() - 200;  //钥石 装TXT械位-始位  装
+        //同魔
 		for (int j = 0; j < 6; ++j)
 		nItemLevel[j] = Item[nId1].m_GeneratorParam.nGeneratorLevel[j];
-		//可溶链的 装备位置
+		// 装位
 		KTabFile tabMagic;
 		tabMagic.Load(TABFILE_MAGICALEVEL_PATH);
 
 		int nRow;
 		char szTmp[8];
-		snprintf(szTmp, sizeof(szTmp),"%d",Item[nId3].GetBaseMagic()); //获取魔法石的基本属性
+		snprintf(szTmp, sizeof(szTmp),"%d",Item[nId3].GetBaseMagic()); //取魔石幕
 		nRow = tabMagic.FindRow(szTmp);
 /*		for (int l = 0;l < tabMagic.GetHeight();l++)
 		{
@@ -11611,7 +11772,7 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 				break;
 			}
 		}*/
-         //产生值得计算
+         //值眉
 		int nAdd = ::GetRandomNumber(nMin,nMax) + ((Item[nId3].GetLevel() + Item[nId2].GetLevel())/2);
 		if (nLuck < 0) nLuck = 0;
 		
@@ -11619,19 +11780,19 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		if (nLuck > 10) nLuck = 10;
 		if (nAdd > 10) nAdd = 10;
 		int nMinRow; 
-		tabMagic.GetInteger(nRow,"MAGATTRLVL_START",0,&nMinRow);//最小+随机值
+		tabMagic.GetInteger(nRow,"MAGATTRLVL_START",0,&nMinRow);//小+值
 		nMinRow +=  nAdd;
 		tabMagic.Clear();
 		tabMagic.Load(TABFILE_MAGICATTRIB_PATH);
 		int nMagic;
 		tabMagic.GetInteger(nMinRow,Item[nId1].GetDetailType() + 15,0,&nMagic);
 
-		if (nMagic <= 0) //可出现该属性的装备类型
+		if (nMagic <= 0) //沙指缘装
 		   return 0;
 		tabMagic.Clear();
 		int nrItemLevel[6];
 
-		/*/已经镶套了的相同属性的不能镶套
+		/*/丫说同缘牟
 		for (int p = 0;p < 6;p++)
 		{
           if (Item[nId1].GetAttribType(p) == Item[nId3].GetBaseMagic())  
@@ -11639,22 +11800,22 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		  else if(Item[nId1].GetRongAttribType(p) == Item[nId3].GetBaseMagic())
                return 0; 
 		}
-        *///同步熔炼属性值 和 判断 属性石头的位置
+        *///同值  卸 石头位
 		for (int k = 0;k < 6;++k)
 		{
-			if (nPlace > k)  //  位置和属性石头上的不相同不能镶套
+			if (nPlace > k)  //  位煤石头系牟同
 			{
 				if (Item[nId1].GetRongAttribType(k) <= 0 || Item[nId1].GetRongAttribType(k) == Item[nId3].GetBaseMagic())
 				{
-					return 0;  //有相同的 属性 镶套不了  要按顺序来镶套 否则失败
+					return 0;  //同  撞  要顺 失
 				}
 			}
-			else if (nPlace == k && Item[nId1].GetRongAttribType(k) <= 0)  //位置相同 并且没有属性的空位置
+			else if (nPlace == k && Item[nId1].GetRongAttribType(k) <= 0)  //位同 没缘目位
 			{
-				nrItemLevel[k] = nMinRow;   //设定最小值
+				nrItemLevel[k] = nMinRow;   //瓒ㄐ≈?
 				continue;
 			}
-			else if (nPlace == k && Item[nId1].GetRongAttribType(k) > 0)  //位置相同 但有属性
+			else if (nPlace == k && Item[nId1].GetRongAttribType(k) > 0)  //位同 
 			{
 				return 0;
 			}
@@ -11665,10 +11826,10 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
   
 		nIndex = ItemSet.AddRong(nGoldID,nSeries,nLevel,nLuck,nDetailType,nParticularType,nItemLevel,nrItemLevel,NULL,nVersionID,nRandomID,1,nEnChance,nRongmun,0,0,NULL,0,0,0,0,0,0,TRUE);	
 	}
-// 打造 纹钢 打孔
+//  聘 
     else if (nKind == 5)  
 	{
-		int nMax = Item[nId2].GetLevel() + 2;  //根据等级+2 确定打孔的最大数量
+		int nMax = Item[nId2].GetLevel() + 2;  //莸燃+2 确椎
 		int nMin = Item[nId2].GetLevel();
 		
 		if (nMax > 6) nMax = 6;
@@ -11677,31 +11838,31 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		if (nMax < 1) nMax = 1;
 		if (nMin < 1) nMax = 1;
 		
-		//int nRoint = ::GetRandomNumber(nMin,nMax); //取随机数量--孔
+		//int nRoint = ::GetRandomNumber(nMin,nMax); //取--
 		
 		int nItemClass		= Item[nId1].GetGenre();
 		int nDetailType		= Item[nId1].GetDetailType();
 		int nParticularType	= Item[nId1].GetParticular();
 		int nLevel			= Item[nId1].GetLevel();
 		int nSeries			= Item[nId1].GetSeries();
-		int nRongmun        = Item[nId1].GetRongNum();    //取属性数量值
+		int nRongmun        = Item[nId1].GetRongNum();    //取值
 		int nGoldmID        = Item[nId1].GetGoldId();
 		int nEnChance       = Item[nId1].GetEnChance();   //m_CommonAttrib.nEnChance
 
-		UINT nRandomID       = Item[nId1].GetItemParam()->uRandomSeed; // 随机种子
+		UINT nRandomID       = Item[nId1].GetItemParam()->uRandomSeed; // 
 		int nVersionID      = Item[nId1].GetItemParam()->nVersion;
 		int nLuck		    = Item[nId1].GetItemParam()->nLuck;
 
         int nItemLevel[6];   
-		for (int j = 0; j < 6; ++j)//同步魔法属性
+		for (int j = 0; j < 6; ++j)//同魔
 		nItemLevel[j] = Item[nId1].m_GeneratorParam.nGeneratorLevel[j];
 
-			if (nRongmun<=0)  //改为可以熔炼的数量
+			if (nRongmun<=0)  //为
 			{
-               //defFuncShowNormalMsgA("提示:nGoldmun 数据出错");
+               //defFuncShowNormalMsgA("示:nGoldmun 莩");
 				return 0;
 			}
-        int nrItemLevel[6];  //熔炼
+        int nrItemLevel[6];  //
 		   nrItemLevel[0] = 0;
 		   nrItemLevel[1] = 0;
 		   nrItemLevel[2] = 0;
@@ -11729,20 +11890,20 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 	}
 	if (nIndex <= 0)
 	{						
-		return 0;  //合成失败
+		return 0;  //铣失
 	}
 
 	/*if (m_ItemList.GetPlayerItemCount()>=MAX_ITEMLIST_CONUT)
 	{
 		ItemSet.Remove(nIndex);
-		m_ItemList.msgshow("提示:<c=yellow>物品超限,请清理储物空间<c>!");
+		m_ItemList.msgshow("示:<c=yellow>品,占<c>!");
 		return 0;
 	}*/
 
 	int	x, y;
-	if (m_ItemList.CheckCanPlaceInEquipment(Item[nIndex].GetWidth(), Item[nIndex].GetHeight(), &x, &y)) //判断 包袱 的空间
+	if (m_ItemList.CheckCanPlaceInEquipment(Item[nIndex].GetWidth(), Item[nIndex].GetHeight(), &x, &y)) //卸  目占
 	{
-		m_ItemList.Add(nIndex, pos_equiproom, x, y); //包袱增加装备
+		m_ItemList.Add(nIndex, pos_equiproom, x, y); //装
 	}
 	else
 	{
@@ -11750,20 +11911,20 @@ int KPlayer::ComDiyItem( int nId1,int nId2,int nId3,int nKind,int nMin )  //打造
 		int	nIdx = m_ItemList.Hand();
 		
 		if (nIdx)
-		{//手里有东西
-			m_ItemList.Remove(nIdx);  //删除客户端的节点了
+		{//卸
+			m_ItemList.Remove(nIdx);  //删突说慕诘
 			ItemSet.Remove(nIdx);
 		} 
-		//同步客户端（手里增加新的节点）
-		m_ItemList.Remove(nIndex);  //删除客户端的节点了
+		//同突耍碌慕诘悖?
+		m_ItemList.Remove(nIndex);  //删突说慕诘
 		ItemSet.Remove(nIndex);
 		return 0;
 	}
-	return 1;  //成功
+	return 1;  //晒
 }
 
 
-//获取摆摊物品的数量
+//取摊品
 void KPlayer::SendSellItemCount( int nIndex )
 {
 	if (nIndex <= 0 || nIndex >= MAX_PLAYER || Player[nIndex].m_nIndex <= 0)
@@ -11787,13 +11948,13 @@ void KPlayer::SendSellItemCount( int nIndex )
 
 	if (nCount <= 0)
 	{	//ban het do
-		Npc[m_nIndex].m_BaiTan = 0; //设置结束摆摊状态
+		Npc[m_nIndex].m_BaiTan = 0; //媒摊状态
 	}
 
 	//printf("SendSellItemCount: Name: %s nCount: %d \n",Npc[m_nIndex].Name,nCount);
 	g_pServer->PackDataToClient(Player[nIndex].m_nNetConnectIdx, (BYTE*)&pGetCount, sizeof(pGetCount));
 }
-//获取摆摊物品的数量
+//取摊品
 int KPlayer::GetTradeCount()
 {
 	int nCount = 0;
@@ -11869,8 +12030,8 @@ void KPlayer::SendSellItemInfo( int nTargetPlayer, int nPrcess, BOOL bUpdate)
 	if (allItems.empty())
 	{
 		Npc[m_nIndex].m_BaiTan = 0;
-		//Npc[m_nIndex].SetstrInfo(STR_SHOP_NAME,"Х b竛 h誸 !");
-		//Npc[Player[m_nPlayerIndex].m_nIndex].SetstrInfo(STR_SHOP_NAME, "Х b竛 h誸 !");
+		//Npc[m_nIndex].SetstrInfo(STR_SHOP_NAME," bn ht !");
+		//Npc[Player[m_nPlayerIndex].m_nIndex].SetstrInfo(STR_SHOP_NAME, " bn ht !");
 		//Npc[m_nIndex].SetstrInfo(STR_SHOP_NAME, "Da Ban Het Do!");
 		//Player[nTargetPlayer].m_ItemList.msgshow("<c=green>Nguoi choi nay da ban het do roi!<c>");
 		//printf("da ban het do return;  %s - %s - %s   \n",Npc[Player[nTargetPlayer].m_nIndex].Name,Npc[Player[CLIENT_PLAYER_INDEX].m_nIndex].Name,Npc[Player[m_nPlayerIndex].m_nIndex].Name);
@@ -11908,9 +12069,9 @@ void KPlayer::SendSellItemInfo( int nTargetPlayer, int nPrcess, BOOL bUpdate)
     }
 }
 //-------------------------------------------------------------------------
-//	功能：发送自己装备在身上的装备信息给别人看
+//	埽约装系装息丝
 //-------------------------------------------------------------------------
-void	KPlayer::SendEquipItemInfo(int nTargetPlayer, int nPrcess, BOOL bUpdate) //nTargetPlayer 要查看装备的人
+void	KPlayer::SendEquipItemInfo(int nTargetPlayer, int nPrcess, BOOL bUpdate) //nTargetPlayer 要榭醋?
 {
 	if (nTargetPlayer <= 0 || nTargetPlayer >= MAX_PLAYER || Player[nTargetPlayer].m_nIndex <= 0)
 		return;
@@ -11924,21 +12085,21 @@ void	KPlayer::SendEquipItemInfo(int nTargetPlayer, int nPrcess, BOOL bUpdate) //
 
 	sView.ProtocolType = s2c_viewequip;
 
-	sView.m_dwNpcID = Npc[m_nIndex].m_dwID; // m_nIndex 为被查看装备的人索引
+	sView.m_dwNpcID = Npc[m_nIndex].m_dwID; // m_nIndex 为榭醋?
 	
-	for (i = 0; i < itempart_num ; i++)     // 装备位置itempart_num
+	for (i = 0; i < itempart_num ; i++)     // 装位itempart_num
 	{
 	    nIdx  = m_ItemList.m_EquipItem[i];
 
 	    pInfo = &sView.m_sInfo[i];
 
 		if (nIdx <= 0)
-		{//如果这个部位为空 就继续下一个部位
+		{//位为 图一位
 			memset(pInfo, 0, sizeof(*pInfo));
 			continue;
 		}
 		pInfo->m_Point        = Item[nIdx].GetPoint();
-		pInfo->m_Rongpiont    = Item[nIdx].IsRong(); //熔炼
+		pInfo->m_Rongpiont    = Item[nIdx].IsRong(); //
 		pInfo->m_EnChance     = Item[nIdx].GetEnChance();
 		pInfo->m_GoldId       = Item[nIdx].GetGoldId();
 		//pInfo->m_StackNum     = Item[nIdx].GetStackNum();
@@ -11950,17 +12111,17 @@ void	KPlayer::SendEquipItemInfo(int nTargetPlayer, int nPrcess, BOOL bUpdate) //
 		pInfo->m_Series       = Item[nIdx].GetSeries();
 		pInfo->m_Level        = Item[nIdx].GetLevel();
 		pInfo->m_Luck         = Item[nIdx].m_GeneratorParam.nLuck;
-		//pInfo->m_btPlace      = m_Items[i].nPlace; //同步目标容器
-		//pInfo->m_btX          = m_Items[i].nX;     //同步位置
+		//pInfo->m_btPlace      = m_Items[i].nPlace; //同目
+		//pInfo->m_btX          = m_Items[i].nX;     //同位
 		//pInfo->m_btY          = m_Items[i].nY;
 		pInfo->m_Time.bYear   = Item[nIdx].GetTime()->bYear;
 		pInfo->m_Time.bMonth  = Item[nIdx].GetTime()->bMonth;
 		pInfo->m_Time.bDay    = Item[nIdx].GetTime()->bDay;
 		pInfo->m_Time.bHour   = Item[nIdx].GetTime()->bHour;
 		pInfo->m_Time.bMin    = Item[nIdx].GetTime()->bMin;
-		//pInfo->m_IsBang       = Item[nIdx].GetIsBang();      //是否绑定
-		//pInfo->m_IsKuaiJie    = Item[nIdx].GetIsKuaiJie();   //是否快捷栏
-		//pInfo->m_IsMagic      = Item[nIdx].GetIsMagic();     //是否有魔法属性
+		//pInfo->m_IsBang       = Item[nIdx].GetIsBang();      //欠
+		//pInfo->m_IsKuaiJie    = Item[nIdx].GetIsKuaiJie();   //欠
+		//pInfo->m_IsMagic      = Item[nIdx].GetIsMagic();     //欠魔
 		//pInfo->m_SkillType    = Item[nIdx].GetSkillType();
 		//pInfo->m_MagicID      = Item[nIdx].GetMagicID();
 		//pInfo->m_IsWhere      = Item[nIdx].GetIsWhere();
@@ -11968,7 +12129,7 @@ void	KPlayer::SendEquipItemInfo(int nTargetPlayer, int nPrcess, BOOL bUpdate) //
 		pInfo->m_RandomSeed = Item[nIdx].m_GeneratorParam.uRandomSeed;
 		pInfo->m_Version    = Item[nIdx].m_GeneratorParam.nVersion;
 		//pInfo->m_Durability = Item[nIdx].GetDurability();
-		//sprintf(pInfo->m_WonName,Item[nIdx].GetWonName());  //所有者	
+		//sprintf(pInfo->m_WonName,Item[nIdx].GetWonName());  //	
 		
 		for (j = 0; j < 6; j++)
 		{
@@ -11982,7 +12143,7 @@ void	KPlayer::SendEquipItemInfo(int nTargetPlayer, int nPrcess, BOOL bUpdate) //
         //    pInfo->m_btJMagicLevel[j]= Item[nIdx].m_GeneratorParam.nJGeneratorLevel[j];
 		//}
 	}
-	//向要查看装备的人 发送数据
+	//要榭醋?
 	g_pServer->PackDataToClient(Player[nTargetPlayer].m_nNetConnectIdx,(BYTE*)&sView, sizeof(sView));	//sView
 }
 
@@ -11990,12 +12151,12 @@ int KPlayer::SendLianItemInfo(const void *nData)
 {
 	if  (!nData) return false;
 	tagItemAction* pInfo = (tagItemAction *)nData;
-	//nGmRoleName 需要获取数据的人  nRoleName为发起链接的人
-	//printf("---SendLianItemInfo ITEM操作:%s %s %u ----\n",pInfo->nGmRoleName,pInfo->nRoleName,pInfo->nId);
+	//nGmRoleName 要取莸  nRoleName为拥
+	//printf("---SendLianItemInfo ITEM:%s %s %u ----\n",pInfo->nGmRoleName,pInfo->nRoleName,pInfo->nId);
 
 	int	nIdx,nItemidx,i;
-	VIEW_LIAN_ITEM_SYNC	 sLView;  //协议
-    memset(&sLView, 0, sizeof(sLView));//清空结构体;
+	VIEW_LIAN_ITEM_SYNC	 sLView;  //协
+    memset(&sLView, 0, sizeof(sLView));//战峁?
 	sLView.ProtocolType = c2s_item_synaction_result;
 	nIdx      = m_ItemList.SearchID(pInfo->nId);
 	nItemidx  = m_ItemList.SearchItemsIdx(pInfo->nId);
@@ -12011,7 +12172,7 @@ int KPlayer::SendLianItemInfo(const void *nData)
 	sLView.m_nIdx           = m_ItemList.m_Items[nItemidx].nIdx;*/
 	
 	sLView.m_Point        = Item[nIdx].GetPoint();
-	sLView.m_Rongpiont    = Item[nIdx].IsRong(); //熔炼
+	sLView.m_Rongpiont    = Item[nIdx].IsRong(); //
 	sLView.m_EnChance     = Item[nIdx].GetEnChance();
 	sLView.m_GoldId       = Item[nIdx].GetGoldId();
 	sLView.m_IsBaijin     = Item[nIdx].GetIsPlatima();
@@ -12030,17 +12191,17 @@ int KPlayer::SendLianItemInfo(const void *nData)
 	sLView.m_Time.bDay    = Item[nIdx].GetTime()->bDay;
 	sLView.m_Time.bHour   = Item[nIdx].GetTime()->bHour;
 	sLView.m_Time.bMin    = Item[nIdx].GetTime()->bMin;
-	sLView.m_IsBang       = Item[nIdx].GetIsBang();   //是否绑定
-	sLView.m_IsKuaiJie    = Item[nIdx].GetIsKuaiJie();   //是否快捷栏
-	sLView.m_IsMagic      = Item[nIdx].GetIsMagic();   //是否有魔法属性
+	sLView.m_IsBang       = Item[nIdx].GetIsBang();   //欠
+	sLView.m_IsKuaiJie    = Item[nIdx].GetIsKuaiJie();   //欠
+	sLView.m_IsMagic      = Item[nIdx].GetIsMagic();   //欠魔
 	sLView.m_SkillType    = Item[nIdx].GetSkillType();
 	sLView.m_MagicID      = Item[nIdx].GetMagicID();
 	sLView.m_IsWhere      = Item[nIdx].GetIsWhere();
 	sLView.m_IsCanUse     = Item[nIdx].GetIsCanUse();
-	snprintf(sLView.m_WonName, sizeof(sLView.m_WonName), "%s", pInfo->nGmRoleName);  //所有者
+	snprintf(sLView.m_WonName, sizeof(sLView.m_WonName), "%s", pInfo->nGmRoleName);  //
 		
 	int j;
-	for (j = 0; j < 6; j++)//同步魔法属性
+	for (j = 0; j < 6; j++)//同魔
 	{
 		sLView.m_MagicLevel[j] = Item[nIdx].m_GeneratorParam.nGeneratorLevel[j]; 
 		sLView.m_RongMagicLev[j] = Item[nIdx].m_GeneratorParam.nRGeneratorLevel[j];
@@ -12062,30 +12223,30 @@ int KPlayer::SendLianItemInfo(const void *nData)
 		{
 			int nSafeIndex = 0;
 			nSafeIndex=pScript->SafeCallBegin();
-			//执行这个脚本的函数
+			//执疟暮
 			try
-			{//说明
+			{//说
 				pScript->CallFunction("GetItemDescription",1,"sdddddds", Item[nIdx].GetName(),Item[nIdx].GetItemBaseMagic(0),Item[nIdx].GetItemBaseMagic(1),Item[nIdx].GetItemBaseMagic(2),Item[nIdx].GetItemBaseMagic(3),Item[nIdx].GetItemBaseMagic(4),Item[nIdx].GetItemBaseMagic(5),"");
 				const char * szType = lua_typename(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 				if (Lua_IsNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)
 				{ //Lua_PushNumber
 					int nResult = (int)Lua_ValueToNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
-					_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1, "%d", nResult);  // int 类型
+					_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1, "%d", nResult);  // int 
 				   	//sprintf(sLView.m_ItmeInfo,"%d",nResult);
 				} 
-				else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 字符串类型
+				else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 址
 				{  
 					snprintf(sLView.m_ItmeInfo, sizeof(sLView.m_ItmeInfo), "%s", (char *)Lua_ValueToString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)));
 				   	//sprintf(sLView.m_ItmeInfo,(char *)Lua_ValueToString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)));
 				}   
 				else
-					//sprintf(sLView.m_ItmeInfo,"<c=Red>数据错误,请联系GM处理!<c>");
-					_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"<c=Red>数据错误,请联系GM处理!<c>");
+					//sprintf(sLView.m_ItmeInfo,"<c=Red>荽,系GM!<c>");
+					_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"<c=Red>荽,系GM!<c>");
 			}  
 			catch (...)
 			{
-				_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"<c=Red>数据错误,请联系GM处理!<c>");
-				//sprintf(sLView.m_ItmeInfo,"<c=Red>数据错误,请联系GM处理!<c>");
+				_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"<c=Red>荽,系GM!<c>");
+				//sprintf(sLView.m_ItmeInfo,"<c=Red>荽,系GM!<c>");
 			}
 
 			nSafeIndex=pScript->SafeCallBegin();
@@ -12093,8 +12254,8 @@ int KPlayer::SendLianItemInfo(const void *nData)
 		}
 		else
 		{
-			_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"暂无数据");
-			//sprintf(sLView.m_ItmeInfo,"暂无数据");
+			_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"");
+			//sprintf(sLView.m_ItmeInfo,"");
 		}	
 	}
 
@@ -12105,15 +12266,15 @@ int KPlayer::SendLianItemInfo(const void *nData)
 	return true;
 }
 
-//链接  服务器
-int KPlayer::SendLianItemInfo(int nTargetPlayer, int nItemDwID,int nPrcess, BOOL bUpdate,char *nShopName)  //nTargetPlayer  查看装备的索引
+//  
+int KPlayer::SendLianItemInfo(int nTargetPlayer, int nItemDwID,int nPrcess, BOOL bUpdate,char *nShopName)  //nTargetPlayer  榭醋?
 {
 	if (nTargetPlayer <= 0 || nTargetPlayer >= MAX_PLAYER || Player[nTargetPlayer].m_nIndex <= 0)
 		return FALSE;
 	
 	int	nIdx,nItemidx,i;
-	VIEW_LIAN_ITEM_SYNC	 sLView;  //协议
-    memset(&sLView, 0, sizeof(sLView));//清空结构体;
+	VIEW_LIAN_ITEM_SYNC	 sLView;  //协
+    memset(&sLView, 0, sizeof(sLView));//战峁?
 	sLView.ProtocolType = s2c_viewlianitem;
 	nIdx      = m_ItemList.SearchID(nItemDwID);
 	nItemidx  = m_ItemList.SearchItemsIdx(nItemDwID);
@@ -12129,7 +12290,7 @@ int KPlayer::SendLianItemInfo(int nTargetPlayer, int nItemDwID,int nPrcess, BOOL
 	sLView.m_nIdx           = m_ItemList.m_Items[nItemidx].nIdx;*/
 	
 	sLView.m_Point        = Item[nIdx].GetPoint();
-	sLView.m_Rongpiont    = Item[nIdx].IsRong(); //熔炼
+	sLView.m_Rongpiont    = Item[nIdx].IsRong(); //
 	sLView.m_EnChance     = Item[nIdx].GetEnChance();
 	sLView.m_GoldId       = Item[nIdx].GetGoldId();
 	sLView.m_IsBaijin     = Item[nIdx].GetIsPlatima();
@@ -12148,17 +12309,17 @@ int KPlayer::SendLianItemInfo(int nTargetPlayer, int nItemDwID,int nPrcess, BOOL
 	sLView.m_Time.bDay    = Item[nIdx].GetTime()->bDay;
 	sLView.m_Time.bHour   = Item[nIdx].GetTime()->bHour;
 	sLView.m_Time.bMin    = Item[nIdx].GetTime()->bMin;
-	sLView.m_IsBang       = Item[nIdx].GetIsBang();   //是否绑定
-	sLView.m_IsKuaiJie    = Item[nIdx].GetIsKuaiJie();   //是否快捷栏
-	sLView.m_IsMagic      = Item[nIdx].GetIsMagic();   //是否有魔法属性
+	sLView.m_IsBang       = Item[nIdx].GetIsBang();   //欠
+	sLView.m_IsKuaiJie    = Item[nIdx].GetIsKuaiJie();   //欠
+	sLView.m_IsMagic      = Item[nIdx].GetIsMagic();   //欠魔
 	sLView.m_SkillType    = Item[nIdx].GetSkillType();
 	sLView.m_MagicID      = Item[nIdx].GetMagicID();
 	sLView.m_IsWhere      = Item[nIdx].GetIsWhere();
 	sLView.m_IsCanUse     = Item[nIdx].GetIsCanUse();
-	snprintf(sLView.m_WonName, sizeof(sLView.m_WonName), "%s", Item[nIdx].GetWonName());  //所有者
+	snprintf(sLView.m_WonName, sizeof(sLView.m_WonName), "%s", Item[nIdx].GetWonName());  //
 		
 	int j;
-	for (j = 0; j < 6; j++)//同步魔法属性
+	for (j = 0; j < 6; j++)//同魔
 	{
 		sLView.m_MagicLevel[j] = Item[nIdx].m_GeneratorParam.nGeneratorLevel[j]; 
 		sLView.m_RongMagicLev[j] = Item[nIdx].m_GeneratorParam.nRGeneratorLevel[j];
@@ -12180,30 +12341,30 @@ int KPlayer::SendLianItemInfo(int nTargetPlayer, int nItemDwID,int nPrcess, BOOL
 		{
 			int nSafeIndex = 0;
 			nSafeIndex=pScript->SafeCallBegin();
-			//执行这个脚本的函数
+			//执疟暮
 			try
-			{//说明
+			{//说
 				pScript->CallFunction("GetItemDescription",1,"sdddddds", Item[nIdx].GetName(),Item[nIdx].GetItemBaseMagic(0),Item[nIdx].GetItemBaseMagic(1),Item[nIdx].GetItemBaseMagic(2),Item[nIdx].GetItemBaseMagic(3),Item[nIdx].GetItemBaseMagic(4),Item[nIdx].GetItemBaseMagic(5),"");
 				const char * szType = lua_typename(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
 				if (Lua_IsNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)
 				{ //Lua_PushNumber
 					int nResult = (int)Lua_ValueToNumber(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState));
-					_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1, "%d", nResult);  // int 类型
+					_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1, "%d", nResult);  // int 
 				   	//sprintf(sLView.m_ItmeInfo,"%d",nResult);
 				} 
-				else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 字符串类型
+				else if (Lua_IsString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)) == 1)  // 址
 				{  
 					snprintf(sLView.m_ItmeInfo, sizeof(sLView.m_ItmeInfo), "%s", (char *)Lua_ValueToString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)));
 				   	//sprintf(sLView.m_ItmeInfo,(char *)Lua_ValueToString(pScript->m_LuaState, Lua_GetTopIndex(pScript->m_LuaState)));
 				}   
 				else
-					//sprintf(sLView.m_ItmeInfo,"<c=Red>数据错误,请联系GM处理!<c>");
-					_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"<c=Red>数据错误,请联系GM处理!<c>");
+					//sprintf(sLView.m_ItmeInfo,"<c=Red>荽,系GM!<c>");
+					_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"<c=Red>荽,系GM!<c>");
 			}  
 			catch (...)
 			{
-				_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"<c=Red>数据错误,请联系GM处理!<c>");
-				//sprintf(sLView.m_ItmeInfo,"<c=Red>数据错误,请联系GM处理!<c>");
+				_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"<c=Red>荽,系GM!<c>");
+				//sprintf(sLView.m_ItmeInfo,"<c=Red>荽,系GM!<c>");
 			}
 
 			nSafeIndex=pScript->SafeCallBegin();
@@ -12211,8 +12372,8 @@ int KPlayer::SendLianItemInfo(int nTargetPlayer, int nItemDwID,int nPrcess, BOOL
 		}
 		else
 		{
-			_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"暂无数据");
-			//sprintf(sLView.m_ItmeInfo,"暂无数据");
+			_snprintf(sLView.m_ItmeInfo,sizeof(sLView.m_ItmeInfo)-1,"");
+			//sprintf(sLView.m_ItmeInfo,"");
 		}	
 	}
 
@@ -12283,21 +12444,21 @@ void KPlayer::TradeStart(BYTE* pProtocol)
 
 #endif
 
-// 物品相应的操作：
-//     获得物品：1、从地上拣物品 2、脚本控制直接给 3、交易 4、player 之间赠
-//               送(通过交易实现)
-//         客户端鼠标点在物件上，然后客户端通过物件得出物品id、应该出现在装备栏或者
-//         物品栏的位置或者跟随鼠标的计算，把计算结果发给服务器；服务器收到后首先判
-//         断玩家与物品的位置关系，然后检查客户端的计算结果是否正确，然后进行相应的
-//         处理，把处理结果发给客户端
-//     物品的位置调整：客户端处理好物品来源位置、鼠标上物品目的位置，然后发给服务器，
-//     服务器确认后通知客户端最终确定的操作（如果成功，把协议原样发回去）；如果有数
-//     值等其他变化，另外通知客户端；
-//     使用物品：1、吃药 2、装备（鼠标右键点击）
-//         客户端向服务器端申请吃什么位置的药，同时客户端的相应数值先作相应变化，服
-//         务器收到客户端申请后，处理完相应数据，通过player同步的方式通知客户端数据
-//         的变化；
-//         装备：鼠标右键点在一个装备上，自动处理装备上、卸下的位置信息，发给服务器，
-//         服务器处理完后原样发回来；
+// 品应牟
+//     品1拥霞品 2疟直痈 3 4player 之
+//               (通实)
+//         突希然突通贸品id应贸装
+//         品位没吒募悖鸭?
+//         品位霉系然突说募欠确然应
+//         汛突
+//     品位玫突舜品源位谩品目位茫然蠓⒏
+//     确虾通知突确牟晒协原去
+//     值浠通知突?
+//     使品1药 2装壹
+//         突什么位玫药同时突说应值应浠?
+//         盏突螅从荩通player同姆式通知突
+//         谋浠?
+//         装壹一装希远装稀卸碌位息
+//         原
 
-//         交易的处理还没有
+//         椎拇没

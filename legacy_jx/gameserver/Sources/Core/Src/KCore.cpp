@@ -197,7 +197,7 @@ int   nSleepTime;
 int   nIsOrdered;
 int   nMaxSubWorldCount;
 int   nMaxPlayerCount;
-int   nMaxNpcCount;
+CORE_API int   nMaxNpcCount = 150000;
 int   nMaxItemCount;
 int   nMaxObjCount;
 int   nMaxMissleCount;

@@ -14,6 +14,7 @@
 
 #include "CRC32.h"
 #include "..\..\Core\Src/KCoreData.h"
+#include "..\..\Core\Src\KPlayerTradeJournal.h"
 //#include "..\..\Core\Src/KGameglobalSet.h"
 
 #ifdef _STANDALONE
@@ -2932,6 +2933,21 @@ void KSwordOnLineSever::DatabaseMessageProcess(const char* pData, size_t dataLen
 			{
 				m_pCoreServerShell->SetChangeRoleStatus(pnPD->ulIdentity,pnPD->nDataLen,pnPD->nRoleName);
 				printf("[检测角色名成功]:账号:%s 角色:%s,索引[%d] 结果:%d 完成!\n", pnPD->nAccName, pnPD->nRoleName, pnPD->ulIdentity, pnPD->nDataLen);
+			}
+		}
+		break;
+	case s2c_roleserver_savetradepair_result:
+		{
+			if (dataLength < sizeof(TTradePairSaveResult))
+			{
+				printf("[KSOServer] Truncated s2c_roleserver_savetradepair_result received! Size=%zu, expected=%zu\n",
+					dataLength, sizeof(TTradePairSaveResult));
+				break;
+			}
+			TTradePairSaveResult* pRes = (TTradePairSaveResult *)pData;
+			if (m_pCoreServerShell && pRes)
+			{
+				m_pCoreServerShell->OnTradePairSaveResult(pRes->uTxId, pRes->nResultCode, pRes->szRoleA, pRes->szRoleB);
 			}
 		}
 		break;

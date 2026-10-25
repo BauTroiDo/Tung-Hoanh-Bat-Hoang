@@ -17,6 +17,7 @@
 #include "KPlayerSet.h"
 #include "KSkills.h"
 #include "KLadder.h"
+#include "KPlayerTradeJournal.h"
 
 #include "KProtocolDef.h"
 #include "KProtocol.h"
@@ -198,6 +199,7 @@ public:
 	void SetTongData(int nPlayerIdx, void* data);
 	void SyncBlackList(int nPlayerIdx, std::list<string> &blackList);
 	BOOL CheckBlackList(int nPlayerIdx, char* szName);
+	void OnTradePairSaveResult(unsigned __int64 uTxId, int nResultCode, const char* szRoleA, const char* szRoleB);
 private:
 	int	 OnLunch(LPVOID pServer);  //启动服务器
 	/*int  OnSetTran(LPVOID pServer);
@@ -430,6 +432,11 @@ int CoreServerShell::AddCharacter(DWORD nExtPoint, LONG nChangeExtPoint, void* p
 
 	if (pData && pData->BaseInfo.szName[0])
 	{
+		if (KPlayerTradeJournal::Instance().IsPlayerLocked((char*)pData->BaseInfo.szName))
+		{
+			printf("[AddCharacter BLOCKED]: Player '%s' is locked by Trade Journal Recovery. Login REJECTED.\n", (char*)pData->BaseInfo.szName);
+			return 0;
+		}
 		nIdx = 0;
 		nIdx = PlayerSet.Add((char*)pData->BaseInfo.szName, pGuid,nKeepForBt);  //增加玩家链表信息，索引等
 
@@ -518,7 +525,13 @@ bool CoreServerShell::PlayerDbLoading(int nPlayerIndex, int bSyncEnd, int& nStep
 //开始登陆游戏 增加玩家到游戏地图中
 void CoreServerShell::AddPlayerToWorld(int nIndex)
 {
-//	int nIndex = PlayerSet.FindClient(lnID);
+	if (nIndex <= 0 || nIndex >= MAX_PLAYER)
+		return;
+	if (KPlayerTradeJournal::Instance().IsPlayerLocked(Player[nIndex].m_PlayerName))
+	{
+		printf("[AddPlayerToWorld BLOCKED]: Player '%s' is locked by Trade Journal Recovery. Rejected.\n", Player[nIndex].m_PlayerName);
+		return;
+	}
 	Player[nIndex].LaunchPlayer();
 
 }
@@ -570,11 +583,8 @@ void  CoreServerShell::CheckItemAddtoEquipment(int nIndex)
 	if (nIndex <= 0 || nIndex >= MAX_PLAYER)  return;
 	//处理 给与界面和交易界面的存档
 	if (Player[nIndex].CheckTrading())
-	{//如果正在交易
-		Player[nIndex].m_ItemList.RecoverTrade();
-		Player[nIndex].m_ItemList.ClearRoom(room_trade);
-		Player[nIndex].m_ItemList.ClearRoom(room_trade1);
-		Player[nIndex].m_cTrade.Release();
+	{
+		Player[nIndex].CancelTradeSafe();
 	}
 	//开始检测给与物品 
 	Player[nIndex].CheckItemAddtoEquipment(room_give);
@@ -587,11 +597,8 @@ bool CoreServerShell::SavePlayerData(int nIndex,bool isLeave)
 		return FALSE;
 	//处理 给与界面和交易界面的存档
 	if (Player[nIndex].CheckTrading())
-	{//如果正在交易
-		Player[nIndex].m_ItemList.RecoverTrade();
-		Player[nIndex].m_ItemList.ClearRoom(room_trade);
-		Player[nIndex].m_ItemList.ClearRoom(room_trade1);
-		Player[nIndex].m_cTrade.Release();
+	{
+		Player[nIndex].CancelTradeSafe();
 	}
 	//开始检测给与物品 
 	Player[nIndex].CheckItemAddtoEquipment(room_give);
@@ -2170,7 +2177,13 @@ int CoreServerShell::OnSetData(LPVOID pServer)
 {
 	//g_SetDataServer(pServer);
 	g_pDataClient= reinterpret_cast<IClient *>(pServer);
-	return true;
+	// Final P0: Real GameServer Startup Crash Recovery hook
+	bool bRecoverySuccess = KPlayerTradeJournal::Instance().StartupRecovery(g_pDataClient);
+	if (!bRecoverySuccess)
+	{
+		printf("[CoreServerShell::OnSetData]: StartupRecovery had unreconciled transactions. Recovery barrier active.\n");
+	}
+	return bRecoverySuccess ? 1 : 0;
 	
 }
 int CoreServerShell::OnSetGateWay(LPVOID pServer)
@@ -3869,4 +3882,64 @@ BOOL CoreServerShell::CheckBlackList(int nPlayerIdx, char* szName)
 	if (nPlayerIdx <= 0 || nPlayerIdx >= MAX_PLAYER)
 		return FALSE;
 	return Player[nPlayerIdx].m_cChat.OnBlackList(szName);
+}
+void CoreServerShell::OnTradePairSaveResult(unsigned __int64 uTxId, int nResultCode, const char* szRoleA, const char* szRoleB)
+{
+	printf("[CoreServerShell] OnTradePairSaveResult: Tx 0x%llX, result=%d (%s, %s)\n",
+		uTxId, nResultCode, szRoleA ? szRoleA : "", szRoleB ? szRoleB : "");
+	uint32_t dwState = KPlayerTradeJournal::Instance().GetTxState(uTxId);
+	if (dwState != TX_STATE_APPLY_PENDING && dwState != TX_STATE_COMMITTED)
+	{
+		printf("[CoreServerShell] Tx 0x%llX not in pending state (%u). Ignoring ACK.\n", uTxId, dwState);
+		return;
+	}
+	uint32_t idxA = 0, idxB = 0;
+	std::string nameA, nameB;
+	if (KPlayerTradeJournal::Instance().GetTxParticipants(uTxId, idxA, nameA, idxB, nameB))
+	{
+		if (szRoleA && szRoleA[0] && _stricmp(szRoleA, nameA.c_str()) != 0)
+		{
+			printf("[CoreServerShell] Mismatched RoleA in ACK (expected %s, got %s)!\n", nameA.c_str(), szRoleA);
+			return;
+		}
+		if (szRoleB && szRoleB[0] && _stricmp(szRoleB, nameB.c_str()) != 0)
+		{
+			printf("[CoreServerShell] Mismatched RoleB in ACK (expected %s, got %s)!\n", nameB.c_str(), szRoleB);
+			return;
+		}
+	}
+	if (nResultCode > 0)
+	{
+		bool bAcked = KPlayerTradeJournal::Instance().OnTradePairAck(uTxId, nResultCode);
+		if (bAcked)
+		{
+			TRADE_DECISION_SYNC sSync;
+			sSync.ProtocolType = s2c_tradedecision;
+			sSync.m_btDecision = 1;
+			// Finalize Player A if still in slot with matching name
+			if (idxA > 0 && idxA < MAX_PLAYER && strcmp(Player[idxA].m_PlayerName, nameA.c_str()) == 0)
+			{
+				Player[idxA].m_cMenuState.SetState(idxA, PLAYER_MENU_STATE_NORMAL);
+				Player[idxA].m_ItemList.InvalidateTradeSnapshot();
+				Player[idxA].m_cTrade.Release();
+				if (Player[idxA].m_nNetConnectIdx >= 0 && g_pServer)
+					g_pServer->PackDataToClient(Player[idxA].m_nNetConnectIdx, (BYTE*)&sSync, sizeof(TRADE_DECISION_SYNC));
+			}
+			// Finalize Player B if still in slot with matching name
+			if (idxB > 0 && idxB < MAX_PLAYER && strcmp(Player[idxB].m_PlayerName, nameB.c_str()) == 0)
+			{
+				Player[idxB].m_cMenuState.SetState(idxB, PLAYER_MENU_STATE_NORMAL);
+				Player[idxB].m_ItemList.InvalidateTradeSnapshot();
+				Player[idxB].m_cTrade.Release();
+				if (Player[idxB].m_nNetConnectIdx >= 0 && g_pServer)
+					g_pServer->PackDataToClient(Player[idxB].m_nNetConnectIdx, (BYTE*)&sSync, sizeof(TRADE_DECISION_SYNC));
+			}
+		}
+	}
+	else
+	{
+		printf("[CoreServerShell] Goddess returned failure (%d) for Tx 0x%llX! Fail-Closed: preserving COMMITTED in WAL and keeping players locked.\n",
+			nResultCode, uTxId);
+		KPlayerTradeJournal::Instance().OnTradePairAck(uTxId, nResultCode);
+	}
 }

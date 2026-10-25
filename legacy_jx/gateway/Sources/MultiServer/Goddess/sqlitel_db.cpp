@@ -538,14 +538,13 @@ int sqlitel_db::creatTable_bak( const char * inTabName )
 	char szSQL[128] = "";
 	sprintf(szSQL,"create table if not exists '%s'(ID integer primary key autoincrement,roleName varchar,StudentBlob  blob,ekey bigint)",inTabName);//列是从0 开始 
 	//char* sql = "create table if not exists Student_Blob(ID integer primary key autoincrement,StudentBlob  blob)";//待执行的语句 varchar
-	char *err;
+	char *err = NULL;
 	//CREATE TABLE IF NOT EXISTS t_person (id integer PRIMARY KEY AUTOINCREMENT, name text NOT NULL, age integer NOT NULL); 
 	if (SQLITE_OK == sqlite3_exec(m_pDb_bak, szSQL, NULL, NULL, &err)) {// 执行 SQL 语句
 		printf("createTable succeed!\n");
 		sprintf (szSQL,"----createTable_bak succeed=%s------",inTabName);
 		AddOutputString_e(hListOutput,szSQL);
 		//sqlite3_close(pDataBase);//关闭数据库
-		sqlite3_free(err);
 		return 1;
 	}else{
 		printf("err:%s",err);//如果失败打印错误码
@@ -559,14 +558,13 @@ int sqlitel_db::creatTable( const char * inTabName )
 	char szSQL[128] = "";
 	sprintf(szSQL,"create table if not exists '%s'(ID integer primary key autoincrement,roleName varchar,StudentBlob  blob,ekey bigint)",inTabName);//列是从0 开始 
 	//char* sql = "create table if not exists Student_Blob(ID integer primary key autoincrement,StudentBlob  blob)";//待执行的语句 varchar
-	char *err;
+	char *err = NULL;
 	//CREATE TABLE IF NOT EXISTS t_person (id integer PRIMARY KEY AUTOINCREMENT, name text NOT NULL, age integer NOT NULL); 
 	if (SQLITE_OK == sqlite3_exec(m_pDb, szSQL, NULL, NULL, &err)) {// 执行 SQL 语句
 		printf("createTable succeed!\n");
 		sprintf (szSQL,"----createTable succeed=%s------",inTabName);
 		AddOutputString_e(hListOutput,szSQL);
 		//sqlite3_close(pDataBase);//关闭数据库
-		sqlite3_free(err);
 		return 1;
 	}else{
 		printf("err:%s",err);//如果失败打印错误码
@@ -1077,25 +1075,411 @@ void sqlitel_db::copyDataToBaktable()
 
 bool sqlitel_db::updateBlobData_n(void * roleData,int len,char *roleName,unsigned int nkey,bool show)
 {
-	if  (!roleName) return false;
+	if (!roleName || !roleData || len <= 0 || !m_pDb) return false;
 
-	char *zErrMsg = 0;
-	char sql[256];
-	char nTempstr[128];
-	sprintf_s(sql, "update role_Blob set StudentBlob = :1 where roleName='%s'",G2U(roleName));
-	int idx=0;
-	if  (SQLITE_OK== sqlite3_prepare(m_pDb, sql, strlen(sql), &m_pStmt, 0))                 
+	char nTempstr[256];
+	// Stale save protection: only update if ekey is null or incoming nkey >= ekey.
+	// If incoming nkey == 0, allow update for unversioned saves.
+	const char* sql = "update role_Blob set StudentBlob = ?, ekey = ? where roleName = ? and (? = 0 or ekey is null or ekey <= ?);";
+	sqlite3_stmt* pStmt = NULL;
+
+	if (sqlite3_prepare_v2(m_pDb, sql, -1, &pStmt, NULL) != SQLITE_OK)
 	{
-		if  (SQLITE_OK==sqlite3_bind_blob(m_pStmt,1,(const void*)roleData,len,SQLITE_TRANSIENT))	   
-			   sprintf (nTempstr,"------[SQL]更新记录:角色=%s,key=%u 成功------",roleName,nkey);
-		else
-			   sprintf (nTempstr,"------[SQL]更新记录:角色=%s,key=%u 失败------",roleName,nkey);
-		
-		if  (show)
-			AddOutputString_e(hListOutput,nTempstr);
-		sqlite3_step(m_pStmt);
+		if (show)
+		{
+			sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL] update prepare fail: role=%s, key=%u------", roleName, nkey);
+			AddOutputString_e(hListOutput, nTempstr);
+		}
+		return false;
 	}
-	sqlite3_finalize(m_pStmt);
+
+	if (sqlite3_bind_blob(pStmt, 1, (const void*)roleData, len, SQLITE_TRANSIENT) != SQLITE_OK ||
+	    sqlite3_bind_int64(pStmt, 2, (sqlite3_int64)nkey) != SQLITE_OK ||
+	    sqlite3_bind_text(pStmt, 3, G2U(roleName), -1, SQLITE_TRANSIENT) != SQLITE_OK ||
+	    sqlite3_bind_int64(pStmt, 4, (sqlite3_int64)nkey) != SQLITE_OK ||
+	    sqlite3_bind_int64(pStmt, 5, (sqlite3_int64)nkey) != SQLITE_OK)
+	{
+		sqlite3_finalize(pStmt);
+		if (show)
+		{
+			sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL] update bind fail: role=%s, key=%u------", roleName, nkey);
+			AddOutputString_e(hListOutput, nTempstr);
+		}
+		return false;
+	}
+
+	int nStep = sqlite3_step(pStmt);
+	int nChanges = sqlite3_changes(m_pDb);
+	sqlite3_finalize(pStmt);
+
+	bool bSuccess = (nStep == SQLITE_DONE && nChanges > 0);
+
+	if (show)
+	{
+		if (bSuccess)
+			sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL] update: role=%s, key=%u OK (changes=%d)------", roleName, nkey, nChanges);
+		else
+			sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL] update: role=%s, key=%u FAIL (step=%d, changes=%d)------", roleName, nkey, nStep, nChanges);
+		AddOutputString_e(hListOutput, nTempstr);
+	}
+
+	return bSuccess;
+}
+
+
+bool sqlitel_db::ensureTradeReceiptTable()
+{
+	if (!m_pDb) return false;
+	const char* sql = "CREATE TABLE IF NOT EXISTS trade_receipts ("
+	                  "tx_id BIGINT PRIMARY KEY, "
+	                  "role_a VARCHAR(64), "
+	                  "role_b VARCHAR(64), "
+	                  "status INT, "
+	                  "crc_a INT, "
+	                  "crc_b INT, "
+	                  "commit_time BIGINT);";
+	char* zErrMsg = NULL;
+	if (sqlite3_exec(m_pDb, sql, NULL, NULL, &zErrMsg) != SQLITE_OK)
+	{
+		if (zErrMsg) sqlite3_free(zErrMsg);
+		return false;
+	}
+	// ekey stores the legacy FileNameDB(name) key, not a trade sequence.
+	// This table is the durable per-role ordering fence across relog and restart.
+	const char* fenceSql = "CREATE TABLE IF NOT EXISTS trade_role_fence ("
+	    "role_name TEXT PRIMARY KEY, last_tx_id INTEGER NOT NULL);";
+	zErrMsg = NULL;
+	if (sqlite3_exec(m_pDb, fenceSql, NULL, NULL, &zErrMsg) != SQLITE_OK)
+	{
+		if (zErrMsg) sqlite3_free(zErrMsg);
+		return false;
+	}
+	return true;
+}
+
+bool sqlitel_db::isTradeTxCommitted(unsigned __int64 uTxId)
+{
+	if (!m_pDb) return false;
+	ensureTradeReceiptTable();
+	const char* sql = "SELECT status FROM trade_receipts WHERE tx_id = ?;";
+	sqlite3_stmt* pStmt = NULL;
+	if (sqlite3_prepare_v2(m_pDb, sql, -1, &pStmt, NULL) != SQLITE_OK)
+		return false;
+
+	sqlite3_bind_int64(pStmt, 1, (sqlite3_int64)uTxId);
+	int nStep = sqlite3_step(pStmt);
+	bool bCommitted = false;
+	if (nStep == SQLITE_ROW)
+	{
+		int nStatus = sqlite3_column_int(pStmt, 0);
+		if (nStatus == 1)
+			bCommitted = true;
+	}
+	sqlite3_finalize(pStmt);
+	return bCommitted;
+}
+
+int sqlitel_db::checkTradeReceiptMatch(unsigned __int64 uTxId, const char* szRoleA, unsigned int dwCrcA, const char* szRoleB, unsigned int dwCrcB)
+{
+	if (!m_pDb) return 0;
+	ensureTradeReceiptTable();
+	const char* sql = "SELECT status, crc_a, crc_b, role_a, role_b FROM trade_receipts WHERE tx_id = ?;";
+	sqlite3_stmt* pStmt = NULL;
+	if (sqlite3_prepare_v2(m_pDb, sql, -1, &pStmt, NULL) != SQLITE_OK)
+		return 0;
+
+	sqlite3_bind_int64(pStmt, 1, (sqlite3_int64)uTxId);
+	int nStep = sqlite3_step(pStmt);
+	int nMatchResult = 0;
+	if (nStep == SQLITE_ROW)
+	{
+		int nStatus = sqlite3_column_int(pStmt, 0);
+		unsigned int dbCrcA = (unsigned int)sqlite3_column_int64(pStmt, 1);
+		unsigned int dbCrcB = (unsigned int)sqlite3_column_int64(pStmt, 2);
+		const char* dbRoleA = (const char*)sqlite3_column_text(pStmt, 3);
+		const char* dbRoleB = (const char*)sqlite3_column_text(pStmt, 4);
+
+		if (nStatus == 1 &&
+		    dbCrcA == dwCrcA && dbCrcB == dwCrcB &&
+		    dbRoleA && szRoleA && _stricmp(dbRoleA, szRoleA) == 0 &&
+		    dbRoleB && szRoleB && _stricmp(dbRoleB, szRoleB) == 0)
+		{
+			nMatchResult = 1; // Idempotent match
+		}
+		else
+		{
+			nMatchResult = -13; // Payload mismatch / duplicate TxID collision
+		}
+	}
+	sqlite3_finalize(pStmt);
+	return nMatchResult;
+}
+
+bool sqlitel_db::recordTradeReceipt_internal(unsigned __int64 uTxId, const char* szRoleA, unsigned int dwCrcA, const char* szRoleB, unsigned int dwCrcB, int status)
+{
+	if (!m_pDb) return false;
+	const char* sql = "INSERT INTO trade_receipts (tx_id, role_a, role_b, status, crc_a, crc_b, commit_time) VALUES (?, ?, ?, ?, ?, ?, ?);";
+	sqlite3_stmt* pStmt = NULL;
+	if (sqlite3_prepare_v2(m_pDb, sql, -1, &pStmt, NULL) != SQLITE_OK)
+		return false;
+
+	FILETIME ft;
+	GetSystemTimeAsFileTime(&ft);
+	unsigned __int64 uNow = ((unsigned __int64)ft.dwHighDateTime << 32) | (unsigned __int64)ft.dwLowDateTime;
+
+	sqlite3_bind_int64(pStmt, 1, (sqlite3_int64)uTxId);
+	sqlite3_bind_text(pStmt, 2, szRoleA ? szRoleA : "", -1, SQLITE_TRANSIENT);
+	sqlite3_bind_text(pStmt, 3, szRoleB ? szRoleB : "", -1, SQLITE_TRANSIENT);
+	sqlite3_bind_int(pStmt, 4, status);
+	sqlite3_bind_int64(pStmt, 5, (sqlite3_int64)dwCrcA);
+	sqlite3_bind_int64(pStmt, 6, (sqlite3_int64)dwCrcB);
+	sqlite3_bind_int64(pStmt, 7, (sqlite3_int64)uNow);
+
+	int nStep = sqlite3_step(pStmt);
+	int nChanges = sqlite3_changes(m_pDb);
+	sqlite3_finalize(pStmt);
+
+	return (nStep == SQLITE_DONE && nChanges > 0);
+}
+
+// G2U returns a newly allocated buffer. Keep the database key UTF-8 without leaking it.
+static std::string EncodeTradeRoleName(const char* role)
+{
+	char* converted = G2U(role);
+	if (!converted) return std::string();
+	std::string result(converted);
+	delete[] converted;
+	return result;
+}
+
+// Returns 1 for a new TxID, -16 for a stale TxID, -14 for SQLite errors.
+static int CheckTradeRoleOrder(sqlite3* db, const char* role, unsigned __int64 txId)
+{
+	sqlite3_stmt* stmt = NULL;
+	const char* sql = "SELECT last_tx_id FROM trade_role_fence WHERE role_name = ?;";
+	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return -14;
+	const std::string utf8Role = EncodeTradeRoleName(role);
+	if (sqlite3_bind_text(stmt, 1, utf8Role.c_str(), -1, SQLITE_TRANSIENT) != SQLITE_OK)
+	{
+		sqlite3_finalize(stmt);
+		return -14;
+	}
+	const int result = sqlite3_step(stmt);
+	int answer = -14;
+	if (result == SQLITE_DONE)
+	{
+		// Upgrade path: an existing committed receipt may predate trade_role_fence.
+		// Consult historical receipts only once per role (while the fence row is absent).
+		sqlite3_stmt* previous = NULL;
+		const char* historySql = "SELECT MAX(tx_id) FROM trade_receipts "
+		    "WHERE status = 1 AND (role_a = ? COLLATE NOCASE OR role_b = ? COLLATE NOCASE);";
+		if (sqlite3_prepare_v2(db, historySql, -1, &previous, NULL) == SQLITE_OK)
+		{
+			// Old trade_receipts stores the raw protocol/GBK role names.
+			// Do not compare a UTF-8 database key against these legacy receipt bytes.
+			if (sqlite3_bind_text(previous, 1, role, -1, SQLITE_TRANSIENT) == SQLITE_OK &&
+			    sqlite3_bind_text(previous, 2, role, -1, SQLITE_TRANSIENT) == SQLITE_OK)
+			{
+				const int historyStep = sqlite3_step(previous);
+				if (historyStep == SQLITE_ROW)
+				{
+					const sqlite3_int64 lastId =
+					    (sqlite3_column_type(previous, 0) == SQLITE_NULL) ? 0 : sqlite3_column_int64(previous, 0);
+					answer = (lastId >= 0 && (sqlite3_int64)txId > lastId) ? 1 : -16;
+				}
+			}
+			sqlite3_finalize(previous);
+		}
+	}
+	else if (result == SQLITE_ROW)
+	{
+		const sqlite3_int64 lastId = sqlite3_column_int64(stmt, 0);
+		answer = (lastId >= 0 && (sqlite3_int64)txId > lastId) ? 1 : -16;
+	}
+	sqlite3_finalize(stmt);
+	return answer;
+}
+
+// Atomic trade writes must NOT change the legacy ekey hash.
+static bool WriteTradeRoleBlob(sqlite3* db, const char* role, const void* blob, int len)
+{
+	sqlite3_stmt* stmt = NULL;
+	const char* sql = "UPDATE role_Blob SET StudentBlob = ? WHERE roleName = ?;";
+	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return false;
+	const std::string utf8Role = EncodeTradeRoleName(role);
+	const bool bound = sqlite3_bind_blob(stmt, 1, blob, len, SQLITE_TRANSIENT) == SQLITE_OK &&
+	    sqlite3_bind_text(stmt, 2, utf8Role.c_str(), -1, SQLITE_TRANSIENT) == SQLITE_OK;
+	const int result = bound ? sqlite3_step(stmt) : SQLITE_ERROR;
+	const int changed = sqlite3_changes(db);
+	sqlite3_finalize(stmt);
+	return result == SQLITE_DONE && changed == 1;
+}
+
+static bool SetTradeRoleOrder(sqlite3* db, const char* role, unsigned __int64 txId)
+{
+	sqlite3_stmt* stmt = NULL;
+	const char* sql = "INSERT OR REPLACE INTO trade_role_fence(role_name,last_tx_id) VALUES(?,?);";
+	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return false;
+	const std::string utf8Role = EncodeTradeRoleName(role);
+	const bool bound = sqlite3_bind_text(stmt, 1, utf8Role.c_str(), -1, SQLITE_TRANSIENT) == SQLITE_OK &&
+	    sqlite3_bind_int64(stmt, 2, (sqlite3_int64)txId) == SQLITE_OK;
+	const int result = bound ? sqlite3_step(stmt) : SQLITE_ERROR;
+	sqlite3_finalize(stmt);
+	return result == SQLITE_DONE;
+}
+
+int sqlitel_db::updateBlobData_atomic_dual_tx(
+    unsigned __int64 uTxId,
+    void * roleDataA, int lenA, char *roleNameA, unsigned int dwCrcA,
+    void * roleDataB, int lenB, char *roleNameB, unsigned int dwCrcB,
+    unsigned int nkeyA, unsigned int nkeyB, bool show)
+{
+	if (!m_pDb || !roleNameA || !roleNameB || !roleDataA || !roleDataB) return -10;
+	// P0: never accept zero-generation trade packets or non-positive SQLite TxIDs.
+	// TxID ordering is durable; in-session generations are only sanity markers.
+	if (!uTxId || uTxId > 0x7FFFFFFFFFFFFFFFULL || !nkeyA || !nkeyB ||
+	    !roleNameA[0] || !roleNameB[0] || _stricmp(roleNameA, roleNameB) == 0) return -15;
+
+	if (!ensureTradeReceiptTable()) return -14;
+
+	char* zErrMsg = NULL;
+	if (sqlite3_exec(m_pDb, "BEGIN IMMEDIATE TRANSACTION;", NULL, NULL, &zErrMsg) != SQLITE_OK)
+	{
+		if (zErrMsg) sqlite3_free(zErrMsg);
+		return -14;
+	}
+
+	// 1. Kiểm tra biên lai giao dịch BÊN TRONG IMMEDIATE TRANSACTION
+	int nCheck = checkTradeReceiptMatch(uTxId, roleNameA, dwCrcA, roleNameB, dwCrcB);
+	if (nCheck == 1)
+	{
+		// Never acknowledge a replay as durable success if SQLite could not commit.
+		if (sqlite3_exec(m_pDb, "COMMIT TRANSACTION;", NULL, NULL, NULL) != SQLITE_OK)
+		{
+			sqlite3_exec(m_pDb, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);
+			return -14;
+		}
+		if (show)
+		{
+			char nTempstr[256];
+			sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL Dual Atomic]: Tx 0x%llX ALREADY COMMITTED (Idempotent success)------", uTxId);
+			AddOutputString_e(hListOutput, nTempstr);
+		}
+		return 1;
+	}
+	else if (nCheck == -13)
+	{
+		sqlite3_exec(m_pDb, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);
+		if (show)
+		{
+			char nTempstr[256];
+			sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL Dual Atomic ERROR]: Tx 0x%llX COLLISION (Duplicate TxID with mismatched payload)------", uTxId);
+			AddOutputString_e(hListOutput, nTempstr);
+		}
+		return -13;
+	}
+
+	// Reject a different older TxID before either player blob changes.
+	// Same-TxID replay was already handled by the committed receipt above.
+	const int orderA = CheckTradeRoleOrder(m_pDb, roleNameA, uTxId);
+	const int orderB = (orderA == 1) ? CheckTradeRoleOrder(m_pDb, roleNameB, uTxId) : orderA;
+	if (orderA != 1 || orderB != 1)
+	{
+		sqlite3_exec(m_pDb, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);
+		return (orderA == -16 || orderB == -16) ? -16 : -14;
+	}
+
+	bool bOkA = WriteTradeRoleBlob(m_pDb, roleNameA, roleDataA, lenA);
+	bool bOkB = false;
+	if (bOkA)
+		bOkB = WriteTradeRoleBlob(m_pDb, roleNameB, roleDataB, lenB);
+
+	bool bOkReceipt = false;
+	bool bOkFenceA = false;
+	bool bOkFenceB = false;
+	if (bOkA && bOkB)
+	{
+		bOkReceipt = recordTradeReceipt_internal(uTxId, roleNameA, dwCrcA, roleNameB, dwCrcB, 1);
+		if (bOkReceipt)
+		{
+			bOkFenceA = SetTradeRoleOrder(m_pDb, roleNameA, uTxId);
+			if (bOkFenceA)
+				bOkFenceB = SetTradeRoleOrder(m_pDb, roleNameB, uTxId);
+		}
+	}
+
+	if (bOkA && bOkB && bOkReceipt && bOkFenceA && bOkFenceB)
+	{
+		if (sqlite3_exec(m_pDb, "COMMIT TRANSACTION;", NULL, NULL, &zErrMsg) == SQLITE_OK)
+		{
+			if (show)
+			{
+				char nTempstr[256];
+				sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL Dual Atomic Commit with TxID 0x%llX]: roleA=%s, roleB=%s OK------", uTxId, roleNameA, roleNameB);
+				AddOutputString_e(hListOutput, nTempstr);
+			}
+			return 1;
+		}
+		if (zErrMsg) sqlite3_free(zErrMsg);
+	}
+
+	sqlite3_exec(m_pDb, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);
+	if (show)
+	{
+		char nTempstr[256];
+		sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL Dual Atomic ROLLBACK with TxID 0x%llX]: roleA=%s (%s), roleB=%s (%s), receipt=(%s)------",
+			uTxId, roleNameA, bOkA ? "OK" : "FAIL", roleNameB, bOkB ? "OK" : "FAIL", bOkReceipt ? "OK" : "FAIL");
+		AddOutputString_e(hListOutput, nTempstr);
+	}
+	return -14;
+}
+
+bool sqlitel_db::updateBlobData_atomic_dual(
+    void * roleDataA, int lenA, char *roleNameA,
+    void * roleDataB, int lenB, char *roleNameB,
+    unsigned int nkeyA, unsigned int nkeyB, bool show)
+{
+	if (!m_pDb || !roleNameA || !roleNameB || !roleDataA || !roleDataB) return false;
+
+	char* zErrMsg = NULL;
+	if (sqlite3_exec(m_pDb, "BEGIN IMMEDIATE TRANSACTION;", NULL, NULL, &zErrMsg) != SQLITE_OK)
+	{
+		if (zErrMsg) sqlite3_free(zErrMsg);
+		return false;
+	}
+
+	bool bOkA = updateBlobData_n(roleDataA, lenA, roleNameA, nkeyA, show);
+	bool bOkB = false;
+	if (bOkA)
+	{
+		bOkB = updateBlobData_n(roleDataB, lenB, roleNameB, nkeyB, show);
+	}
+
+	if (bOkA && bOkB)
+	{
+		if (sqlite3_exec(m_pDb, "COMMIT TRANSACTION;", NULL, NULL, &zErrMsg) == SQLITE_OK)
+		{
+			if (show)
+			{
+				char nTempstr[256];
+				sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL Dual Atomic Commit]: roleA=%s, roleB=%s OK------", roleNameA, roleNameB);
+				AddOutputString_e(hListOutput, nTempstr);
+			}
+			return true;
+		}
+		if (zErrMsg) sqlite3_free(zErrMsg);
+	}
+
+	// Rollback entire transaction if any update failed
+	sqlite3_exec(m_pDb, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);
+	if (show)
+	{
+		char nTempstr[256];
+		sprintf_s(nTempstr, sizeof(nTempstr), "------[SQL Dual Atomic ROLLBACK]: roleA=%s (%s), roleB=%s (%s)------",
+			roleNameA, bOkA ? "OK" : "FAIL", roleNameB, bOkB ? "OK" : "FAIL");
+		AddOutputString_e(hListOutput, nTempstr);
+	}
+	return false;
 }
 
 

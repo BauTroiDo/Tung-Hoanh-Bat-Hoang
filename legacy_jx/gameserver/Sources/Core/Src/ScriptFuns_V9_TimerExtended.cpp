@@ -235,6 +235,9 @@ int LuaTM_IsTimerSuspending(Lua_State* L)
 //=============================================================================
 int LuaTimerFuncForAutoHang(Lua_State* L)
 {
-    // Auto hang heartbeat callback
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return 0;
+    // Auto hang heartbeat process
     return 0;
 }

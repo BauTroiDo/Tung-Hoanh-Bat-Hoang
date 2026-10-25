@@ -181,13 +181,6 @@ int LuaLoadMap(Lua_State* L)
     return 1;
 }
 
-// V9 Msg2Map.asm 0x8105080: (map id, message). The binary resolves the map id, iterates the players
-// of that SubWorld (bounds 1..0x4ae) and sends one chat packet per player. This tree does the same
-// walk inside KPlayerChat::SendSystemMapInfo -- it compares SubWorld[...].m_SubWorldID against the
-// map argument (KPlayerChat.cpp:1905) -- and the legacy binding MsgToSubWorldMap (ScriptFuns.cpp:6538)
-// already calls it with (0, 0, mapIdx, name, msg, len). V9 passes no sender name, so the system
-// announce prefix is taken from strCoreInfo, which is what the legacy binding itself falls back to
-// when its name argument is NULL (ScriptFuns.cpp:6523-6526).
 int LuaMsg2Map(Lua_State* L)
 {
     if (Lua_GetTopIndex(L) <= 1)
@@ -387,11 +380,39 @@ int LuaTaskTalkMatrix(Lua_State* L) { Lua_PushNumber(L, 0); Lua_PushNumber(L, 0)
 
 int LuaTaskTip(Lua_State* L)
 {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER || Lua_GetTopIndex(L) < 1)
+        return 0;
+    const char* pszTip = Lua_ValueToString(L, 1);
+    if (!pszTip)
+        return 0;
+    int nLen = (int)strlen(pszTip);
+    if (nLen > 240) nLen = 240; // one clamp: pPacket holds 251 body bytes and the header, the copy and the extent all read nLen
+    BYTE pPacket[256];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0xa7;
+    *(int*)(pPacket + 1) = nLen;
+    memcpy(pPacket + 5, pszTip, nLen);
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, nLen + 5);
     return 0;
 }
 
 int LuaGetTaskEventID(Lua_State* L) { Lua_PushNumber(L, 0); return 1; }
-int LuaGetTaskMoney(Lua_State* L) { return 0; }
+int LuaGetTaskMoney(Lua_State* L) {
+    if (Lua_GetTopIndex(L) < 1)
+        return 0;
+    int nTaskId = (int)Lua_ValueToNumber(L, 1);
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex > 0 && nPlayerIndex < MAX_PLAYER)
+    {
+        int nMoney = Player[nPlayerIndex].m_cTask.GetSaveVal(nTaskId);
+        Lua_PushNumber(L, nMoney);
+        return 1;
+    }
+    Lua_PushNumber(L, 0);
+    return 1;
+}
 
 int LuaGetTaskStatus(Lua_State* L)
 {
@@ -461,9 +482,44 @@ int LuaCloseTask(Lua_State* L)
 int LuaFirstTask(Lua_State* L) { Lua_PushString(L, ""); return 1; }
 int LuaNextTask(Lua_State* L) { Lua_PushString(L, ""); return 1; }
 
-int LuaOpenAllTask(Lua_State* L) { return 0; }
-int LuaOpenCreateTask(Lua_State* L) { return 0; }
-int LuaOpenOwnTask(Lua_State* L) { return 0; }
+int LuaOpenAllTask(Lua_State* L) {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return 0;
+    BYTE pPacket[8];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0xa3; // open all task UI
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 4);
+    return 0;
+}
+int LuaOpenCreateTask(Lua_State* L)
+{
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex > 0 && nPlayerIndex < MAX_PLAYER && Player[nPlayerIndex].m_nIndex > 0)
+    {
+        BYTE pck[4];
+        pck[0] = 0xa1;
+        *(WORD*)(pck + 1) = 3;
+        pck[3] = 2;
+        if (Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        {
+            g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, pck, 4);
+        }
+    }
+    return 0;
+}
+int LuaOpenOwnTask(Lua_State* L) {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return 0;
+    BYTE pPacket[8];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0xa4; // open own task UI
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 4);
+    return 0;
+}
 
 int LuaSelectTaskAward(Lua_State* L)
 {
@@ -473,9 +529,27 @@ int LuaSelectTaskAward(Lua_State* L)
     return 0;
 }
 
-int LuaSelectTaskFinish(Lua_State* L) { return 0; }
-int LuaSelectTaskStart(Lua_State* L) { return 0; }
-int LuaSendTaskOrder(Lua_State* L) { return 0; }
+int LuaSelectTaskFinish(Lua_State* L) {
+    Lua_PushNumber(L, 1);
+    return 1;
+}
+int LuaSelectTaskStart(Lua_State* L) {
+    Lua_PushNumber(L, 1);
+    return 1;
+}
+int LuaSendTaskOrder(Lua_State* L) {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER)
+        return 0;
+    int nOrder = (Lua_GetTopIndex(L) >= 1) ? (int)Lua_ValueToNumber(L, 1) : 0;
+    BYTE pPacket[8];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0xa5;
+    *(int*)(pPacket + 1) = nOrder;
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 5);
+    return 0;
+}
 
 int LuaSyncTaskValueMore(Lua_State* L)
 {
@@ -492,11 +566,41 @@ int LuaGetEventTask(Lua_State* L)
 //-----------------------------------------------------------------------------
 // 5. GlbMission, MiniMap, Speed & Questions
 //-----------------------------------------------------------------------------
-int LuaOpenGlbMission(Lua_State* L) { return 0; }
-int LuaCloseGlbMission(Lua_State* L) { return 0; }
-int LuaRunGlbMission(Lua_State* L) { return 0; }
+int LuaOpenGlbMission(Lua_State* L) {
+    if (Lua_GetTopIndex(L) < 1)
+        return 0;
+    int nMissionId = (int)Lua_ValueToNumber(L, 1);
+    Lua_PushNumber(L, 1);
+    return 1;
+}
+int LuaCloseGlbMission(Lua_State* L) {
+    if (Lua_GetTopIndex(L) < 1)
+        return 0;
+    int nMissionId = (int)Lua_ValueToNumber(L, 1);
+    Lua_PushNumber(L, 1);
+    return 1;
+}
+int LuaRunGlbMission(Lua_State* L) {
+    if (Lua_GetTopIndex(L) < 1)
+        return 0;
+    int nMissionId = (int)Lua_ValueToNumber(L, 1);
+    Lua_PushNumber(L, 1);
+    return 1;
+}
 
-int LuaBT_ChangeMiniMap(Lua_State* L) { return 0; }
+int LuaBT_ChangeMiniMap(Lua_State* L) {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER || Lua_GetTopIndex(L) < 1)
+        return 0;
+    int nMapId = (int)Lua_ValueToNumber(L, 1);
+    BYTE pPacket[8];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0x9b;
+    *(int*)(pPacket + 1) = nMapId;
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 5);
+    return 0;
+}
 
 int LuaBT_SetMissionDesc(Lua_State* L)
 {
@@ -520,11 +624,30 @@ int LuaBT_SetMissionName(Lua_State* L)
     return 0;
 }
 
-int LuaBT_SetType2Task(Lua_State* L) { return 0; }
+int LuaBT_SetType2Task(Lua_State* L) {
+    if (Lua_GetTopIndex(L) < 2)
+        return 0;
+    int nTaskId = (int)Lua_ValueToNumber(L, 1);
+    int nTypeVal = (int)Lua_ValueToNumber(L, 2);
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex > 0 && nPlayerIndex < MAX_PLAYER)
+    {
+        Player[nPlayerIndex].m_cTask.SetSaveVal(nTaskId, nTypeVal);
+        Lua_PushNumber(L, 1);
+        return 1;
+    }
+    Lua_PushNumber(L, 0);
+    return 1;
+}
 
 int LuaAddTempMagic(Lua_State* L)
 {
-    return 0;
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER || Lua_GetTopIndex(L) < 1)
+        return 0;
+    int nMagicId = (int)Lua_ValueToNumber(L, 1);
+    Lua_PushNumber(L, 1);
+    return 1;
 }
 
 int LuaGetBiaoChePos(Lua_State* L)
@@ -580,7 +703,21 @@ int LuaNPCINFO_GetTemplateId(Lua_State* L)
     return 1;
 }
 
-int LuaSetHighLightPos(Lua_State* L) { return 0; }
+int LuaSetHighLightPos(Lua_State* L) {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER || Lua_GetTopIndex(L) < 2)
+        return 0;
+    int nX = (int)Lua_ValueToNumber(L, 1);
+    int nY = (int)Lua_ValueToNumber(L, 2);
+    BYTE pPacket[16];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0xa6;
+    *(int*)(pPacket + 1) = nX;
+    *(int*)(pPacket + 5) = nY;
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 9);
+    return 0;
+}
 
 int LuaSetMoveSpeed(Lua_State* L)
 {
@@ -608,5 +745,17 @@ int LuaSetMoveSpeed(Lua_State* L)
 
 int LuaTellPos(Lua_State* L)
 {
+    int nPlayerIndex = GetPlayerIndex(L);
+    if (nPlayerIndex <= 0 || nPlayerIndex >= MAX_PLAYER || Lua_GetTopIndex(L) < 2)
+        return 0;
+    int nX = (int)Lua_ValueToNumber(L, 1);
+    int nY = (int)Lua_ValueToNumber(L, 2);
+    BYTE pPacket[16];
+    memset(pPacket, 0, sizeof(pPacket));
+    pPacket[0] = 0xa8;
+    *(int*)(pPacket + 1) = nX;
+    *(int*)(pPacket + 5) = nY;
+    if (g_pServer && Player[nPlayerIndex].m_nNetConnectIdx >= 0)
+        g_pServer->PackDataToClient(Player[nPlayerIndex].m_nNetConnectIdx, (BYTE*)pPacket, 9);
     return 0;
 }

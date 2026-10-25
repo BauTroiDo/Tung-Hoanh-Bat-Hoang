@@ -322,9 +322,9 @@ public:
 
 #endif
 
-class KNpc
+class CORE_API KNpc
 {
-	friend class KNpcSet;
+	friend class CORE_API KNpcSet;
 public:
 	int                  m_bDynamicAdd;     //是否动态加载的
 	UINT				  m_dwID;					// Npc的ID  第个NPC 编号 无限增大
@@ -1032,7 +1032,7 @@ private:
 #endif
 
 public:
-	friend class KNpcAttribModify;
+	friend class CORE_API KNpcAttribModify;
 	friend class KThiefSkill;
 	KNpc();
 	~KNpc();
@@ -1279,7 +1279,7 @@ public:
 //typedef std::unordered_map<INT, KNpc> _npcInfo;
 //extern _npcInfo Npc;
 
-extern KNpc *Npc;//Npc[MAX_NPC];
+extern CORE_API KNpc *Npc;//Npc[MAX_NPC];
 #else
 extern CORE_API KNpc *Npc;//Npc[MAX_NPC];
 #endif

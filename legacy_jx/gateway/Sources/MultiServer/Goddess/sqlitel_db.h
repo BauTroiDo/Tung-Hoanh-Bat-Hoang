@@ -213,6 +213,12 @@ public:
    bool deleteBlobData(char *roleName,unsigned int nkey,bool show=false);
    bool updateBlobData(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);
    bool updateBlobData_n(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);
+   bool updateBlobData_atomic_dual(void * roleDataA,int lenA,char *roleNameA, void * roleDataB,int lenB,char *roleNameB,unsigned int nkeyA=0,unsigned int nkeyB=0,bool show=false);
+   bool ensureTradeReceiptTable();
+   bool isTradeTxCommitted(unsigned __int64 uTxId);
+   int checkTradeReceiptMatch(unsigned __int64 uTxId, const char* szRoleA, unsigned int dwCrcA, const char* szRoleB, unsigned int dwCrcB);
+   bool recordTradeReceipt_internal(unsigned __int64 uTxId, const char* szRoleA, unsigned int dwCrcA, const char* szRoleB, unsigned int dwCrcB, int status);
+   int updateBlobData_atomic_dual_tx(unsigned __int64 uTxId, void * roleDataA,int lenA,char *roleNameA, unsigned int dwCrcA, void * roleDataB,int lenB,char *roleNameB, unsigned int dwCrcB, unsigned int nkeyA=0,unsigned int nkeyB=0,bool show=false);
    void copyDataToBaktable();
    void copyDataToDB(ZDBTable *db_table);
    void findRoleITemInSql(char *accName,char *roleName,int shen,int zimu,int chuwu,int kuoyi,int kuoer,int kuosan,int all);

@@ -153,7 +153,8 @@ int KForBitGua::GetProcessList(char *nKey,int nZRows,int gCurRows)
 char * KForBitGua::ListProcessModules(DWORD dwPID,char *nName)
 {
 //HANDLE hModuleSnap = INVALID_HANDLE_VALUE;
-  MODULEENTRY32 me32;
+  // Callers use szExePath after this function returns; keep it alive per thread.
+  static thread_local MODULEENTRY32 me32;
   // Take a snapshot of all modules in the specified process.
   HANDLE  hModuleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE,dwPID);
   if(hModuleSnap == INVALID_HANDLE_VALUE)

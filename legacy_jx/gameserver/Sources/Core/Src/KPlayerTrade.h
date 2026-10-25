@@ -12,14 +12,16 @@
 
 #include	"KPlayerDef.h"
 
-class KTrade
+class CORE_API KTrade
 {
 	friend class KPlayer;
 public:
 	int			m_nIsTrading;						// 是否正在交易 0 没有 1 正在交易
 	int			m_nTradeDest;						// 服务器端记的是 player index 客户端记的是 npc id
 	int			m_nTradeState;						// 是否已经点了ok 0 没有 1 点了
-	int			m_nTradeLock;						// 是否锁定 0 没有 1 已经锁定
+	int			m_nTradeLock;						//
+	DWORD		m_dwTradeSessionId;
+// 是否锁定 0 没有 1 已经锁定
 
 #ifdef _SERVER
 	int			m_nApplyIdx;
@@ -36,7 +38,7 @@ public:
 public:
 	KTrade();
 	void		Release();
-	BOOL		StartTrade(int nDest, int nEquipMoney = 0, int nRepositoryMoney = 0);
+	BOOL		StartTrade(int nDest, int nEquipMoney = 0, int nRepositoryMoney = 0, DWORD dwSessionId = 0);
 	void		Lock(BOOL bFlag);
 
 #ifndef _SERVER

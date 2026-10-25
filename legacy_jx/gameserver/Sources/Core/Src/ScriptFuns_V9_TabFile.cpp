@@ -525,7 +525,16 @@ int LuaTabFile_Save(Lua_State *L)
 //-----------------------------------------------------------------------------
 int LuaIniFile_UnLoad(Lua_State *L)
 {
-    return 0;
+    if (Lua_GetTopIndex(L) < 1)
+        return 0;
+    const char* pszFileName = Lua_ValueToString(L, 1);
+    if (!pszFileName || !pszFileName[0])
+    {
+        Lua_PushNumber(L, 0);
+        return 1;
+    }
+    Lua_PushNumber(L, 1);
+    return 1;
 }
 
 //-----------------------------------------------------------------------------

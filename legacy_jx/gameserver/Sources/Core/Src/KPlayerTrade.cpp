@@ -31,6 +31,7 @@ void	KTrade::Release()
 	m_nTradeDest			= -1;
 	m_nTradeState			= 0;
 	m_nTradeLock			= 0;
+	m_dwTradeSessionId		= 0;
 #ifndef _SERVER
 	m_nBackEquipMoney		= 0;
 	m_nBackRepositoryMoney	= 0;
@@ -40,7 +41,7 @@ void	KTrade::Release()
 #endif
 }
 
-BOOL	KTrade::StartTrade(int nDest, int nEquipMoney, int nRepositoryMoney)
+BOOL	KTrade::StartTrade(int nDest, int nEquipMoney, int nRepositoryMoney, DWORD dwSessionId)
 {
 	if (m_nIsTrading)
 		return FALSE;
@@ -51,6 +52,7 @@ BOOL	KTrade::StartTrade(int nDest, int nEquipMoney, int nRepositoryMoney)
 	m_nTradeDest = nDest;
 	m_nTradeState = 0;
 	m_nTradeLock = 0;
+	m_dwTradeSessionId = dwSessionId;
 #ifndef _SERVER
 	m_nBackEquipMoney = nEquipMoney;
 	m_nBackRepositoryMoney = nRepositoryMoney;
