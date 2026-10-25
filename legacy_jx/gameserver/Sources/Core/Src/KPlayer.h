@@ -270,6 +270,11 @@ public:
 	UINT			m_uSaveGeneration;
 	unsigned __int64 m_uRoleSaveRevision; // SQLite revision bound to login session
 	bool m_bRoleSaveRevisionLoaded;
+	bool m_bRoleRevisionProtocolSeen;
+	bool m_bRoleSavePending;
+	unsigned __int64 m_uRoleSavePendingNonce;
+	unsigned __int64 m_uRoleSavePendingExpected;
+	char m_szRoleSavePendingName[64];
 	UINT			m_uMustSave;
 	UINT			m_ulLastSaveTime;          //˳Ϸʱѭ֡
 	UINT			m_uNextSaveTime;           //´δ浵ʱ

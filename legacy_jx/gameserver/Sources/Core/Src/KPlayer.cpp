@@ -324,6 +324,11 @@ void	KPlayer::Release()
 	m_uSaveGeneration = 0;
 	m_uRoleSaveRevision = 0;
 	m_bRoleSaveRevisionLoaded = false;
+	m_bRoleRevisionProtocolSeen = false;
+	m_bRoleSavePending = false;
+	m_uRoleSavePendingNonce = 0;
+	m_uRoleSavePendingExpected = 0;
+	memset(m_szRoleSavePendingName,0,sizeof(m_szRoleSavePendingName));
 	m_uMustSave  = SAVE_IDLE;
 	m_bIsQuiting = FALSE;
 	m_isInGame   =false;

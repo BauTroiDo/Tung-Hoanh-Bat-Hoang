@@ -18,6 +18,7 @@
 #include "KSkills.h"
 #include "KLadder.h"
 #include "KPlayerTradeJournal.h"
+#pragma comment(lib,"ole32.lib")
 
 #include "KProtocolDef.h"
 #include "KProtocol.h"
@@ -112,6 +113,9 @@ public:
 	bool SetRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 revision);
 	bool GetRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64* revision);
 	bool ConfirmRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 expected, unsigned __int64 next);
+	bool IsRoleSaveRevisionRequired(int nIndex, const char* roleName);
+	bool BeginRoleSave(int nIndex, const char* roleName, unsigned __int64* expected, unsigned __int64* nonce);
+	int FinishRoleSave(int nIndex, unsigned __int64 expected, unsigned __int64 nonce, int dbResult, unsigned __int64 committed);
 	bool IsCharacterQuiting(int nIndex);
 	bool IsShutdownClient(int nIndex);
 	bool IsShutdownClientNoserver(int nIndex);
@@ -3895,6 +3899,7 @@ bool CoreServerShell::SetRoleSaveRevision(int idx, const char* name, unsigned __
         Player[idx].m_bRoleSaveRevisionLoaded) return false;
     Player[idx].m_uRoleSaveRevision = rev;
     Player[idx].m_bRoleSaveRevisionLoaded = true;
+    Player[idx].m_bRoleRevisionProtocolSeen = true;
     return true;
 }
 bool CoreServerShell::GetRoleSaveRevision(int idx, const char* name, unsigned __int64* rev)
@@ -3913,6 +3918,63 @@ bool CoreServerShell::ConfirmRoleSaveRevision(int idx, const char* name,
         expected >= 0x7FFFFFFFFFFFFFFFULL || next != expected + 1) return false;
     Player[idx].m_uRoleSaveRevision = next;
     return true;
+}
+
+bool CoreServerShell::IsRoleSaveRevisionRequired(int idx, const char* name)
+{
+    // A role-name mismatch must not downgrade a versioned session to legacy.
+    return idx > 0 && idx < MAX_PLAYER &&
+        Player[idx].m_bRoleRevisionProtocolSeen;
+}
+bool CoreServerShell::BeginRoleSave(int idx, const char* name,
+    unsigned __int64* expected, unsigned __int64* nonce)
+{
+    if (!expected || !nonce || !name || !name[0] ||
+        !IsRoleSaveRevisionRequired(idx,name) ||
+        strcmp(Player[idx].m_PlayerName,name)!=0 ||
+        !Player[idx].m_bRoleSaveRevisionLoaded ||
+        Player[idx].m_bRoleSavePending ||
+        Player[idx].m_uRoleSaveRevision >= 0x7FFFFFFFFFFFFFFFULL ||
+        strlen(name)>=sizeof(Player[idx].m_szRoleSavePendingName))
+        return false;
+    GUID unique = {};
+    if (FAILED(CoCreateGuid(&unique))) return false;
+    unsigned __int64 ticket=0;
+    memcpy(&ticket,&unique,sizeof(ticket));
+    if (!ticket) return false;
+    Player[idx].m_bRoleSavePending=true;
+    Player[idx].m_uRoleSavePendingNonce=ticket;
+    Player[idx].m_uRoleSavePendingExpected=Player[idx].m_uRoleSaveRevision;
+    strcpy_s(Player[idx].m_szRoleSavePendingName,
+             sizeof(Player[idx].m_szRoleSavePendingName),name);
+    *expected=Player[idx].m_uRoleSaveRevision;
+    *nonce=ticket;
+    return true;
+}
+int CoreServerShell::FinishRoleSave(int idx, unsigned __int64 expected,
+    unsigned __int64 nonce, int dbResult, unsigned __int64 committed)
+{
+    if (idx <= 0 || idx >= MAX_PLAYER || !nonce ||
+        !Player[idx].m_bRoleRevisionProtocolSeen ||
+        !Player[idx].m_bRoleSavePending ||
+        Player[idx].m_uRoleSavePendingNonce != nonce ||
+        Player[idx].m_uRoleSavePendingExpected != expected ||
+        strcmp(Player[idx].m_PlayerName,Player[idx].m_szRoleSavePendingName)!=0)
+        return 0;
+    Player[idx].m_bRoleSavePending=false;
+    Player[idx].m_uRoleSavePendingNonce=0;
+    Player[idx].m_uRoleSavePendingExpected=0;
+    Player[idx].m_szRoleSavePendingName[0]=0;
+    if (dbResult==1 && Player[idx].m_bRoleSaveRevisionLoaded &&
+        Player[idx].m_uRoleSaveRevision == expected &&
+        expected < 0x7FFFFFFFFFFFFFFFULL &&
+        committed==expected+1) {
+        Player[idx].m_uRoleSaveRevision=committed;
+        return 1;
+    }
+    // Fail closed on stale ACK, negative response or trade/save collision.
+    Player[idx].m_bRoleSaveRevisionLoaded=false;
+    return -1;
 }
 
 void CoreServerShell::OnTradePairSaveResult(unsigned __int64 uTxId, int nResultCode, const char* szRoleA, const char* szRoleB)
@@ -3950,13 +4012,21 @@ void CoreServerShell::OnTradePairSaveResult(unsigned __int64 uTxId, int nResultC
             if (idxA > 0 && idxA < MAX_PLAYER &&
                 strcmp(Player[idxA].m_PlayerName, nameA.c_str()) == 0 &&
                 Player[idxA].m_bRoleSaveRevisionLoaded &&
-                Player[idxA].m_uRoleSaveRevision < 0x7FFFFFFFFFFFFFFFULL)
-                ++Player[idxA].m_uRoleSaveRevision;
+                Player[idxA].m_uRoleSaveRevision < 0x7FFFFFFFFFFFFFFFULL) {
+                if (Player[idxA].m_bRoleSavePending)
+                    Player[idxA].m_bRoleSaveRevisionLoaded = false;
+                else
+                    ++Player[idxA].m_uRoleSaveRevision;
+            }
             if (idxB > 0 && idxB < MAX_PLAYER &&
                 strcmp(Player[idxB].m_PlayerName, nameB.c_str()) == 0 &&
                 Player[idxB].m_bRoleSaveRevisionLoaded &&
-                Player[idxB].m_uRoleSaveRevision < 0x7FFFFFFFFFFFFFFFULL)
-                ++Player[idxB].m_uRoleSaveRevision;
+                Player[idxB].m_uRoleSaveRevision < 0x7FFFFFFFFFFFFFFFULL) {
+                if (Player[idxB].m_bRoleSavePending)
+                    Player[idxB].m_bRoleSaveRevisionLoaded = false;
+                else
+                    ++Player[idxB].m_uRoleSaveRevision;
+            }
 			TRADE_DECISION_SYNC sSync;
 			sSync.ProtocolType = s2c_tradedecision;
 			sSync.m_btDecision = 1;

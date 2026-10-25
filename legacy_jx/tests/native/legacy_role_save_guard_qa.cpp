@@ -57,6 +57,9 @@ int main(int argc,char**argv) {
     Check(argc==2,"disposable database required");
     sqlite3* a=nullptr;sqlite3* b=nullptr;
     Check(sqlite3_open(argv[1],&a)==SQLITE_OK,"open SQLite");
+    // Concurrent writer test requires WAL so an awaiting writer does not
+    // hold a SHARED read-lock which can spuriously block the first COMMIT.
+    Check(Sql(a,"PRAGMA journal_mode=WAL"),"enable WAL for concurrent writer fixture");
     Check(Sql(a,"CREATE TABLE role_Blob(ID INTEGER PRIMARY KEY,roleName TEXT UNIQUE,StudentBlob BLOB,ekey INTEGER)"),"create role table");
     Check(Sql(a,"CREATE TABLE trade_role_fence(role_name TEXT PRIMARY KEY,last_tx_id INTEGER)"),"create fence");
     Check(Sql(a,"CREATE TABLE role_save_revision(role_name TEXT PRIMARY KEY,revision INTEGER NOT NULL)"),"create ledger");

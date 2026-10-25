@@ -2962,22 +2962,36 @@ void KSwordOnLineSever::DatabaseMessageProcess(const char* pData, size_t dataLen
 			}
 			TProcessData*	pPD = (TProcessData *)pData;
 
-			if  (pPD->nDataLen!=791030)
-				break;
-
-			int nIndex = pPD->ulIdentity;
-
-            if (nIndex <= 0 || nIndex >= MAX_PLAYER)
+            int nIndex = pPD->ulIdentity;
+            if (nIndex <= 0 || nIndex >= MAX_PLAYER || !m_pCoreServerShell)
                 break;
-            // Goddess reports 1 only after a successful character save.
-            // Never perform logout/transfer/SAVE_IDLE on a failed save.
-            if (pPD->pDataBuffer[0] != 1)
-            {
-                printf("[RoleSave] Goddess NACK slot=%d result=%d; retry required.\n",
-                    nIndex, (int)(signed char)pPD->pDataBuffer[0]);
-                m_pCoreServerShell->SetSaveStatus(nIndex, SAVE_REQUEST);
-                break;
-            }
+            if (pPD->nDataLen == 791031) {
+                if (dataLength < offsetof(TProcessData,pDataBuffer)+25)
+                    break;
+                const unsigned char* ack=(const unsigned char*)pPD->pDataBuffer;
+                const int status=(int)(signed char)ack[0];
+                const unsigned __int64 expected=JXRoleRevisionWire::ReadU64(ack+1);
+                const unsigned __int64 committed=JXRoleRevisionWire::ReadU64(ack+9);
+                const unsigned __int64 nonce=JXRoleRevisionWire::ReadU64(ack+17);
+                const int accepted=m_pCoreServerShell->FinishRoleSave(
+                    nIndex,expected,nonce,status,committed);
+                if (accepted != 1) {
+                    if (accepted < 0)
+                        m_pCoreServerShell->SetSaveStatus(nIndex,SAVE_REQUEST);
+                    break; // never disconnect or transfer for a stale ACK
+                }
+            } else if (pPD->nDataLen == 791030) {
+                char roleName[64]={0};
+                m_pCoreServerShell->GetGameData(
+                    SGDI_CHARACTER_NAME,(UINT_PTR)roleName,nIndex);
+                if (m_pCoreServerShell->IsRoleSaveRevisionRequired(
+                      nIndex,roleName))
+                    break; // legacy ACK cannot complete a versioned session
+                if (pPD->pDataBuffer[0] != 1) {
+                    m_pCoreServerShell->SetSaveStatus(nIndex,SAVE_REQUEST);
+                    break;
+                }
+            } else break;
 			printf("[Archive successfully]: Player character archive index [%d] completed!\n", nIndex);
 			if (m_pCoreServerShell->IsCharacterLiXian(nIndex) != 2)
 			{//正常退出的 不是离线的
@@ -4690,7 +4704,26 @@ BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 	//printf("-----------存档长度C:%d-----------\n", pData->dwDataLen);
 	if (pData && pData->dwDataLen)
 	{	//size_t == unsigned int
-		sProcessData.nDataLen = pData->dwDataLen + sizeof(TProcessData) - 1;
+        if (pData->dwDataLen < offsetof(TRoleData,pBuffer) ||
+            pData->dwDataLen > (128*1024-JXRoleRevisionWire::kSaveBytes) ||
+            !memchr(pData->BaseInfo.szName,0,sizeof(pData->BaseInfo.szName)))
+            return FALSE;
+        unsigned char saveTrailer[JXRoleRevisionWire::kSaveBytes]={0};
+        const bool versioned = m_pCoreServerShell->IsRoleSaveRevisionRequired(
+            nIndex,pData->BaseInfo.szName);
+        if (versioned) {
+            unsigned __int64 expected=0,nonce=0;
+            if (!m_pCoreServerShell->BeginRoleSave(nIndex,pData->BaseInfo.szName,
+                                                  &expected,&nonce))
+                return FALSE;
+            if (!JXRoleRevisionWire::EncodeSave(saveTrailer,sizeof(saveTrailer),
+                    pData->BaseInfo.szName,expected,nonce)) {
+                m_pCoreServerShell->FinishRoleSave(nIndex,expected,nonce,-14,0);
+                return FALSE;
+            }
+        }
+        sProcessData.nDataLen = pData->dwDataLen + sizeof(TProcessData) - 1 +
+            (versioned ? JXRoleRevisionWire::kSaveBytes : 0);
 		
 		/*pData->dwDataLen += 4;
 		DWORD	dwCRC = 0;
@@ -4702,6 +4735,8 @@ BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 
 		//m_theSend.AddData(c2s_rolekfjhu_saveroleinfo, (const BYTE*)pData, pData->dwDataLen - 4);
 		m_theSend.AddData(c2s_rolekfjhu_saveroleinfo, (const BYTE*)pData, pData->dwDataLen);
+        if (versioned)
+            m_theSend.AddData(c2s_rolekfjhu_saveroleinfo,saveTrailer,sizeof(saveTrailer));
 		//printf("-----------存档长度L:%d-----------\n", pData->dwDataLen);
 
 		//m_theSend.AddData(c2s_rolekfjhu_saveroleinfo, (const BYTE*)&dwCRC, 4);
