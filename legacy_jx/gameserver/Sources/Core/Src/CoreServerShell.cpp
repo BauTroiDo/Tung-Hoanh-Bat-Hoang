@@ -18,6 +18,7 @@
 #include "KSkills.h"
 #include "KLadder.h"
 #include "KPlayerTradeJournal.h"
+#include "RoleSaveExitFence.h"
 #pragma comment(lib,"ole32.lib")
 
 #include "KProtocolDef.h"
@@ -114,6 +115,7 @@ public:
 	bool GetRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64* revision);
 	bool ConfirmRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 expected, unsigned __int64 next);
 	bool IsRoleSaveRevisionRequired(int nIndex, const char* roleName);
+	bool IsRoleSaveReleaseBlocked(int nIndex);
 	bool BeginRoleSave(int nIndex, const char* roleName, unsigned __int64* expected, unsigned __int64* nonce);
 	bool GetPendingRoleSave(int nIndex, const char* roleName, unsigned __int64* expected, unsigned __int64* nonce);
 	int FinishRoleSave(int nIndex, unsigned __int64 expected, unsigned __int64 nonce, int dbResult, unsigned __int64 committed);
@@ -3927,6 +3929,15 @@ bool CoreServerShell::IsRoleSaveRevisionRequired(int idx, const char* name)
     return idx > 0 && idx < MAX_PLAYER &&
         Player[idx].m_bRoleRevisionProtocolSeen;
 }
+bool CoreServerShell::IsRoleSaveReleaseBlocked(int idx)
+{
+    if (idx <= 0 || idx >= MAX_PLAYER) return false;
+    return JXRoleSaveExitFence::BlocksRelease(
+        Player[idx].m_bRoleRevisionProtocolSeen,
+        Player[idx].m_bRoleSaveRevisionLoaded,
+        Player[idx].m_bRoleSavePending);
+}
+
 bool CoreServerShell::BeginRoleSave(int idx, const char* name,
     unsigned __int64* expected, unsigned __int64* nonce)
 {

@@ -184,6 +184,7 @@ struct iCoreServerShell
 	virtual bool GetRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64* revision) = 0;
 	virtual bool ConfirmRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 expected, unsigned __int64 next) = 0;
 	virtual bool IsRoleSaveRevisionRequired(int nIndex, const char* roleName) = 0;
+	virtual bool IsRoleSaveReleaseBlocked(int nIndex) = 0;
 	virtual bool BeginRoleSave(int nIndex, const char* roleName, unsigned __int64* expected, unsigned __int64* nonce) = 0;
 	virtual bool GetPendingRoleSave(int nIndex, const char* roleName, unsigned __int64* expected, unsigned __int64* nonce) = 0;
 	virtual int FinishRoleSave(int nIndex, unsigned __int64 expected, unsigned __int64 nonce, int dbResult, unsigned __int64 committed) = 0;

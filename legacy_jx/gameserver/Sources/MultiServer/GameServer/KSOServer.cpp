@@ -5021,6 +5021,11 @@ void KSwordOnLineSever::PlayerLogoutGateway()
 	// 遍历玩家（不能遍历连接，因为Timeout部分的玩家没有连接）
 	for (int nIndex = 1; nIndex < MAX_PLAYER; nIndex++)
 	{
+        // A timeout/NACK does not prove Goddess committed the last role
+        // snapshot. Do not unlock, transfer or recycle this session until
+        // an authoritative revision reload resolves it.
+        if (m_pCoreServerShell->IsRoleSaveReleaseBlocked(nIndex))
+            continue;
 		if (m_pCoreServerShell->IsPlayerLoginTimeOut(nIndex))
 		{//超时登陆的
 			char szName[ACC_LENGTH]={0},szRoleName[NAME_LENGHT]={0};
