@@ -2953,6 +2953,11 @@ void KSwordOnLineSever::DatabaseMessageProcess(const char* pData, size_t dataLen
 		break;
 	case s2c_roleserver_saverole_result:
 		{
+			if (dataLength < sizeof(TProcessData))
+			{
+				printf("[RoleSave] Truncated Goddess ACK: bytes=%zu.\n", dataLength);
+				break;
+			}
 			TProcessData*	pPD = (TProcessData *)pData;
 
 			if  (pPD->nDataLen!=791030)
@@ -2960,8 +2965,17 @@ void KSwordOnLineSever::DatabaseMessageProcess(const char* pData, size_t dataLen
 
 			int nIndex = pPD->ulIdentity;
 
-			if (nIndex <= 0 || nIndex >= MAX_PLAYER)
-				break;
+            if (nIndex <= 0 || nIndex >= MAX_PLAYER)
+                break;
+            // Goddess reports 1 only after a successful character save.
+            // Never perform logout/transfer/SAVE_IDLE on a failed save.
+            if (pPD->pDataBuffer[0] != 1)
+            {
+                printf("[RoleSave] Goddess NACK slot=%d result=%d; retry required.\n",
+                    nIndex, (int)(signed char)pPD->pDataBuffer[0]);
+                m_pCoreServerShell->SetSaveStatus(nIndex, SAVE_REQUEST);
+                break;
+            }
 			printf("[Archive successfully]: Player character archive index [%d] completed!\n", nIndex);
 			if (m_pCoreServerShell->IsCharacterLiXian(nIndex) != 2)
 			{//正常退出的 不是离线的
