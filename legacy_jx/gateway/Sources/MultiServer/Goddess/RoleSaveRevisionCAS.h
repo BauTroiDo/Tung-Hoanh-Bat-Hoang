@@ -3,6 +3,7 @@
 // Caller must supply the authenticated UTF-8 database role name.
 #include <sqlite3.h>
 #include <string>
+#include <vector>
 
 namespace JXRoleSaveRevision {
 static inline bool Ensure(sqlite3* db) {
@@ -120,6 +121,56 @@ static inline int Save(sqlite3* db, const std::string& role,
     if (result == 1 &&
         sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, NULL) == SQLITE_OK) {
         *nextRevision = expected + 1;
+        return 1;
+    }
+    sqlite3_exec(db, "ROLLBACK TRANSACTION", NULL, NULL, NULL);
+    return result == 1 ? -14 : result;
+}
+// Read a role blob and its revision from one consistent SQLite snapshot.
+// Do not fetch the role blob and then query its revision in separate
+// transactions: a trade between the two reads would create a stale token.
+static inline int LoadSnapshot(sqlite3* db, const std::string& role,
+                               std::vector<unsigned char>* blob,
+                               sqlite3_int64* revision) {
+    if (!db || role.empty() || !blob || !revision || !Ensure(db))
+        return -14;
+    if (sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, NULL) != SQLITE_OK)
+        return -14;
+    int result = -14;
+    sqlite3_int64 candidateRevision = -1;
+    std::vector<unsigned char> candidate;
+    do {
+        sqlite3_stmt* stmt = NULL;
+        if (!PrepareRole(db,
+            "SELECT StudentBlob FROM role_Blob WHERE roleName=? LIMIT 2",
+            role, &stmt)) break;
+        const int first = sqlite3_step(stmt);
+        if (first != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            break;
+        }
+        const void* data = sqlite3_column_blob(stmt, 0);
+        const int length = sqlite3_column_bytes(stmt, 0);
+        if (!data || length <= 0 || length > 16 * 1024 * 1024) {
+            sqlite3_finalize(stmt);
+            break;
+        }
+        candidate.assign((const unsigned char*)data,
+                         (const unsigned char*)data + length);
+        const int second = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+        if (second != SQLITE_DONE) break; // duplicate roleName or SQL error
+        const int read = Get(db, role, &candidateRevision);
+        if (read != 1) {
+            result = read;
+            break;
+        }
+        result = 1;
+    } while (false);
+    if (result == 1 &&
+        sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, NULL) == SQLITE_OK) {
+        blob->swap(candidate);
+        *revision = candidateRevision;
         return 1;
     }
     sqlite3_exec(db, "ROLLBACK TRANSACTION", NULL, NULL, NULL);
