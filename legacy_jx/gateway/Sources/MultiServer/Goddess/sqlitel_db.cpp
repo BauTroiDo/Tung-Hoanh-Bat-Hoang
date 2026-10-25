@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "sqlitel_db.h"
 #include "RoleSaveRevisionCAS.h"
+#include "LegacyRoleSaveGuardSql.h"
 #ifndef WIN32
 #include <sys/stat.h>
 #else
@@ -1076,12 +1077,14 @@ void sqlitel_db::copyDataToBaktable()
 
 bool sqlitel_db::updateBlobData_n(void * roleData,int len,char *roleName,unsigned int nkey,bool show)
 {
-	if (!roleName || !roleData || len <= 0 || !m_pDb) return false;
+	if (!roleName || !roleData || len <= 0 || !m_pDb ||
+        !ensureTradeReceiptTable()) return false;
 
 	char nTempstr[256];
 	// Stale save protection: only update if ekey is null or incoming nkey >= ekey.
 	// If incoming nkey == 0, allow update for unversioned saves.
-	const char* sql = "update role_Blob set StudentBlob = ?, ekey = ? where roleName = ? and (? = 0 or ekey is null or ekey <= ?);";
+	// Reject old saves after a committed trade or CAS migration, atomically.
+    const char* sql = JX273LegacyRoleSaveGuard::kUpdate;
 	sqlite3_stmt* pStmt = NULL;
 
 	if (sqlite3_prepare_v2(m_pDb, sql, -1, &pStmt, NULL) != SQLITE_OK)

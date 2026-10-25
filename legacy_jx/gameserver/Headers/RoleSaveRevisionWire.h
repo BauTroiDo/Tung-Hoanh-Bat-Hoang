@@ -86,5 +86,42 @@ static inline DecodeResult Decode(const void* raw, size_t received,
     *revision = found;
     return Valid;
 }
+// Ordinary-save requests and ACKs bind the revision to a unique request nonce.
+// The login trailer remains 24 bytes for backwards parsing. Save uses 36.
+enum { kSaveBytes = kTrailerBytes + 12 };
+static inline bool EncodeSave(unsigned char* out, size_t space,
+                              const char* role, uint64_t revision,
+                              uint64_t requestNonce) {
+    if (!out || space < kSaveBytes || !requestNonce ||
+        !Encode(out, kTrailerBytes, role, revision)) return false;
+    WriteU64(out + kTrailerBytes, requestNonce);
+    uint32_t integrity = 2166136261u;
+    for (size_t i = 0; i < kTrailerBytes + 8; ++i)
+        integrity = (integrity ^ out[i]) * 16777619u;
+    WriteU32(out + kTrailerBytes + 8, integrity);
+    return true;
+}
+static inline DecodeResult DecodeSave(const void* raw, size_t received,
+                                      size_t blobBytes, const char* role,
+                                      uint64_t* revision, uint64_t* nonce) {
+    if (!raw || !revision || !nonce || blobBytes == 0 ||
+        received < blobBytes || received - blobBytes != kSaveBytes)
+        return Invalid;
+    uint64_t found = 0;
+    if (Decode(raw, blobBytes + kTrailerBytes, blobBytes, role,
+               &found) != Valid) return Invalid;
+    const unsigned char* suffix =
+        (const unsigned char*)raw + blobBytes;
+    const uint64_t id = ReadU64(suffix + kTrailerBytes);
+    if (id == 0) return Invalid;
+    uint32_t integrity = 2166136261u;
+    for (size_t i = 0; i < kTrailerBytes + 8; ++i)
+        integrity = (integrity ^ suffix[i]) * 16777619u;
+    if (ReadU32(suffix + kTrailerBytes + 8) != integrity)
+        return Invalid;
+    *revision = found;
+    *nonce = id;
+    return Valid;
+}
 } // namespace JXRoleRevisionWire
 #endif
