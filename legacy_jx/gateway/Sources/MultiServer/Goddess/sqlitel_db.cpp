@@ -7,6 +7,7 @@
 #include "sqlitel_db.h"
 #include "RoleSaveRevisionCAS.h"
 #include "LegacyRoleSaveGuardSql.h"
+#include "RoleSaveVersionedReceipt.h"
 #ifndef WIN32
 #include <sys/stat.h>
 #else
@@ -1285,6 +1286,19 @@ int sqlitel_db::updateBlobData_versioned(void* data, int len, char* roleName,
     const std::string utf8Role = EncodeTradeRoleName(roleName);
     if (utf8Role.empty()) return -14;
     return JXRoleSaveRevision::Save(m_pDb, utf8Role, data, len, expected, next);
+}
+
+// A versioned ordinary save is idempotent across Goddess restart, ACK loss,
+ // retransmission and a completed two-role trade.
+int sqlitel_db::updateBlobData_versioned_receipt(void* blob, int bytes,
+    char* name, sqlite3_int64 expected, unsigned __int64 nonce,
+    sqlite3_int64* next)
+{
+    if(!name || !name[0] || !ensureTradeReceiptTable()) return -14;
+    const std::string utf8Role = EncodeTradeRoleName(name);
+    if(utf8Role.empty())return -14;
+    return JXRoleSaveReceipt::Save(m_pDb,utf8Role,blob,bytes,
+                                   expected,nonce,next);
 }
 
 // Returns 1 for a new TxID, -16 for a stale TxID, -14 for SQLite errors.

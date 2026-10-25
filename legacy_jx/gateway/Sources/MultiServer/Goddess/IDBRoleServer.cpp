@@ -614,6 +614,21 @@ int  CheckRoleName(char *pName)
 //保存角色的信息，如果数据库不存在该玩家，则增加该玩家
 //bAutoInsertWhenNoExistUser 设为TRUE时表示，如果需要保存的该玩家在数据库中并不存在则自动加入到数据库中，FALSE则不增加直接返回错误
 //注意INI文件只须存放将需要改动的数据，不需改动的数据将自动保存原状。
+// Server-to-server versioned ordinary save, without legacy fallback.
+int SaveRoleInfoVersioned(char* roleData,int bytes,sqlite3_int64 expected,
+                           unsigned __int64 nonce,sqlite3_int64* nextRevision)
+{
+    if(g_dataType!=DATA_KIND_SQL || !sqlitel_table || !roleData ||
+       bytes<(int)offsetof(TRoleData,pBuffer) || bytes>=128*1024 ||
+       !nonce || !nextRevision) return -14;
+    TRoleData* p=(TRoleData*)roleData;
+    if(!memchr(p->BaseInfo.szName,0,sizeof(p->BaseInfo.szName)) ||
+       !p->BaseInfo.szName[0] || p->dwDataLen!=(unsigned int)bytes)
+        return -14;
+    return sqlitel_table->updateBlobData_versioned_receipt(roleData,bytes,
+        p->BaseInfo.szName,expected,nonce,nextRevision);
+}
+
 int	SaveRoleInfo(char * pRoleBuffer,const char *strUser,BOOL bAutoInsertWhenNoExistUser)
 {
 	ASSERT(pRoleBuffer);

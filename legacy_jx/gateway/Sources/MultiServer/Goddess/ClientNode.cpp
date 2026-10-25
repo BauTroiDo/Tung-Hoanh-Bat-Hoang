@@ -479,43 +479,65 @@ void CClientNode::_CreateRole( const void *pData, UINT dataLength )//size_t
 }
 
 //保存角色 存档 返回给GS
-void CClientNode::_SaveRoleInfo( const void *pData, UINT dataLength )
+void CClientNode::_SaveRoleInfo(const void *data, UINT length)
 {
-	ASSERT(m_pServer && pData && dataLength);
-
-	TProcessData *pPD = (TProcessData *)pData;
-	
-	int nResult = 0;
-	TRoleData* pRole = (TRoleData*)(&pPD->pDataBuffer[0]);
-	char szName[NAME_LENGHT];
-	int len = strlen(pRole->BaseInfo.szName);
-	ASSERT( len > 0 );
-	len = len > NAME_LENGHT - 1 ? NAME_LENGHT - 1 : len;
-	memcpy(szName,pRole->BaseInfo.szName,len);
-	szName[len] = '\0';
-
-	/*char sMsga[125];
-	sprintf(sMsga,"收到(%d区)角色(%s)帐号:%s要求存档",pPD->uSelServer,pRole->BaseInfo.szName,pRole->BaseInfo.caccname);
-	::MessageBox(0,sMsga,"收到角色要求存档",MB_OK);*/
-	//if (IsRoleLockBySelf(szName))
-		nResult = SaveRoleInfo(&pPD->pDataBuffer[0],NULL,FALSE);	 //不检测账号名 直接添加
-
-		//if (pPD->bLeave)
-		//{//如果离开了 就解锁这个角色
-		//	UnlockRoleSelf(szName);
-		//}
-
-	if (pPD->ulIdentity >= 0) // Final P0: Always acknowledge database save result to GS	//玩家的索引
-	{//通知gs 已经存档
-		TProcessData Info;	
-		Info.nProtoId = s2c_roleserver_saverole_result;
-		Info.ulIdentity = pPD->ulIdentity;
-		Info.nDataLen = 791030;
-		Info.pDataBuffer[0] = (nResult == 1) ? 1:-1;
-		Info.uSelServer = pPD->uSelServer;
-		m_pServer->SendData(m_nIndentity, (const void *)&Info, sizeof(Info));
-	}
-
+    if(!m_pServer || !data || length<offsetof(TProcessData,pDataBuffer))
+        return;
+    const TProcessData* pd=(const TProcessData*)data;
+    const size_t header=offsetof(TProcessData,pDataBuffer);
+    const size_t payload=length-header;
+    bool versioned=false;
+    int result=-14;
+    unsigned __int64 expected=0,nonce=0;
+    sqlite3_int64 committed=-1;
+    if(pd->nDataLen==length && payload>=offsetof(TRoleData,pBuffer)) {
+        TRoleData* role=(TRoleData*)&pd->pDataBuffer[0];
+        const size_t bytes=(size_t)role->dwDataLen;
+        if(bytes>=offsetof(TRoleData,pBuffer) && bytes<=128*1024 &&
+           memchr(role->BaseInfo.szName,0,sizeof(role->BaseInfo.szName)) &&
+           role->BaseInfo.szName[0]) {
+            if(payload==bytes+JXRoleRevisionWire::kSaveBytes) {
+                versioned=true;
+                unsigned __int64 decoded=0,decodedNonce=0;
+                if(JXRoleRevisionWire::DecodeSave(&pd->pDataBuffer[0],payload,
+                       bytes,role->BaseInfo.szName,&decoded,&decodedNonce)
+                        ==JXRoleRevisionWire::Valid) {
+                    expected=decoded;
+                    nonce=decodedNonce;
+                    result=SaveRoleInfoVersioned((char*)role,(int)bytes,
+                              (sqlite3_int64)expected,nonce,&committed);
+                }
+            } else if(payload==bytes) {
+                // Old clients may still save roles which are not trade-fenced.
+                // The SQLite legacy UPDATE independently forbids overwriting
+                // any committed trade or migrated revisioned role.
+                result=SaveRoleInfo((char*)role,NULL,FALSE)==1?1:-1;
+            }
+        }
+    }
+    if(versioned) {
+        // TProcessData header + status byte + expected/new revision + nonce.
+        unsigned char ack[offsetof(TProcessData,pDataBuffer)+25]={0};
+        TProcessData* reply=(TProcessData*)ack;
+        reply->nProtoId=s2c_roleserver_saverole_result;
+        reply->nDataLen=791031;
+        reply->ulIdentity=pd->ulIdentity;
+        reply->uSelServer=pd->uSelServer;
+        ack[header]=(unsigned char)(signed char)result;
+        JXRoleRevisionWire::WriteU64(ack+header+1,expected);
+        JXRoleRevisionWire::WriteU64(ack+header+9,
+             result==1?(unsigned __int64)committed:0);
+        JXRoleRevisionWire::WriteU64(ack+header+17,nonce);
+        m_pServer->SendData(m_nIndentity,ack,sizeof(ack));
+    } else {
+        TProcessData reply={0};
+        reply.nProtoId=s2c_roleserver_saverole_result;
+        reply.ulIdentity=pd->ulIdentity;
+        reply.nDataLen=791030;
+        reply.pDataBuffer[0]=result==1?1:-1;
+        reply.uSelServer=pd->uSelServer;
+        m_pServer->SendData(m_nIndentity,&reply,sizeof(reply));
+    }
 }
 
 void CClientNode::gm_synroleaction( const void *pData, UINT dataLength )
