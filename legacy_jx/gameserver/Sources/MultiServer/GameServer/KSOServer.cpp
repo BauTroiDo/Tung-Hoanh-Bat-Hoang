@@ -15,6 +15,8 @@
 #include "CRC32.h"
 #include "..\..\Core\Src/KCoreData.h"
 #include "..\..\Core\Src\KPlayerTradeJournal.h"
+#include "RoleSaveRevisionWire.h"
+#include <stddef.h>
 //#include "..\..\Core\Src/KGameglobalSet.h"
 
 #ifdef _STANDALONE
@@ -2953,6 +2955,11 @@ void KSwordOnLineSever::DatabaseMessageProcess(const char* pData, size_t dataLen
 		break;
 	case s2c_roleserver_saverole_result:
 		{
+			if (dataLength < sizeof(TProcessData))
+			{
+				printf("[RoleSave] Truncated Goddess ACK: bytes=%zu.\n", dataLength);
+				break;
+			}
 			TProcessData*	pPD = (TProcessData *)pData;
 
 			if  (pPD->nDataLen!=791030)
@@ -2960,8 +2967,17 @@ void KSwordOnLineSever::DatabaseMessageProcess(const char* pData, size_t dataLen
 
 			int nIndex = pPD->ulIdentity;
 
-			if (nIndex <= 0 || nIndex >= MAX_PLAYER)
-				break;
+            if (nIndex <= 0 || nIndex >= MAX_PLAYER)
+                break;
+            // Goddess reports 1 only after a successful character save.
+            // Never perform logout/transfer/SAVE_IDLE on a failed save.
+            if (pPD->pDataBuffer[0] != 1)
+            {
+                printf("[RoleSave] Goddess NACK slot=%d result=%d; retry required.\n",
+                    nIndex, (int)(signed char)pPD->pDataBuffer[0]);
+                m_pCoreServerShell->SetSaveStatus(nIndex, SAVE_REQUEST);
+                break;
+            }
 			printf("[Archive successfully]: Player character archive index [%d] completed!\n", nIndex);
 			if (m_pCoreServerShell->IsCharacterLiXian(nIndex) != 2)
 			{//正常退出的 不是离线的
@@ -3988,9 +4004,35 @@ void KSwordOnLineSever::GatewayLargePackProcess(const void *pData, size_t dataLe
 				GUID guid;
 				memcpy(&guid,&(pGI->guid), sizeof(GUID));
 							
-				if ( pGI->datalength > 0 )
-				{
-					const TRoleData *pRoleData = ( const TRoleData * )( pGI->szData );
+				// Validate the reassembled frame before reading TRoleData fields.
+#ifndef _STANDALONE
+                if (pBuffer->GetUsed() < offsetof(tagGuidableInfo,szData) ||
+                    pGI->datalength > pBuffer->GetUsed() - offsetof(tagGuidableInfo,szData)) {
+                    printf("[RoleRev] Bishop role frame length invalid.\n");
+                    break;
+                }
+#endif
+                if (pGI->datalength > 0)
+                {
+                    if (pGI->datalength < offsetof(TRoleData,pBuffer)) {
+                        printf("[RoleRev] Truncated role header.\n");
+                        break;
+                    }
+                    const TRoleData *pRoleData = (const TRoleData *)(pGI->szData);
+                    if (pRoleData->dwDataLen < offsetof(TRoleData,pBuffer) ||
+                        pRoleData->dwDataLen > pGI->datalength) {
+                        printf("[RoleRev] Role BLOB length invalid.\n");
+                        break;
+                    }
+                    unsigned __int64 loadedRevision = 0;
+                    const JXRoleRevisionWire::DecodeResult revisionState =
+                        JXRoleRevisionWire::Decode(pGI->szData,pGI->datalength,
+                            pRoleData->dwDataLen,pRoleData->BaseInfo.szName,
+                            &loadedRevision);
+                    if (revisionState == JXRoleRevisionWire::Invalid) {
+                        printf("[RoleRev] Corrupted or mismatched revision trailer.\n");
+                        break;
+                    }
 					/*BOOL	bCRCCheck = TRUE;
 					if (pRoleData->dwFriendOffset == pRoleData->dwDataLen - 4 && pRoleData->nFriendCount == 0)
 					{//最后的 是 朋友列表的偏移
@@ -4026,8 +4068,18 @@ void KSwordOnLineSever::GatewayLargePackProcess(const void *pData, size_t dataLe
 						
 					if (nIdx>0)
 					{//网络链接成功
-						ppl.bPermit = true;   //是否许可玩家登陆
-						m_pCoreServerShell->OperationRequest(SSOI_RELOAD_WELCOME_MSG,0,nIdx);           //发送欢迎语
+                        if (revisionState == JXRoleRevisionWire::Valid &&
+                            !m_pCoreServerShell->SetRoleSaveRevision(nIdx,
+                                pRoleData->BaseInfo.szName, loadedRevision)) {
+                            printf("[RoleRev] Failed to bind revision to slot %d.\n",nIdx);
+                            m_pCoreServerShell->PreparePlayerForLoginFailed(nIdx);
+                            ppl.bPermit = false;
+                        } else {
+                            if (revisionState == JXRoleRevisionWire::Absent)
+                                printf("[RoleRev] Legacy login has no CAS token, slot %d.\n",nIdx);
+                            ppl.bPermit = true;   //是否许可玩家登陆
+						m_pCoreServerShell->OperationRequest(SSOI_RELOAD_WELCOME_MSG,0,nIdx);
+                        } // Revision session binding succeeded           //发送欢迎语
 					    //printf("[SSOI_RELOAD_WELCOME_MSG] send to nIdx:(%d),caccname:(%s)------\n",nIdx,pRoleData->BaseInfo.caccname);		
 					}					
 				//	}发往bishop

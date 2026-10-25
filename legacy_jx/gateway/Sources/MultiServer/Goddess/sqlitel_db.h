@@ -209,6 +209,8 @@ public:
    int gerAllRoleDataInaccName(char *accName);
    int gerAllRoleDataInaccName(S3DBI_RoleBaseInfo *ptempBuffer,char *accName,int isThisSerVer,int roleMaxCount);
    int SelectBlobData(void * pRoleBuffer,char *roleName,unsigned int nkey);
+   // Load a single SQLite snapshot: blob and trade revision together.
+   int SelectBlobDataWithRevision(void* blob,int capacity,char* roleName,sqlite3_int64* revision);
    bool InsertBlobData(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);
    bool deleteBlobData(char *roleName,unsigned int nkey,bool show=false);
    bool updateBlobData(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);

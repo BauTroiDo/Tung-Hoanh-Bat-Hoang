@@ -322,6 +322,8 @@ void	KPlayer::Release()
 	m_bFinishLoading = FALSE;
 	// The database-owned trade order is keyed by TxID, not this in-memory counter.
 	m_uSaveGeneration = 0;
+	m_uRoleSaveRevision = 0;
+	m_bRoleSaveRevisionLoaded = false;
 	m_uMustSave  = SAVE_IDLE;
 	m_bIsQuiting = FALSE;
 	m_isInGame   =false;

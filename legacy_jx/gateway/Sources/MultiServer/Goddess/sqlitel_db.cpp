@@ -1253,6 +1253,26 @@ static std::string EncodeTradeRoleName(const char* role)
 	return result;
 }
 
+// SQLite login path: read role bytes and revision from the SAME transaction.
+// The input name is in the same legacy encoding used by SaveRoleInfo.
+// No partial role bytes/revision are returned on failure.
+int sqlitel_db::SelectBlobDataWithRevision(void* output, int capacity, char* roleName,
+    sqlite3_int64* revision)
+{
+    if (!output || capacity <= 0 || !roleName || !roleName[0] || !revision ||
+        !ensureTradeReceiptTable()) return 0;
+    const std::string name = EncodeTradeRoleName(roleName);
+    if (name.empty()) return 0;
+    std::vector<unsigned char> blob;
+    sqlite3_int64 snap = -1;
+    if (JXRoleSaveRevision::LoadSnapshot(m_pDb, name, &blob, &snap) != 1 ||
+        blob.empty() || blob.size() > (size_t)capacity ||
+        snap < 0 || blob.size() > 128 * 1024) return 0;
+    memcpy(output, blob.data(), blob.size());
+    *revision = snap;
+    return (int)blob.size();
+}
+
 // This opt-in entrypoint is used only by a negotiated revisioned
 // save packet; ordinary legacy saves still use updateBlobData_n.
 int sqlitel_db::updateBlobData_versioned(void* data, int len, char* roleName,

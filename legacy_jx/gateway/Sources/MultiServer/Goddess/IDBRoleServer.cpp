@@ -495,7 +495,7 @@ void *GetRoleInfoForGM(int nInfoID, char * pRoleBuffer, char * strUser, int &nBu
 	return pRoleBuffer;
 }
 
-void *GetRoleInfo( char * pRoleBuffer, char * strUser, int &nBufLen, char *pAccName,UINT nThsiServer)
+void *GetRoleInfo( char * pRoleBuffer, char * strUser, int &nBufLen, char *pAccName,UINT nThsiServer, sqlite3_int64* roleRevision)
 {
 
 	int size = 0;
@@ -504,7 +504,11 @@ void *GetRoleInfo( char * pRoleBuffer, char * strUser, int &nBufLen, char *pAccN
 	if  (g_dataType==DATA_KIND_SQL)
 	{
 		unsigned int nKey=FileNameDB(strUser);
-		nBufLen = sqlitel_table->SelectBlobData(pRoleBuffer,strUser,nKey);
+		// Avoid an inconsistent (blob, revision) pair across a concurrent trade.
+		if (roleRevision)
+			nBufLen = sqlitel_table->SelectBlobDataWithRevision(pRoleBuffer,nBufLen,strUser,roleRevision);
+		else
+			nBufLen = sqlitel_table->SelectBlobData(pRoleBuffer,strUser,nKey);
 		if  (nBufLen<=0)
 		{
 			nBufLen=0;

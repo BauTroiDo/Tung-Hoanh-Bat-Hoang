@@ -268,6 +268,8 @@ public:
 	BOOL			m_bIsQuiting;
 	bool            m_isInGame;
 	UINT			m_uSaveGeneration;
+	unsigned __int64 m_uRoleSaveRevision; // SQLite revision bound to login session
+	bool m_bRoleSaveRevisionLoaded;
 	UINT			m_uMustSave;
 	UINT			m_ulLastSaveTime;          //˳Ϸʱѭ֡
 	UINT			m_uNextSaveTime;           //´δ浵ʱ

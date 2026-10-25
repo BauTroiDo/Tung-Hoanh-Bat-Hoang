@@ -109,6 +109,9 @@ public:
 	bool SavePlayerData(int nIndex,bool isLeave);
 	void RemoveQuitingPlayer(int nIndex);
 	void* SavePlayerDataAtOnce(int nIndex);
+	bool SetRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 revision);
+	bool GetRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64* revision);
+	bool ConfirmRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 expected, unsigned __int64 next);
 	bool IsCharacterQuiting(int nIndex);
 	bool IsShutdownClient(int nIndex);
 	bool IsShutdownClientNoserver(int nIndex);
@@ -3883,6 +3886,35 @@ BOOL CoreServerShell::CheckBlackList(int nPlayerIdx, char* szName)
 		return FALSE;
 	return Player[nPlayerIdx].m_cChat.OnBlackList(szName);
 }
+// Bind the revision to a live KPlayer, never to a recycled numeric slot alone.
+bool CoreServerShell::SetRoleSaveRevision(int idx, const char* name, unsigned __int64 rev)
+{
+    if (idx <= 0 || idx >= MAX_PLAYER || !name || !name[0] ||
+        rev > 0x7FFFFFFFFFFFFFFFULL ||
+        strcmp(Player[idx].m_PlayerName, name) != 0 ||
+        Player[idx].m_bRoleSaveRevisionLoaded) return false;
+    Player[idx].m_uRoleSaveRevision = rev;
+    Player[idx].m_bRoleSaveRevisionLoaded = true;
+    return true;
+}
+bool CoreServerShell::GetRoleSaveRevision(int idx, const char* name, unsigned __int64* rev)
+{
+    if (!rev || !name || idx <= 0 || idx >= MAX_PLAYER ||
+        !Player[idx].m_bRoleSaveRevisionLoaded ||
+        strcmp(Player[idx].m_PlayerName, name) != 0) return false;
+    *rev = Player[idx].m_uRoleSaveRevision;
+    return true;
+}
+bool CoreServerShell::ConfirmRoleSaveRevision(int idx, const char* name,
+    unsigned __int64 expected, unsigned __int64 next)
+{
+    unsigned __int64 current = 0;
+    if (!GetRoleSaveRevision(idx, name, &current) || current != expected ||
+        expected >= 0x7FFFFFFFFFFFFFFFULL || next != expected + 1) return false;
+    Player[idx].m_uRoleSaveRevision = next;
+    return true;
+}
+
 void CoreServerShell::OnTradePairSaveResult(unsigned __int64 uTxId, int nResultCode, const char* szRoleA, const char* szRoleB)
 {
 	printf("[CoreServerShell] OnTradePairSaveResult: Tx 0x%llX, result=%d (%s, %s)\n",
@@ -3913,6 +3945,18 @@ void CoreServerShell::OnTradePairSaveResult(unsigned __int64 uTxId, int nResultC
 		bool bAcked = KPlayerTradeJournal::Instance().OnTradePairAck(uTxId, nResultCode);
 		if (bAcked)
 		{
+            // Goddess increments both revisions in the same committed trade.
+            // Only a verified one-time WAL ACK can advance loaded sessions.
+            if (idxA > 0 && idxA < MAX_PLAYER &&
+                strcmp(Player[idxA].m_PlayerName, nameA.c_str()) == 0 &&
+                Player[idxA].m_bRoleSaveRevisionLoaded &&
+                Player[idxA].m_uRoleSaveRevision < 0x7FFFFFFFFFFFFFFFULL)
+                ++Player[idxA].m_uRoleSaveRevision;
+            if (idxB > 0 && idxB < MAX_PLAYER &&
+                strcmp(Player[idxB].m_PlayerName, nameB.c_str()) == 0 &&
+                Player[idxB].m_bRoleSaveRevisionLoaded &&
+                Player[idxB].m_uRoleSaveRevision < 0x7FFFFFFFFFFFFFFFULL)
+                ++Player[idxB].m_uRoleSaveRevision;
 			TRADE_DECISION_SYNC sSync;
 			sSync.ProtocolType = s2c_tradedecision;
 			sSync.m_btDecision = 1;

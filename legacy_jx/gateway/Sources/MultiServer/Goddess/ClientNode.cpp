@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "IDBRoleServer.h"
+#include "RoleSaveRevisionWire.h"
 #include "CRC32.h"
 
 #include "Macro.h"
@@ -21,6 +22,7 @@ HANDLE CClientNode::m_hThread = NULL;
 CEvent CClientNode::m_hQuitEvent( NULL, true, false );
 
 extern UINT g_nDBEngineLoop;
+extern size_t g_dataType; // selected Goddess database backend
 
 CCriticalSection	CClientNode::m_csCL;
 
@@ -726,12 +728,42 @@ void CClientNode::_GetRoleInfo( const void *pData, UINT dataLength )
 		RoleLoginInfo resInfo;
 		memset(&resInfo,0,sizeof(resInfo));
 		//为防止同一个角色多次同登陆 检测
+		sqlite3_int64 roleRevision = -1;
 		int  nReg=IsRoleLock(szRoleName,&resInfo);
 		if (!nReg || nReg==2)  //是否给锁住  没有登陆的菜给数据 如果已经登陆就 提示 空包失败
-		    GetRoleInfo(&pRoleData->pDataBuffer[1],szRoleName,nRoleInfoLen,szAccName,pRoleInfo->uSelServer);
+		    {
+            if (g_dataType == DATA_KIND_SQL) {
+                if (nRoleInfoLen > JXRoleRevisionWire::kTrailerBytes) {
+                    nRoleInfoLen -= JXRoleRevisionWire::kTrailerBytes;
+                    GetRoleInfo(&pRoleData->pDataBuffer[1], szRoleName, nRoleInfoLen,
+                                szAccName, pRoleInfo->uSelServer, &roleRevision);
+                } else {
+                    nRoleInfoLen = 0;
+                }
+            } else {
+                GetRoleInfo(&pRoleData->pDataBuffer[1], szRoleName, nRoleInfoLen,
+                            szAccName, pRoleInfo->uSelServer);
+            }
+        }
 
 		if (!nReg && nRoleInfoLen>0)
-		{//正常的
+		{
+            // The SQLite role BLOB and revision came from the same snapshot.
+            // Bishop forwards exactly this role payload to the GameServer.
+            if (g_dataType == DATA_KIND_SQL) {
+                if (roleRevision < 0 ||
+                    !JXRoleRevisionWire::Encode(
+                        (unsigned char*)&pRoleData->pDataBuffer[1 + nRoleInfoLen],
+                        JXRoleRevisionWire::kTrailerBytes, szRoleName,
+                        (unsigned __int64)roleRevision)) {
+                    nRoleInfoLen = 0;
+                } else {
+                    nRoleInfoLen += JXRoleRevisionWire::kTrailerBytes;
+                }
+            }
+        }
+        if (!nReg && nRoleInfoLen>0)
+        {//正常的
 			pRoleData->pDataBuffer[0] = 1;	 //获取成功了
 			pRoleData->nDataLen = nRoleInfoLen + 1;
 			nUsedLength = sizeof(TProcessData) + nRoleInfoLen;

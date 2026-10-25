@@ -180,6 +180,9 @@ struct iCoreServerShell
 	virtual bool SavePlayerData(int nIndex,bool isLeave) = 0;
 	virtual void RemoveQuitingPlayer(int nIndex) = 0;
 	virtual void* SavePlayerDataAtOnce(int nIndex) = 0;
+	virtual bool SetRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 revision) = 0;
+	virtual bool GetRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64* revision) = 0;
+	virtual bool ConfirmRoleSaveRevision(int nIndex, const char* roleName, unsigned __int64 expected, unsigned __int64 next) = 0;
 	virtual bool IsCharacterQuiting(int nIndex) = 0;
 	virtual bool IsShutdownClient(int nIndex)=0;
 	virtual bool IsShutdownClientNoserver(int nIndex)=0;

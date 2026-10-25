@@ -13,6 +13,7 @@
 
 #include "S3DBInterface.h"
 #include "LogFile.h"
+#include <sqlite3.h>
 #include <time.h>
 
 
@@ -44,7 +45,7 @@ int InitDBInterface( size_t nMaxRoleCount,int dataType=DATA_KIND_DB );
 
 void ReleaseDBInterface();
 
-void *GetRoleInfo( char * pRoleBuffer, char * strUser, int &nBufLen ,char *pAccName=NULL,UINT nThsiServer=1);
+void *GetRoleInfo( char * pRoleBuffer, char * strUser, int &nBufLen ,char *pAccName=NULL,UINT nThsiServer=1, sqlite3_int64* roleRevision=NULL);
 void *GetRoleInfoForGM(int nInfoID, char * pRoleBuffer, char * strUser, int &nBufLen);
 void SetRoleInfoForGM(int nInfoID, char * pRoleBuffer, char * strUser, int nBufLen);
 
