@@ -631,6 +631,7 @@ void CoreServerShell::CheckSerMaps(int nIndex,BOOL nIsShow,BOOL isOnline)
 //强制性关闭客户端 用于卡号处理
 void CoreServerShell::mandatoryShutDownClient(int nIndex)
 {
+    if (IsRoleSaveReleaseBlocked(nIndex)) return; // no confirmed CAS ACK
 	//PlayerSet.mandatoryShutDownClient(nIndex); 
 	PlayerSet.PrepareRemove(nIndex,TRUE);  //直接断开网络
 }
@@ -638,12 +639,14 @@ void CoreServerShell::mandatoryShutDownClient(int nIndex)
 //离开游戏时调用---客户端端开链接
 void CoreServerShell::ClientDisconnect(int nIndex,BOOL nIsOnline)
 {
+    if (IsRoleSaveReleaseBlocked(nIndex)) return; // preserve unresolved role
 //	PlayerSet.Remove(nClient);
 	PlayerSet.__PrepareRemove(nIndex); 
 }
 //离开游戏时调用
 void CoreServerShell::RemoveQuitingPlayer(int nIndex)
 {
+    if (IsRoleSaveReleaseBlocked(nIndex)) return; // never recycle unresolved slot
 	if (!Player || nIndex <= 0 || nIndex >= MAX_PLAYER)
 		return;
 
