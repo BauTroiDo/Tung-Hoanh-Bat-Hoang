@@ -50,11 +50,16 @@ class NativeNpcAoiProbe:
             entity = info["id"]
             if entity and entity != self.player_id and entity in self.seen_min:
                 self.full_metadata[entity] = info
-            self.tracker.see_packet(opcode, packet, player_xy, now=now)
+                self.tracker.see_packet(opcode, packet, player_xy, now=now)
             return None
 
         if opcode == 155:
-            self.tracker.see_packet(opcode, packet, player_xy, now=now)
+            layout = SCHEMA['layouts']['NPC_REQUEST_FAIL']
+            if len(packet) != layout['size'] or packet[0] != 155:
+                raise ValueError('Malformed authoritative NPC_REQUEST_FAIL')
+            entity = field(packet, 'NPC_REQUEST_FAIL', 'ID')
+            if entity in self.seen_min:
+                self.tracker.see_packet(opcode, packet, player_xy, now=now)
             return None
 
         if opcode == 84:
