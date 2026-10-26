@@ -233,7 +233,11 @@ def run_native_session(client, broker, peer_ip, *, first_wire=None,
                     if npc_probe is None:
                         LOG.info('M1 native NPC request omitted (GP01 gated off)')
                     else:
-                        request = npc_probe.request_from_native(clear, summary.position)
+                        try:
+                            request = npc_probe.request_from_native(clear, summary.position)
+                        except (ValueError, KeyError, IndexError, struct.error) as exc:
+                            LOG.warning('GP01 ignored malformed native NPC request: %s', exc)
+                            request = None
                         if request is not None:
                             backend.send(request)
                             LOG.info('GP01 forwarded verified native NPC request to GS id=%d',
@@ -251,8 +255,13 @@ def run_native_session(client, broker, peer_ip, *, first_wire=None,
                 for opcode, packet in split_batch(batch):
                     if npc_probe is not None and opcode in (76, 77, 84, 155):
                         pre_full = len(npc_probe.full_metadata)
-                        original_request = npc_probe.observe_server(
-                            opcode, packet, summary.position, now=time.monotonic())
+                        try:
+                            original_request = npc_probe.observe_server(
+                                opcode, packet, summary.position, now=time.monotonic())
+                        except (ValueError, KeyError, IndexError, struct.error) as exc:
+                            LOG.warning('GP01 ignored malformed GS NPC record opcode=%d bytes=%d: %s',
+                                        opcode, len(packet), exc)
+                            original_request = None
                         if original_request is not None:
                             backend.send(original_request)
                             LOG.info('GP01 requested real GS NPC metadata id=%d',
