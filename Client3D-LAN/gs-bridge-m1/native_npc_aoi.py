@@ -9,6 +9,15 @@ from npc_discovery import NPCRequestTracker, build_npc_request
 from world_conversion import SCHEMA, field, decode_npc_metadata
 
 
+def build_dev_npc_snapshot_request():
+    """Only a dedicated DEV CoreServer with matching opt-in accepts ID=0.
+
+    Original GS request has a 64-byte trailing name; never forward native92
+    with just its opcode relabeled. Both sides MUST opt in separately.
+    """
+    return struct.pack('<BI', 73, 0) + bytes(64)
+
+
 class NativeNpcAoiProbe:
     def __init__(self, player_id, *, radius=3072, request_limit=48, burst=4):
         if type(player_id) is not int or player_id <= 0:
@@ -22,6 +31,11 @@ class NativeNpcAoiProbe:
         self.native_rejected = 0
         self.native_repeats = 0
         self.server_removed = 0
+        self.snapshot_expected = False
+
+    def enable_dev_snapshot(self):
+        """Called ONLY after a real client ACK and DEV snapshot request."""
+        self.snapshot_expected = True
 
     def observe_server(self, opcode, packet, player_xy, *, now=None):
         """Process a schema-validated GS packet and optionally request full NPC.
@@ -48,9 +62,18 @@ class NativeNpcAoiProbe:
         if opcode == 76:
             info = decode_npc_metadata(packet)
             entity = info["id"]
-            if entity and entity != self.player_id and entity in self.seen_min:
-                self.full_metadata[entity] = info
-                self.tracker.see_packet(opcode, packet, player_xy, now=now)
+            if entity and entity != self.player_id:
+                x, y = info['legacy_position']
+                nearby = (abs(x - player_xy[0]) <= self.radius and
+                          abs(y - player_xy[1]) <= self.radius)
+                if (entity in self.seen_min or
+                    (self.snapshot_expected and nearby and
+                     len(self.seen_min) < self.tracker.limit)):
+                    if nearby:
+                        self.seen_min[entity] = (x, y)
+                        self.full_metadata[entity] = info
+                        if entity not in self.tracker.full:
+                            self.tracker.see_packet(opcode, packet, player_xy, now=now)
             return None
 
         if opcode == 155:
