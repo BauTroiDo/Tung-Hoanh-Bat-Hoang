@@ -108,6 +108,24 @@ class NativeNpcAoiProbeTests(unittest.TestCase):
         self.p.observe_server(77, gs_min(1001), self.xy, now=1)
         self.assertIsNone(self.p.request_from_native(native_req(1001), (60000,104412)))
 
+    def test_unobserved_full_does_not_pollute_session_cache(self):
+        self.p.observe_server(76, gs_full(3333), self.xy)
+        self.assertNotIn(3333, self.p.full_metadata)
+        self.assertNotIn(3333, self.p.tracker.full)
+
+    def test_failure_only_marks_known_npc(self):
+        layout = SCHEMA['layouts']['NPC_REQUEST_FAIL']
+        p = bytearray(layout['size'])
+        p[0] = 155
+        struct.pack_into('<I', p, layout['fields']['ID']['offset'], 1001)
+        self.p.observe_server(155, bytes(p), self.xy)
+        self.assertNotIn(1001, self.p.tracker.failed)
+        self.p.observe_server(77, gs_min(1001), self.xy, now=1)
+        self.p.observe_server(155, bytes(p), self.xy)
+        self.assertIn(1001, self.p.tracker.failed)
+        with self.assertRaises(ValueError):
+            self.p.observe_server(155, bytes(p)[:-1], self.xy)
+
 
 if __name__ == "__main__":
     unittest.main()
