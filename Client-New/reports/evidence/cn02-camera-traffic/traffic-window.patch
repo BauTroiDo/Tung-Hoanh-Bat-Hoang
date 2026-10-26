@@ -1,0 +1,135 @@
+--- a/gs-bridge-m1/native_session.py
++++ b/gs-bridge-m1/native_session.py
+@@ -22,0 +23,32 @@
++
++
++@dataclass
++class NativeTrafficBudget:
++    window_start: float
++    window_bytes: int = 0
++    window_frames: int = 0
++    total_bytes: int = 0
++    total_frames: int = 0
++    last_activity: float = None
++
++    def __post_init__(self):
++        self.last_activity = self.window_start
++
++    def charge(self, size, *, frames=0, now, activity=True):
++        if size < 0 or frames < 0:
++            raise ValueError('Negative native traffic charge')
++        if now - self.window_start >= 10:
++            self.window_start = now
++            self.window_bytes = self.window_frames = 0
++        if self.window_bytes + size > 8*1024*1024 or self.window_frames + frames > 4096:
++            raise ValueError('Native M1 traffic rate limit')
++        self.window_bytes += size
++        self.window_frames += frames
++        self.total_bytes += size
++        self.total_frames += frames
++        if activity:
++            self.last_activity = now
++
++    def check_idle(self, now):
++        if now - self.last_activity >= 90:
++            raise TimeoutError('Native M1 session idle timeout')
+@@ -81,2 +113,4 @@
+-    total = len(wire)
+-    frames = 0
++    started = time.monotonic()
++    budget = NativeTrafficBudget(started)
++    budget.charge(len(wire), frames=1, now=started)
++    next_progress = started + 60
+@@ -85 +119 @@
+-    deadline = time.monotonic() + max_seconds
++    deadline = None if max_seconds is None else time.monotonic() + max_seconds
+@@ -88 +122 @@
+-        nonlocal tx, total, frames
++        nonlocal tx
+@@ -89,0 +124 @@
++        budget.charge(len(encoded), frames=1, now=time.monotonic(), activity=False)
+@@ -91,2 +125,0 @@
+-        total += len(encoded)
+-        frames += 1
+@@ -107,3 +140,8 @@
+-        while time.monotonic() < deadline:
+-            if total > 8*1024*1024 or frames > 4096:
+-                raise ValueError('Native M1 session traffic limit')
++        LOG.info('M1 traffic policy window_seconds=10 bytes=8388608 frames=4096 idle_seconds=90 fixed_lifetime=%s', max_seconds)
++        while deadline is None or time.monotonic() < deadline:
++            now = time.monotonic()
++            budget.check_idle(now)
++            if now >= next_progress:
++                LOG.info('M1 session alive entity=%d age_seconds=%.1f total_frames=%d total_bytes=%d',
++                         summary.entity_id, now-started, budget.total_frames, budget.total_bytes)
++                next_progress = now + 60
+@@ -119,2 +157 @@
+-                total += len(wire)
+-                frames += 1
++                budget.charge(len(wire), frames=1, now=time.monotonic())
+@@ -160 +197 @@
+-                total += len(batch)
++                budget.charge(len(batch), now=time.monotonic())
+--- a/gs-bridge-m1/native_gs_dispatch.py
++++ b/gs-bridge-m1/native_gs_dispatch.py
+@@ -46 +46 @@
+-                                  max_seconds=300)
++                                  max_seconds=None)
+--- a/gs-bridge-m1/test_native_traffic_window.py
++++ b/gs-bridge-m1/test_native_traffic_window.py
+@@ -0,0 +1,55 @@
++import unittest
++from unittest.mock import patch
++import native_session as session
++from native_gs_dispatch import NativeGsDispatch
++
++class TrafficTests(unittest.TestCase):
++    def test_sustained_session_exceeds_old_totals(self):
++        b=session.NativeTrafficBudget(0)
++        for second in range(600):
++            for unused in range(60):
++                b.charge(1024,frames=1,now=second)
++            b.check_idle(second)
++        self.assertGreater(600*60,4096)
++        self.assertGreater(600*60*1024,8*1024*1024)
++
++    def test_frame_burst_still_rejected(self):
++        b=session.NativeTrafficBudget(0)
++        b.charge(4096,frames=4096,now=0)
++        with self.assertRaisesRegex(ValueError,'rate limit'):
++            b.charge(1,frames=1,now=0)
++
++    def test_byte_burst_still_rejected(self):
++        b=session.NativeTrafficBudget(0)
++        b.charge(8*1024*1024,now=0)
++        with self.assertRaisesRegex(ValueError,'rate limit'):
++            b.charge(1,now=0)
++
++    def test_window_resets_but_idle_does_not(self):
++        b=session.NativeTrafficBudget(0)
++        b.charge(8*1024*1024,frames=4096,now=0)
++        b.charge(8*1024*1024,frames=4096,now=10)
++        b.check_idle(99)
++        with self.assertRaisesRegex(TimeoutError,'idle'):
++            b.check_idle(100)
++
++    def test_traffic_refreshes_idle(self):
++        b=session.NativeTrafficBudget(0)
++        b.charge(1,now=80)
++        b.check_idle(169)
++        with self.assertRaises(TimeoutError):b.check_idle(170)
++
++    def test_negative_traffic_rejected(self):
++        b=session.NativeTrafficBudget(0)
++        with self.assertRaises(ValueError):b.charge(-1,now=1)
++        with self.assertRaises(ValueError):b.charge(1,frames=-1,now=1)
++
++    def test_controlled_dispatch_has_no_fixed_lifetime(self):
++        dispatcher=NativeGsDispatch.__new__(NativeGsDispatch)
++        dispatcher.enabled=True
++        dispatcher.permits=object()
++        with patch('native_session.run_native_session',return_value='ok') as run:
++            self.assertEqual(dispatcher.serve(object(),'127.0.0.1',b'wire'),'ok')
++            self.assertIsNone(run.call_args.kwargs['max_seconds'])
++
++if __name__=='__main__':unittest.main()

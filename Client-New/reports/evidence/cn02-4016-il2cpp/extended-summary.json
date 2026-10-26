@@ -1,0 +1,155 @@
+{
+  "stage": "CN02-BULK-04",
+  "binarySHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "manifestSHA256": "74EDADBC747F850D146C3803FBD4DCF050848E77464D2C304AD7AA2CFA159F91",
+  "sqliteSHA256": "047DEB454A345BCE1B5B955F69D615FE41E370F3A93ECFC82B66518C2D2E578E",
+  "groups": {
+    "NetworkProtocol": {
+      "selectedTypeCount": 3,
+      "selectedTypes": [
+        "BishopNetwork",
+        "GameServerNetwork",
+        "Network/Header/ProcessGameUnity"
+      ],
+      "methodBindings": 264,
+      "boundedNativeEntries": 208,
+      "exitCode": 0,
+      "elapsedSeconds": 10.22,
+      "typeOnlySelectors": 3,
+      "hasUnsafeAssemblyFilter": false,
+      "sourceSHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+      "dumpBytes": 4385378,
+      "pseudo": 351,
+      "rva": 351,
+      "suspect": 9,
+      "unknown": 2
+    },
+    "SceneAddressables": {
+      "selectedTypeCount": 3,
+      "selectedTypes": [
+        "MapDataService",
+        "VietKiem/Levels/Application/SceneLoadService",
+        "VietKiem/Levels/Application/SceneLoader"
+      ],
+      "methodBindings": 108,
+      "boundedNativeEntries": 100,
+      "exitCode": 0,
+      "elapsedSeconds": 10.4,
+      "typeOnlySelectors": 3,
+      "hasUnsafeAssemblyFilter": false,
+      "sourceSHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+      "dumpBytes": 1862568,
+      "pseudo": 175,
+      "rva": 175,
+      "suspect": 4,
+      "unknown": 0
+    },
+    "GameplayState": {
+      "selectedTypeCount": 4,
+      "selectedTypes": [
+        "WalkState",
+        "AttackState",
+        "StateMachine",
+        "DeathState"
+      ],
+      "methodBindings": 65,
+      "boundedNativeEntries": 61,
+      "exitCode": 0,
+      "elapsedSeconds": 10.99,
+      "typeOnlySelectors": 4,
+      "hasUnsafeAssemblyFilter": false,
+      "sourceSHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+      "dumpBytes": 995772,
+      "pseudo": 71,
+      "rva": 71,
+      "suspect": 4,
+      "unknown": 12
+    }
+  },
+  "totalPseudoMarkers": 597,
+  "totalOutputBytes": 7243718,
+  "nativeContracts": {
+    "BishopNetwork::Login()": {
+      "expectedRVA": "0x8f3750",
+      "found": true
+    },
+    "GameServerNetwork::ConnectToServer()": {
+      "expectedRVA": "0x92ca30",
+      "found": true
+    },
+    "Network.Header.ProcessGameUnity::OnSyncWorld()": {
+      "expectedRVA": "0xc38990",
+      "found": true
+    },
+    "MapDataService::LoadForTemplate()": {
+      "expectedRVA": "0x8c9bf0",
+      "found": true
+    },
+    "VietKiem.Levels.Application.SceneLoadService::ResolveVariantKeyAsync()": {
+      "expectedRVA": "0xc74650",
+      "found": true
+    },
+    "WalkState::Enter()": {
+      "expectedRVA": "0x87b290",
+      "found": true
+    },
+    "StateMachine::ChangeState()": {
+      "expectedRVA": "0x878a30",
+      "found": true
+    }
+  },
+  "ghidraProbe": {
+    "exitCode": 0,
+    "elapsedSeconds": 43.29,
+    "sampleRvas": [
+      "0xc25b50",
+      "0xc730e0",
+      "0x879ea0"
+    ],
+    "rows": {
+      "0xc25b50": {
+        "nativeSpan": 439,
+        "decodedBytes": 439,
+        "functionBodyBytes": 439,
+        "disasmAccepted": true,
+        "decompiled": true,
+        "cChars": 2517
+      },
+      "0xc730e0": {
+        "nativeSpan": 206,
+        "decodedBytes": 206,
+        "functionBodyBytes": 206,
+        "disasmAccepted": true,
+        "decompiled": true,
+        "cChars": 2736
+      },
+      "0x879ea0": {
+        "nativeSpan": 541,
+        "decodedBytes": 541,
+        "functionBodyBytes": 541,
+        "disasmAccepted": true,
+        "decompiled": true,
+        "cChars": 7083
+      }
+    },
+    "readOnlyDiscardConfirmed": true,
+    "scriptCompleted": true
+  },
+  "toolAudit": {
+    "inventoryRoot": "E:\\Hack Game\\Cong-cu",
+    "IDA_7_3": {
+      "available": "idat64.exe, ida64.exe and PE64 loaders observed",
+      "signing": "idat64.exe and ida64.exe Authenticode NotSigned",
+      "hexRays": "No verified hexrays64.dll / hexx64.dll in IDA 7.3 plugins",
+      "execution": "NOT RUN: provenance and license unverified; separate patched copy exists"
+    },
+    "otherTools": {
+      "BinaryNinja": "binaryninja.exe Authenticode Valid; license/CLI not tested",
+      "ILSpy": "ILSpy.exe Authenticode Valid; managed IL useful but not native IL2CPP bodies",
+      "x64dbg": "x64dbg.exe Authenticode Valid; dynamic debugging not executed",
+      "DetectItEasy": "diec.exe exists but NotSigned, not executed",
+      "Ghidra": "12.2 independently tested, headless read-only static pipeline used"
+    }
+  },
+  "limits": "Batch pseudo is unverified C-like code, not working C#. Contract signatures and RVA are static only; they do NOT prove live packet framing, login flow, scene load, network responses, combat or Map53 runtime. CN02-04 BLOCKED; CN03 CLOSED."
+}

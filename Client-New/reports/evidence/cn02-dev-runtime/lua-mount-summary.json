@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "archives": [
+    {
+      "file": "jingjichang.mps",
+      "entries": 35,
+      "mounted_by_config": true,
+      "sha256": "c2ec65ac4754bfc40126ddb2d5759769262c8f2dff01f23ced4d522ed12f1b1b"
+    },
+    {
+      "file": "maps.pak",
+      "entries": 95366,
+      "mounted_by_config": true,
+      "sha256": "8bde18f1a5958966d64421fd0654d2783c606185ff9e1b111f717d1b66048d17"
+    },
+    {
+      "file": "maps01.pak",
+      "entries": 706,
+      "mounted_by_config": false,
+      "sha256": "d3572b337b9f20a2f263c4be373e5102f1cf0cfd655c80ca988b9b0168fec45b"
+    },
+    {
+      "file": "qianchonglou.mps",
+      "entries": 4,
+      "mounted_by_config": true,
+      "sha256": "f9e6359aa46ec2a9c84a9cd52505a7a106d5821f4befd0df7643c238e719a20f"
+    },
+    {
+      "file": "script.pak",
+      "entries": 425,
+      "mounted_by_config": false,
+      "sha256": "b6bf804c9aec24f80fd22876065afd1b0ac07d146c648506d48df7f6ad99f3b9"
+    },
+    {
+      "file": "skill.pak",
+      "entries": 499,
+      "mounted_by_config": false,
+      "sha256": "b5d7c411e5961a24317775b21530e62bda9836e3edb7377682b6de5c221248ab"
+    },
+    {
+      "file": "yanwuchang.mps",
+      "entries": 26,
+      "mounted_by_config": true,
+      "sha256": "3008be451982f239295b082853757588c803bc2e413450848c6fb5278f98c4ce"
+    }
+  ],
+  "archive_errors": [],
+  "scripts": [
+    {
+      "path": "\\script\\system\\online.lua",
+      "file_id": "e19c8de5",
+      "loose_exists": false,
+      "archive_candidates": [],
+      "mounted_candidates": [],
+      "source_available": false
+    },
+    {
+      "path": "\\script\\system\\player\\playerlogin.lua",
+      "file_id": "f511cc08",
+      "loose_exists": false,
+      "archive_candidates": [],
+      "mounted_candidates": [],
+      "source_available": false
+    },
+    {
+      "path": "\\script\\system\\player\\playerlogout.lua",
+      "file_id": "54f1a1d6",
+      "loose_exists": false,
+      "archive_candidates": [],
+      "mounted_candidates": [],
+      "source_available": false
+    }
+  ],
+  "limits": "Configured disk mounts only, not live process mount/cache proof. ASCII target paths. ID matches do not prove Lua hook compilation/execution."
+}

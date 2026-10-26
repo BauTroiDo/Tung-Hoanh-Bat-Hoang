@@ -1,0 +1,12 @@
+{
+  "pid": 21188,
+  "user_confirmed": true,
+  "cameraCalls": 2113,
+  "orbitFrames": 122,
+  "suppressedDown": 10,
+  "errors": 0,
+  "root_cause": "Generic EventSystem UI hit was true on full-screen HUD; native CanProcessWorldClick correctly distinguishes blocking UI",
+  "test_count": 5,
+  "release_build": false,
+  "reconnect_stability_verified": false
+}

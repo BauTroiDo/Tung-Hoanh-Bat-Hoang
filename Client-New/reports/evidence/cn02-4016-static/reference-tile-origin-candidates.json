@@ -1,0 +1,69 @@
+{
+  "status": "UNPAIRED_REFERENCE_SCENE_ONLY",
+  "mapId": 53,
+  "referenceClientBuild": "4016",
+  "unityScene": "PC_BLH_Bake.unity",
+  "sourceBundleName": "pc_balanghuyen_scenes_all_4e0a8e141624756b20ca4ccfa32087fb.bundle",
+  "sourceSha256": "EEB567D492CE740AAD8A796F531D993917F511FDA60ECF4DDE25DA6C2B4DEC4A",
+  "provenance": "read-only transform hierarchy; tile grid origins, not four independent landmark measurements",
+  "independentReferenceToLegacyPairs": 0,
+  "sceneCandidates": [
+    {
+      "order": 0,
+      "label": "TerrainBLH2a_01_01",
+      "sourceTransformPathId": 55,
+      "referenceWorldXYZ": [
+        -253.920013,
+        -20.0,
+        -247.980011
+      ],
+      "legacyMap53XY": null,
+      "hasLegacy": false,
+      "landmarkCorrespondenceEstablished": false,
+      "role": "FIT_CANDIDATE_ONLY"
+    },
+    {
+      "order": 1,
+      "label": "TerrainBLH2a_01_02",
+      "sourceTransformPathId": 49,
+      "referenceWorldXYZ": [
+        -253.920013,
+        -20.0,
+        2.019989
+      ],
+      "legacyMap53XY": null,
+      "hasLegacy": false,
+      "landmarkCorrespondenceEstablished": false,
+      "role": "FIT_CANDIDATE_ONLY"
+    },
+    {
+      "order": 2,
+      "label": "TerrainBLH2a_02_01",
+      "sourceTransformPathId": 52,
+      "referenceWorldXYZ": [
+        -3.920013,
+        -20.0,
+        -247.980011
+      ],
+      "legacyMap53XY": null,
+      "hasLegacy": false,
+      "landmarkCorrespondenceEstablished": false,
+      "role": "FIT_CANDIDATE_ONLY"
+    },
+    {
+      "order": 3,
+      "label": "TerrainBLH2a_02_02",
+      "sourceTransformPathId": 53,
+      "referenceWorldXYZ": [
+        -3.920013,
+        -20.0,
+        2.019989
+      ],
+      "legacyMap53XY": null,
+      "hasLegacy": false,
+      "landmarkCorrespondenceEstablished": false,
+      "role": "HOLDOUT_CANDIDATE_ONLY"
+    }
+  ],
+  "warning": "Four corners from one scene geometry are geometrically distinct but NOT independently paired legacy observations. Do not use to fit or unlock CN02-04."
+}

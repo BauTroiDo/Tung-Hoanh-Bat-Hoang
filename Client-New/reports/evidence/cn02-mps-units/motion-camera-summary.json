@@ -1,0 +1,17 @@
+{
+  "frames": 1040,
+  "entities": [
+    40707
+  ],
+  "packet_counts": {
+    "90": 508
+  },
+  "median_frame_ms": 33,
+  "moving_frames": 85,
+  "max_frame_step": 0.08797454822749706,
+  "yaw_start": -119.98806956530234,
+  "yaw_end": -119.98835265763526,
+  "yaw_total_abs_degrees": 0.00045963021298689455,
+  "yaw_net_degrees": -0.00028309233286449853,
+  "errors": []
+}

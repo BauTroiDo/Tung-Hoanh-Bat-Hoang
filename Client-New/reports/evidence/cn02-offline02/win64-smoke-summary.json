@@ -1,0 +1,193 @@
+{
+  "schema": "cn02-offline02-standalone-render-v1",
+  "unityBuildSha256": "9806ABDE4A406ED68647E9505852C49F6AA72A372F4F084E2AA2821AFFEA57A2",
+  "sameKnownBuildInTwoRuns": true,
+  "testScene": "BaLangHuyen",
+  "sceneProvenance": "SYNTHETIC_FALLBACK_NOT_ORIGINAL_MAP53",
+  "runs": [
+    {
+      "folder": "screens",
+      "logFile": "win64-rendered-player.log",
+      "screenshots": {
+        "view1_spawn_south.png": {
+          "width": 1280,
+          "height": 720,
+          "sha256": "D16FEEC817828C88A374C1FA1AC96022332062C93311B0C53898A83AD9F9F9F9",
+          "pngBytes": 118571,
+          "sampledDistinctColors": 190,
+          "sampledIntensityStdDev": 33.443,
+          "sampledIntensityRange": [
+            21,
+            246
+          ],
+          "allChunksCrcValid": true
+        },
+        "view2_east_walked.png": {
+          "width": 1280,
+          "height": 720,
+          "sha256": "9A1C05220C5784CE37E696FE2CFFED5DF062438D9F563E3ED5D21758C120A0FD",
+          "pngBytes": 122940,
+          "sampledDistinctColors": 263,
+          "sampledIntensityStdDev": 39.08,
+          "sampledIntensityRange": [
+            19,
+            255
+          ],
+          "allChunksCrcValid": true
+        },
+        "view3_north_elevated.png": {
+          "width": 1280,
+          "height": 720,
+          "sha256": "2C228862D5A35810C405650D53A48F424A792A9C1AAE05F93D46355837F82A00",
+          "pngBytes": 126116,
+          "sampledDistinctColors": 231,
+          "sampledIntensityStdDev": 34.019,
+          "sampledIntensityRange": [
+            18,
+            255
+          ],
+          "allChunksCrcValid": true
+        },
+        "view4_west_close.png": {
+          "width": 1280,
+          "height": 720,
+          "sha256": "805A8845B6410743BC841CB153A970291AE1436AB91D51B04DDACA8E456D4042",
+          "pngBytes": 140363,
+          "sampledDistinctColors": 270,
+          "sampledIntensityStdDev": 36.509,
+          "sampledIntensityRange": [
+            18,
+            255
+          ],
+          "allChunksCrcValid": true
+        }
+      },
+      "gameLog": {
+        "logSha256": "C33A70BEFDF8445C8D0551A5F2D87D1D90F57B50C69560CC17512519709FD4CC",
+        "validationRecordCount": 1,
+        "offlineReady": true,
+        "rootsReady": true,
+        "groundRendererReady": true,
+        "groundColliderReady": true,
+        "allFiveGroundProbes": true,
+        "fiveProbeNames": [
+          "Probe_CenterPlaza",
+          "Probe_NorthGatePath",
+          "Probe_SouthGatePath",
+          "Probe_EastBridgeApproach",
+          "Probe_WestMarketApproach"
+        ],
+        "pointerAccepted": true,
+        "walkRecordCount": 1,
+        "movementPassed": true,
+        "walkDestinationError": 0.103,
+        "captureRecordCount": 4,
+        "capturesReportedPresent": true,
+        "fatalExceptionLineCount": 0,
+        "uniqueOptionalPostprocessingShaderWarnings": [
+          "Hidden/Universal Render Pipeline/BokehDepthOfField",
+          "Hidden/Universal Render Pipeline/GaussianDepthOfField",
+          "Hidden/Universal Render Pipeline/PaniniProjection"
+        ]
+      },
+      "screenshotHashesDistinct": true,
+      "allRenderedFramesHaveVisualDetail": true
+    },
+    {
+      "folder": "screens-confirm",
+      "logFile": "win64-rendered-player-confirm.log",
+      "screenshots": {
+        "view1_spawn_south.png": {
+          "width": 1280,
+          "height": 720,
+          "sha256": "21F51FF0E91AA54F9BDDDA72FBD9AACC5B50B0F6505B9BA77A94A753BE12BDF6",
+          "pngBytes": 118742,
+          "sampledDistinctColors": 189,
+          "sampledIntensityStdDev": 33.464,
+          "sampledIntensityRange": [
+            21,
+            246
+          ],
+          "allChunksCrcValid": true
+        },
+        "view2_east_walked.png": {
+          "width": 1280,
+          "height": 720,
+          "sha256": "E517DF4070E4E9B62AE5492CBF2045E4F2B0EF6457D6DC15EB1FEE8EA2C2709F",
+          "pngBytes": 123407,
+          "sampledDistinctColors": 259,
+          "sampledIntensityStdDev": 39.047,
+          "sampledIntensityRange": [
+            19,
+            255
+          ],
+          "allChunksCrcValid": true
+        },
+        "view3_north_elevated.png": {
+          "width": 1280,
+          "height": 720,
+          "sha256": "01EB93CB748DFC28E9DEA8F6F7DF98ABAD12F9F725ACB9D4EE7D8A4181478422",
+          "pngBytes": 126432,
+          "sampledDistinctColors": 232,
+          "sampledIntensityStdDev": 34.008,
+          "sampledIntensityRange": [
+            18,
+            255
+          ],
+          "allChunksCrcValid": true
+        },
+        "view4_west_close.png": {
+          "width": 1280,
+          "height": 720,
+          "sha256": "2842E5CB197F05FCF906F072D05826EF12DDA942BA66B522AC4E136995ACE0E0",
+          "pngBytes": 140464,
+          "sampledDistinctColors": 273,
+          "sampledIntensityStdDev": 36.573,
+          "sampledIntensityRange": [
+            18,
+            255
+          ],
+          "allChunksCrcValid": true
+        }
+      },
+      "gameLog": {
+        "logSha256": "909E6B6CA81B597B77045049847CB1E070EE18A7FFD940C026E874FF52054DF9",
+        "validationRecordCount": 1,
+        "offlineReady": true,
+        "rootsReady": true,
+        "groundRendererReady": true,
+        "groundColliderReady": true,
+        "allFiveGroundProbes": true,
+        "fiveProbeNames": [
+          "Probe_CenterPlaza",
+          "Probe_NorthGatePath",
+          "Probe_SouthGatePath",
+          "Probe_EastBridgeApproach",
+          "Probe_WestMarketApproach"
+        ],
+        "pointerAccepted": true,
+        "walkRecordCount": 1,
+        "movementPassed": true,
+        "walkDestinationError": 0.1,
+        "captureRecordCount": 4,
+        "capturesReportedPresent": true,
+        "fatalExceptionLineCount": 0,
+        "uniqueOptionalPostprocessingShaderWarnings": [
+          "Hidden/Universal Render Pipeline/BokehDepthOfField",
+          "Hidden/Universal Render Pipeline/GaussianDepthOfField",
+          "Hidden/Universal Render Pipeline/PaniniProjection"
+        ]
+      },
+      "screenshotHashesDistinct": true,
+      "allRenderedFramesHaveVisualDetail": true
+    }
+  ],
+  "confirmedSecondRunExitCode": 0,
+  "observedFrom": "Start-Process -PassThru + Wait-Process exitCode on second actual rendered player run",
+  "originalGame4016Used": false,
+  "gameServerAccessed": false,
+  "gsMoveAuthoritativeAcceptance": false,
+  "cn0204": "BLOCKED",
+  "cn03": "CLOSED",
+  "limits": "This validates rendered output of owned Unity synthetic scene, not NavMesh acceptance, manual click/OS input, original Map53 geometry, GS ACK, historical paired landmarks or internet/server connectivity. Shader stripping warnings are noted, not suppressed."
+}

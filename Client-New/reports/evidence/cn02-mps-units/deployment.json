@@ -1,0 +1,22 @@
+{
+  "source_hashes": {
+    "native_initial_packets.py": "9ed78000c81336b834e3d423a597f2f8820306d1eb0ee631b88fbe2eedecef53",
+    "native_movement.py": "aa5370d994e7966e1b89bf7fe65647d009ad492a33f5365f43f3e5122bdd21e4",
+    "native_session.py": "38d29a7e68601b1cb62cdfafdfa24ce5b2aba0eda7d9a0aa890c28739b8b50f0"
+  },
+  "stale_gate": {
+    "status": "P0_PROTOCOL_EVIDENCE_MISSING_OR_STALE",
+    "world_entry_enabled": false,
+    "m1_p0_pass": false,
+    "stale_source": "gs-bridge-m1/native_initial_packets.py"
+  },
+  "ready_gate": {
+    "status": "CONTROLLED_MAP53_PROTOCOL_TEST_READY",
+    "world_entry_enabled": true,
+    "m1_p0_pass": false
+  },
+  "tests_exit": 0,
+  "tests": 129,
+  "stage_only_test_red": "12 tests: 5 failures + 5 errors before implementation, due missing conversion/helper; 2 guards already passed",
+  "backup": "C:\\Server-Game\\SwordOnline\\Client3D-LAN\\qa_runs\\cn02-mps-units-20261026\\before"
+}

@@ -1,0 +1,49 @@
+{
+  "Timestamp": "2026-10-25T17:47:35.087585+07:00",
+  "Baseline": "8bfe8bc",
+  "Branch": "cg/cn02-anchor-evidence",
+  "EditMode": {
+    "Total": 29,
+    "Skipped": 0,
+    "Failed": 0,
+    "Passed": 29,
+    "ExitCode": 0,
+    "Graphics": "Enabled; window-opening regression requires a graphics device"
+  },
+  "PlayMode": {
+    "Skipped": 0,
+    "Passed": 18,
+    "Failed": 0,
+    "Total": 18,
+    "ExitCode": 0
+  },
+  "Draft": {
+    "Path": "reports\\evidence\\anchors\\drafts\\map53-anchors-20261025-102929-20804c5bad4445bda82ad52a3d12be81.json",
+    "SHA256": "A9ED318134E27C3F63EAB4EDF2103E0D9B82C72B27C9570BB39A3D75EE192250",
+    "SceneSHA256": "1DF531129F8C502B54093DB5AD6C9939A97C187F22ACF4D939DDE34A04FE5A7A",
+    "Status": "DRAFT_UNPAIRED",
+    "ExitCode": 0,
+    "PairedLegacyRows": 0,
+    "Rows": 4
+  },
+  "Win64": {
+    "Path": "Builds/CN02-AnchorWorkflow-Windows/JXClientNew.exe",
+    "BuildResult": "Success",
+    "DomainSHA256": "4A646B912B01AC2BB952819E8D46D992B58064169F24EA67789E596AFEDA4718",
+    "ExitCode": 0,
+    "CalibrationEditorTestsShipped": false,
+    "EditorAssemblyShipped": false
+  },
+  "CalibrationStatus": "UNVERIFIED; no real 3+1 paired evidence",
+  "UIObservation": "Native title confirmed BaLangHuyen; graphical Unity test confirms map and prefilled form. OS capture/click proof unavailable.",
+  "SourceHashes": [
+    {
+      "SHA256": "4B8790F1DB74F751AFE7D8CF80E41AA858F6E84652EA1A1C4A328CCF49F136A0",
+      "Path": "UnityProject\\Assets\\_JXClient\\Editor\\CalibrationTools\\AnchorCalibrationTools.cs"
+    },
+    {
+      "SHA256": "26FDBB945E590149A287DB656FC0A6E683146324C763CBD4A20A242FB85EEB8A",
+      "Path": "UnityProject\\Assets\\_JXClient\\Editor\\CalibrationTools\\AnchorCalibrationWindow.cs"
+    }
+  ]
+}

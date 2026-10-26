@@ -1,0 +1,23 @@
+{
+  "name": "JXClient.Editor",
+  "rootNamespace": "JXClient.Editor",
+  "references": [
+    "JXClient.Domain",
+    "JXClient.Core",
+    "JXClient.Movement",
+    "JXClient.World",
+    "Unity.InputSystem",
+    "Unity.ugui"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

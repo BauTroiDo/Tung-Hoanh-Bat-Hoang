@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 09:46:05Z" end-time="2026-10-25 09:46:05Z" duration="0.2470282">
+  <test-suite type="TestSuite" id="1026" name="UnityProject" fullname="UnityProject" runstate="Runnable" testcasecount="17" result="Failed" site="Child" start-time="2026-10-25 09:46:05Z" end-time="2026-10-25 09:46:05Z" duration="0.247028" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1048" name="JXClient.Tests.PlayMode.dll" fullname="E:/Games/VLTK3D/SwordOnline/Client-New/UnityProject/Library/ScriptAssemblies/JXClient.Tests.PlayMode.dll" runstate="Runnable" testcasecount="17" result="Failed" site="Child" start-time="2026-10-25 09:46:05Z" end-time="2026-10-25 09:46:05Z" duration="0.239911" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="20940" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1029" name="Cn02OwnershipRegressionTests" fullname="Cn02OwnershipRegressionTests" classname="Cn02OwnershipRegressionTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-10-25 09:46:05Z" end-time="2026-10-25 09:46:05Z" duration="0.238441" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1031" name="CancelCleanupBlocksReplacementUntilOriginalRoutineFinishes" fullname="Cn02OwnershipRegressionTests.CancelCleanupBlocksReplacementUntilOriginalRoutineFinishes" methodname="CancelCleanupBlocksReplacementUntilOriginalRoutineFinishes" classname="Cn02OwnershipRegressionTests" runstate="Runnable" seed="365956146" result="Failed" start-time="2026-10-25 09:46:05Z" end-time="2026-10-25 09:46:05Z" duration="0.153675" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Cancellation cleanup must retain exclusive ownership until drained.
+  Expected: False
+  But was:  True
+]]></message>
+            <stack-trace><![CDATA[at Cn02OwnershipRegressionTests+<CancelCleanupBlocksReplacementUntilOriginalRoutineFinishes>d__6.MoveNext () [0x00097] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\PlayMode\Cn02OwnershipRegressionTests.cs:52
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+There are 2 event systems in the scene. Please ensure there is always exactly one event system in the scene
+There are 2 audio listeners in the scene. Please ensure there is always exactly one audio listener in the scene.
+]]></output>
+        </test-case>
+        <test-case id="1030" name="CancelWhilePendingKeepsCleanupAliveAndCallsBackOnce" fullname="Cn02OwnershipRegressionTests.CancelWhilePendingKeepsCleanupAliveAndCallsBackOnce" methodname="CancelWhilePendingKeepsCleanupAliveAndCallsBackOnce" classname="Cn02OwnershipRegressionTests" runstate="Runnable" seed="140155457" result="Failed" start-time="2026-10-25 09:46:05Z" end-time="2026-10-25 09:46:05Z" duration="0.019401" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Cancelled pending operation must remain scheduled for cleanup.
+  Expected: True
+  But was:  False
+]]></message>
+            <stack-trace><![CDATA[at Cn02OwnershipRegressionTests+<CancelWhilePendingKeepsCleanupAliveAndCallsBackOnce>d__5.MoveNext () [0x0009d] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\PlayMode\Cn02OwnershipRegressionTests.cs:37
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1033" name="ForeignForegroundDoesNotHideValidOwnSceneGround" fullname="Cn02OwnershipRegressionTests.ForeignForegroundDoesNotHideValidOwnSceneGround" methodname="ForeignForegroundDoesNotHideValidOwnSceneGround" classname="Cn02OwnershipRegressionTests" runstate="Runnable" seed="1354620403" result="Failed" start-time="2026-10-25 09:46:05Z" end-time="2026-10-25 09:46:05Z" duration="0.028492" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: not equal to "ForeignGround"
+  But was:  "ForeignGround"
+]]></message>
+            <stack-trace><![CDATA[at Cn02OwnershipRegressionTests+<ForeignForegroundDoesNotHideValidOwnSceneGround>d__10.MoveNext () [0x0007c] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\PlayMode\Cn02OwnershipRegressionTests.cs:93
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1032" name="ForeignSceneCannotSupplyMissingGroundOrSpawn" fullname="Cn02OwnershipRegressionTests.ForeignSceneCannotSupplyMissingGroundOrSpawn" methodname="ForeignSceneCannotSupplyMissingGroundOrSpawn" classname="Cn02OwnershipRegressionTests" runstate="Runnable" seed="1892926682" result="Failed" start-time="2026-10-25 09:46:05Z" end-time="2026-10-25 09:46:05Z" duration="0.023930" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: False
+  But was:  True
+]]></message>
+            <stack-trace><![CDATA[at Cn02OwnershipRegressionTests+<ForeignSceneCannotSupplyMissingGroundOrSpawn>d__9.MoveNext () [0x0013d] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\PlayMode\Cn02OwnershipRegressionTests.cs:84
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Saving results to: C:/Users/QT/AppData/LocalLow/DefaultCompany/UnityProject\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,24 @@
+{
+  "Timestamp": "2026-10-25T17:32:13.8738881+07:00",
+  "Mode": "READ ONLY; no import/execution/asset extraction",
+  "SourcePath": "E:\\Games\\VLTK3D\\SwordOnline\\Clent-3D\\LAN\\world_conversion.py",
+  "SourceSHA256": "6DE039D6354B05EF045B308DD9CF47431C6B0A066017FC9496B9F0D826E82B46",
+  "MarkerPath": "E:\\Games\\VLTK3D\\SwordOnline\\Clent-3D\\LAN\\reference\\world_baling.markers.json",
+  "MarkerSHA256": "34F724E58C593B4613D2B7F842C2414F4B86583768C4A90C635F0A6FE190B00C",
+  "SourceClient": "Clent-3D (Unity 2022 reference), not 4016 or Client-New synthetic scene",
+  "SceneKey": "world_baling",
+  "AnchorCount": 1,
+  "LegacyAnchor": [
+    52032,
+    101696
+  ],
+  "SceneAnchor": [
+    209.8,
+    5.904738,
+    103.71
+  ],
+  "DefaultScale": "1/32 in old source; not independently calibrated",
+  "SourceAlignmentFlag": "spawn_anchor",
+  "SourceMovementCalibratedFlag": false,
+  "Conclusion": "Source documents spawn-only alignment, not verified 3+1 map calibration. Cannot transfer it to another scene/build."
+}

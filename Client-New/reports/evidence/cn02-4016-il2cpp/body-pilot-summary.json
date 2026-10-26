@@ -1,0 +1,88 @@
+{
+  "stage": "CN02-BULK-02-body-pilot",
+  "ghidraVersion": "12.2 official PUBLIC",
+  "ghidraHeadlessExitCode": 0,
+  "ghidraReadOnlyImportDiscarded": true,
+  "ghidraSampleMethods": {
+    "0x8dfbf0": {
+      "decoded": true,
+      "expectedSpanBytes": 276,
+      "decodedBytes": 276,
+      "status": "DECOMPILED",
+      "pseudoChars": 1361,
+      "functionBodyBytes": 276
+    },
+    "0x8dfd10": {
+      "decoded": true,
+      "expectedSpanBytes": 239,
+      "decodedBytes": 239,
+      "status": "DECOMPILED",
+      "pseudoChars": 827,
+      "functionBodyBytes": 239
+    },
+    "0x8e0dd0": {
+      "decoded": true,
+      "expectedSpanBytes": 1032,
+      "decodedBytes": 1032,
+      "status": "DECOMPILED",
+      "pseudoChars": 7053,
+      "functionBodyBytes": 1032
+    },
+    "0xc38990": {
+      "decoded": true,
+      "expectedSpanBytes": 1112,
+      "decodedBytes": 1112,
+      "status": "DECOMPILED",
+      "pseudoChars": 6881,
+      "functionBodyBytes": 1112
+    },
+    "0xc75de0": {
+      "decoded": true,
+      "expectedSpanBytes": 12996,
+      "decodedBytes": 12996,
+      "status": "DECOMPILED",
+      "pseudoChars": 87837,
+      "functionBodyBytes": 12996
+    }
+  },
+  "tool": "il2cpp-dumper-rs 8.0.0",
+  "selectionMode": "TYPE_ONLY (do not combine assembly+type; filter is UNION)",
+  "typeDefIndices": [
+    637,
+    1989,
+    1990,
+    1991,
+    1992,
+    2007
+  ],
+  "methodsWithDisassemblyAndPseudo": 295,
+  "distinctRVAs": 272,
+  "aliasBindingsBeyondUniqueRVAs": 23,
+  "countsByTypeDefIndex": {
+    "637": 40,
+    "1989": 6,
+    "1990": 2,
+    "1991": 2,
+    "1992": 188,
+    "2007": 57
+  },
+  "nativeDisasmInstructionCount": 33764,
+  "nativeDisasmCoveredBytes": 145714,
+  "recoverySuspectMethodCount": 14,
+  "pseudoUnknownMethodCount": 5,
+  "sourceSha256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "selectedDumpSizeBytes": 5226635,
+  "overscopedDumpSizeBytes": 192911813,
+  "expectedRvaFirstInstructionBytesVerified": {
+    "MapService.Mps2WorldPos": true,
+    "MapService.Map2WorldPos": true,
+    "MapService.UpdateWorldInfo": true,
+    "GameWorld.SubWorld.LoadMap": true,
+    "Network.Header.ProcessGameUnity.OnSyncWorld": true
+  },
+  "loadMapPilotDisassemblyInstructions": 512,
+  "loadMapPilotCoveredBytes": 2335,
+  "loadMapKnownFullInstructionsFromPriorUnwindAudit": 2925,
+  "loadMapKnownFullNativeBytesFromPriorUnwindAudit": 12996,
+  "notes": "All 295 method entries (272 distinct RVAs; 23 aliases) contain native disassembly plus generated C-like pseudo, but this is NOT validated source, not a C# decompile, and is NOT necessarily complete. LoadMap output truncates the prior known contiguous native body (2925 instructions/12996 bytes). 14 pseudo bodies have suspect recovery notes; 5 contain __unknown. Raw proprietary code remains outside Git."
+}

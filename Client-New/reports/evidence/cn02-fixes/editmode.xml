@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Passed" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.087056">
+  <test-suite type="TestSuite" id="1000" name="UnityProject" fullname="UnityProject" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.087056" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1017" name="JXClient.Tests.EditMode.dll" fullname="E:/Games/VLTK3D/SwordOnline/Client-New/UnityProject/Library/ScriptAssemblies/JXClient.Tests.EditMode.dll" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.080299" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="18120" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1018" name="JXClient" fullname="JXClient" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.069984" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1019" name="Tests" fullname="JXClient.Tests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.069807" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1020" name="EditMode" fullname="JXClient.Tests.EditMode" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.069605" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1013" name="Cn00BootstrapTests" fullname="JXClient.Tests.EditMode.Cn00BootstrapTests" classname="JXClient.Tests.EditMode.Cn00BootstrapTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.068646" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1016" name="BootstrapScene_ExistsAndInitializesOfflineReadyState" fullname="JXClient.Tests.EditMode.Cn00BootstrapTests.BootstrapScene_ExistsAndInitializesOfflineReadyState" methodname="BootstrapScene_ExistsAndInitializesOfflineReadyState" classname="JXClient.Tests.EditMode.Cn00BootstrapTests" runstate="Runnable" seed="1200113505" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.050432" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[CN-00][BootstrapRunner] Gate CN-00 | Scene: Bootstrap | State: OfflineReady | Unity: 6000.6.7f1 | GroundCollider: Ready | Network: Offline (No GS connection in CN-00)
+]]></output>
+              </test-case>
+              <test-case id="1014" name="DomainPrimitives_EnforceValidConstraints" fullname="JXClient.Tests.EditMode.Cn00BootstrapTests.DomainPrimitives_EnforceValidConstraints" methodname="DomainPrimitives_EnforceValidConstraints" classname="JXClient.Tests.EditMode.Cn00BootstrapTests" runstate="Runnable" seed="189845295" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.003790" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1015" name="GameSessionRules_ForbidMoveBeforeWorldReady" fullname="JXClient.Tests.EditMode.Cn00BootstrapTests.GameSessionRules_ForbidMoveBeforeWorldReady" methodname="GameSessionRules_ForbidMoveBeforeWorldReady" classname="JXClient.Tests.EditMode.Cn00BootstrapTests" runstate="Runnable" seed="1487479688" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000434" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="1001" name="MapCoordinateTransformTests" fullname="MapCoordinateTransformTests" classname="MapCoordinateTransformTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.009675" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1006" name="BoundsAreInclusiveAndBothDomainsAreChecked" fullname="MapCoordinateTransformTests.BoundsAreInclusiveAndBothDomainsAreChecked" methodname="BoundsAreInclusiveAndBothDomainsAreChecked" classname="MapCoordinateTransformTests" runstate="Runnable" seed="1488868857" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.002328" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1011" name="CalibrationAnchorsOutsideBoundsAreRejected" fullname="MapCoordinateTransformTests.CalibrationAnchorsOutsideBoundsAreRejected" methodname="CalibrationAnchorsOutsideBoundsAreRejected" classname="MapCoordinateTransformTests" runstate="Runnable" seed="1632614316" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000314" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1007" name="DuplicateAndCollinearSourceAnchorsAreRejected" fullname="MapCoordinateTransformTests.DuplicateAndCollinearSourceAnchorsAreRejected" methodname="DuplicateAndCollinearSourceAnchorsAreRejected" classname="MapCoordinateTransformTests" runstate="Runnable" seed="2039163526" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000360" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1012" name="IdentityFitAndInverseAgreeAcrossBounds" fullname="MapCoordinateTransformTests.IdentityFitAndInverseAgreeAcrossBounds" methodname="IdentityFitAndInverseAgreeAcrossBounds" classname="MapCoordinateTransformTests" runstate="Runnable" seed="958625657" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000252" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1005" name="LargeSourceOriginPreservesLocalDisplacement" fullname="MapCoordinateTransformTests.LargeSourceOriginPreservesLocalDisplacement" methodname="LargeSourceOriginPreservesLocalDisplacement" classname="MapCoordinateTransformTests" runstate="Runnable" seed="122198213" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000156" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1008" name="NearCollinearSourceAnchorsAreRejectedRelatively" fullname="MapCoordinateTransformTests.NearCollinearSourceAnchorsAreRejectedRelatively" methodname="NearCollinearSourceAnchorsAreRejectedRelatively" classname="MapCoordinateTransformTests" runstate="Runnable" seed="1247352748" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000182" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1010" name="NonFiniteValuesAndInvalidBoundsAreRejected" fullname="MapCoordinateTransformTests.NonFiniteValuesAndInvalidBoundsAreRejected" methodname="NonFiniteValuesAndInvalidBoundsAreRejected" classname="MapCoordinateTransformTests" runstate="Runnable" seed="416700585" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000584" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1009" name="NonInvertibleSceneMappingIsRejected" fullname="MapCoordinateTransformTests.NonInvertibleSceneMappingIsRejected" methodname="NonInvertibleSceneMappingIsRejected" classname="MapCoordinateTransformTests" runstate="Runnable" seed="940485404" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000286" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1004" name="ReflectionAndNegativeCoordinatesRoundTrip" fullname="MapCoordinateTransformTests.ReflectionAndNegativeCoordinatesRoundTrip" methodname="ReflectionAndNegativeCoordinatesRoundTrip" classname="MapCoordinateTransformTests" runstate="Runnable" seed="1987904221" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000145" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1003" name="RotatedAxesAndInverseUseSceneHorizontalCoordinates" fullname="MapCoordinateTransformTests.RotatedAxesAndInverseUseSceneHorizontalCoordinates" methodname="RotatedAxesAndInverseUseSceneHorizontalCoordinates" classname="MapCoordinateTransformTests" runstate="Runnable" seed="1600494695" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.000142" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1002" name="ScaleTranslationAndIndependentHoldoutAreCorrect" fullname="MapCoordinateTransformTests.ScaleTranslationAndIndependentHoldoutAreCorrect" methodname="ScaleTranslationAndIndependentHoldoutAreCorrect" classname="MapCoordinateTransformTests" runstate="Runnable" seed="450557657" result="Passed" start-time="2026-10-25 09:50:37Z" end-time="2026-10-25 09:50:37Z" duration="0.001775" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/QT/AppData/LocalLow/DefaultCompany/UnityProject\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

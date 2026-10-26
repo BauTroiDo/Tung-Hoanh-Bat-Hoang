@@ -1,0 +1,91 @@
+{
+  "stage": "CN02-BULK-08",
+  "metadataOriginalSha256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "metadataStagedSha256": "C677837DEC676A3F03A33333A9B94620ED373962E844704D6B9D1E451BFE1987",
+  "originalBackupMatches": true,
+  "nativeWorldSyncFixture": {
+    "projected": {
+      "nTemplateId": 53,
+      "nMapId": 53,
+      "nRegion": 6488114,
+      "nMpsX": 0,
+      "nMpsY": 0
+    },
+    "knownHistoricalMap53CaseMatches": true,
+    "reason": "MapCopyID is nTemplateId / scene selector; a value 0 in the Map53 historical case is NOT equivalent to template 53. In general, SubWorld and Template IDs are independent and must not always be forced equal."
+  },
+  "reportedConverterZeroTemplateFixture": {
+    "projected": {
+      "nTemplateId": 0,
+      "nMapId": 53,
+      "nRegion": 6488114,
+      "nMpsX": 0,
+      "nMpsY": 0
+    },
+    "knownHistoricalMap53CaseMatches": false,
+    "reason": "MapCopyID is nTemplateId / scene selector; a value 0 in the Map53 historical case is NOT equivalent to template 53. In general, SubWorld and Template IDs are independent and must not always be forced equal."
+  },
+  "converterStatus": "LOCAL PREFLIGHT DOES NOT READ SERVER SOURCE; see separate read-only server audit. No new live WORLD_SYNC packet captured.",
+  "backendPorts": {
+    "56722": {
+      "reachable": true
+    },
+    "51189": {
+      "reachable": true
+    },
+    "14180": {
+      "reachable": false
+    }
+  },
+  "mirror": {
+    "availableBundleNames": 1127,
+    "officialStagedSources": 7,
+    "cachedUnityFsSources": 1120,
+    "tests": {
+      "catalogHashHead": {
+        "status": 200,
+        "bytes": 32
+      },
+      "catalogHashGet": {
+        "status": 200,
+        "bytes": 32
+      },
+      "addressablesSettingsGet": {
+        "status": 200,
+        "bytes": 3630,
+        "buildTarget": "StandaloneWindows64"
+      },
+      "assetsHead": {
+        "status": 200,
+        "sizeBytes": 31592781
+      },
+      "assetsRange": {
+        "status": 206,
+        "returnedBytes": 7,
+        "signature": "UnityFS",
+        "fullSizeBytes": 31592781
+      },
+      "scenesHead": {
+        "status": 200,
+        "sizeBytes": 9738990
+      },
+      "scenesRange": {
+        "status": 206,
+        "returnedBytes": 7,
+        "signature": "UnityFS",
+        "fullSizeBytes": 9738990
+      },
+      "missingResourceGets404": {
+        "status": 404
+      }
+    },
+    "isolatedMirrorLogSHA256": "78EC748F65605F5DFFDCA555DE81305C3D338DC179E2BD7AA57AF240D9E38939",
+    "isolatedLogEntryCount": 8
+  },
+  "originalGameClientExecuted": false,
+  "metadataSwapped": false,
+  "authoritativeGsMoveVerified": false,
+  "originalSceneRendered": false,
+  "qaRuntimeAcceptance": false,
+  "note": "All HTTP observations were synthetic localhost client requests to an in-memory instance of the existing mirror, NOT a real Game.exe session. Backend TCP checks only verify port reachability at this instant; they do not authenticate or establish server health."
+}

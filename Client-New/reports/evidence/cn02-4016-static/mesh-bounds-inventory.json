@@ -1,0 +1,548 @@
+{
+  "bundleName": "pc_balanghuyen_scenes_all_4e0a8e141624756b20ca4ccfa32087fb.bundle",
+  "meshRecords": [
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f.sharedAssets",
+      "pathId": 33,
+      "type": "Mesh",
+      "name": "Take39_Mesh",
+      "aabb": {
+        "m_Center": {
+          "x": 0.0,
+          "y": 0.04853889346122742,
+          "z": 0.0
+        },
+        "m_Extent": {
+          "x": 6.21666145324707,
+          "y": 0.7581300735473633,
+          "z": 2.421964406967163
+        }
+      },
+      "vertexCount": 4316
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f.sharedAssets",
+      "pathId": 34,
+      "type": "Mesh",
+      "name": "TerrainBLH2a",
+      "aabb": {
+        "m_Center": {
+          "x": 125.0,
+          "y": 17.5,
+          "z": 125.0
+        },
+        "m_Extent": {
+          "x": 125.0,
+          "y": 2.5,
+          "z": 125.0
+        }
+      },
+      "vertexCount": 9025
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f.sharedAssets",
+      "pathId": 35,
+      "type": "Mesh",
+      "name": "V_Decor01_LinhTinh018a_Mesh",
+      "aabb": {
+        "m_Center": {
+          "x": 0.0,
+          "y": 0.8122227787971497,
+          "z": 0.0
+        },
+        "m_Extent": {
+          "x": 4.832827091217041,
+          "y": 0.8109328150749207,
+          "z": 3.7892894744873047
+        }
+      },
+      "vertexCount": 492
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f.sharedAssets",
+      "pathId": 36,
+      "type": "Mesh",
+      "name": "V_Nen01_BaLang_Mesh",
+      "aabb": {
+        "m_Center": {
+          "x": 0.0,
+          "y": 0.018806152045726776,
+          "z": 0.0
+        },
+        "m_Extent": {
+          "x": 12.020169258117676,
+          "y": 0.07506800442934036,
+          "z": 10.138439178466797
+        }
+      },
+      "vertexCount": 584
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 1,
+      "type": "Mesh",
+      "name": "Combined Mesh (root: scene)",
+      "aabb": {
+        "m_Center": {
+          "x": -2.223968505859375,
+          "y": 56.53181457519531,
+          "z": 2.019989013671875
+        },
+        "m_Extent": {
+          "x": 251.696044921875,
+          "y": 85.73199462890625,
+          "z": 250.0
+        }
+      },
+      "vertexCount": 59989
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 2,
+      "type": "Mesh",
+      "name": "Combined Mesh (root: scene) 2",
+      "aabb": {
+        "m_Center": {
+          "x": 121.07998657226562,
+          "y": -2.4933722019195557,
+          "z": -122.7928466796875
+        },
+        "m_Extent": {
+          "x": 125.0,
+          "y": 2.5066277980804443,
+          "z": 125.18716430664062
+        }
+      },
+      "vertexCount": 33113
+    }
+  ],
+  "meshFilterLinks": [
+    {
+      "gameObject": "V_Decor01_LinhTinh17",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 2
+      },
+      "localMeshName": "Combined Mesh (root: scene) 2",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09a (1)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "SkyFake",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "TerrainBLH2a_02_01",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 2
+      },
+      "localMeshName": "Combined Mesh (root: scene) 2",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "TerrainBLH2a_01_01",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b (4)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh17 (1)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b (1)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "Take39 (1)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 2,
+        "pathId": 33
+      },
+      "localMeshName": null,
+      "externalFileId": 2
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09a",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "Take39",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 2,
+        "pathId": 33
+      },
+      "localMeshName": null,
+      "externalFileId": 2
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh018a",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 2,
+        "pathId": 35
+      },
+      "localMeshName": null,
+      "externalFileId": 2
+    },
+    {
+      "gameObject": "TerrainBLH2a_01_02",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "V_Nen01_BaLang (1)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 2,
+        "pathId": 36
+      },
+      "localMeshName": null,
+      "externalFileId": 2
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b (3)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh018c (1)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh018c",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    },
+    {
+      "gameObject": "TerrainBLH2a_02_02",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 2,
+        "pathId": 34
+      },
+      "localMeshName": null,
+      "externalFileId": 2
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b (2)",
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "meshPointer": {
+        "fileId": 0,
+        "pathId": 1
+      },
+      "localMeshName": "Combined Mesh (root: scene)",
+      "externalFileId": 0
+    }
+  ],
+  "monoBehaviours": [
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 110,
+      "type": "MonoBehaviour",
+      "fields": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name"
+      ],
+      "gameObject": {
+        "fileId": 0,
+        "pathId": 17
+      },
+      "script": {
+        "fileId": 1,
+        "pathId": -1369785318173279106
+      }
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 111,
+      "type": "MonoBehaviour",
+      "fields": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "gameObject": {
+        "fileId": 0,
+        "pathId": 24
+      },
+      "script": {
+        "fileId": 1,
+        "pathId": 9115605940058272407
+      }
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 112,
+      "type": "MonoBehaviour",
+      "fields": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "gameObject": {
+        "fileId": 0,
+        "pathId": 4
+      },
+      "script": {
+        "fileId": 1,
+        "pathId": 9115605940058272407
+      }
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 113,
+      "type": "MonoBehaviour",
+      "fields": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "gameObject": {
+        "fileId": 0,
+        "pathId": 20
+      },
+      "script": {
+        "fileId": 1,
+        "pathId": 9115605940058272407
+      }
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 114,
+      "type": "MonoBehaviour",
+      "fields": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "gameObject": {
+        "fileId": 0,
+        "pathId": 27
+      },
+      "script": {
+        "fileId": 1,
+        "pathId": 9115605940058272407
+      }
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 115,
+      "type": "MonoBehaviour",
+      "fields": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "gameObject": {
+        "fileId": 0,
+        "pathId": 23
+      },
+      "script": {
+        "fileId": 1,
+        "pathId": 9115605940058272407
+      }
+    },
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f",
+      "pathId": 116,
+      "type": "MonoBehaviour",
+      "fields": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "gameObject": {
+        "fileId": 0,
+        "pathId": 21
+      },
+      "script": {
+        "fileId": 1,
+        "pathId": 9115605940058272407
+      }
+    }
+  ],
+  "assetBundle": [
+    {
+      "serializedFile": "CAB-b7badabe902e564e7fc3b7ba82a1286f.sharedAssets",
+      "type": "AssetBundle",
+      "sceneHashes": [
+        [
+          "Assets/_SyncAsset/Dev-Map/JX1_BaNi/-----Prefab/BLH/PC/PC_BLH_Bake.unity",
+          "CAB-b7badabe902e564e7fc3b7ba82a1286f"
+        ]
+      ],
+      "isScene": true
+    }
+  ],
+  "caveat": "FileID != 0 means external serialized-file reference; no local mesh name is assigned. Local AABB is not world AABB."
+}

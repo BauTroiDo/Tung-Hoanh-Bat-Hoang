@@ -1,0 +1,55 @@
+{
+  "Timestamp": "2026-10-25T16:56:25.2420195+07:00",
+  "Baseline": "609f98f",
+  "Branch": "cg/cn02-lifecycle-fixes",
+  "PlayMode": {
+    "ExitCode": 0,
+    "Skipped": 0,
+    "Failed": 0,
+    "Total": 18,
+    "Passed": 18
+  },
+  "EditMode": {
+    "ExitCode": 0,
+    "Skipped": 0,
+    "Failed": 0,
+    "Total": 14,
+    "Passed": 14
+  },
+  "Build": {
+    "Path": "Builds/CN02-Review-Windows/JXClientNew.exe",
+    "DomainDllSHA256": "D172787EAF4B12658456673142F4F48872606F7F063E8A131CA019C86EB8E8D8",
+    "ExitCode": 0,
+    "WorldDllSHA256": "170DB8E61F8DD9B7B7BA15FA0090C357C59A9E7010E6B4B3C5F71288E5A321BF",
+    "LogResult": "Build Finished, Result: Success.",
+    "SceneDataSHA256": "209F368FF034E7E4152396FD702590D1E6F312FBD8C2D2DDADE54D4486CBC053"
+  },
+  "Runtime": {
+    "OfflineReady": true,
+    "GroundProbes": 5,
+    "Screenshots": 4,
+    "ExitCode": 0,
+    "WalkDistanceToTarget": 0.103
+  },
+  "SourceHashes": [
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\World\\MapSceneLoader.cs",
+      "SHA256": "FEAF127588E4C58886C167C9C2B1B332E3CB659326AD14D09A8D515436A613FD"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Tests\\PlayMode\\Cn02OwnershipRegressionTests.cs",
+      "SHA256": "1CEDF68957A8A0EA9148118156C1449D028BAE5386594063167ECEC58C1AADCA"
+    }
+  ],
+  "Calibration": "UNVERIFIED; CN02-04 blocked",
+  "ReferenceHashes": [
+    {
+      "Path": "E:\\Games\\VLTK3D\\SwordOnline\\Client-3D-2\\update\\Game.exe",
+      "Hash": "1CAE3982C04BE9D6F8F7EA8CE272600400655D40FBF0671818EFF1D7A79750EE"
+    },
+    {
+      "Path": "E:\\Games\\VLTK3D\\SwordOnline\\Client-3D-2\\update\\GameAssembly.dll",
+      "Hash": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069"
+    }
+  ]
+}

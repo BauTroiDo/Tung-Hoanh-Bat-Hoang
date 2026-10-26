@@ -1,0 +1,19 @@
+{
+  "name": "JXClient.World",
+  "rootNamespace": "JXClient.World",
+  "references": [
+    "JXClient.Domain",
+    "JXClient.Movement",
+    "Unity.InputSystem",
+    "Unity.ugui"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

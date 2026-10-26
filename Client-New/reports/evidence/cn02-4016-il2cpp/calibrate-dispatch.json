@@ -1,0 +1,54 @@
+{
+  "binarySHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "method": "MapService.Calibrate",
+  "targetNativeRVA": "0x8DD750",
+  "targetAbsoluteVA": "0x1808DD750",
+  "methodToken": "0x60013B8",
+  "methodPointerSlotRVA": "0x5CD7B88",
+  "absolutePointerOccurrences": [
+    {
+      "fileOffset": "0x5CD5F88",
+      "rva": "0x5CD7B88",
+      "section": ".data"
+    }
+  ],
+  "directRelativeTransfers": [],
+  "defaultCoefficientDeterminant": -21.954560715332036,
+  "referenceSceneNominalBounds": {
+    "xMin": -253.920013,
+    "xMax": 246.079987,
+    "zMin": -247.980011,
+    "zMax": 252.019989,
+    "caveat": "Nominal 2x2 250-unit tile envelope, not verified navigable geometry"
+  },
+  "probeLogSHA256": "EE997AD6763C1EA2DCB7DC2710330A8C2F631558625F7E18000A001965C6DBB0",
+  "unpairedSanityProbes": [
+    {
+      "source": "M1-map53-region id=41319 event (unpaired, unknown coordinate units)",
+      "assumedMpsXY": [
+        51889,
+        102090
+      ],
+      "defaultProjectedUnityXZ": [
+        245.2317213038914,
+        -375.89854547940195
+      ],
+      "insideNominalStaticSceneEnvelope": false,
+      "status": "ASSUMED_MPS_UNPAIRED_NOT_VALIDATION"
+    },
+    {
+      "source": "M1-map53-region id=41320 event (unpaired, unknown coordinate units)",
+      "assumedMpsXY": [
+        51889,
+        102105
+      ],
+      "defaultProjectedUnityXZ": [
+        245.3367213071324,
+        -375.8010454773903
+      ],
+      "insideNominalStaticSceneEnvelope": false,
+      "status": "ASSUMED_MPS_UNPAIRED_NOT_VALIDATION"
+    }
+  ],
+  "limits": "One exact pointer occurrence only in method registration slot; no direct E8/E9 branches found. Cannot exclude virtual/indirect/reflection dispatch. NPC payload x/y assumed to be MPS solely for a numerical diagnostic; units, original-scene pairing and map-specific coefficients are unverified."
+}

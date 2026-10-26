@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Failed(Child)" total="6" passed="2" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.0914753">
+  <test-suite type="TestSuite" id="1012" name="UnityProject" fullname="UnityProject" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.091475" total="6" passed="2" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1020" name="JXClient.Tests.PlayMode.dll" fullname="E:/Games/VLTK3D/SwordOnline/Client-New/UnityProject/Library/ScriptAssemblies/JXClient.Tests.PlayMode.dll" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.084664" total="6" passed="2" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="14592" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1013" name="OfflineMovementTests" fullname="OfflineMovementTests" classname="OfflineMovementTests" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.083270" total="6" passed="2" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1018" name="CameraOrbitAndZoomKeepGroundRaycastValid" fullname="OfflineMovementTests.CameraOrbitAndZoomKeepGroundRaycastValid" methodname="CameraOrbitAndZoomKeepGroundRaycastValid" classname="OfflineMovementTests" runstate="Runnable" seed="817865007" result="Failed" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.023876" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  yaw=0
+  Expected: True
+  But was:  False
+]]></message>
+            <stack-trace><![CDATA[at OfflineMovementTests+<CameraOrbitAndZoomKeepGroundRaycastValid>d__12.MoveNext () [0x000b5] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\PlayMode\OfflineMovementTests.cs:73
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1014" name="GroundClickMovesAtBoundedSpeed" fullname="OfflineMovementTests.GroundClickMovesAtBoundedSpeed" methodname="GroundClickMovesAtBoundedSpeed" classname="OfflineMovementTests" runstate="Runnable" seed="1840337034" result="Failed" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.002035" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+            <stack-trace><![CDATA[at OfflineMovementTests+<GroundClickMovesAtBoundedSpeed>d__8.MoveNext () [0x00029] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\PlayMode\OfflineMovementTests.cs:31
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1019" name="InvalidInputAndGroundEdgeCannotMovePlayer" fullname="OfflineMovementTests.InvalidInputAndGroundEdgeCannotMovePlayer" methodname="InvalidInputAndGroundEdgeCannotMovePlayer" classname="OfflineMovementTests" runstate="Runnable" seed="1670164994" result="Failed" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.001491" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+            <stack-trace><![CDATA[at OfflineMovementTests+<InvalidInputAndGroundEdgeCannotMovePlayer>d__13.MoveNext () [0x00069] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\PlayMode\OfflineMovementTests.cs:82
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1015" name="MissingGroundRejectsInput" fullname="OfflineMovementTests.MissingGroundRejectsInput" methodname="MissingGroundRejectsInput" classname="OfflineMovementTests" runstate="Runnable" seed="346310704" result="Passed" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.005670" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1016" name="UiPanelConsumesClick" fullname="OfflineMovementTests.UiPanelConsumesClick" methodname="UiPanelConsumesClick" classname="OfflineMovementTests" runstate="Runnable" seed="952698503" result="Passed" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.033579" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1017" name="WallStopsPlayerWithoutPenetration" fullname="OfflineMovementTests.WallStopsPlayerWithoutPenetration" methodname="WallStopsPlayerWithoutPenetration" classname="OfflineMovementTests" runstate="Runnable" seed="1613879250" result="Failed" start-time="2026-10-25 08:28:36Z" end-time="2026-10-25 08:28:36Z" duration="0.002004" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+            <stack-trace><![CDATA[at OfflineMovementTests+<WallStopsPlayerWithoutPenetration>d__11.MoveNext () [0x00095] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\PlayMode\OfflineMovementTests.cs:63
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@ee3fe9477490\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Saving results to: C:/Users/QT/AppData/LocalLow/DefaultCompany/UnityProject\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

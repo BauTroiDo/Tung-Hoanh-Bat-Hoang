@@ -1,0 +1,44 @@
+{
+  "Timestamp": "2026-10-25T16:03:30.4960466+07:00",
+  "Branch": "cg/coordinate-math",
+  "Base": "0ac5669",
+  "IsolatedProject": "E:\\Games\\VLTK3D\\SwordOnline\\Client-New\\.tmp\\coordinate-worktree\\UnityProject",
+  "Editor": "C:/Program Files/Unity/Hub/Editor/6000.6.7f1/Editor/Unity.exe",
+  "Commands": [
+    "-batchmode -nographics -projectPath <IsolatedProject> -runTests -testPlatform EditMode -testResults .tmp/coordinate-editmode.xml -logFile .tmp/coordinate-editmode.log",
+    "-batchmode -nographics -projectPath <IsolatedProject> -runTests -testPlatform PlayMode -testResults .tmp/coordinate-playmode.xml -logFile .tmp/coordinate-playmode.log"
+  ],
+  "EditMode": {
+    "Skipped": 0,
+    "ExitCode": 0,
+    "Passed": 14,
+    "Failed": 0,
+    "Total": 14
+  },
+  "PlayMode": {
+    "Skipped": 0,
+    "ExitCode": 0,
+    "Passed": 9,
+    "Failed": 0,
+    "Total": 9
+  },
+  "Standalone": {
+    "RedExit": 1,
+    "RedFailed": 10,
+    "GreenPassed": 11,
+    "GreenExit": 0,
+    "RedPassed": 1,
+    "Total": 11
+  },
+  "RealMap53Calibration": "UNVERIFIED; no verified 3+1 anchors",
+  "SourceHashes": [
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Domain\\Coordinates\\AffineMapTransform.cs",
+      "SHA256": "6A12E9187E154D5B7232E1FC567335CF31CB169D52E79EADD2629A0ECC1F4437"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Tests\\EditMode\\Coordinates\\MapCoordinateTransformTests.cs",
+      "SHA256": "D4FC7ECC3987FA7A92795B2A55BF6984871CEE843ABFEA10B5CC912585424EB0"
+    }
+  ]
+}

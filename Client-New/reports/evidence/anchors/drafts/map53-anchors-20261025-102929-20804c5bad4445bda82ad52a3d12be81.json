@@ -1,0 +1,69 @@
+{
+    "schemaVersion": 1,
+    "mapId": 53,
+    "scenePath": "Assets/_JXClient/Scenes/BaLangHuyen.unity",
+    "sceneSha256": "1DF531129F8C502B54093DB5AD6C9939A97C187F22ACF4D939DDE34A04FE5A7A",
+    "sceneProvenance": "cn02-synthetic-v1",
+    "referenceBuild": "",
+    "createdUtc": "2026-10-25T10:29:29.7318172Z",
+    "legacyMinX": 0.0,
+    "legacyMinY": 0.0,
+    "legacyMaxX": 0.0,
+    "legacyMaxY": 0.0,
+    "sceneMinX": -28.0,
+    "sceneMinZ": -28.0,
+    "sceneMaxX": 28.0,
+    "sceneMaxZ": 28.0,
+    "tolerance": 0.0,
+    "anchors": [
+        {
+            "label": "AnchorCandidate_CenterPlaza",
+            "sceneX": 0.0,
+            "sceneZ": 0.0,
+            "legacyX": 0.0,
+            "legacyY": 0.0,
+            "hasLegacy": false,
+            "evidenceKind": 0,
+            "evidencePath": "",
+            "evidenceSha256": ""
+        },
+        {
+            "label": "AnchorCandidate_NorthGate",
+            "sceneX": 0.0,
+            "sceneZ": 18.0,
+            "legacyX": 0.0,
+            "legacyY": 0.0,
+            "hasLegacy": false,
+            "evidenceKind": 0,
+            "evidencePath": "",
+            "evidenceSha256": ""
+        },
+        {
+            "label": "AnchorCandidate_EastRoad",
+            "sceneX": 18.0,
+            "sceneZ": 0.0,
+            "legacyX": 0.0,
+            "legacyY": 0.0,
+            "hasLegacy": false,
+            "evidenceKind": 0,
+            "evidencePath": "",
+            "evidenceSha256": ""
+        },
+        {
+            "label": "AnchorCandidate_SouthWestCorner",
+            "sceneX": -14.0,
+            "sceneZ": -14.0,
+            "legacyX": 0.0,
+            "legacyY": 0.0,
+            "hasLegacy": false,
+            "evidenceKind": 0,
+            "evidencePath": "",
+            "evidenceSha256": ""
+        }
+    ],
+    "status": "DRAFT_UNPAIRED",
+    "message": "Scene points captured; legacy observations/evidence have not been entered.",
+    "hasResidual": false,
+    "independentReviewRequired": true,
+    "holdoutError": 0.0
+}

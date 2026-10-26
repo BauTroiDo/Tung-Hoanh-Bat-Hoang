@@ -1,0 +1,119 @@
+{
+  "stage": "CN02-BULK-03",
+  "manifestSchema": "CN02-BULK-03-v1",
+  "originalBinarySha256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "sqliteSha256": "047DEB454A345BCE1B5B955F69D615FE41E370F3A93ECFC82B66518C2D2E578E",
+  "nativeImageBase": "0x180000000",
+  "pdataEntries": 330024,
+  "manifestSha256": "F2896CAA00430FD22C3E8F06E550C32D6DA30EFB23D35FA74860788C52339E84",
+  "groups": {
+    "Movement": {
+      "selectedTypes": [
+        "JXMovement",
+        "PlayerMovement"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 9.72,
+      "maxBodyBytes": 8192,
+      "methodBodyMarkers": 74,
+      "pseudoMarkers": 74,
+      "typeMarkers": 4,
+      "suspectMethods": 2,
+      "unknownMarkers": 1,
+      "dumpBytes": 958303,
+      "usedOnlyTypeFilters": true,
+      "hashFence": true
+    },
+    "NPC": {
+      "selectedTypes": [
+        "NPCInfoService",
+        "NPCSelectionService"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 10.55,
+      "maxBodyBytes": 8192,
+      "methodBodyMarkers": 100,
+      "pseudoMarkers": 100,
+      "typeMarkers": 2,
+      "suspectMethods": 2,
+      "unknownMarkers": 0,
+      "dumpBytes": 1733817,
+      "usedOnlyTypeFilters": true,
+      "hashFence": true
+    },
+    "Combat": {
+      "selectedTypes": [
+        "CombatPerformanceGuard",
+        "UIAM_Combat"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 10.59,
+      "maxBodyBytes": 8192,
+      "methodBodyMarkers": 27,
+      "pseudoMarkers": 27,
+      "typeMarkers": 5,
+      "suspectMethods": 2,
+      "unknownMarkers": 0,
+      "dumpBytes": 159086,
+      "usedOnlyTypeFilters": true,
+      "hashFence": true
+    },
+    "Navigation": {
+      "selectedTypes": [
+        "AutoFindPathManager",
+        "AutoFindPath"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 10.15,
+      "maxBodyBytes": 8192,
+      "methodBodyMarkers": 61,
+      "pseudoMarkers": 61,
+      "typeMarkers": 6,
+      "suspectMethods": 1,
+      "unknownMarkers": 50,
+      "dumpBytes": 982461,
+      "usedOnlyTypeFilters": true,
+      "hashFence": true
+    }
+  },
+  "allBatchesExitZero": true,
+  "totalBodiesWithPseudo": 262,
+  "totalDumpBytes": 3833667,
+  "ghidraSamples": {
+    "0x821410": {
+      "nativeSpan": 286,
+      "decodedBytes": 286,
+      "functionBodyBytes": 286,
+      "disasmAccepted": true,
+      "decompiled": true,
+      "chars": 9084
+    },
+    "0xdfb950": {
+      "nativeSpan": 695,
+      "decodedBytes": 695,
+      "functionBodyBytes": 695,
+      "disasmAccepted": true,
+      "decompiled": true,
+      "chars": 3112
+    },
+    "0x7d28f0": {
+      "nativeSpan": 520,
+      "decodedBytes": 520,
+      "functionBodyBytes": 520,
+      "disasmAccepted": true,
+      "decompiled": true,
+      "chars": 3950
+    },
+    "0xe841d0": {
+      "nativeSpan": 344,
+      "decodedBytes": 344,
+      "functionBodyBytes": 344,
+      "disasmAccepted": true,
+      "decompiled": true,
+      "chars": 1929
+    }
+  },
+  "ghidraExitOk": true,
+  "ghidraReadOnly": true,
+  "note": "Method body markers are C-like decompiler output, NOT validated working C# source or correct semantics. PData unwind spans are independently decoded but are not guaranteed full logical methods. CN02-04 remains BLOCKED."
+}

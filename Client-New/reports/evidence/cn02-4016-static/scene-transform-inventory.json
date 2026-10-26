@@ -1,0 +1,1213 @@
+{
+  "sourceBundleName": "pc_balanghuyen_scenes_all_4e0a8e141624756b20ca4ccfa32087fb.bundle",
+  "sourceSha256": "EEB567D492CE740AAD8A796F531D993917F511FDA60ECF4DDE25DA6C2B4DEC4A",
+  "sourceByteLength": 9738990,
+  "unityPyVersion": "1.25.4",
+  "analysisUtc": "2026-10-25T11:17:11.316392+00:00",
+  "scope": "static metadata only, no asset export",
+  "counts": {
+    "PreloadData": 1,
+    "AssetBundle": 1,
+    "Material": 11,
+    "Texture2D": 15,
+    "LightingSettings": 1,
+    "Cubemap": 1,
+    "Shader": 2,
+    "Mesh": 6,
+    "GameObject": 29,
+    "Transform": 29,
+    "MeshRenderer": 20,
+    "MeshFilter": 20,
+    "RenderSettings": 1,
+    "Light": 6,
+    "LightmapSettings": 1,
+    "NavMeshSettings": 1,
+    "MonoBehaviour": 7
+  },
+  "sceneObjects": [
+    {
+      "gameObject": "Nen",
+      "active": true,
+      "goPathId": 3,
+      "transformPathId": 32,
+      "parentTransformId": 0,
+      "localPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "localRotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 1
+    },
+    {
+      "gameObject": "Directional Light (4)",
+      "active": true,
+      "goPathId": 23,
+      "transformPathId": 33,
+      "parentTransformId": 42,
+      "localPosition": [
+        -24.940001,
+        15.07,
+        10.020004
+      ],
+      "localRotation": [
+        0.70024145,
+        0.07718457,
+        -0.70593697,
+        0.07319479
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        14.958979,
+        3.891689,
+        2.220964
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b (4)",
+      "active": true,
+      "goPathId": 10,
+      "transformPathId": 34,
+      "parentTransformId": 32,
+      "localPosition": [
+        -81.480003,
+        -0.020004,
+        77.114998
+      ],
+      "localRotation": [
+        -0.0,
+        -0.48004961,
+        -0.0,
+        0.87724131
+      ],
+      "localScale": [
+        1.1347,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -81.480003,
+        -0.020004,
+        77.114998
+      ],
+      "worldScale": [
+        1.1347,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "Directional Light (5)",
+      "active": false,
+      "goPathId": 20,
+      "transformPathId": 35,
+      "parentTransformId": 42,
+      "localPosition": [
+        -24.940001,
+        15.07,
+        10.020004
+      ],
+      "localRotation": [
+        0.55970275,
+        -0.0,
+        -0.0,
+        0.82869351
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        14.958979,
+        3.891689,
+        2.220964
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "SkyFake",
+      "active": true,
+      "goPathId": 7,
+      "transformPathId": 36,
+      "parentTransformId": 0,
+      "localPosition": [
+        9.4,
+        -29.200001,
+        11.6
+      ],
+      "localRotation": [
+        2e-08,
+        0.0,
+        -0.0,
+        1.0
+      ],
+      "localScale": [
+        0.19502,
+        0.19502,
+        0.19502
+      ],
+      "worldPosition": [
+        9.4,
+        -29.200001,
+        11.6
+      ],
+      "worldScale": [
+        0.19502,
+        0.19502,
+        0.19502
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "Sun",
+      "active": true,
+      "goPathId": 27,
+      "transformPathId": 37,
+      "parentTransformId": 42,
+      "localPosition": [
+        -10.128979,
+        3.29831,
+        1.33904
+      ],
+      "localRotation": [
+        0.59294331,
+        -0.23231536,
+        0.08335704,
+        0.76648515
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        29.77,
+        -7.88,
+        -6.46
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh17",
+      "active": true,
+      "goPathId": 5,
+      "transformPathId": 38,
+      "parentTransformId": 32,
+      "localPosition": [
+        141.334503,
+        -0.97,
+        -3.7449
+      ],
+      "localRotation": [
+        -0.0,
+        -0.99863619,
+        -0.0,
+        -0.05220961
+      ],
+      "localScale": [
+        52.417542,
+        41.027672,
+        44.158108
+      ],
+      "worldPosition": [
+        141.334503,
+        -0.97,
+        -3.7449
+      ],
+      "worldScale": [
+        52.417542,
+        41.027672,
+        44.158108
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09a (1)",
+      "active": true,
+      "goPathId": 6,
+      "transformPathId": 39,
+      "parentTransformId": 32,
+      "localPosition": [
+        -87.379997,
+        -4.65,
+        77.25
+      ],
+      "localRotation": [
+        -0.0,
+        -0.46402639,
+        -0.0,
+        0.88582134
+      ],
+      "localScale": [
+        1.058688,
+        1.058688,
+        1.362108
+      ],
+      "worldPosition": [
+        -87.379997,
+        -4.65,
+        77.25
+      ],
+      "worldScale": [
+        1.058688,
+        1.058688,
+        1.362108
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "Take39 (1)",
+      "active": true,
+      "goPathId": 13,
+      "transformPathId": 40,
+      "parentTransformId": 32,
+      "localPosition": [
+        78.591499,
+        0.071,
+        59.2337
+      ],
+      "localRotation": [
+        -0.0,
+        -0.88406241,
+        -0.0,
+        0.46736893
+      ],
+      "localScale": [
+        0.868754,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        78.591499,
+        0.071,
+        59.2337
+      ],
+      "worldScale": [
+        0.868754,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09a",
+      "active": true,
+      "goPathId": 14,
+      "transformPathId": 41,
+      "parentTransformId": 32,
+      "localPosition": [
+        -43.490002,
+        -4.370003,
+        -124.559998
+      ],
+      "localRotation": [
+        -0.0,
+        -0.99892718,
+        -0.0,
+        0.04631012
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -43.490002,
+        -4.370003,
+        -124.559998
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "LightMapPC",
+      "active": true,
+      "goPathId": 31,
+      "transformPathId": 42,
+      "parentTransformId": 0,
+      "localPosition": [
+        39.898979,
+        -11.17831,
+        -7.79904
+      ],
+      "localRotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        39.898979,
+        -11.17831,
+        -7.79904
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 1
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh17 (1)",
+      "active": true,
+      "goPathId": 11,
+      "transformPathId": 43,
+      "parentTransformId": 32,
+      "localPosition": [
+        36.877899,
+        -0.970001,
+        99.346802
+      ],
+      "localRotation": [
+        -0.0,
+        -0.6109547,
+        -0.0,
+        -0.79166561
+      ],
+      "localScale": [
+        52.417534,
+        41.027672,
+        38.777557
+      ],
+      "worldPosition": [
+        36.877899,
+        -0.970001,
+        99.346802
+      ],
+      "worldScale": [
+        52.417534,
+        41.027672,
+        38.777557
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b (1)",
+      "active": true,
+      "goPathId": 12,
+      "transformPathId": 44,
+      "parentTransformId": 32,
+      "localPosition": [
+        -83.875999,
+        -0.017998,
+        70.940002
+      ],
+      "localRotation": [
+        -0.0,
+        -0.48004961,
+        -0.0,
+        0.87724131
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -83.875999,
+        -0.017998,
+        70.940002
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh018a",
+      "active": true,
+      "goPathId": 16,
+      "transformPathId": 45,
+      "parentTransformId": 32,
+      "localPosition": [
+        -42.728001,
+        -0.779999,
+        -117.411003
+      ],
+      "localRotation": [
+        -0.0,
+        -0.99877006,
+        -0.0,
+        0.0495834
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -42.728001,
+        -0.779999,
+        -117.411003
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "Directional Light (2)",
+      "active": true,
+      "goPathId": 21,
+      "transformPathId": 46,
+      "parentTransformId": 42,
+      "localPosition": [
+        -24.940001,
+        15.07,
+        10.020004
+      ],
+      "localRotation": [
+        0.02962577,
+        -0.0,
+        -0.0,
+        0.99956113
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        14.958979,
+        3.891689,
+        2.220964
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "Directional Light (3)",
+      "active": true,
+      "goPathId": 4,
+      "transformPathId": 47,
+      "parentTransformId": 42,
+      "localPosition": [
+        -24.940001,
+        15.07,
+        10.020004
+      ],
+      "localRotation": [
+        0.67107069,
+        -0.12830617,
+        0.72396851,
+        0.09524379
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        14.958979,
+        3.891689,
+        2.220964
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "Take39",
+      "active": true,
+      "goPathId": 15,
+      "transformPathId": 48,
+      "parentTransformId": 32,
+      "localPosition": [
+        113.395798,
+        0.071,
+        9.112
+      ],
+      "localRotation": [
+        -0.0,
+        -0.71636516,
+        -0.0,
+        0.69772559
+      ],
+      "localScale": [
+        0.920429,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        113.395798,
+        0.071,
+        9.112
+      ],
+      "worldScale": [
+        0.920429,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "TerrainBLH2a_01_02",
+      "active": true,
+      "goPathId": 18,
+      "transformPathId": 49,
+      "parentTransformId": 57,
+      "localPosition": [
+        250.0,
+        0.0,
+        500.0
+      ],
+      "localRotation": [
+        -0.0,
+        -0.0,
+        -0.0,
+        1.0
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -253.920013,
+        -20.0,
+        2.019989
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "Directional Light (1)",
+      "active": true,
+      "goPathId": 24,
+      "transformPathId": 50,
+      "parentTransformId": 42,
+      "localPosition": [
+        -24.940001,
+        15.07,
+        10.02
+      ],
+      "localRotation": [
+        0.9988783,
+        -0.0,
+        -0.0,
+        0.04735263
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        14.958979,
+        3.891689,
+        2.220961
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Nen01_BaLang (1)",
+      "active": true,
+      "goPathId": 19,
+      "transformPathId": 51,
+      "parentTransformId": 32,
+      "localPosition": [
+        -3.39,
+        0.001542,
+        13.09
+      ],
+      "localRotation": [
+        -0.0,
+        0.70710683,
+        -0.0,
+        0.70710683
+      ],
+      "localScale": [
+        0.829575,
+        0.718027,
+        0.829575
+      ],
+      "worldPosition": [
+        -3.39,
+        0.001542,
+        13.09
+      ],
+      "worldScale": [
+        0.829575,
+        0.718027,
+        0.829575
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "TerrainBLH2a_02_01",
+      "active": true,
+      "goPathId": 8,
+      "transformPathId": 52,
+      "parentTransformId": 57,
+      "localPosition": [
+        500.0,
+        0.0,
+        250.0
+      ],
+      "localRotation": [
+        -0.0,
+        -0.0,
+        -0.0,
+        1.0
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -3.920013,
+        -20.0,
+        -247.980011
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "TerrainBLH2a_02_02",
+      "active": true,
+      "goPathId": 29,
+      "transformPathId": 53,
+      "parentTransformId": 57,
+      "localPosition": [
+        500.0,
+        0.0,
+        500.0
+      ],
+      "localRotation": [
+        -0.0,
+        -0.0,
+        -0.0,
+        1.0
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -3.920013,
+        -20.0,
+        2.019989
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b",
+      "active": true,
+      "goPathId": 22,
+      "transformPathId": 54,
+      "parentTransformId": 32,
+      "localPosition": [
+        -85.831001,
+        -0.017998,
+        68.610001
+      ],
+      "localRotation": [
+        -0.0,
+        0.31271282,
+        -0.0,
+        0.94984776
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -85.831001,
+        -0.017998,
+        68.610001
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "TerrainBLH2a_01_01",
+      "active": true,
+      "goPathId": 9,
+      "transformPathId": 55,
+      "parentTransformId": 57,
+      "localPosition": [
+        250.0,
+        0.0,
+        250.0
+      ],
+      "localRotation": [
+        -0.0,
+        -0.0,
+        -0.0,
+        1.0
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -253.920013,
+        -20.0,
+        -247.980011
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh018c",
+      "active": true,
+      "goPathId": 28,
+      "transformPathId": 56,
+      "parentTransformId": 32,
+      "localPosition": [
+        132.288696,
+        -0.988998,
+        18.623299
+      ],
+      "localRotation": [
+        -0.0,
+        -0.6272797,
+        -0.0,
+        0.77879405
+      ],
+      "localScale": [
+        0.579392,
+        1.3005,
+        1.345237
+      ],
+      "worldPosition": [
+        132.288696,
+        -0.988998,
+        18.623299
+      ],
+      "worldScale": [
+        0.579392,
+        1.3005,
+        1.345237
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "NenMap",
+      "active": true,
+      "goPathId": 17,
+      "transformPathId": 57,
+      "parentTransformId": 0,
+      "localPosition": [
+        -503.920013,
+        -20.0,
+        -497.980011
+      ],
+      "localRotation": [
+        -0.0,
+        -0.0,
+        -0.0,
+        1.0
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -503.920013,
+        -20.0,
+        -497.980011
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 2
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b (3)",
+      "active": true,
+      "goPathId": 25,
+      "transformPathId": 58,
+      "parentTransformId": 32,
+      "localPosition": [
+        -81.917999,
+        -0.017998,
+        74.428001
+      ],
+      "localRotation": [
+        -0.0,
+        -0.89157325,
+        -0.0,
+        -0.45287654
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -81.917999,
+        -0.017998,
+        74.428001
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh018c (1)",
+      "active": true,
+      "goPathId": 26,
+      "transformPathId": 59,
+      "parentTransformId": 32,
+      "localPosition": [
+        132.779999,
+        -0.988998,
+        20.601601
+      ],
+      "localRotation": [
+        -0.0,
+        -0.77741116,
+        -0.0,
+        -0.6289928
+      ],
+      "localScale": [
+        0.606105,
+        1.3005,
+        1.3005
+      ],
+      "worldPosition": [
+        132.779999,
+        -0.988998,
+        20.601601
+      ],
+      "worldScale": [
+        0.606105,
+        1.3005,
+        1.3005
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    },
+    {
+      "gameObject": "V_Decor01_LinhTinh09b (2)",
+      "active": true,
+      "goPathId": 30,
+      "transformPathId": 60,
+      "parentTransformId": 32,
+      "localPosition": [
+        -83.157997,
+        -0.020004,
+        72.816002
+      ],
+      "localRotation": [
+        -0.0,
+        -0.48004961,
+        -0.0,
+        0.87724131
+      ],
+      "localScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worldPosition": [
+        -83.157997,
+        -0.020004,
+        72.816002
+      ],
+      "worldScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unresolvedParent": null,
+      "componentCount": 3
+    }
+  ],
+  "nonGeometryMetadata": [
+    {
+      "type": "AssetBundle",
+      "name": "588c0d627c8d74c535535391a16ae3dd.bundle",
+      "sceneHashes": [
+        [
+          "Assets/_SyncAsset/Dev-Map/JX1_BaNi/-----Prefab/BLH/PC/PC_BLH_Bake.unity",
+          "CAB-b7badabe902e564e7fc3b7ba82a1286f"
+        ]
+      ],
+      "containerCount": 1
+    },
+    {
+      "type": "MonoBehaviour",
+      "pathId": 110,
+      "fieldNames": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name"
+      ],
+      "scriptPathId": -1369785318173279106
+    },
+    {
+      "type": "MonoBehaviour",
+      "pathId": 111,
+      "fieldNames": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "scriptPathId": 9115605940058272407
+    },
+    {
+      "type": "MonoBehaviour",
+      "pathId": 112,
+      "fieldNames": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "scriptPathId": 9115605940058272407
+    },
+    {
+      "type": "MonoBehaviour",
+      "pathId": 113,
+      "fieldNames": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "scriptPathId": 9115605940058272407
+    },
+    {
+      "type": "MonoBehaviour",
+      "pathId": 114,
+      "fieldNames": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "scriptPathId": 9115605940058272407
+    },
+    {
+      "type": "MonoBehaviour",
+      "pathId": 115,
+      "fieldNames": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "scriptPathId": 9115605940058272407
+    },
+    {
+      "type": "MonoBehaviour",
+      "pathId": 116,
+      "fieldNames": [
+        "m_GameObject",
+        "m_Enabled",
+        "m_Script",
+        "m_Name",
+        "m_UsePipelineSettings",
+        "m_AdditionalLightsShadowResolutionTier",
+        "m_CustomShadowLayers",
+        "m_LightCookieSize",
+        "m_LightCookieOffset",
+        "m_SoftShadowQuality",
+        "m_RenderingLayersMask",
+        "m_ShadowRenderingLayersMask",
+        "m_Version",
+        "m_LightLayerMask",
+        "m_ShadowLayerMask",
+        "m_RenderingLayers",
+        "m_ShadowRenderingLayers"
+      ],
+      "scriptPathId": 9115605940058272407
+    }
+  ],
+  "interpretation": "These are transform values from the 4016 scene bundle, not 3+1 paired legacy coordinates; prefab and runtime additive geometry may be loaded separately."
+}

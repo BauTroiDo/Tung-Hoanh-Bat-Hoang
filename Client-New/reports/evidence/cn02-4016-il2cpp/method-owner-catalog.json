@@ -1,0 +1,2192 @@
+{
+  "metadataVersion": 39,
+  "sourceSha256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "typeCount": 21485,
+  "methodCount": 161267,
+  "imageCount": 122,
+  "images": [
+    {
+      "index": 0,
+      "name": "Assembly-CSharp.dll",
+      "typeStart": 0,
+      "typeCount": 2669,
+      "firstWords": [
+        20,
+        0,
+        174915584,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 1,
+      "name": "mscorlib.dll",
+      "typeStart": 2669,
+      "typeCount": 1761,
+      "firstWords": [
+        463814,
+        1,
+        115411565,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 2,
+      "name": "UnityEngine.UIElementsModule.dll",
+      "typeStart": 4430,
+      "typeCount": 1660,
+      "firstWords": [
+        678705,
+        2,
+        108794190,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 3,
+      "name": "UnityEngine.CoreModule.dll",
+      "typeStart": 6090,
+      "typeCount": 1117,
+      "firstWords": [
+        913449,
+        3,
+        73209802,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 4,
+      "name": "Unity.RenderPipelines.Core.Runtime.dll",
+      "typeStart": 7207,
+      "typeCount": 770,
+      "firstWords": [
+        1112372,
+        4,
+        50469927,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 5,
+      "name": "Unity.InputSystem.dll",
+      "typeStart": 7977,
+      "typeCount": 653,
+      "firstWords": [
+        1226677,
+        5,
+        42802985,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 6,
+      "name": "System.Xml.dll",
+      "typeStart": 8630,
+      "typeCount": 670,
+      "firstWords": [
+        1355414,
+        6,
+        43917750,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 7,
+      "name": "System.dll",
+      "typeStart": 9300,
+      "typeCount": 871,
+      "firstWords": [
+        1458860,
+        7,
+        57091156,
+        0,
+        6,
+        4294967295
+      ]
+    },
+    {
+      "index": 8,
+      "name": "Unity.RenderPipelines.Universal.Runtime.dll",
+      "typeStart": 10171,
+      "typeCount": 579,
+      "firstWords": [
+        1562715,
+        8,
+        37955515,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 9,
+      "name": "Obi.dll",
+      "typeStart": 10750,
+      "typeCount": 663,
+      "firstWords": [
+        1669554,
+        9,
+        43461118,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 10,
+      "name": "Unity.Mathematics.dll",
+      "typeStart": 11413,
+      "typeCount": 104,
+      "firstWords": [
+        1728266,
+        10,
+        6827157,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 11,
+      "name": "Newtonsoft.Json.dll",
+      "typeStart": 11517,
+      "typeCount": 496,
+      "firstWords": [
+        1737211,
+        11,
+        32517373,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 12,
+      "name": "System.Data.dll",
+      "typeStart": 12013,
+      "typeCount": 240,
+      "firstWords": [
+        1798546,
+        12,
+        15740653,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 13,
+      "name": "Network.dll",
+      "typeStart": 12253,
+      "typeCount": 836,
+      "firstWords": [
+        1838505,
+        13,
+        54800349,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 14,
+      "name": "Unity.VisualScripting.Core.dll",
+      "typeStart": 13089,
+      "typeCount": 558,
+      "firstWords": [
+        1946711,
+        14,
+        36582177,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 15,
+      "name": "UniTask.dll",
+      "typeStart": 13647,
+      "typeCount": 620,
+      "firstWords": [
+        1998035,
+        15,
+        40645967,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 16,
+      "name": "Unity.Cinemachine.dll",
+      "typeStart": 14267,
+      "typeCount": 410,
+      "firstWords": [
+        2036755,
+        16,
+        26884027,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 17,
+      "name": "MagicaClothV2.dll",
+      "typeStart": 14677,
+      "typeCount": 359,
+      "firstWords": [
+        2081376,
+        17,
+        23542101,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 18,
+      "name": "Unity.Collections.dll",
+      "typeStart": 15036,
+      "typeCount": 342,
+      "firstWords": [
+        2125086,
+        18,
+        22428348,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 19,
+      "name": "Unity.TextMeshPro.dll",
+      "typeStart": 15378,
+      "typeCount": 197,
+      "firstWords": [
+        2147611,
+        19,
+        12925970,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 20,
+      "name": "System.Core.dll",
+      "typeStart": 15575,
+      "typeCount": 662,
+      "firstWords": [
+        2197798,
+        20,
+        43400407,
+        393216,
+        19,
+        4294967295
+      ]
+    },
+    {
+      "index": 21,
+      "name": "Sirenix.Serialization.dll",
+      "typeStart": 16237,
+      "typeCount": 305,
+      "firstWords": [
+        2240440,
+        21,
+        20004717,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 22,
+      "name": "Unity.Burst.dll",
+      "typeStart": 16542,
+      "typeCount": 100,
+      "firstWords": [
+        2265540,
+        22,
+        6570142,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 23,
+      "name": "UnityEngine.TextCoreTextEngineModule.dll",
+      "typeStart": 16642,
+      "typeCount": 117,
+      "firstWords": [
+        2324547,
+        23,
+        7684354,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 24,
+      "name": "UnityEngine.UI.dll",
+      "typeStart": 16759,
+      "typeCount": 209,
+      "firstWords": [
+        2339336,
+        24,
+        13713783,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 25,
+      "name": "RAM.dll",
+      "typeStart": 16968,
+      "typeCount": 111,
+      "firstWords": [
+        2367406,
+        25,
+        7291464,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 26,
+      "name": "Unity.RenderPipelines.GPUDriven.Runtime.dll",
+      "typeStart": 17079,
+      "typeCount": 244,
+      "firstWords": [
+        2398066,
+        26,
+        16007863,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 27,
+      "name": "Unity.RenderPipelines.Universal.2D.Runtime.dll",
+      "typeStart": 17323,
+      "typeCount": 185,
+      "firstWords": [
+        2431387,
+        27,
+        12141483,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 28,
+      "name": "TriangleDotNet.dll",
+      "typeStart": 17508,
+      "typeCount": 119,
+      "firstWords": [
+        2456515,
+        28,
+        7816292,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 29,
+      "name": "spine-csharp.dll",
+      "typeStart": 17627,
+      "typeCount": 139,
+      "firstWords": [
+        2469077,
+        29,
+        9127131,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 30,
+      "name": "ImbaFrameworks.dll",
+      "typeStart": 17766,
+      "typeCount": 187,
+      "firstWords": [
+        2483774,
+        30,
+        12272998,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 31,
+      "name": "spine-unity.dll",
+      "typeStart": 17953,
+      "typeCount": 130,
+      "firstWords": [
+        2502600,
+        31,
+        8537633,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 32,
+      "name": "DOTween.dll",
+      "typeStart": 18083,
+      "typeCount": 202,
+      "firstWords": [
+        2522623,
+        32,
+        13256355,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 33,
+      "name": "Sirenix.Utilities.dll",
+      "typeStart": 18285,
+      "typeCount": 138,
+      "firstWords": [
+        2538899,
+        33,
+        9062253,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 34,
+      "name": "Unity.Splines.dll",
+      "typeStart": 18423,
+      "typeCount": 117,
+      "firstWords": [
+        2544967,
+        34,
+        7686135,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 35,
+      "name": "UnityEngine.IMGUIModule.dll",
+      "typeStart": 18540,
+      "typeCount": 55,
+      "firstWords": [
+        2558333,
+        35,
+        3623020,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 36,
+      "name": "Unity.ResourceManager.dll",
+      "typeStart": 18595,
+      "typeCount": 142,
+      "firstWords": [
+        2574452,
+        36,
+        9324707,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 37,
+      "name": "Unity.Timeline.dll",
+      "typeStart": 18737,
+      "typeCount": 133,
+      "firstWords": [
+        2592801,
+        37,
+        8735025,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 38,
+      "name": "Mono.Security.dll",
+      "typeStart": 18870,
+      "typeCount": 104,
+      "firstWords": [
+        2610816,
+        38,
+        6834614,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 39,
+      "name": "AmazingAssets.TerrainToMesh.dll",
+      "typeStart": 18974,
+      "typeCount": 71,
+      "firstWords": [
+        2628400,
+        39,
+        4672030,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 40,
+      "name": "Unity.Addressables.dll",
+      "typeStart": 19045,
+      "typeCount": 105,
+      "firstWords": [
+        2633580,
+        40,
+        6900325,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 41,
+      "name": "UnityEngine.PropertiesModule.dll",
+      "typeStart": 19150,
+      "typeCount": 165,
+      "firstWords": [
+        2646043,
+        41,
+        10832590,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 42,
+      "name": "Sirenix.OdinInspector.Attributes.dll",
+      "typeStart": 19315,
+      "typeCount": 179,
+      "firstWords": [
+        2661660,
+        42,
+        11750259,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 43,
+      "name": "UnityEngine.dll",
+      "typeStart": 19494,
+      "typeCount": 1,
+      "firstWords": [
+        2694896,
+        43,
+        85030,
+        1638400,
+        3245,
+        4294967295
+      ]
+    },
+    {
+      "index": 44,
+      "name": "UnityEngine.AdaptivePerformanceModule.dll",
+      "typeStart": 19495,
+      "typeCount": 92,
+      "firstWords": [
+        2694953,
+        44,
+        6048807,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 45,
+      "name": "Unity.UnifiedRayTracing.Runtime.dll",
+      "typeStart": 19587,
+      "typeCount": 98,
+      "firstWords": [
+        2712746,
+        45,
+        6442115,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 46,
+      "name": "UnityEngine.AnimationModule.dll",
+      "typeStart": 19685,
+      "typeCount": 65,
+      "firstWords": [
+        2725750,
+        46,
+        4279525,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 47,
+      "name": "TPL.CustomAddressables.Runtime.dll",
+      "typeStart": 19750,
+      "typeCount": 73,
+      "firstWords": [
+        2742387,
+        47,
+        4803878,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 48,
+      "name": "UniWebView-CSharp.dll",
+      "typeStart": 19823,
+      "typeCount": 106,
+      "firstWords": [
+        2750340,
+        48,
+        6966639,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 49,
+      "name": "Firebase.App.dll",
+      "typeStart": 19929,
+      "typeCount": 61,
+      "firstWords": [
+        2763313,
+        49,
+        4017625,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 50,
+      "name": "UnityEngine.Physics2DModule.dll",
+      "typeStart": 19990,
+      "typeCount": 116,
+      "firstWords": [
+        2774749,
+        50,
+        7622166,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 51,
+      "name": "UnityEngine.TerrainModule.dll",
+      "typeStart": 20106,
+      "typeCount": 41,
+      "firstWords": [
+        2790024,
+        51,
+        2707082,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 52,
+      "name": "System.Net.Http.dll",
+      "typeStart": 20147,
+      "typeCount": 86,
+      "firstWords": [
+        2806427,
+        52,
+        5656243,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 53,
+      "name": "TPL.GameSDK.Windows.dll",
+      "typeStart": 20233,
+      "typeCount": 69,
+      "firstWords": [
+        2813199,
+        53,
+        4542217,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 54,
+      "name": "UnityEngine.AndroidJNIModule.dll",
+      "typeStart": 20302,
+      "typeCount": 34,
+      "firstWords": [
+        2820552,
+        54,
+        2248526,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 55,
+      "name": "UnityEngine.ParticleSystemModule.dll",
+      "typeStart": 20336,
+      "typeCount": 68,
+      "firstWords": [
+        2827297,
+        55,
+        4476784,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 56,
+      "name": "DamageNumbersPro.dll",
+      "typeStart": 20404,
+      "typeCount": 42,
+      "firstWords": [
+        2839741,
+        56,
+        2772916,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 57,
+      "name": "PakSystem.dll",
+      "typeStart": 20446,
+      "typeCount": 31,
+      "firstWords": [
+        2845270,
+        57,
+        2052062,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 58,
+      "name": "System.Drawing.dll",
+      "typeStart": 20477,
+      "typeCount": 11,
+      "firstWords": [
+        2848529,
+        58,
+        741373,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 59,
+      "name": "DOTween.Modules.dll",
+      "typeStart": 20488,
+      "typeCount": 97,
+      "firstWords": [
+        2850435,
+        59,
+        6377480,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 60,
+      "name": "UnityEngine.PhysicsModule.dll",
+      "typeStart": 20585,
+      "typeCount": 27,
+      "firstWords": [
+        2852934,
+        60,
+        1790057,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 61,
+      "name": "UnityEngine.UnityWebRequestModule.dll",
+      "typeStart": 20612,
+      "typeCount": 21,
+      "firstWords": [
+        2857303,
+        61,
+        1396868,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 62,
+      "name": "UnityEngine.AudioModule.dll",
+      "typeStart": 20633,
+      "typeCount": 45,
+      "firstWords": [
+        2861471,
+        62,
+        2969753,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 63,
+      "name": "UnityEngine.InputForUIModule.dll",
+      "typeStart": 20678,
+      "typeCount": 48,
+      "firstWords": [
+        2866020,
+        63,
+        3166406,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 64,
+      "name": "System.Numerics.dll",
+      "typeStart": 20726,
+      "typeCount": 13,
+      "firstWords": [
+        2870216,
+        64,
+        872694,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 65,
+      "name": "UnityEngine.HierarchyCoreModule.dll",
+      "typeStart": 20739,
+      "typeCount": 47,
+      "firstWords": [
+        2871224,
+        65,
+        3100931,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 66,
+      "name": "UnityEngine.UIModule.dll",
+      "typeStart": 20786,
+      "typeCount": 12,
+      "firstWords": [
+        2875266,
+        66,
+        807218,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 67,
+      "name": "System.Xml.Linq.dll",
+      "typeStart": 20798,
+      "typeCount": 38,
+      "firstWords": [
+        2880612,
+        67,
+        2511166,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 68,
+      "name": "Firebase.Crashlytics.dll",
+      "typeStart": 20836,
+      "typeCount": 29,
+      "firstWords": [
+        2882630,
+        68,
+        1921380,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 69,
+      "name": "UnityEngine.TextCoreFontEngineModule.dll",
+      "typeStart": 20865,
+      "typeCount": 25,
+      "firstWords": [
+        2885921,
+        69,
+        1659265,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 70,
+      "name": "UnityEngine.XRModule.dll",
+      "typeStart": 20890,
+      "typeCount": 34,
+      "firstWords": [
+        2891237,
+        70,
+        2249114,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 71,
+      "name": "Firebase.Platform.dll",
+      "typeStart": 20924,
+      "typeCount": 42,
+      "firstWords": [
+        2894895,
+        71,
+        2773436,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 72,
+      "name": "MagicaCloth2Example.dll",
+      "typeStart": 20966,
+      "typeCount": 23,
+      "firstWords": [
+        2898217,
+        72,
+        1528294,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 73,
+      "name": "UnityEngine.InputLegacyModule.dll",
+      "typeStart": 20989,
+      "typeCount": 13,
+      "firstWords": [
+        2900560,
+        73,
+        872957,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 74,
+      "name": "UnityEngine.VideoModule.dll",
+      "typeStart": 21002,
+      "typeCount": 16,
+      "firstWords": [
+        2901899,
+        74,
+        1069578,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 75,
+      "name": "UnityEngine.TilemapModule.dll",
+      "typeStart": 21018,
+      "typeCount": 15,
+      "firstWords": [
+        2906641,
+        75,
+        1004058,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 76,
+      "name": "UnityEngine.AccessibilityModule.dll",
+      "typeStart": 21033,
+      "typeCount": 22,
+      "firstWords": [
+        2908414,
+        76,
+        1462825,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 77,
+      "name": "UnityEngine.SubsystemsModule.dll",
+      "typeStart": 21055,
+      "typeCount": 20,
+      "firstWords": [
+        2912436,
+        77,
+        1331775,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 78,
+      "name": "Boxophobic.AtmosphericHeightFog.Runtime.dll",
+      "typeStart": 21075,
+      "typeCount": 14,
+      "firstWords": [
+        2914002,
+        78,
+        938579,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 79,
+      "name": "UnityEngine.UnityAnalyticsCommonModule.dll",
+      "typeStart": 21089,
+      "typeCount": 35,
+      "firstWords": [
+        2915650,
+        79,
+        2314849,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 80,
+      "name": "UnityEngine.VFXModule.dll",
+      "typeStart": 21124,
+      "typeCount": 16,
+      "firstWords": [
+        2919071,
+        80,
+        1069700,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 81,
+      "name": "DOTweenPro.Scripts.dll",
+      "typeStart": 21140,
+      "typeCount": 13,
+      "firstWords": [
+        2920421,
+        81,
+        873108,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 82,
+      "name": "UnityEngine.AssetBundleModule.dll",
+      "typeStart": 21153,
+      "typeCount": 9,
+      "firstWords": [
+        2921964,
+        82,
+        610977,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 83,
+      "name": "UnityEngine.DirectorModule.dll",
+      "typeStart": 21162,
+      "typeCount": 9,
+      "firstWords": [
+        2922987,
+        83,
+        610986,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 84,
+      "name": "UnityEngine.SharedInternalsModule.dll",
+      "typeStart": 21171,
+      "typeCount": 29,
+      "firstWords": [
+        2923863,
+        84,
+        1921715,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 85,
+      "name": "UnityEngine.TextRenderingModule.dll",
+      "typeStart": 21200,
+      "typeCount": 17,
+      "firstWords": [
+        2925764,
+        85,
+        1135312,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 86,
+      "name": "Firebase.App.Internal.dll",
+      "typeStart": 21217,
+      "typeCount": 16,
+      "firstWords": [
+        2928148,
+        86,
+        1069793,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 87,
+      "name": "MTE_script.dll",
+      "typeStart": 21233,
+      "typeCount": 21,
+      "firstWords": [
+        2929382,
+        87,
+        1397489,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 88,
+      "name": "Sirenix.Serialization.Config.dll",
+      "typeStart": 21254,
+      "typeCount": 8,
+      "firstWords": [
+        2931102,
+        88,
+        545542,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 89,
+      "name": "UnityEngine.InputModule.dll",
+      "typeStart": 21262,
+      "typeCount": 7,
+      "firstWords": [
+        2931984,
+        89,
+        480014,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 90,
+      "name": "UnityEngine.UnityWebRequestAssetBundleModule.dll",
+      "typeStart": 21269,
+      "typeCount": 4,
+      "firstWords": [
+        2932475,
+        90,
+        283413,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 91,
+      "name": "Unity.InputSystem.ForUI.dll",
+      "typeStart": 21273,
+      "typeCount": 9,
+      "firstWords": [
+        2932924,
+        91,
+        611097,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 92,
+      "name": "UnityEngine.JSONSerializeModule.dll",
+      "typeStart": 21282,
+      "typeCount": 2,
+      "firstWords": [
+        2934261,
+        92,
+        152354,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 93,
+      "name": "UnityEngine.UnityAnalyticsModule.dll",
+      "typeStart": 21284,
+      "typeCount": 11,
+      "firstWords": [
+        2934463,
+        93,
+        742180,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 94,
+      "name": "DOTweenPro.dll",
+      "typeStart": 21295,
+      "typeCount": 14,
+      "firstWords": [
+        2935191,
+        94,
+        938799,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 95,
+      "name": "UnityEngine.UnityWebRequestAudioModule.dll",
+      "typeStart": 21309,
+      "typeCount": 4,
+      "firstWords": [
+        2936048,
+        95,
+        283453,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 96,
+      "name": "UnityEngine.UnityWebRequestTextureModule.dll",
+      "typeStart": 21313,
+      "typeCount": 6,
+      "firstWords": [
+        2936280,
+        96,
+        414529,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 97,
+      "name": "UnityEngine.ImageConversionModule.dll",
+      "typeStart": 21319,
+      "typeCount": 2,
+      "firstWords": [
+        2936604,
+        97,
+        152391,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 98,
+      "name": "UnityEngine.VRModule.dll",
+      "typeStart": 21321,
+      "typeCount": 3,
+      "firstWords": [
+        2936760,
+        98,
+        217929,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 99,
+      "name": "UnityEngine.TerrainPhysicsModule.dll",
+      "typeStart": 21324,
+      "typeCount": 2,
+      "firstWords": [
+        2936931,
+        99,
+        152396,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 100,
+      "name": "Boxophobic.Utils.Scripts.dll",
+      "typeStart": 21326,
+      "typeCount": 26,
+      "firstWords": [
+        2937021,
+        100,
+        1725262,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 101,
+      "name": "UnityEngine.AIModule.dll",
+      "typeStart": 21352,
+      "typeCount": 3,
+      "firstWords": [
+        2937901,
+        101,
+        217960,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 102,
+      "name": "UnityEngine.GridModule.dll",
+      "typeStart": 21355,
+      "typeCount": 2,
+      "firstWords": [
+        2938062,
+        102,
+        152427,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 103,
+      "name": "UnityEngine.SpriteMaskModule.dll",
+      "typeStart": 21357,
+      "typeCount": 2,
+      "firstWords": [
+        2938132,
+        103,
+        152429,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 104,
+      "name": "UnityEngine.UnityWebRequestWWWModule.dll",
+      "typeStart": 21359,
+      "typeCount": 2,
+      "firstWords": [
+        2938284,
+        104,
+        152431,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 105,
+      "name": "UnityEngine.WindModule.dll",
+      "typeStart": 21361,
+      "typeCount": 2,
+      "firstWords": [
+        2938360,
+        105,
+        152433,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 106,
+      "name": "UnityEngine.RenderAs2DModule.dll",
+      "typeStart": 21363,
+      "typeCount": 2,
+      "firstWords": [
+        2938472,
+        106,
+        152435,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 107,
+      "name": "UnityEngine.SpriteShapeModule.dll",
+      "typeStart": 21365,
+      "typeCount": 2,
+      "firstWords": [
+        2938598,
+        107,
+        152437,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 108,
+      "name": "JX3D.Logging.dll",
+      "typeStart": 21367,
+      "typeCount": 15,
+      "firstWords": [
+        2938668,
+        108,
+        1004407,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 109,
+      "name": "UniTask.Addressables.dll",
+      "typeStart": 21382,
+      "typeCount": 12,
+      "firstWords": [
+        2939749,
+        109,
+        807814,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 110,
+      "name": "Unity.RenderPipeline.Universal.ShaderLibrary.dll",
+      "typeStart": 21394,
+      "typeCount": 24,
+      "firstWords": [
+        2940212,
+        110,
+        1594258,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 111,
+      "name": "JXShared.dll",
+      "typeStart": 21418,
+      "typeCount": 7,
+      "firstWords": [
+        2941466,
+        111,
+        480170,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 112,
+      "name": "System.Runtime.Serialization.dll",
+      "typeStart": 21425,
+      "typeCount": 5,
+      "firstWords": [
+        2941793,
+        112,
+        349105,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 113,
+      "name": "Unity.Burst.Unsafe.dll",
+      "typeStart": 21430,
+      "typeCount": 4,
+      "firstWords": [
+        2941986,
+        113,
+        283574,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 114,
+      "name": "Sirenix.OdinInspector.Modules.Unity.Addressables.dll",
+      "typeStart": 21434,
+      "typeCount": 8,
+      "firstWords": [
+        2942151,
+        114,
+        545722,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 115,
+      "name": "Unity.RenderPipelines.Core.Runtime.Shared.dll",
+      "typeStart": 21442,
+      "typeCount": 7,
+      "firstWords": [
+        2942535,
+        115,
+        480194,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 116,
+      "name": "System.Configuration.dll",
+      "typeStart": 21449,
+      "typeCount": 10,
+      "firstWords": [
+        2942904,
+        116,
+        676809,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 117,
+      "name": "Unity.Collections.LowLevel.ILSupport.dll",
+      "typeStart": 21459,
+      "typeCount": 7,
+      "firstWords": [
+        2943261,
+        117,
+        480211,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 118,
+      "name": "Unity.InternalAPIEngineBridge.004.dll",
+      "typeStart": 21466,
+      "typeCount": 7,
+      "firstWords": [
+        2943485,
+        118,
+        480218,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 119,
+      "name": "UnityEngine.MultiplayerModule.dll",
+      "typeStart": 21473,
+      "typeCount": 3,
+      "firstWords": [
+        2943734,
+        119,
+        218081,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 120,
+      "name": "UnityEngine.UnityConsentModule.dll",
+      "typeStart": 21476,
+      "typeCount": 4,
+      "firstWords": [
+        2943911,
+        120,
+        283620,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 121,
+      "name": "__Generated",
+      "typeStart": 21480,
+      "typeCount": 5,
+      "firstWords": [
+        2944129,
+        121,
+        349160,
+        4294901760,
+        0,
+        4294967295
+      ]
+    }
+  ],
+  "imageSample": [
+    {
+      "index": 0,
+      "name": "Assembly-CSharp.dll",
+      "typeStart": 0,
+      "typeCount": 2669,
+      "firstWords": [
+        20,
+        0,
+        174915584,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 1,
+      "name": "mscorlib.dll",
+      "typeStart": 2669,
+      "typeCount": 1761,
+      "firstWords": [
+        463814,
+        1,
+        115411565,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 2,
+      "name": "UnityEngine.UIElementsModule.dll",
+      "typeStart": 4430,
+      "typeCount": 1660,
+      "firstWords": [
+        678705,
+        2,
+        108794190,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 3,
+      "name": "UnityEngine.CoreModule.dll",
+      "typeStart": 6090,
+      "typeCount": 1117,
+      "firstWords": [
+        913449,
+        3,
+        73209802,
+        4294901760,
+        0,
+        4294967295
+      ]
+    },
+    {
+      "index": 4,
+      "name": "Unity.RenderPipelines.Core.Runtime.dll",
+      "typeStart": 7207,
+      "typeCount": 770,
+      "firstWords": [
+        1112372,
+        4,
+        50469927,
+        4294901760,
+        0,
+        4294967295
+      ]
+    }
+  ],
+  "targetMethods": [
+    {
+      "methodIndex": 2257,
+      "name": "GridToMpsCentreX",
+      "ownerTypeIndex": 304,
+      "ownerType": {
+        "name": "AutoFindPath",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x060008D2",
+      "tokenRow": 2258
+    },
+    {
+      "methodIndex": 2258,
+      "name": "GridToMpsCentreY",
+      "ownerTypeIndex": 304,
+      "ownerType": {
+        "name": "AutoFindPath",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x060008D3",
+      "tokenRow": 2259
+    },
+    {
+      "methodIndex": 3386,
+      "name": "GetMpsX",
+      "ownerTypeIndex": 381,
+      "ownerType": {
+        "name": "PlayerInfoService",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x06000D3B",
+      "tokenRow": 3387
+    },
+    {
+      "methodIndex": 3387,
+      "name": "GetMpsY",
+      "ownerTypeIndex": 381,
+      "ownerType": {
+        "name": "PlayerInfoService",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x06000D3C",
+      "tokenRow": 3388
+    },
+    {
+      "methodIndex": 5012,
+      "name": "get_MpsWorldScale",
+      "ownerTypeIndex": 637,
+      "ownerType": {
+        "name": "MapService",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x06001395",
+      "tokenRow": 5013
+    },
+    {
+      "methodIndex": 5014,
+      "name": "WorldDeltaToMpsDelta",
+      "ownerTypeIndex": 637,
+      "ownerType": {
+        "name": "MapService",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x06001397",
+      "tokenRow": 5015
+    },
+    {
+      "methodIndex": 5019,
+      "name": "GetWorldEllipseForMpsRange",
+      "ownerTypeIndex": 637,
+      "ownerType": {
+        "name": "MapService",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x0600139C",
+      "tokenRow": 5020
+    },
+    {
+      "methodIndex": 5020,
+      "name": "Mps2WorldPos",
+      "ownerTypeIndex": 637,
+      "ownerType": {
+        "name": "MapService",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x0600139D",
+      "tokenRow": 5021
+    },
+    {
+      "methodIndex": 5021,
+      "name": "Map2WorldPos",
+      "ownerTypeIndex": 637,
+      "ownerType": {
+        "name": "MapService",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x0600139E",
+      "tokenRow": 5022
+    },
+    {
+      "methodIndex": 5022,
+      "name": "WorldPos2Mps",
+      "ownerTypeIndex": 637,
+      "ownerType": {
+        "name": "MapService",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x0600139F",
+      "tokenRow": 5023
+    },
+    {
+      "methodIndex": 6467,
+      "name": "GetWorldPos",
+      "ownerTypeIndex": 885,
+      "ownerType": {
+        "name": "ClickIntentBus",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x06001944",
+      "tokenRow": 6468
+    },
+    {
+      "methodIndex": 8562,
+      "name": "MapToWorldPos",
+      "ownerTypeIndex": 1156,
+      "ownerType": {
+        "name": "MapConverter",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x06002173",
+      "tokenRow": 8563
+    },
+    {
+      "methodIndex": 8563,
+      "name": "MpsToMapPos",
+      "ownerTypeIndex": 1156,
+      "ownerType": {
+        "name": "MapConverter",
+        "namespace": ""
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x06002174",
+      "tokenRow": 8564
+    },
+    {
+      "methodIndex": 14821,
+      "name": "Map2Mps",
+      "ownerTypeIndex": 2007,
+      "ownerType": {
+        "name": "SubWorld",
+        "namespace": "GameWorld"
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x060039E6",
+      "tokenRow": 14822
+    },
+    {
+      "methodIndex": 14822,
+      "name": "Map2Mps",
+      "ownerTypeIndex": 2007,
+      "ownerType": {
+        "name": "SubWorld",
+        "namespace": "GameWorld"
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x060039E7",
+      "tokenRow": 14823
+    },
+    {
+      "methodIndex": 14823,
+      "name": "Mps2Map",
+      "ownerTypeIndex": 2007,
+      "ownerType": {
+        "name": "SubWorld",
+        "namespace": "GameWorld"
+      },
+      "image": {
+        "index": 0,
+        "name": "Assembly-CSharp.dll",
+        "typeStart": 0,
+        "typeCount": 2669,
+        "firstWords": [
+          20,
+          0,
+          174915584,
+          4294901760,
+          0,
+          4294967295
+        ]
+      },
+      "token": "0x060039E8",
+      "tokenRow": 14824
+    }
+  ],
+  "limits": "Metadata gives owner+token only; native address requires independent binary module table validation."
+}
