@@ -1,0 +1,61 @@
+diff --git a/gameserver/Sources/Core/Src/KProtocolProcess.cpp b/gameserver/Sources/Core/Src/KProtocolProcess.cpp
+index 2df1b7a..df4b5c8 100644
+--- a/gameserver/Sources/Core/Src/KProtocolProcess.cpp
++++ b/gameserver/Sources/Core/Src/KProtocolProcess.cpp
+@@ -5422,0 +5423,2 @@ void KProtocolProcess::NpcRequestCommand(int nIndex, BYTE* pProtocol)
++	if (!pProtocol || nIndex <= 0 || nIndex >= MAX_PLAYER)
++		return;
+@@ -5423,0 +5426,53 @@ void KProtocolProcess::NpcRequestCommand(int nIndex, BYTE* pProtocol)
++#if defined(_SERVER) && defined(JX3D_GP01_NPC_SNAPSHOT)
++	// GP01 DEV-only, opt-in response to a zero-ID 69-byte NPC request.
++	// Only send actual NPCs which exist in the authoritative GS world.
++	// Production and ordinary nonzero ID requests retain baseline behavior.
++	if (pNpcRequestSync->ID == 0)
++	{
++		char enabled[4] = {0};
++		if (GetEnvironmentVariableA("JX3D_GP01_NPC_SNAPSHOT", enabled, sizeof(enabled)) != 1 ||
++			enabled[0] != '1' || !g_pServer)
++			return;
++		const int playerSlot = Player[nIndex].m_nIndex;
++		if (playerSlot <= 0 || playerSlot >= MAX_NPC)
++			return;
++		KNpc &owner = Npc[playerSlot];
++		if (!owner.m_dwID || !owner.IsPlayer() || owner.m_RegionIndex < 0 ||
++			owner.m_SubWorldIndex < 0 || owner.m_SubWorldIndex >= MAX_SUBWORLD ||
++			SubWorld[owner.m_SubWorldIndex].m_SubWorldID != 53)
++			return;
++		// Rate-limit by real player identity, not reusable connection slot.
++		static ULONGLONG nextSnapshotAt[MAX_PLAYER] = {0};
++		static DWORD ownerIdentity[MAX_PLAYER] = {0};
++		const ULONGLONG now = GetTickCount64();
++		if (ownerIdentity[nIndex] != owner.m_dwID)
++		{
++			ownerIdentity[nIndex] = owner.m_dwID;
++			nextSnapshotAt[nIndex] = 0;
++		}
++		if (now < nextSnapshotAt[nIndex])
++			return;
++		nextSnapshotAt[nIndex] = now + 15000;
++		int ownerX = 0, ownerY = 0, mapId = 0;
++		owner.GetMpsPos(&ownerX, &ownerY, &mapId);
++		if (mapId != 53)
++			return;
++		int sent = 0;
++		for (int slot = 1; slot < MAX_NPC && sent < 32; ++slot)
++		{
++			KNpc &npc = Npc[slot];
++			if (slot == playerSlot || !npc.m_dwID || npc.IsPlayer() ||
++				npc.m_RegionIndex < 0 || npc.m_SubWorldIndex != owner.m_SubWorldIndex)
++				continue;
++			int x = 0, y = 0, npcMap = 0;
++			npc.GetMpsPos(&x, &y, &npcMap);
++			if (npcMap != 53 ||
++				(long long)x - ownerX > 1536 || (long long)ownerX - x > 1536 ||
++				(long long)y - ownerY > 1536 || (long long)ownerY - y > 1536)
++				continue;
++			if (npc.SendSyncData(Player[nIndex].m_nNetConnectIdx))
++				++sent;
++		}
++		return;
++	}
++#endif
