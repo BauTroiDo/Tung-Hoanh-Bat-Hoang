@@ -1,0 +1,519 @@
+﻿{
+    "schema": "cn02-bulk01-asset-audit-v1",
+    "timestampUtc": "2026-10-25T23:46:15.8759961Z",
+    "unityVersion": "6000.6.7f1",
+    "totalAssetsScanned": 51,
+    "missingMetaCount": 0,
+    "duplicateGuidCount": 0,
+    "missingMetaFiles": [],
+    "duplicateGuids": [],
+    "materials": [
+        {
+            "assetPath": "Assets/_JXClient/Environment/Materials/BLH_PlazaTile.mat",
+            "materialName": "BLH_PlazaTile",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.5399999618530273,
+                "g": 0.5,
+                "b": 0.429999977350235,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.5399999022483826,
+                "g": 0.5,
+                "b": 0.4299999177455902,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.5399999618530273,
+                "g": 0.5,
+                "b": 0.429999977350235,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.5399999022483826,
+                "g": 0.5,
+                "b": 0.4299999177455902,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.30000001192092896,
+            "smoothnessAfter": 0.30000001192092896,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "88858F188DA64AB41CAE078F0CEC99514E9ADBE4029586DA8D25724F4AA3942E"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Environment/Materials/BLH_GrassTerrain.mat",
+            "materialName": "BLH_GrassTerrain",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.21999996900558472,
+                "g": 0.37999993562698364,
+                "b": 0.2399999499320984,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.21999993920326233,
+                "g": 0.37999990582466125,
+                "b": 0.239999920129776,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.21999996900558472,
+                "g": 0.37999993562698364,
+                "b": 0.2399999499320984,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.21999993920326233,
+                "g": 0.37999990582466125,
+                "b": 0.239999920129776,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.15000000596046448,
+            "smoothnessAfter": 0.15000000596046448,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "C31D56F27A8043FABAD9A2A8845D6B06CF8F7BF5D27F2070926F58F84B8BABDE"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Movement/Materials/Wall.mat",
+            "materialName": "Wall",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.3399999737739563,
+                "g": 0.3999999761581421,
+                "b": 0.47999995946884155,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.3399999439716339,
+                "g": 0.3999999463558197,
+                "b": 0.47999995946884155,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.3399999737739563,
+                "g": 0.3999999761581421,
+                "b": 0.47999995946884155,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.3399999439716339,
+                "g": 0.3999999463558197,
+                "b": 0.47999995946884155,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.5,
+            "smoothnessAfter": 0.5,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "25168DFC1FBED831EE00A0B1D7002B092C17F537A20701561436C809FBEA1746"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Movement/Materials/Ground.mat",
+            "materialName": "Ground",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.15999996662139893,
+                "g": 0.3399999737739563,
+                "b": 0.2699999511241913,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.15999993681907654,
+                "g": 0.3399999439716339,
+                "b": 0.2699999213218689,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.15999996662139893,
+                "g": 0.3399999737739563,
+                "b": 0.2699999511241913,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.15999993681907654,
+                "g": 0.3399999439716339,
+                "b": 0.2699999213218689,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.5,
+            "smoothnessAfter": 0.5,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "1D4864D4F78D6BE8891E09D85F8748A537575F55169D7A157D78E5A588749B04"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Environment/Materials/BLH_StoneRoad.mat",
+            "materialName": "BLH_StoneRoad",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.4599999189376831,
+                "g": 0.4399999678134918,
+                "b": 0.38999995589256287,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.45999985933303833,
+                "g": 0.43999993801116943,
+                "b": 0.3899999260902405,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.4599999189376831,
+                "g": 0.4399999678134918,
+                "b": 0.38999995589256287,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.45999985933303833,
+                "g": 0.43999993801116943,
+                "b": 0.3899999260902405,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.25,
+            "smoothnessAfter": 0.25,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "46A3BC77A08A5AB437793216EF5D80371860D40C07D0AD716474B7639D19716D"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Environment/Materials/BLH_HouseWall.mat",
+            "materialName": "BLH_HouseWall",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.6800000071525574,
+                "g": 0.6299999952316284,
+                "b": 0.5399999618530273,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.6800000071525574,
+                "g": 0.6299999952316284,
+                "b": 0.5399999022483826,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.6800000071525574,
+                "g": 0.6299999952316284,
+                "b": 0.5399999618530273,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.6800000071525574,
+                "g": 0.6299999952316284,
+                "b": 0.5399999022483826,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.20000000298023224,
+            "smoothnessAfter": 0.20000000298023224,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "F890C19641CBFBA893EC34D6C9033FC07C82E2CC5B73372B899DF4F6F14C8ED0"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Environment/Materials/BLH_WoodTimber.mat",
+            "materialName": "BLH_WoodTimber",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.41999995708465576,
+                "g": 0.2699999511241913,
+                "b": 0.15999996662139893,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.4199999272823334,
+                "g": 0.2699999213218689,
+                "b": 0.15999993681907654,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.41999995708465576,
+                "g": 0.2699999511241913,
+                "b": 0.15999996662139893,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.4199999272823334,
+                "g": 0.2699999213218689,
+                "b": 0.15999993681907654,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.20000000298023224,
+            "smoothnessAfter": 0.20000000298023224,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "AAC3BDAE7617CBCACB5A67DC851559E60BA7480F8C56BF14EEF16ECFC516DBCA"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Environment/Materials/BLH_BoundaryRock.mat",
+            "materialName": "BLH_BoundaryRock",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.35999998450279236,
+                "g": 0.37999993562698364,
+                "b": 0.3999999761581421,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.35999995470046997,
+                "g": 0.37999990582466125,
+                "b": 0.3999999463558197,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.35999998450279236,
+                "g": 0.37999993562698364,
+                "b": 0.3999999761581421,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.35999995470046997,
+                "g": 0.37999990582466125,
+                "b": 0.3999999463558197,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.15000000596046448,
+            "smoothnessAfter": 0.15000000596046448,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "AAE70478475B9D6313F6B8EAB0161743D5E9F11128A381D63FBCB96F9BF5D5F2"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Environment/Materials/BLH_TileRoof.mat",
+            "materialName": "BLH_TileRoof",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.2799999713897705,
+                "g": 0.31999996304512024,
+                "b": 0.37999993562698364,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.2799999415874481,
+                "g": 0.31999990344047546,
+                "b": 0.37999990582466125,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.2799999713897705,
+                "g": 0.31999996304512024,
+                "b": 0.37999993562698364,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.2799999415874481,
+                "g": 0.31999990344047546,
+                "b": 0.37999990582466125,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.3499999940395355,
+            "smoothnessAfter": 0.3499999940395355,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "4BCE610552800573D863F30322F7C3FF4BC9CB9BF42F366F29E66660E663CF00"
+        },
+        {
+            "assetPath": "Assets/_JXClient/Movement/Materials/Avatar.mat",
+            "materialName": "Avatar",
+            "shaderNameBefore": "Universal Render Pipeline/Lit",
+            "shaderNameAfter": "Universal Render Pipeline/Lit",
+            "shaderSupported": true,
+            "baseColorBefore": {
+                "r": 0.9399999976158142,
+                "g": 0.6599999666213989,
+                "b": 0.18999996781349182,
+                "a": 1.0
+            },
+            "colorPropertyBefore": {
+                "r": 0.9399999976158142,
+                "g": 0.6599999666213989,
+                "b": 0.18999993801116943,
+                "a": 1.0
+            },
+            "baseColorAfter": {
+                "r": 0.9399999976158142,
+                "g": 0.6599999666213989,
+                "b": 0.18999996781349182,
+                "a": 1.0
+            },
+            "colorPropertyAfter": {
+                "r": 0.9399999976158142,
+                "g": 0.6599999666213989,
+                "b": 0.18999993801116943,
+                "a": 1.0
+            },
+            "smoothnessBefore": 0.5,
+            "smoothnessAfter": 0.5,
+            "renderQueue": 2000,
+            "missingTextureCount": 0,
+            "wasFixed": false,
+            "fixApplied": "Verified clean (URP/Lit _BaseColor and _Color synced)",
+            "sha256After": "840D19A612661CFF47802F388DABAC9C993B3ED5EB7F326E69297FD9747E22DB"
+        }
+    ],
+    "prefabs": [
+        {
+            "assetPath": "Assets/_JXClient/Environment/Prefabs/BLH_SyntheticVillageHouse.prefab",
+            "prefabName": "BLH_SyntheticVillageHouse",
+            "totalGameObjects": 3,
+            "meshRendererCount": 2,
+            "colliderCount": 2,
+            "missingScriptCount": 0,
+            "nullMeshOrMaterialCount": 0,
+            "validTransformAndBounds": true,
+            "passed": true
+        },
+        {
+            "assetPath": "Assets/_JXClient/Prefabs/OfflinePlayer.prefab",
+            "prefabName": "OfflinePlayer",
+            "totalGameObjects": 2,
+            "meshRendererCount": 1,
+            "colliderCount": 1,
+            "missingScriptCount": 0,
+            "nullMeshOrMaterialCount": 0,
+            "validTransformAndBounds": true,
+            "passed": true
+        },
+        {
+            "assetPath": "Assets/_JXClient/Environment/Prefabs/BLH_SyntheticGateArchway.prefab",
+            "prefabName": "BLH_SyntheticGateArchway",
+            "totalGameObjects": 4,
+            "meshRendererCount": 3,
+            "colliderCount": 3,
+            "missingScriptCount": 0,
+            "nullMeshOrMaterialCount": 0,
+            "validTransformAndBounds": true,
+            "passed": true
+        }
+    ],
+    "scenes": [
+        {
+            "scenePath": "Assets/_JXClient/Scenes/BaLangHuyen.unity",
+            "sceneName": "BaLangHuyen",
+            "enabledInBuildSettings": true,
+            "rootObjectCount": 11,
+            "totalGameObjects": 55,
+            "unexpectedlyDisabledCount": 0,
+            "hasAllRequiredRoots": true,
+            "missingRoots": [],
+            "meshRendererCount": 25,
+            "validMeshFilterCount": 25,
+            "nullMaterialSlotCount": 0,
+            "groundColliderCount": 4,
+            "obstacleColliderCount": 21,
+            "wrongLayerColliderCount": 0,
+            "abnormalTransformOrBoundsCount": 0,
+            "missingScriptCount": 0,
+            "connectedPrefabInstanceCount": 7,
+            "brokenPrefabInstanceCount": 0,
+            "hasMainCamera": true,
+            "cameraNearClip": 0.30000001192092896,
+            "cameraFarClip": 1000.0,
+            "cameraCanSeeGroundAndSpawn": true,
+            "hasDirectionalLight": true,
+            "directionalLightIntensity": 1.4500000476837158,
+            "fixesAppliedCount": 0,
+            "fixNotes": [],
+            "passed": true
+        },
+        {
+            "scenePath": "Assets/_JXClient/Scenes/MovementTest.unity",
+            "sceneName": "MovementTest",
+            "enabledInBuildSettings": true,
+            "rootObjectCount": 7,
+            "totalGameObjects": 10,
+            "unexpectedlyDisabledCount": 0,
+            "hasAllRequiredRoots": true,
+            "missingRoots": [],
+            "meshRendererCount": 3,
+            "validMeshFilterCount": 3,
+            "nullMaterialSlotCount": 0,
+            "groundColliderCount": 1,
+            "obstacleColliderCount": 2,
+            "wrongLayerColliderCount": 0,
+            "abnormalTransformOrBoundsCount": 0,
+            "missingScriptCount": 0,
+            "connectedPrefabInstanceCount": 0,
+            "brokenPrefabInstanceCount": 0,
+            "hasMainCamera": true,
+            "cameraNearClip": 0.30000001192092896,
+            "cameraFarClip": 1000.0,
+            "cameraCanSeeGroundAndSpawn": true,
+            "hasDirectionalLight": true,
+            "directionalLightIntensity": 1.5,
+            "fixesAppliedCount": 0,
+            "fixNotes": [],
+            "passed": true
+        },
+        {
+            "scenePath": "Assets/_JXClient/Scenes/Bootstrap.unity",
+            "sceneName": "Bootstrap",
+            "enabledInBuildSettings": true,
+            "rootObjectCount": 5,
+            "totalGameObjects": 5,
+            "unexpectedlyDisabledCount": 0,
+            "hasAllRequiredRoots": true,
+            "missingRoots": [],
+            "meshRendererCount": 2,
+            "validMeshFilterCount": 2,
+            "nullMaterialSlotCount": 0,
+            "groundColliderCount": 0,
+            "obstacleColliderCount": 2,
+            "wrongLayerColliderCount": 0,
+            "abnormalTransformOrBoundsCount": 0,
+            "missingScriptCount": 0,
+            "connectedPrefabInstanceCount": 0,
+            "brokenPrefabInstanceCount": 0,
+            "hasMainCamera": true,
+            "cameraNearClip": 0.30000001192092896,
+            "cameraFarClip": 1000.0,
+            "cameraCanSeeGroundAndSpawn": true,
+            "hasDirectionalLight": true,
+            "directionalLightIntensity": 1.2000000476837158,
+            "fixesAppliedCount": 0,
+            "fixNotes": [],
+            "passed": true
+        }
+    ],
+    "totalFixesApplied": 0,
+    "totalUnresolvedErrors": 0,
+    "allChecksPassed": true
+}

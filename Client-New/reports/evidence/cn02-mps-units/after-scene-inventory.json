@@ -1,0 +1,535 @@
+{
+  "camera": {
+    "position": [
+      2.629180431365967,
+      5.5,
+      17.4500732421875
+    ],
+    "forward": [
+      -0.7121952772140503,
+      -0.5691350102424622,
+      -0.410929799079895
+    ],
+    "near": 0.30000001192092896,
+    "far": 180,
+    "cullingMask": 268369687
+  },
+  "sceneCount": 3,
+  "entityId": 40714,
+  "mapId": 53,
+  "affine": {
+    "m00": -2.406399965286255,
+    "m01": 3.5840001106262207,
+    "m10": 3.891200065612793,
+    "m11": 3.328000068664551,
+    "offsetX": -225.52000427246094,
+    "offsetZ": -1433.8399658203125
+  },
+  "playerPosition": [
+    -2.9999847412109375,
+    0,
+    14.2000732421875
+  ],
+  "movement": {
+    "gameplayLock": false,
+    "uiLock": false,
+    "pathfinding": false,
+    "computing": false,
+    "lastFailTime": -999,
+    "lastFailGrid": [
+      -1,
+      -1
+    ],
+    "userCommandSeq": 12,
+    "lastDestination": [
+      -2.9999847412109375,
+      0,
+      14.2000732421875
+    ]
+  },
+  "groundProbes": {
+    "player": {
+      "hitObject": {
+        "name": "Collider",
+        "layer": 17
+      },
+      "origin": [
+        -2.9999847412109375,
+        500,
+        14.2000732421875
+      ],
+      "downwardHit": true,
+      "point": [
+        -2.9999847412109375,
+        2,
+        14.2000732421875
+      ]
+    },
+    "nearPlayerAwayFromBody": {
+      "hitObject": null,
+      "origin": [
+        2.0000152587890625,
+        500,
+        19.2000732421875
+      ],
+      "downwardHit": false,
+      "point": null
+    },
+    "sceneOriginDiagnosticOnly": {
+      "hitObject": null,
+      "origin": [
+        0,
+        500,
+        0
+      ],
+      "downwardHit": false,
+      "point": null
+    }
+  },
+  "clientPid": 21188,
+  "source_file": ".tmp\\cn02-dev-resume-20261026\\units-click-state.json",
+  "source_sha256": "93bd6697cb4e67babab763d32b32ae57981e30aaff464ddf3604dd63533567ce",
+  "limits": "Read-only main-thread getters. Visible counts below are samples, not full renderer coverage; collider counts are full arrays.",
+  "scenes": [
+    {
+      "name": "MainGame",
+      "loaded": true,
+      "rootCount": 9,
+      "roots": [
+        {
+          "name": "ServerDataReceiver",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 0,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "ProcessGameUnity",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 0,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "FirebaseBootstrap",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 0,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "PostProcess",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 0,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "UIManager",
+          "active": true,
+          "layer": 5,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 7,
+          "rendererCount": 129,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "PRODUCT_MODE",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 0,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "Main Camera",
+          "active": true,
+          "layer": 0,
+          "position": [
+            2.629180431365967,
+            5.5,
+            17.4500732421875
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 0,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "Click_Screen_4(Clone)",
+          "active": false,
+          "layer": 0,
+          "position": [
+            -3.0678019523620605,
+            0,
+            14.27144718170166
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 1,
+          "rendererCount": 4,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "Tracker_Screen_4(Clone)",
+          "active": false,
+          "layer": 0,
+          "position": [
+            -3.0678019523620605,
+            0,
+            14.27144718170166
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 1,
+          "rendererCount": 5,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        }
+      ]
+    },
+    {
+      "name": "PersistentScene",
+      "loaded": true,
+      "rootCount": 2,
+      "roots": [
+        {
+          "name": "BaseMain",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 28,
+          "rendererCount": 2822,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "JXPlayer(Clone)",
+          "active": true,
+          "layer": 0,
+          "position": [
+            -2.9999847412109375,
+            0,
+            14.2000732421875
+          ],
+          "scale": [
+            1.000000238418579,
+            1,
+            1.000000238418579
+          ],
+          "childCount": 6,
+          "rendererCount": 10,
+          "visibleRendererSamples": 4,
+          "colliderCount": 1
+        }
+      ]
+    },
+    {
+      "name": "PC_BLH_Bake",
+      "loaded": true,
+      "rootCount": 8,
+      "roots": [
+        {
+          "name": "Nen",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 15,
+          "rendererCount": 15,
+          "visibleRendererSamples": 1,
+          "colliderCount": 0
+        },
+        {
+          "name": "SkyFake",
+          "active": true,
+          "layer": 0,
+          "position": [
+            9.399999618530273,
+            -29.200000762939453,
+            11.600000381469727
+          ],
+          "scale": [
+            0.19502025842666626,
+            0.19502025842666626,
+            0.19502025842666626
+          ],
+          "childCount": 0,
+          "rendererCount": 1,
+          "visibleRendererSamples": 1,
+          "colliderCount": 0
+        },
+        {
+          "name": "LightMapPC",
+          "active": true,
+          "layer": 0,
+          "position": [
+            39.89897918701172,
+            -11.17831039428711,
+            -7.799039840698242
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 6,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "NenMap",
+          "active": true,
+          "layer": 0,
+          "position": [
+            -503.9200134277344,
+            -20,
+            -497.9800109863281
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 4,
+          "rendererCount": 4,
+          "visibleRendererSamples": 4,
+          "terrainBoundsSamples": [
+            {
+              "enabled": true,
+              "visible": true,
+              "center": [
+                -128.92001342773438,
+                -2.5,
+                -122.98001098632812
+              ],
+              "extents": [
+                125,
+                2.5,
+                125
+              ]
+            },
+            {
+              "enabled": true,
+              "visible": true,
+              "center": [
+                121.07998657226562,
+                -2.5,
+                -122.98001098632812
+              ],
+              "extents": [
+                125,
+                2.5,
+                125
+              ]
+            },
+            {
+              "enabled": true,
+              "visible": true,
+              "center": [
+                -128.92001342773438,
+                -2.5,
+                127.01998901367188
+              ],
+              "extents": [
+                125,
+                2.5,
+                125
+              ]
+            },
+            {
+              "enabled": true,
+              "visible": true,
+              "center": [
+                121.07998657226562,
+                -2.5,
+                127.01998901367188
+              ],
+              "extents": [
+                125,
+                2.5,
+                125
+              ]
+            }
+          ],
+          "colliderCount": 0
+        },
+        {
+          "name": "PC_1_BaLangHuyen(Clone)",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 1,
+          "rendererCount": 3,
+          "visibleRendererSamples": 3,
+          "colliderCount": 0
+        },
+        {
+          "name": "PC_2_BaLangHuyen_GrassPooledRegions(Clone)",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 5,
+          "rendererCount": 9,
+          "visibleRendererSamples": 2,
+          "colliderCount": 0
+        },
+        {
+          "name": "PC_3_BaLangHuyen_GrassPooledRegions(Clone)",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 2,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        },
+        {
+          "name": "4_BaLangHuyen(Clone)",
+          "active": true,
+          "layer": 0,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "childCount": 8,
+          "rendererCount": 0,
+          "visibleRendererSamples": 0,
+          "colliderCount": 0
+        }
+      ]
+    }
+  ]
+}

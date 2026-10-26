@@ -1,0 +1,134 @@
+{
+  "ReviewedAt": "2026-10-25T15:10:59.5915128+07:00",
+  "Branch": "ag/cn00-bootstrap",
+  "SourceHashes": [
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Core.meta",
+      "SHA256": "D3BD4B518713E44A76B184AF59A98CD971E2D67798C64D83CA7CD5E06355A686"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Domain.meta",
+      "SHA256": "7243ABAA674E573BF54BD17D8118E4AC592EA8A5EBBA081A2FBA71AE0E0D1B97"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Editor.meta",
+      "SHA256": "F8C900E4F903469E9D9C4963EC67F392995B420FA2E4D889F880EFB1EF34ACE3"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\README.md.meta",
+      "SHA256": "60AB91D597C591E2A568CA37D8FBC7FAEF23D29668E323694C3F8FEC43485C39"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Scenes.meta",
+      "SHA256": "C2E229A30F0136D92C626CD8EB08B7303EB4829344EE024460892BADF4032254"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Tests.meta",
+      "SHA256": "77D9CD1BAF7C72C220FF8738CFD955B345C10E3C6D9630D452134A0B9A07E88C"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Core\\BootstrapRunner.cs",
+      "SHA256": "9116476D10054AE04695713B0EA548B1A2C0F35AF8499ECAD3E3DD9D6877FCA0"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Core\\BootstrapRunner.cs.meta",
+      "SHA256": "1F336246251CFF705CB0B9CA87622079CCEDFE95C0157D588F62CAB3C74E23FC"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Core\\JXClient.Core.asmdef",
+      "SHA256": "DE99C54E796375F3BFA93E73307159A3CF95BEAC53F1F71068E9CF8359023D93"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Core\\JXClient.Core.asmdef.meta",
+      "SHA256": "153660A8CE3B7E55754C63A34C2A3FACF86632A31A38BD08EA407EFE87ABF01A"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Domain\\DomainPrimitives.cs",
+      "SHA256": "6C9E5E7445BE22929B3589388B4CCDB913AD8DDC8BBC9F0431940552D66DEB2F"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Domain\\DomainPrimitives.cs.meta",
+      "SHA256": "9EB8BEE24ED04F2F08F4C288089493FBA85A281BCB202A655BA98EDFD25D4ADD"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Domain\\GameSessionState.cs",
+      "SHA256": "885FCEA413BAA1961F3BC0964ADE870F106C2B4ADCC48EF9B070786EFBAF7235"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Domain\\GameSessionState.cs.meta",
+      "SHA256": "AA5970A32B4A5DD6E731D3670AAA569C94FD96F7C41CBEE078D28AEE1960018A"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Domain\\JXClient.Domain.asmdef",
+      "SHA256": "5848D9C5590042E1C1FE01799DD324B1E724C45BFE88512B5B3AFECC0BF724B3"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Domain\\JXClient.Domain.asmdef.meta",
+      "SHA256": "115F327FDBCB7B9787313688F2709087445868F69D33BD08D9A685CAD6EDF1E2"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Editor\\Cn00ProjectSetup.cs",
+      "SHA256": "8E584FAA620959198F9A4F268391EB9BA82CB0B79041B47D81E801FE12F41E3B"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Editor\\Cn00ProjectSetup.cs.meta",
+      "SHA256": "57275595877CC25C0CB8A0BCCB3ABAECAC0A9D48368E5999B7676A176AEAD35F"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Editor\\JXClient.Editor.asmdef",
+      "SHA256": "A3C62136048F416FD46E7BECBE9DBC23658C5703750C2FFFB689E54D43411C4F"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Editor\\JXClient.Editor.asmdef.meta",
+      "SHA256": "5FFBF3B25FB60C3B50C7A8A28571EC27534241E4E6BEDA1B2F8D5E1BE810AB9A"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Scenes\\Bootstrap.unity",
+      "SHA256": "0FB546975B1DAC584365DECBEE85F84610D7BB7A3E496511B2B6BCA4BD21EEA4"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Scenes\\Bootstrap.unity.meta",
+      "SHA256": "779DFBBF702C86A93494B68FB8789BA67C66C59B90B207FECA6A3DCF09C958E3"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Tests\\EditMode.meta",
+      "SHA256": "E3B0393BAD07AB77755FDB06D559D1A1C5B626653BDBC0D8059E4D40DA09AFF8"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Tests\\EditMode\\Cn00BootstrapTests.cs",
+      "SHA256": "9026A27E3CB878A67EB70DDCE0FDF0FBCD8A294ECF289F4D8B7DE5267FBC70F1"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Tests\\EditMode\\Cn00BootstrapTests.cs.meta",
+      "SHA256": "10FD83F1D61F5C8C96524EBF13709508EA6DDBA3AC98A27E139EE705A88706D9"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Tests\\EditMode\\JXClient.Tests.EditMode.asmdef",
+      "SHA256": "C9C3F777A89487BEF263F52132E906E85290883A067B0CC6AC74FA843B58313F"
+    },
+    {
+      "Path": "UnityProject\\Assets\\_JXClient\\Tests\\EditMode\\JXClient.Tests.EditMode.asmdef.meta",
+      "SHA256": "8FC3DE019C66473303EEFEEC6AB46DCAB9F3312574B36BB078330A6808433552"
+    }
+  ],
+  "ExeSHA256": "9806ABDE4A406ED68647E9505852C49F6AA72A372F4F084E2AA2821AFFEA57A2",
+  "ExeBytes": 667136,
+  "BuildExit": 0,
+  "BuildErrors": 0,
+  "BuildWarnings": 0,
+  "UnityTests": {
+    "Failed": 0,
+    "ExitCode": 0,
+    "Passed": 3,
+    "Skipped": 0,
+    "Total": 3
+  },
+  "ReviewerBatchRuntime": {
+    "Ready": true,
+    "ExitCode": 0,
+    "Frames": 30,
+    "Screenshot": "FAILED; not counted as visual evidence"
+  },
+  "VisualEvidence": "reports/evidence/cn00/cn00_bootstrap_smoke.png (Antigravity run, independently opened and inspected)",
+  "RuntimeWarnings": "URP stripped/unsupported Gaussian/Bokeh DOF and Panini shaders; no effects used by Bootstrap"
+}

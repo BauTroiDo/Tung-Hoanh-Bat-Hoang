@@ -1,0 +1,94 @@
+{
+  "source": "GameAssembly.dll",
+  "sha256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "imageBase": "0x180000000",
+  "sectionNames": [
+    {
+      "name": ".text",
+      "rva": 4096,
+      "virtualSize": 7810068,
+      "rawOffset": 1024,
+      "rawSize": 7810560,
+      "executable": true
+    },
+    {
+      "name": "il2cpp",
+      "rva": 7815168,
+      "virtualSize": 69873711,
+      "rawOffset": 7811584,
+      "rawSize": 69874176,
+      "executable": true
+    },
+    {
+      "name": ".rdata",
+      "rva": 77692928,
+      "virtualSize": 19517190,
+      "rawOffset": 77685760,
+      "rawSize": 19517440,
+      "executable": false
+    },
+    {
+      "name": ".data",
+      "rva": 97210368,
+      "virtualSize": 7268160,
+      "rawOffset": 97203200,
+      "rawSize": 4363264,
+      "executable": false
+    },
+    {
+      "name": ".pdata",
+      "rva": 104480768,
+      "virtualSize": 3960288,
+      "rawOffset": 101566464,
+      "rawSize": 3960320,
+      "executable": false
+    },
+    {
+      "name": ".fptable",
+      "rva": 108441600,
+      "virtualSize": 256,
+      "rawOffset": 105526784,
+      "rawSize": 512,
+      "executable": false
+    },
+    {
+      "name": ".reloc",
+      "rva": 108445696,
+      "virtualSize": 1795852,
+      "rawOffset": 105527296,
+      "rawSize": 1796096,
+      "executable": false
+    }
+  ],
+  "needle": "Assembly-CSharp.dll",
+  "stringOccurrences": 1,
+  "searchStatus": "ONE_STRUCTURAL_CANDIDATE",
+  "candidates": [
+    {
+      "nameStringRVA": "0x4BEFD78",
+      "recordRVA": "0x4BEFCF0",
+      "methodPointerCount": 19668,
+      "methodArrayVA": "0x185CCDDD0",
+      "methodArrayRVA": "0x5CCDDD0",
+      "first16ExecutableOrEmpty": 16,
+      "first16Slots": [
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ]
+    }
+  ]
+}

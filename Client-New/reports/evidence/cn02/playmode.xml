@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.3868872">
+  <test-suite type="TestSuite" id="1021" name="UnityProject" fullname="UnityProject" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.386887" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1038" name="JXClient.Tests.PlayMode.dll" fullname="E:/Games/VLTK3D/SwordOnline/Client-New/UnityProject/Library/ScriptAssemblies/JXClient.Tests.PlayMode.dll" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.380378" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="25384" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1022" name="Cn01SceneTests" fullname="Cn01SceneTests" classname="Cn01SceneTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.123030" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1023" name="RealMovementSceneHasGroundPlayerCameraAndShield" fullname="Cn01SceneTests.RealMovementSceneHasGroundPlayerCameraAndShield" methodname="RealMovementSceneHasGroundPlayerCameraAndShield" classname="Cn01SceneTests" runstate="Runnable" seed="1580997919" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.111509" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1024" name="Cn02WorldSceneTests" fullname="Cn02WorldSceneTests" classname="Cn02WorldSceneTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.145491" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1027" name="BaLangHuyenScene_LoadsValidHierarchyFiveGroundProbesAndUnloadsCleanly" fullname="Cn02WorldSceneTests.BaLangHuyenScene_LoadsValidHierarchyFiveGroundProbesAndUnloadsCleanly" methodname="BaLangHuyenScene_LoadsValidHierarchyFiveGroundProbesAndUnloadsCleanly" classname="Cn02WorldSceneTests" runstate="Runnable" seed="1577144468" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.024471" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CN-02][MapSceneLoader] Unloaded scene 'BaLangHuyen'.
+]]></output>
+        </test-case>
+        <test-case id="1028" name="BaLangHuyenScene_OfflinePlayerWalksRoadStopsAtObstacleAndRespectsCameraBounds" fullname="Cn02WorldSceneTests.BaLangHuyenScene_OfflinePlayerWalksRoadStopsAtObstacleAndRespectsCameraBounds" methodname="BaLangHuyenScene_OfflinePlayerWalksRoadStopsAtObstacleAndRespectsCameraBounds" classname="Cn02WorldSceneTests" runstate="Runnable" seed="408676834" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.110170" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CN-01] INPUT accepted=1 screen=(320.00, 330.45) destination=(0.00, 0.04, 4.95) source=pointer
+[CN-01] INPUT accepted=2 screen=(479.79, 227.09) destination=(-8.49, 0.03, 2.01) source=pointer
+[CN-02][MapSceneLoader] Unloaded scene 'BaLangHuyen'.
+]]></output>
+        </test-case>
+        <test-case id="1025" name="MapSceneCatalog_DefinesBaLangHuyenSyntheticMetadataAndUnverifiedCalibration" fullname="Cn02WorldSceneTests.MapSceneCatalog_DefinesBaLangHuyenSyntheticMetadataAndUnverifiedCalibration" methodname="MapSceneCatalog_DefinesBaLangHuyenSyntheticMetadataAndUnverifiedCalibration" classname="Cn02WorldSceneTests" runstate="Runnable" seed="1303937864" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.001314" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1026" name="MapSceneLoader_RejectsUnknownMapAndSupportsCancellation" fullname="Cn02WorldSceneTests.MapSceneLoader_RejectsUnknownMapAndSupportsCancellation" methodname="MapSceneLoader_RejectsUnknownMapAndSupportsCancellation" classname="Cn02WorldSceneTests" runstate="Runnable" seed="2078039451" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.006824" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1029" name="OfflineMovementTests" fullname="OfflineMovementTests" classname="OfflineMovementTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.110372" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1036" name="CameraOrbitAndZoomKeepGroundRaycastValid" fullname="OfflineMovementTests.CameraOrbitAndZoomKeepGroundRaycastValid" methodname="CameraOrbitAndZoomKeepGroundRaycastValid" classname="OfflineMovementTests" runstate="Runnable" seed="134038829" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.007627" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CN-01] INPUT accepted=1 screen=(421.24, 256.60) destination=(2.00, 0.00, 2.00) source=pointer
+[CN-01] INPUT accepted=2 screen=(260.47, 271.69) destination=(2.00, 0.00, 2.00) source=pointer
+[CN-01] INPUT accepted=3 screen=(307.32, 189.62) destination=(2.00, 0.00, 2.00) source=pointer
+]]></output>
+        </test-case>
+        <test-case id="1030" name="GroundClickMovesAtBoundedSpeed" fullname="OfflineMovementTests.GroundClickMovesAtBoundedSpeed" methodname="GroundClickMovesAtBoundedSpeed" classname="OfflineMovementTests" runstate="Runnable" seed="743089651" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.017355" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CN-01] INPUT accepted=1 screen=(387.63, 240.00) destination=(3.00, 0.00, 0.00) source=pointer
+]]></output>
+        </test-case>
+        <test-case id="1037" name="InvalidInputAndGroundEdgeCannotMovePlayer" fullname="OfflineMovementTests.InvalidInputAndGroundEdgeCannotMovePlayer" methodname="InvalidInputAndGroundEdgeCannotMovePlayer" classname="OfflineMovementTests" runstate="Runnable" seed="943076963" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.002886" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CN-01] INPUT accepted=1 screen=(410.18, 240.00) destination=(4.00, 0.00, 0.00) source=pointer
+]]></output>
+        </test-case>
+        <test-case id="1033" name="MissingGroundRejectsInput" fullname="OfflineMovementTests.MissingGroundRejectsInput" methodname="MissingGroundRejectsInput" classname="OfflineMovementTests" runstate="Runnable" seed="433305224" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.001465" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1032" name="MouseInputEventReachesUpdateAndCreatesOneIntent" fullname="OfflineMovementTests.MouseInputEventReachesUpdateAndCreatesOneIntent" methodname="MouseInputEventReachesUpdateAndCreatesOneIntent" classname="OfflineMovementTests" runstate="Runnable" seed="517961893" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.048208" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CN-01] INPUT accepted=1 screen=(387.63, 240.00) destination=(3.00, 0.00, 0.00) source=pointer
+]]></output>
+        </test-case>
+        <test-case id="1031" name="TinyFrameStepIsNotDiscardedByController" fullname="OfflineMovementTests.TinyFrameStepIsNotDiscardedByController" methodname="TinyFrameStepIsNotDiscardedByController" classname="OfflineMovementTests" runstate="Runnable" seed="874579596" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.002633" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CN-01] INPUT accepted=1 screen=(387.63, 240.00) destination=(3.00, 0.00, 0.00) source=pointer
+]]></output>
+        </test-case>
+        <test-case id="1034" name="UiPanelConsumesClick" fullname="OfflineMovementTests.UiPanelConsumesClick" methodname="UiPanelConsumesClick" classname="OfflineMovementTests" runstate="Runnable" seed="1179571550" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.005520" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1035" name="WallStopsPlayerWithoutPenetration" fullname="OfflineMovementTests.WallStopsPlayerWithoutPenetration" methodname="WallStopsPlayerWithoutPenetration" classname="OfflineMovementTests" runstate="Runnable" seed="122220489" result="Passed" start-time="2026-10-25 09:06:20Z" end-time="2026-10-25 09:06:20Z" duration="0.022761" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[CN-01] INPUT accepted=1 screen=(387.63, 240.00) destination=(3.00, 0.00, 0.00) source=pointer
+Saving results to: C:/Users/QT/AppData/LocalLow/DefaultCompany/UnityProject\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

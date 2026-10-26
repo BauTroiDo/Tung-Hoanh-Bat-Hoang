@@ -1,0 +1,7702 @@
+{
+  "binarySHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "metadataSHA256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "traces": [
+    {
+      "method": "MapDataService.LoadForTemplate",
+      "rva": "0x8c9bf0",
+      "endRVAExclusive": "0x8c9f7c",
+      "decodedInstructions": 175,
+      "directCalls": 48,
+      "knownCallees": [
+        {
+          "rva": "0x8c9f34",
+          "targetRVA": "0x906df0",
+          "registeredNames": [
+            "SceneObstacleMap.Unload"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rax + 0xb8]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rcx]"
+            },
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x1808cab59"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0x8c9f59",
+          "targetRVA": "0x8cd240",
+          "registeredNames": [
+            "MapDataService.ResolveMapFolderPath"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            },
+            {
+              "op": "call",
+              "args": "0x183b5c500"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "ecx, esi"
+            }
+          ]
+        }
+      ],
+      "allCalls": [
+        {
+          "rva": "0x8c9c12",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c1e",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c2a",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c36",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c42",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c4e",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c5a",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c66",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c72",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c7e",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c8a",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9c96",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9ca2",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9cae",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9cba",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9cc6",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9cd2",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9cde",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9cea",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9cf6",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d02",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d0e",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d1a",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d26",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d32",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d3e",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d4a",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d7d",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9d92",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9dae",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9de0",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9df8",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9e0d",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9e29",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9e4d",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9e62",
+          "targetRVA": "0x2fdde80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9e7a",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9e84",
+          "targetRVA": "0x44b6d50",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9e99",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9eb8",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9ee2",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9ef7",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9f13",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9f34",
+          "targetRVA": "0x906df0",
+          "registeredNames": [
+            "SceneObstacleMap.Unload"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rax + 0xb8]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rcx]"
+            },
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x1808cab59"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0x8c9f49",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9f50",
+          "targetRVA": "0x3b5c500",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8c9f59",
+          "targetRVA": "0x8cd240",
+          "registeredNames": [
+            "MapDataService.ResolveMapFolderPath"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            },
+            {
+              "op": "call",
+              "args": "0x183b5c500"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "ecx, esi"
+            }
+          ]
+        },
+        {
+          "rva": "0x8c9f66",
+          "targetRVA": "0x2fdf4c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0x8c9bf0",
+          "op": "push",
+          "args": "rbp"
+        },
+        {
+          "rva": "0x8c9bf2",
+          "op": "push",
+          "args": "rsi"
+        },
+        {
+          "rva": "0x8c9bf3",
+          "op": "push",
+          "args": "r13"
+        },
+        {
+          "rva": "0x8c9bf5",
+          "op": "mov",
+          "args": "rbp, rsp"
+        },
+        {
+          "rva": "0x8c9bf8",
+          "op": "sub",
+          "args": "rsp, 0x70"
+        },
+        {
+          "rva": "0x8c9bfc",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x5814f88], 0"
+        },
+        {
+          "rva": "0x8c9c03",
+          "op": "mov",
+          "args": "esi, ecx"
+        },
+        {
+          "rva": "0x8c9c05",
+          "op": "jne",
+          "args": "0x1808c9d56"
+        },
+        {
+          "rva": "0x8c9c0b",
+          "op": "lea",
+          "args": "rcx, [rip + 0x54df616]"
+        },
+        {
+          "rva": "0x8c9c12",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8c9c17",
+          "op": "lea",
+          "args": "rcx, [rip + 0x550c46a]"
+        },
+        {
+          "rva": "0x8c9c1e",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8c9c23",
+          "op": "lea",
+          "args": "rcx, [rip + 0x54d619e]"
+        },
+        {
+          "rva": "0x8c9c2a",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8c9c2f",
+          "op": "lea",
+          "args": "rcx, [rip + 0x5557d72]"
+        }
+      ]
+    },
+    {
+      "method": "MapDataService.ResolveMapFolderPath",
+      "rva": "0x8cd240",
+      "endRVAExclusive": "0x8cd418",
+      "decodedInstructions": 92,
+      "directCalls": 23,
+      "knownCallees": [
+        {
+          "rva": "0x8cd367",
+          "targetRVA": "0x8cc0f0",
+          "registeredNames": [
+            "MapDataService.ParseMaplistFile"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x1808cd35e"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x5566613]"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0x8cd391",
+          "targetRVA": "0x8cc0f0",
+          "registeredNames": [
+            "MapDataService.ParseMaplistFile"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], eax"
+            },
+            {
+              "op": "jne",
+              "args": "0x1808cd388"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x55666f9]"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0x8cd40b",
+          "targetRVA": "0x8cd820",
+          "registeredNames": [
+            "MapDataService.TryMaplistPath"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "jne",
+              "args": "0x1808cd401"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "lea",
+              "args": "rdx, [rsp + 0x68]"
+            },
+            {
+              "op": "mov",
+              "args": "ecx, esi"
+            }
+          ]
+        }
+      ],
+      "allCalls": [
+        {
+          "rva": "0x8cd258",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd264",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd270",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd27c",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd288",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd294",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd2a0",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd2c5",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd2f1",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd30d",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd319",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd325",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd331",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd33d",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd359",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd367",
+          "targetRVA": "0x8cc0f0",
+          "registeredNames": [
+            "MapDataService.ParseMaplistFile"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x1808cd35e"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x5566613]"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0x8cd383",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd391",
+          "targetRVA": "0x8cc0f0",
+          "registeredNames": [
+            "MapDataService.ParseMaplistFile"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], eax"
+            },
+            {
+              "op": "jne",
+              "args": "0x1808cd388"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x55666f9]"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0x8cd3ad",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd3bb",
+          "targetRVA": "0x44b6bc0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd3e7",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd3fc",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd40b",
+          "targetRVA": "0x8cd820",
+          "registeredNames": [
+            "MapDataService.TryMaplistPath"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "jne",
+              "args": "0x1808cd401"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "lea",
+              "args": "rdx, [rsp + 0x68]"
+            },
+            {
+              "op": "mov",
+              "args": "ecx, esi"
+            }
+          ]
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0x8cd240",
+          "op": "push",
+          "args": "rsi"
+        },
+        {
+          "rva": "0x8cd242",
+          "op": "sub",
+          "args": "rsp, 0x40"
+        },
+        {
+          "rva": "0x8cd246",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x5811939], 0"
+        },
+        {
+          "rva": "0x8cd24d",
+          "op": "mov",
+          "args": "esi, ecx"
+        },
+        {
+          "rva": "0x8cd24f",
+          "op": "jne",
+          "args": "0x1808cd2ac"
+        },
+        {
+          "rva": "0x8cd251",
+          "op": "lea",
+          "args": "rcx, [rip + 0x5508e30]"
+        },
+        {
+          "rva": "0x8cd258",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cd25d",
+          "op": "lea",
+          "args": "rcx, [rip + 0x557398c]"
+        },
+        {
+          "rva": "0x8cd264",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cd269",
+          "op": "lea",
+          "args": "rcx, [rip + 0x54d2b58]"
+        },
+        {
+          "rva": "0x8cd270",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cd275",
+          "op": "lea",
+          "args": "rcx, [rip + 0x54da0d4]"
+        },
+        {
+          "rva": "0x8cd27c",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cd281",
+          "op": "lea",
+          "args": "rcx, [rip + 0x5534b50]"
+        },
+        {
+          "rva": "0x8cd288",
+          "op": "call",
+          "args": "0x1806a7110"
+        }
+      ]
+    },
+    {
+      "method": "MapDataService.ParseMaplistFile",
+      "rva": "0x8cc0f0",
+      "endRVAExclusive": "0x8cc24c",
+      "decodedInstructions": 73,
+      "directCalls": 17,
+      "knownCallees": [
+        {
+          "rva": "0x8cc194",
+          "targetRVA": "0x8ccfe0",
+          "registeredNames": [
+            "MapDataService.ReadStreamingBytes"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "lea",
+              "args": "r8, [rsp + 0x40]"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0x8cc19e",
+          "targetRVA": "0x8cc250",
+          "registeredNames": [
+            "MapDataService.ParseMaplist"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            },
+            {
+              "op": "call",
+              "args": "0x1808ccfe0"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rax"
+            }
+          ]
+        }
+      ],
+      "allCalls": [
+        {
+          "rva": "0x8cc10d",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc119",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc125",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc131",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc13d",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc149",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc155",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc161",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc182",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc194",
+          "targetRVA": "0x8ccfe0",
+          "registeredNames": [
+            "MapDataService.ReadStreamingBytes"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "lea",
+              "args": "r8, [rsp + 0x40]"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0x8cc19e",
+          "targetRVA": "0x8cc250",
+          "registeredNames": [
+            "MapDataService.ParseMaplist"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            },
+            {
+              "op": "call",
+              "args": "0x1808ccfe0"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rax"
+            }
+          ]
+        },
+        {
+          "rva": "0x8cc1b9",
+          "targetRVA": "0x2b672d0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc1ce",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc1e3",
+          "targetRVA": "0x2fdde80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc217",
+          "targetRVA": "0x2fda260",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc22f",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cc239",
+          "targetRVA": "0x44b6d50",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0x8cc0f0",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x10], rbx"
+        },
+        {
+          "rva": "0x8cc0f5",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0x8cc0f6",
+          "op": "sub",
+          "args": "rsp, 0x30"
+        },
+        {
+          "rva": "0x8cc0fa",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x5812a88], 0"
+        },
+        {
+          "rva": "0x8cc101",
+          "op": "mov",
+          "args": "rdi, rcx"
+        },
+        {
+          "rva": "0x8cc104",
+          "op": "jne",
+          "args": "0x1808cc16d"
+        },
+        {
+          "rva": "0x8cc106",
+          "op": "lea",
+          "args": "rcx, [rip + 0x5509f7b]"
+        },
+        {
+          "rva": "0x8cc10d",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cc112",
+          "op": "lea",
+          "args": "rcx, [rip + 0x553664f]"
+        },
+        {
+          "rva": "0x8cc119",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cc11e",
+          "op": "lea",
+          "args": "rcx, [rip + 0x54d3ca3]"
+        },
+        {
+          "rva": "0x8cc125",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cc12a",
+          "op": "lea",
+          "args": "rcx, [rip + 0x5546f5f]"
+        },
+        {
+          "rva": "0x8cc131",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cc136",
+          "op": "lea",
+          "args": "rcx, [rip + 0x552eeb3]"
+        }
+      ]
+    },
+    {
+      "method": "MapDataService.TryMaplistPath",
+      "rva": "0x8cd820",
+      "endRVAExclusive": "0x8cd8f6",
+      "decodedInstructions": 53,
+      "directCalls": 8,
+      "knownCallees": [],
+      "allCalls": [
+        {
+          "rva": "0x8cd83f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd84b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd863",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd878",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd89b",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd8c3",
+          "targetRVA": "0x2c3aa50",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd8d1",
+          "targetRVA": "0x2fdf4c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x8cd8f0",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0x8cd820",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rbx"
+        },
+        {
+          "rva": "0x8cd825",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0x8cd826",
+          "op": "sub",
+          "args": "rsp, 0x20"
+        },
+        {
+          "rva": "0x8cd82a",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x5811356], 0"
+        },
+        {
+          "rva": "0x8cd831",
+          "op": "mov",
+          "args": "rbx, rdx"
+        },
+        {
+          "rva": "0x8cd834",
+          "op": "mov",
+          "args": "edi, ecx"
+        },
+        {
+          "rva": "0x8cd836",
+          "op": "jne",
+          "args": "0x1808cd857"
+        },
+        {
+          "rva": "0x8cd838",
+          "op": "lea",
+          "args": "rcx, [rip + 0x5534e19]"
+        },
+        {
+          "rva": "0x8cd83f",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cd844",
+          "op": "lea",
+          "args": "rcx, [rip + 0x54d257d]"
+        },
+        {
+          "rva": "0x8cd84b",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x8cd850",
+          "op": "mov",
+          "args": "byte ptr [rip + 0x5811330], 1"
+        },
+        {
+          "rva": "0x8cd857",
+          "op": "xor",
+          "args": "edx, edx"
+        },
+        {
+          "rva": "0x8cd859",
+          "op": "mov",
+          "args": "qword ptr [rbx], 0"
+        },
+        {
+          "rva": "0x8cd860",
+          "op": "mov",
+          "args": "rcx, rbx"
+        }
+      ]
+    },
+    {
+      "method": "GameManager.LoadScene",
+      "rva": "0x918b70",
+      "endRVAExclusive": "0x918c2d",
+      "decodedInstructions": 41,
+      "directCalls": 5,
+      "knownCallees": [],
+      "allCalls": [
+        {
+          "rva": "0x918b92",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x918bc6",
+          "targetRVA": "0x30918b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x918be3",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x918bf5",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x918c17",
+          "targetRVA": "0x10ef4a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0x918b70",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rbx"
+        },
+        {
+          "rva": "0x918b75",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0x918b76",
+          "op": "sub",
+          "args": "rsp, 0x90"
+        },
+        {
+          "rva": "0x918b7d",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x57c62aa], 0"
+        },
+        {
+          "rva": "0x918b84",
+          "op": "mov",
+          "args": "edi, edx"
+        },
+        {
+          "rva": "0x918b86",
+          "op": "mov",
+          "args": "rbx, rcx"
+        },
+        {
+          "rva": "0x918b89",
+          "op": "jne",
+          "args": "0x180918b9e"
+        },
+        {
+          "rva": "0x918b8b",
+          "op": "lea",
+          "args": "rcx, [rip + 0x54e8a76]"
+        },
+        {
+          "rva": "0x918b92",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x918b97",
+          "op": "mov",
+          "args": "byte ptr [rip + 0x57c6290], 1"
+        },
+        {
+          "rva": "0x918b9e",
+          "op": "xorps",
+          "args": "xmm0, xmm0"
+        },
+        {
+          "rva": "0x918ba1",
+          "op": "lea",
+          "args": "rcx, [rsp + 0x20]"
+        },
+        {
+          "rva": "0x918ba6",
+          "op": "xor",
+          "args": "eax, eax"
+        },
+        {
+          "rva": "0x918ba8",
+          "op": "xor",
+          "args": "edx, edx"
+        },
+        {
+          "rva": "0x918baa",
+          "op": "movups",
+          "args": "xmmword ptr [rsp + 0x40], xmm0"
+        }
+      ]
+    },
+    {
+      "method": "GameManager.LoadSceneByName",
+      "rva": "0x918b20",
+      "endRVAExclusive": "0x918b69",
+      "decodedInstructions": 17,
+      "directCalls": 2,
+      "knownCallees": [],
+      "allCalls": [
+        {
+          "rva": "0x918b39",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0x918b55",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0x918b20",
+          "op": "push",
+          "args": "rbx"
+        },
+        {
+          "rva": "0x918b22",
+          "op": "sub",
+          "args": "rsp, 0x20"
+        },
+        {
+          "rva": "0x918b26",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x57c633c], 0"
+        },
+        {
+          "rva": "0x918b2d",
+          "op": "mov",
+          "args": "rbx, rdx"
+        },
+        {
+          "rva": "0x918b30",
+          "op": "jne",
+          "args": "0x180918b45"
+        },
+        {
+          "rva": "0x918b32",
+          "op": "lea",
+          "args": "rcx, [rip + 0x54db3cf]"
+        },
+        {
+          "rva": "0x918b39",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0x918b3e",
+          "op": "mov",
+          "args": "byte ptr [rip + 0x57c6324], 1"
+        },
+        {
+          "rva": "0x918b45",
+          "op": "mov",
+          "args": "rcx, qword ptr [rip + 0x54db3bc]"
+        },
+        {
+          "rva": "0x918b4c",
+          "op": "cmp",
+          "args": "dword ptr [rcx + 0xe4], 0"
+        },
+        {
+          "rva": "0x918b53",
+          "op": "jne",
+          "args": "0x180918b5a"
+        },
+        {
+          "rva": "0x918b55",
+          "op": "call",
+          "args": "0x1806a7450"
+        },
+        {
+          "rva": "0x918b5a",
+          "op": "xor",
+          "args": "edx, edx"
+        },
+        {
+          "rva": "0x918b5c",
+          "op": "mov",
+          "args": "rcx, rbx"
+        },
+        {
+          "rva": "0x918b5f",
+          "op": "add",
+          "args": "rsp, 0x20"
+        }
+      ]
+    },
+    {
+      "method": "<LoadScene>d__96.MoveNext",
+      "rva": "0xa6f160",
+      "endRVAExclusive": "0xa6fab7",
+      "decodedInstructions": 525,
+      "directCalls": 114,
+      "knownCallees": [
+        {
+          "rva": "0xa6f3c4",
+          "targetRVA": "0x918390",
+          "registeredNames": [
+            "GameManager.HandleLightMap"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1807b3070"
+            },
+            {
+              "op": "test",
+              "args": "rsi, rsi"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6faaa"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rsi"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f3ce",
+          "targetRVA": "0x91de90",
+          "registeredNames": [
+            "GameManager.TryKickMiniMapDownload"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rsi"
+            },
+            {
+              "op": "call",
+              "args": "0x180918390"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rsi"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f3f3",
+          "targetRVA": "0xb590b0",
+          "registeredNames": [
+            "UiLoading.SafeOpen"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f3ef"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "cl, 1"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f3fa",
+          "targetRVA": "0xb220c0",
+          "registeredNames": [
+            "UiDeathScreen.BeginMapChange"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "cl, 1"
+            },
+            {
+              "op": "call",
+              "args": "0x180b590b0"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f46d",
+          "targetRVA": "0xa63be0",
+          "registeredNames": [
+            "LeanMemoryMode.get_Enabled"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x5324a3b]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f46b"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f508",
+          "targetRVA": "0x8abd30",
+          "registeredNames": [
+            "OPManager.TrimPools"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1821bec30"
+            },
+            {
+              "op": "test",
+              "args": "rax, rax"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6fa86"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rax"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f518",
+          "targetRVA": "0x8c84f0",
+          "registeredNames": [
+            "ItemSO.ReleaseUnusedMeshHandles"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1808abd30"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rsi + 0x30]"
+            },
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6f51d"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f534",
+          "targetRVA": "0x8ac770",
+          "registeredNames": [
+            "SkeletonTransplant.ClearBaseNameCache"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x5391924]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f532"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f6f6",
+          "targetRVA": "0x7c1270",
+          "registeredNames": [
+            "StreamAsssetHelper.ClearSpriteCache"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x53a6f42]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f6f4"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f7be",
+          "targetRVA": "0xa63be0",
+          "registeredNames": [
+            "LeanMemoryMode.get_Enabled"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x53246ea]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f7bc"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f841",
+          "targetRVA": "0x91b850",
+          "registeredNames": [
+            "GameManager.RequestLoadMap"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rsi, rsi"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6fa9b"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "edx, dword ptr [rdi + 0x30]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rsi"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f988",
+          "targetRVA": "0xb591c0",
+          "registeredNames": [
+            "UiLoading.SafeProgress"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "lea",
+              "args": "rcx, [rip + 0x5357c2b]"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7130"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, rax"
+            },
+            {
+              "op": "movss",
+              "args": "xmm0, dword ptr [rip + 0x3fa9410]"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f9a5",
+          "targetRVA": "0x91b850",
+          "registeredNames": [
+            "GameManager.RequestLoadMap"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rsp + 0xf8]"
+            },
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6fab0"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "edx, dword ptr [rdi + 0x30]"
+            }
+          ]
+        }
+      ],
+      "allCalls": [
+        {
+          "rva": "0xa6f18c",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f198",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f1a4",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f1b0",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f1bc",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f1c8",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f1d4",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f1e0",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f1ec",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f1f8",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f204",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f210",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f21c",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f228",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f296",
+          "targetRVA": "0x6a7370",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f2ae",
+          "targetRVA": "0x18c8720",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f2c3",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f2e3",
+          "targetRVA": "0x3bfc280",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f2f7",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f317",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f333",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f348",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f36d",
+          "targetRVA": "0x3ce0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f387",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f39f",
+          "targetRVA": "0x10ecd40",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f3b1",
+          "targetRVA": "0x7b3070",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f3c4",
+          "targetRVA": "0x918390",
+          "registeredNames": [
+            "GameManager.HandleLightMap"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1807b3070"
+            },
+            {
+              "op": "test",
+              "args": "rsi, rsi"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6faaa"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rsi"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f3ce",
+          "targetRVA": "0x91de90",
+          "registeredNames": [
+            "GameManager.TryKickMiniMapDownload"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rsi"
+            },
+            {
+              "op": "call",
+              "args": "0x180918390"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rsi"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f3d5",
+          "targetRVA": "0x2e93e90",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f3ea",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f3f3",
+          "targetRVA": "0xb590b0",
+          "registeredNames": [
+            "UiLoading.SafeOpen"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f3ef"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "cl, 1"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f3fa",
+          "targetRVA": "0xb220c0",
+          "registeredNames": [
+            "UiDeathScreen.BeginMapChange"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "cl, 1"
+            },
+            {
+              "op": "call",
+              "args": "0x180b590b0"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f406",
+          "targetRVA": "0x1dbd4a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f42b",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f451",
+          "targetRVA": "0x2eb3ac0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f466",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f46d",
+          "targetRVA": "0xa63be0",
+          "registeredNames": [
+            "LeanMemoryMode.get_Enabled"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x5324a3b]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f46b"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f48a",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f49f",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f4ab",
+          "targetRVA": "0x21bec30",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f4c3",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f4d0",
+          "targetRVA": "0x4559b40",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f4e9",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f4f5",
+          "targetRVA": "0x21bec30",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f508",
+          "targetRVA": "0x8abd30",
+          "registeredNames": [
+            "OPManager.TrimPools"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1821bec30"
+            },
+            {
+              "op": "test",
+              "args": "rax, rax"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6fa86"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rax"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f518",
+          "targetRVA": "0x8c84f0",
+          "registeredNames": [
+            "ItemSO.ReleaseUnusedMeshHandles"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x1808abd30"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rsi + 0x30]"
+            },
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6f51d"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f52d",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f534",
+          "targetRVA": "0x8ac770",
+          "registeredNames": [
+            "SkeletonTransplant.ClearBaseNameCache"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x5391924]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f532"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f561",
+          "targetRVA": null,
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f56d",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f57b",
+          "targetRVA": "0x2fdab30",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f58a",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f59b",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f5a5",
+          "targetRVA": "0x44b6bc0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f5d0",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f5dc",
+          "targetRVA": "0x3bfaa10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f5f0",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f610",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f62c",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f641",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f666",
+          "targetRVA": "0x3ce0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f684",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f69c",
+          "targetRVA": "0x10ecd40",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f6ae",
+          "targetRVA": "0x7b3070",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f6c6",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f6ef",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f6f6",
+          "targetRVA": "0x7c1270",
+          "registeredNames": [
+            "StreamAsssetHelper.ClearSpriteCache"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x53a6f42]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f6f4"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f70c",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f721",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f73d",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f764",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f771",
+          "targetRVA": "0x4559b40",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f78e",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f7b7",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f7be",
+          "targetRVA": "0xa63be0",
+          "registeredNames": [
+            "LeanMemoryMode.get_Enabled"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x53246ea]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180a6f7bc"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f7d7",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f7ec",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f808",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f82a",
+          "targetRVA": "0x2e89ca0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f841",
+          "targetRVA": "0x91b850",
+          "registeredNames": [
+            "GameManager.RequestLoadMap"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rsi, rsi"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6fa9b"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "edx, dword ptr [rdi + 0x30]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rsi"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f86e",
+          "targetRVA": null,
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f87a",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f888",
+          "targetRVA": "0x2fdab30",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f897",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f8a8",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f8b2",
+          "targetRVA": "0x44b6bc0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f902",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f911",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f922",
+          "targetRVA": "0x2fdde80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f931",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f942",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f94c",
+          "targetRVA": "0x44b62a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f958",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f969",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f975",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f988",
+          "targetRVA": "0xb591c0",
+          "registeredNames": [
+            "UiLoading.SafeProgress"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "lea",
+              "args": "rcx, [rip + 0x5357c2b]"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7130"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, rax"
+            },
+            {
+              "op": "movss",
+              "args": "xmm0, dword ptr [rip + 0x3fa9410]"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f9a5",
+          "targetRVA": "0x91b850",
+          "registeredNames": [
+            "GameManager.RequestLoadMap"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rsp + 0xf8]"
+            },
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180a6fab0"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "edx, dword ptr [rdi + 0x30]"
+            }
+          ]
+        },
+        {
+          "rva": "0xa6f9e0",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6f9ef",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa00",
+          "targetRVA": "0x2fdde80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa0f",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa20",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa2a",
+          "targetRVA": "0x44b62a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa43",
+          "targetRVA": "0x3091a90",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa7f",
+          "targetRVA": "0x3091970",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa86",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa8c",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa91",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa96",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fa9b",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6faa0",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6faa5",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6faaa",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xa6fab0",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0xa6f160",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x10], rbx"
+        },
+        {
+          "rva": "0xa6f165",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rcx"
+        },
+        {
+          "rva": "0xa6f16a",
+          "op": "push",
+          "args": "rsi"
+        },
+        {
+          "rva": "0xa6f16b",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0xa6f16c",
+          "op": "push",
+          "args": "r14"
+        },
+        {
+          "rva": "0xa6f16e",
+          "op": "sub",
+          "args": "rsp, 0xc0"
+        },
+        {
+          "rva": "0xa6f175",
+          "op": "mov",
+          "args": "rdi, rcx"
+        },
+        {
+          "rva": "0xa6f178",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x56705ee], 0"
+        },
+        {
+          "rva": "0xa6f17f",
+          "op": "jne",
+          "args": "0x180a6f234"
+        },
+        {
+          "rva": "0xa6f185",
+          "op": "lea",
+          "args": "rcx, [rip + 0x53d05d4]"
+        },
+        {
+          "rva": "0xa6f18c",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xa6f191",
+          "op": "lea",
+          "args": "rcx, [rip + 0x5391198]"
+        },
+        {
+          "rva": "0xa6f198",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xa6f19d",
+          "op": "lea",
+          "args": "rcx, [rip + 0x537f15c]"
+        },
+        {
+          "rva": "0xa6f1a4",
+          "op": "call",
+          "args": "0x1806a7110"
+        }
+      ]
+    },
+    {
+      "method": "SceneLoadService.LoadSceneAsync",
+      "rva": "0xc73ef0",
+      "endRVAExclusive": "0xc74041",
+      "decodedInstructions": 75,
+      "directCalls": 13,
+      "knownCallees": [],
+      "allCalls": [
+        {
+          "rva": "0xc73f2d",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73f39",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73f45",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73f51",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73f88",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73f98",
+          "targetRVA": "0x14d0750",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73fb5",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73fc5",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73fd5",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73fe5",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73ff4",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7400f",
+          "targetRVA": "0xf848d0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7401f",
+          "targetRVA": "0x1ffe340",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0xc73ef0",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rbx"
+        },
+        {
+          "rva": "0xc73ef5",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x10], rsi"
+        },
+        {
+          "rva": "0xc73efa",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x18], rdi"
+        },
+        {
+          "rva": "0xc73eff",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x20], r14"
+        },
+        {
+          "rva": "0xc73f04",
+          "op": "push",
+          "args": "rbp"
+        },
+        {
+          "rva": "0xc73f05",
+          "op": "lea",
+          "args": "rbp, [rsp - 0x4f]"
+        },
+        {
+          "rva": "0xc73f0a",
+          "op": "sub",
+          "args": "rsp, 0xa0"
+        },
+        {
+          "rva": "0xc73f11",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x546c84a], 0"
+        },
+        {
+          "rva": "0xc73f18",
+          "op": "mov",
+          "args": "rbx, r9"
+        },
+        {
+          "rva": "0xc73f1b",
+          "op": "mov",
+          "args": "rdi, r8"
+        },
+        {
+          "rva": "0xc73f1e",
+          "op": "mov",
+          "args": "rsi, rdx"
+        },
+        {
+          "rva": "0xc73f21",
+          "op": "mov",
+          "args": "r14, rcx"
+        },
+        {
+          "rva": "0xc73f24",
+          "op": "jne",
+          "args": "0x180c73f5d"
+        },
+        {
+          "rva": "0xc73f26",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51a81ab]"
+        },
+        {
+          "rva": "0xc73f2d",
+          "op": "call",
+          "args": "0x1806a7110"
+        }
+      ]
+    },
+    {
+      "method": "SceneLoadService.LoadSceneInternal",
+      "rva": "0xc74170",
+      "endRVAExclusive": "0xc742bc",
+      "decodedInstructions": 69,
+      "directCalls": 14,
+      "knownCallees": [],
+      "allCalls": [
+        {
+          "rva": "0xc741a3",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc741af",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc741bb",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc741c7",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc741e0",
+          "targetRVA": "0x76eee0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc741f5",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74206",
+          "targetRVA": "0x14d0750",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74228",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7423a",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7424c",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7425e",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7426f",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7428d",
+          "targetRVA": "0xf84a50",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7429e",
+          "targetRVA": "0x1ffe340",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0xc74170",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rbx"
+        },
+        {
+          "rva": "0xc74175",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x10], rbp"
+        },
+        {
+          "rva": "0xc7417a",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x18], rsi"
+        },
+        {
+          "rva": "0xc7417f",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0xc74180",
+          "op": "sub",
+          "args": "rsp, 0x100"
+        },
+        {
+          "rva": "0xc74187",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x546c5d6], 0"
+        },
+        {
+          "rva": "0xc7418e",
+          "op": "mov",
+          "args": "rbx, r9"
+        },
+        {
+          "rva": "0xc74191",
+          "op": "mov",
+          "args": "rdi, r8"
+        },
+        {
+          "rva": "0xc74194",
+          "op": "mov",
+          "args": "rsi, rdx"
+        },
+        {
+          "rva": "0xc74197",
+          "op": "mov",
+          "args": "rbp, rcx"
+        },
+        {
+          "rva": "0xc7419a",
+          "op": "jne",
+          "args": "0x180c741d3"
+        },
+        {
+          "rva": "0xc7419c",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51a7f35]"
+        },
+        {
+          "rva": "0xc741a3",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xc741a8",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51a7e19]"
+        },
+        {
+          "rva": "0xc741af",
+          "op": "call",
+          "args": "0x1806a7110"
+        }
+      ]
+    },
+    {
+      "method": "SceneLoadService.ResolveVariantKeyAsync",
+      "rva": "0xc74650",
+      "endRVAExclusive": "0xc74783",
+      "decodedInstructions": 63,
+      "directCalls": 12,
+      "knownCallees": [],
+      "allCalls": [
+        {
+          "rva": "0xc7467b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74687",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74693",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7469f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc746d2",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc746e3",
+          "targetRVA": "0x14d0750",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74705",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74717",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74729",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc7473a",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74758",
+          "targetRVA": "0xf866d0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc74769",
+          "targetRVA": "0x1ffe6b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0xc74650",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rbx"
+        },
+        {
+          "rva": "0xc74655",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x10], rsi"
+        },
+        {
+          "rva": "0xc7465a",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0xc7465b",
+          "op": "sub",
+          "args": "rsp, 0x80"
+        },
+        {
+          "rva": "0xc74662",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x546c108], 0"
+        },
+        {
+          "rva": "0xc74669",
+          "op": "mov",
+          "args": "rbx, r8"
+        },
+        {
+          "rva": "0xc7466c",
+          "op": "mov",
+          "args": "rdi, rdx"
+        },
+        {
+          "rva": "0xc7466f",
+          "op": "mov",
+          "args": "rsi, rcx"
+        },
+        {
+          "rva": "0xc74672",
+          "op": "jne",
+          "args": "0x180c746ab"
+        },
+        {
+          "rva": "0xc74674",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51aaf7d]"
+        },
+        {
+          "rva": "0xc7467b",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xc74680",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51aad51]"
+        },
+        {
+          "rva": "0xc74687",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xc7468c",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51ab3a5]"
+        },
+        {
+          "rva": "0xc74693",
+          "op": "call",
+          "args": "0x1806a7110"
+        }
+      ]
+    },
+    {
+      "method": "SceneLoadService.LoadAddressableMapSceneAsync",
+      "rva": "0xc73c00",
+      "endRVAExclusive": "0xc73d8a",
+      "decodedInstructions": 89,
+      "directCalls": 15,
+      "knownCallees": [],
+      "allCalls": [
+        {
+          "rva": "0xc73c3d",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73c49",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73c55",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73c61",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73caa",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73cba",
+          "targetRVA": "0x14d0750",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73cd7",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73ce7",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73cf7",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73d07",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73d17",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73d28",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73d3b",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73d58",
+          "targetRVA": "0xf84450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc73d68",
+          "targetRVA": "0x1ffe6b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0xc73c00",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rbx"
+        },
+        {
+          "rva": "0xc73c05",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x10], rsi"
+        },
+        {
+          "rva": "0xc73c0a",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x18], rdi"
+        },
+        {
+          "rva": "0xc73c0f",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x20], r14"
+        },
+        {
+          "rva": "0xc73c14",
+          "op": "push",
+          "args": "rbp"
+        },
+        {
+          "rva": "0xc73c15",
+          "op": "lea",
+          "args": "rbp, [rsp - 0x3f]"
+        },
+        {
+          "rva": "0xc73c1a",
+          "op": "sub",
+          "args": "rsp, 0xe0"
+        },
+        {
+          "rva": "0xc73c21",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x546cb3d], 0"
+        },
+        {
+          "rva": "0xc73c28",
+          "op": "mov",
+          "args": "rbx, r9"
+        },
+        {
+          "rva": "0xc73c2b",
+          "op": "mov",
+          "args": "rdi, r8"
+        },
+        {
+          "rva": "0xc73c2e",
+          "op": "mov",
+          "args": "rsi, rdx"
+        },
+        {
+          "rva": "0xc73c31",
+          "op": "mov",
+          "args": "r14, rcx"
+        },
+        {
+          "rva": "0xc73c34",
+          "op": "jne",
+          "args": "0x180c73c6d"
+        },
+        {
+          "rva": "0xc73c36",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51ab9bb]"
+        },
+        {
+          "rva": "0xc73c3d",
+          "op": "call",
+          "args": "0x1806a7110"
+        }
+      ]
+    },
+    {
+      "method": "<LoadSceneAsync>d__24.MoveNext",
+      "rva": "0xc8d5a0",
+      "endRVAExclusive": "0xc8de13",
+      "decodedInstructions": 446,
+      "directCalls": 79,
+      "knownCallees": [
+        {
+          "rva": "0xc8d73f",
+          "targetRVA": "0xc74b60",
+          "registeredNames": [
+            "SceneLoadService.TryShortCircuitAlreadyLoaded"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180c8ddaf"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "lea",
+              "args": "r8, [rsp + 0xa0]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rbx + 0x20]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8d8ff",
+          "targetRVA": "0xb591c0",
+          "registeredNames": [
+            "UiLoading.SafeProgress"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "jne",
+              "args": "0x180c8d8ed"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rip + 0x5137d39]"
+            },
+            {
+              "op": "movss",
+              "args": "xmm0, dword ptr [rip + 0x3d8b2c1]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8da5b",
+          "targetRVA": "0xc74b60",
+          "registeredNames": [
+            "SceneLoadService.TryShortCircuitAlreadyLoaded"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180c8ddc9"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "lea",
+              "args": "r8, [rsp + 0xa0]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rbx + 0x20]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8dad7",
+          "targetRVA": "0xc74170",
+          "registeredNames": [
+            "SceneLoadService.LoadSceneInternal"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c8ddf5"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x20], r14"
+            },
+            {
+              "op": "mov",
+              "args": "r9, qword ptr [rbx + 0x30]"
+            },
+            {
+              "op": "mov",
+              "args": "r8, qword ptr [rbx + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rbx + 0x20]"
+            }
+          ]
+        }
+      ],
+      "allCalls": [
+        {
+          "rva": "0xc8d5d4",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d5e0",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d5ec",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d5f8",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d604",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d610",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d61c",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d628",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d634",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d640",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d64c",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d658",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d664",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d670",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d67c",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d6f3",
+          "targetRVA": "0x2fdf4c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d717",
+          "targetRVA": "0x321f4a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d73f",
+          "targetRVA": "0xc74b60",
+          "registeredNames": [
+            "SceneLoadService.TryShortCircuitAlreadyLoaded"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180c8ddaf"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "lea",
+              "args": "r8, [rsp + 0xa0]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rbx + 0x20]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8d773",
+          "targetRVA": "0x32124c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d78b",
+          "targetRVA": "0x22f5c10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d7a1",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d7c8",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d7dd",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d7f5",
+          "targetRVA": "0xf80700",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d845",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d857",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d8c8",
+          "targetRVA": "0x2296580",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d8e8",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d8ff",
+          "targetRVA": "0xb591c0",
+          "registeredNames": [
+            "UiLoading.SafeProgress"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "jne",
+              "args": "0x180c8d8ed"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rip + 0x5137d39]"
+            },
+            {
+              "op": "movss",
+              "args": "xmm0, dword ptr [rip + 0x3d8b2c1]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8d929",
+          "targetRVA": "0x3212a20",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d93c",
+          "targetRVA": "0x3224740",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d94d",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d95d",
+          "targetRVA": "0x3091f20",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d9d9",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8d9ee",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8da06",
+          "targetRVA": "0xf81460",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8da28",
+          "targetRVA": "0x6a7300",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8da5b",
+          "targetRVA": "0xc74b60",
+          "registeredNames": [
+            "SceneLoadService.TryShortCircuitAlreadyLoaded"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180c8ddc9"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "lea",
+              "args": "r8, [rsp + 0xa0]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rbx + 0x20]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8daaa",
+          "targetRVA": "0x32123b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dad7",
+          "targetRVA": "0xc74170",
+          "registeredNames": [
+            "SceneLoadService.LoadSceneInternal"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c8ddf5"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x20], r14"
+            },
+            {
+              "op": "mov",
+              "args": "r9, qword ptr [rbx + 0x30]"
+            },
+            {
+              "op": "mov",
+              "args": "r8, qword ptr [rbx + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rbx + 0x20]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8daef",
+          "targetRVA": "0x22f5c10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8db05",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8db1f",
+          "targetRVA": "0x2293070",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8db64",
+          "targetRVA": "0x32123b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8db8f",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dba4",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dbbc",
+          "targetRVA": "0xf80700",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dbec",
+          "targetRVA": "0x32123b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dc1b",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dc2d",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dc72",
+          "targetRVA": "0x32123b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dc8e",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dd02",
+          "targetRVA": "0x1ff9fd0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dd2b",
+          "targetRVA": "0xc7f890",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dd6a",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dd7b",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dd87",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dd96",
+          "targetRVA": "0x1ff4170",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dda0",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dda5",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddaa",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddaf",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddb4",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddb9",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddbe",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddc3",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddc9",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddcf",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddd4",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddda",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dde0",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8dde5",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddea",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddef",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddf5",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ddfb",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8de00",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8de06",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8de0c",
+          "targetRVA": "0x6a58c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0xc8d5a0",
+          "op": "mov",
+          "args": "qword ptr [rsp + 0x10], rbx"
+        },
+        {
+          "rva": "0xc8d5a5",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rcx"
+        },
+        {
+          "rva": "0xc8d5aa",
+          "op": "push",
+          "args": "rsi"
+        },
+        {
+          "rva": "0xc8d5ab",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0xc8d5ac",
+          "op": "push",
+          "args": "r14"
+        },
+        {
+          "rva": "0xc8d5ae",
+          "op": "sub",
+          "args": "rsp, 0xf0"
+        },
+        {
+          "rva": "0xc8d5b5",
+          "op": "movaps",
+          "args": "xmmword ptr [rsp + 0xe0], xmm6"
+        },
+        {
+          "rva": "0xc8d5bd",
+          "op": "mov",
+          "args": "rbx, rcx"
+        },
+        {
+          "rva": "0xc8d5c0",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x54531c4], 0"
+        },
+        {
+          "rva": "0xc8d5c7",
+          "op": "jne",
+          "args": "0x180c8d688"
+        },
+        {
+          "rva": "0xc8d5cd",
+          "op": "lea",
+          "args": "rcx, [rip + 0x518e174]"
+        },
+        {
+          "rva": "0xc8d5d4",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xc8d5d9",
+          "op": "lea",
+          "args": "rcx, [rip + 0x518e498]"
+        },
+        {
+          "rva": "0xc8d5e0",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xc8d5e5",
+          "op": "lea",
+          "args": "rcx, [rip + 0x518e6ac]"
+        }
+      ]
+    },
+    {
+      "method": "<LoadSceneInternal>d__26.MoveNext",
+      "rva": "0xc8e410",
+      "endRVAExclusive": "0xc90288",
+      "decodedInstructions": 1530,
+      "directCalls": 273,
+      "knownCallees": [
+        {
+          "rva": "0xc8e9d8",
+          "targetRVA": "0x8e2630",
+          "registeredNames": [
+            "MapSharpnessSetting.get_Enabled"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c8fb80"
+            },
+            {
+              "op": "cmp",
+              "args": "qword ptr [rdx + 0x48], 0"
+            },
+            {
+              "op": "je",
+              "args": "0x180c8fb80"
+            },
+            {
+              "op": "mov",
+              "args": "byte ptr [rdi + 0x41], 0"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8ea74",
+          "targetRVA": "0xc74650",
+          "registeredNames": [
+            "SceneLoadService.ResolveVariantKeyAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c90161"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "mov",
+              "args": "r8, qword ptr [r8 + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rdx + 0x10]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8ecc7",
+          "targetRVA": "0xc74650",
+          "registeredNames": [
+            "SceneLoadService.ResolveVariantKeyAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rdi, rdi"
+            },
+            {
+              "op": "je",
+              "args": "0x180c9013d"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "mov",
+              "args": "r8, qword ptr [r8 + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8ef4b",
+          "targetRVA": "0x8e1ef0",
+          "registeredNames": [
+            "MapService.get_CurrentMapDisplayName"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x511181d]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180c8ef49"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f042",
+          "targetRVA": "0xb591c0",
+          "registeredNames": [
+            "UiLoading.SafeProgress"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "jne",
+              "args": "0x180c8f030"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rip + 0x5136a36]"
+            },
+            {
+              "op": "movss",
+              "args": "xmm0, dword ptr [rip + 0x3d89b7e]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f055",
+          "targetRVA": "0xc74df0",
+          "registeredNames": [
+            "SceneLoadService.UnloadCurrentSceneNoLockAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x180b591c0"
+            },
+            {
+              "op": "test",
+              "args": "rdi, rdi"
+            },
+            {
+              "op": "je",
+              "args": "0x180c901f2"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f16a",
+          "targetRVA": "0xc73c00",
+          "registeredNames": [
+            "SceneLoadService.LoadAddressableMapSceneAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c9018e"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x30], rbx"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x28], rax"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x20], r10"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f26e",
+          "targetRVA": "0xc73c00",
+          "registeredNames": [
+            "SceneLoadService.LoadAddressableMapSceneAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c90175"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x30], rbx"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x28], rax"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x20], r10"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f316",
+          "targetRVA": "0xc74400",
+          "registeredNames": [
+            "SceneLoadService.PrefabKeysDiffer"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "jne",
+              "args": "0x180c8f30d"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, r13"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, r12"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f5c4",
+          "targetRVA": "0xe7cb80",
+          "registeredNames": [
+            "PlatformVolumeProfile.ApplySceneVolume"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rax, rax"
+            },
+            {
+              "op": "je",
+              "args": "0x180c901de"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rdx + 0x18]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rax"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f5ed",
+          "targetRVA": "0xc74050",
+          "registeredNames": [
+            "SceneLoadService.LoadSceneContainerAsMapSceneAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rdi, rdi"
+            },
+            {
+              "op": "je",
+              "args": "0x180c901b6"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rdx + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f809",
+          "targetRVA": "0xc73d90",
+          "registeredNames": [
+            "SceneLoadService.LoadPrefabsAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c901cf"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x20], rbx"
+            },
+            {
+              "op": "mov",
+              "args": "r9, qword ptr [r9 + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "r8, r14"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8fc07",
+          "targetRVA": "0xc732f0",
+          "registeredNames": [
+            "SceneLoadService.CleanupFailedLoad"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "dec",
+              "args": "dword ptr [rsp + 0x98]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rsp + 0xc0]"
+            },
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180c90216"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8fe68",
+          "targetRVA": "0xbd80c0",
+          "registeredNames": [
+            "LogExtensions.LogError"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "r9d, 0x192"
+            },
+            {
+              "op": "mov",
+              "args": "r8, qword ptr [rip + 0x51331de]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, rax"
+            },
+            {
+              "op": "mov",
+              "args": "rdi, qword ptr [rsp + 0xc0]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8fe7b",
+          "targetRVA": "0xc732f0",
+          "registeredNames": [
+            "SceneLoadService.CleanupFailedLoad"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x180bd80c0"
+            },
+            {
+              "op": "test",
+              "args": "rdi, rdi"
+            },
+            {
+              "op": "je",
+              "args": "0x180c90225"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        }
+      ],
+      "allCalls": [
+        {
+          "rva": "0xc8e443",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e44f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e45b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e467",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e473",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e47f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e48b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e497",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e4a3",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e4af",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e4bb",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e4c7",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e4d3",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e4df",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e4eb",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e4f7",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e503",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e50f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e51b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e527",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e533",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e53f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e54b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e557",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e563",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e56f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e57b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e587",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e593",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e59f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e5ab",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e5b7",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e5c3",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e5cf",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e5db",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e5e7",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e5f3",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e5ff",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e60b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e617",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e623",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e62f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e63b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e647",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e653",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e65f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e66b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e677",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e683",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e68f",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e69b",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e6a7",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e6b3",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e6bf",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e6cb",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e7bc",
+          "targetRVA": "0x6a7370",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e7c9",
+          "targetRVA": "0x7b49a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 378,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e7e9",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e80f",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e9b2",
+          "targetRVA": "0x2d1cd80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8e9d8",
+          "targetRVA": "0x8e2630",
+          "registeredNames": [
+            "MapSharpnessSetting.get_Enabled"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c8fb80"
+            },
+            {
+              "op": "cmp",
+              "args": "qword ptr [rdx + 0x48], 0"
+            },
+            {
+              "op": "je",
+              "args": "0x180c8fb80"
+            },
+            {
+              "op": "mov",
+              "args": "byte ptr [rdi + 0x41], 0"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8ea15",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ea43",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ea74",
+          "targetRVA": "0xc74650",
+          "registeredNames": [
+            "SceneLoadService.ResolveVariantKeyAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c90161"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "mov",
+              "args": "r8, qword ptr [r8 + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rdx + 0x10]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8ea8c",
+          "targetRVA": "0x22f5c10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eaa2",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eabb",
+          "targetRVA": "0x2292fb0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eadb",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eb0a",
+          "targetRVA": "0x2fdcf80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eb5b",
+          "targetRVA": "0x6a7370",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eb70",
+          "targetRVA": "0x1aac920",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eb90",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ebc3",
+          "targetRVA": "0x1aa5b50",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ebf8",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ec6e",
+          "targetRVA": "0x2e62250",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eca0",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ecc7",
+          "targetRVA": "0xc74650",
+          "registeredNames": [
+            "SceneLoadService.ResolveVariantKeyAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rdi, rdi"
+            },
+            {
+              "op": "je",
+              "args": "0x180c9013d"
+            },
+            {
+              "op": "xor",
+              "args": "r9d, r9d"
+            },
+            {
+              "op": "mov",
+              "args": "r8, qword ptr [r8 + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8ecdf",
+          "targetRVA": "0x22f5c10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ecf5",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ed0e",
+          "targetRVA": "0x2292fb0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ed36",
+          "targetRVA": "0x2fdcf80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ed96",
+          "targetRVA": "0x1bd7fc0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8edbd",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ede2",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ee24",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ee45",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ee61",
+          "targetRVA": "0xf7f520",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ee7c",
+          "targetRVA": "0x7b49a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 378,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ee9c",
+          "targetRVA": "0x7b49a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 378,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8eec0",
+          "targetRVA": "0x7b49a0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 378,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ef08",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ef0f",
+          "targetRVA": "0x3ac0260",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ef2f",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ef44",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ef4b",
+          "targetRVA": "0x8e1ef0",
+          "registeredNames": [
+            "MapService.get_CurrentMapDisplayName"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rip + 0x511181d]"
+            },
+            {
+              "op": "cmp",
+              "args": "dword ptr [rcx + 0xe4], 0"
+            },
+            {
+              "op": "jne",
+              "args": "0x180c8ef49"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "ecx, ecx"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8ef78",
+          "targetRVA": "0x2fdab30",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8efb2",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8efd3",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8efef",
+          "targetRVA": "0xf7f520",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f016",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f02b",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f042",
+          "targetRVA": "0xb591c0",
+          "registeredNames": [
+            "UiLoading.SafeProgress"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "jne",
+              "args": "0x180c8f030"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rip + 0x5136a36]"
+            },
+            {
+              "op": "movss",
+              "args": "xmm0, dword ptr [rip + 0x3d89b7e]"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f055",
+          "targetRVA": "0xc74df0",
+          "registeredNames": [
+            "SceneLoadService.UnloadCurrentSceneNoLockAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x180b591c0"
+            },
+            {
+              "op": "test",
+              "args": "rdi, rdi"
+            },
+            {
+              "op": "je",
+              "args": "0x180c901f2"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f068",
+          "targetRVA": "0x3224740",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f079",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f08d",
+          "targetRVA": "0x3091f20",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f0ad",
+          "targetRVA": "0x3ac0430",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f0c9",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f0de",
+          "targetRVA": "0x2fdde80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f0f6",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f100",
+          "targetRVA": "0x44b6d50",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f119",
+          "targetRVA": "0x2fdf4c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f16a",
+          "targetRVA": "0xc73c00",
+          "registeredNames": [
+            "SceneLoadService.LoadAddressableMapSceneAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c9018e"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x30], rbx"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x28], rax"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x20], r10"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f182",
+          "targetRVA": "0x22f5c10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f198",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f1b1",
+          "targetRVA": "0x2292fb0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f1ef",
+          "targetRVA": "0x2fdcf80",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f225",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f26e",
+          "targetRVA": "0xc73c00",
+          "registeredNames": [
+            "SceneLoadService.LoadAddressableMapSceneAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c90175"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x30], rbx"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x28], rax"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x20], r10"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f286",
+          "targetRVA": "0x22f5c10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f29c",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f2b5",
+          "targetRVA": "0x2292fb0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f308",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f316",
+          "targetRVA": "0xc74400",
+          "registeredNames": [
+            "SceneLoadService.PrefabKeysDiffer"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "jne",
+              "args": "0x180c8f30d"
+            },
+            {
+              "op": "call",
+              "args": "0x1806a7450"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, r13"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, r12"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f339",
+          "targetRVA": "0x2fdf4c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f35e",
+          "targetRVA": "0x6a64c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f3bd",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f3de",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f3fa",
+          "targetRVA": "0xf7f520",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f43d",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f45e",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f47a",
+          "targetRVA": "0xf7f520",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f48d",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f4b0",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f4ce",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f4f7",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f515",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f51f",
+          "targetRVA": "0x2fda4f0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f543",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f555",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f58b",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f597",
+          "targetRVA": "0x21bec30",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f5c4",
+          "targetRVA": "0xe7cb80",
+          "registeredNames": [
+            "PlatformVolumeProfile.ApplySceneVolume"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rax, rax"
+            },
+            {
+              "op": "je",
+              "args": "0x180c901de"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rdx + 0x18]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rax"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f5ed",
+          "targetRVA": "0xc74050",
+          "registeredNames": [
+            "SceneLoadService.LoadSceneContainerAsMapSceneAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "test",
+              "args": "rdi, rdi"
+            },
+            {
+              "op": "je",
+              "args": "0x180c901b6"
+            },
+            {
+              "op": "xor",
+              "args": "r8d, r8d"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, qword ptr [rdx + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f605",
+          "targetRVA": "0x22f5c10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f61b",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f634",
+          "targetRVA": "0x2296580",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f662",
+          "targetRVA": "0x2fda840",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f686",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f698",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f6fc",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f71d",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f739",
+          "targetRVA": "0xf7f520",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f773",
+          "targetRVA": "0x18a10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f78f",
+          "targetRVA": "0x3ac0200",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f7a7",
+          "targetRVA": "0x6a7370",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f7bf",
+          "targetRVA": "0x2442cb0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f7cb",
+          "targetRVA": "0x6a7370",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f7e0",
+          "targetRVA": "0x201bb70",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f809",
+          "targetRVA": "0xc73d90",
+          "registeredNames": [
+            "SceneLoadService.LoadPrefabsAsync"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "je",
+              "args": "0x180c901cf"
+            },
+            {
+              "op": "mov",
+              "args": "qword ptr [rsp + 0x20], rbx"
+            },
+            {
+              "op": "mov",
+              "args": "r9, qword ptr [r9 + 0x38]"
+            },
+            {
+              "op": "mov",
+              "args": "r8, r14"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8f821",
+          "targetRVA": "0x22f5c10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f83d",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f859",
+          "targetRVA": "0x2296890",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f8a2",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f8b4",
+          "targetRVA": "0x2fddbd0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f8d8",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f8ea",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f927",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f95d",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f97c",
+          "targetRVA": "0x3ac0430",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f998",
+          "targetRVA": "0x6a6420",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f9b2",
+          "targetRVA": "0x2fdda90",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f9ca",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8f9d4",
+          "targetRVA": "0x44b6d50",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fa08",
+          "targetRVA": "0x18a10",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fa37",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fa48",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8faaf",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fad0",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8faef",
+          "targetRVA": "0xf7f520",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fb38",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fb59",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fb75",
+          "targetRVA": "0xf81660",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fb91",
+          "targetRVA": "0x2fdab30",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fbb5",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fbc7",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fc07",
+          "targetRVA": "0xc732f0",
+          "registeredNames": [
+            "SceneLoadService.CleanupFailedLoad"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "dec",
+              "args": "dword ptr [rsp + 0x98]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, qword ptr [rsp + 0xc0]"
+            },
+            {
+              "op": "test",
+              "args": "rcx, rcx"
+            },
+            {
+              "op": "je",
+              "args": "0x180c90216"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8fc1a",
+          "targetRVA": "0x3224740",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fc2b",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fc3d",
+          "targetRVA": "0x3091f20",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fc6e",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fc80",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fce4",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fd05",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fd21",
+          "targetRVA": "0xf81660",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fdee",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fe20",
+          "targetRVA": null,
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fe3b",
+          "targetRVA": "0x2fda260",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fe68",
+          "targetRVA": "0xbd80c0",
+          "registeredNames": [
+            "LogExtensions.LogError"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "mov",
+              "args": "r9d, 0x192"
+            },
+            {
+              "op": "mov",
+              "args": "r8, qword ptr [rip + 0x51331de]"
+            },
+            {
+              "op": "mov",
+              "args": "rdx, rax"
+            },
+            {
+              "op": "mov",
+              "args": "rdi, qword ptr [rsp + 0xc0]"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8fe7b",
+          "targetRVA": "0xc732f0",
+          "registeredNames": [
+            "SceneLoadService.CleanupFailedLoad"
+          ],
+          "ambiguousAliasCount": 0,
+          "preparation": [
+            {
+              "op": "call",
+              "args": "0x180bd80c0"
+            },
+            {
+              "op": "test",
+              "args": "rdi, rdi"
+            },
+            {
+              "op": "je",
+              "args": "0x180c90225"
+            },
+            {
+              "op": "xor",
+              "args": "edx, edx"
+            },
+            {
+              "op": "mov",
+              "args": "rcx, rdi"
+            }
+          ]
+        },
+        {
+          "rva": "0xc8fe8e",
+          "targetRVA": "0x3224740",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fe9f",
+          "targetRVA": "0x2293560",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8feb3",
+          "targetRVA": "0x3091f20",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fee5",
+          "targetRVA": null,
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ff06",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ff18",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ff61",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8ff7e",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc8fffb",
+          "targetRVA": "0x1ff9fd0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90059",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9007a",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90096",
+          "targetRVA": "0xf81660",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc900cb",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc900f3",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90104",
+          "targetRVA": "0x6a7450",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90110",
+          "targetRVA": "0x6a7130",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9011f",
+          "targetRVA": "0x1ff4170",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90129",
+          "targetRVA": "0x6a73b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9012e",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90133",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90138",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9013d",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90143",
+          "targetRVA": "0x6a58c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90148",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9014d",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90152",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90157",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9015c",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90161",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90166",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9016b",
+          "targetRVA": "0x6a73b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90170",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90175",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9017a",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9017f",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90184",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90189",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9018e",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90193",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90198",
+          "targetRVA": "0x6a73b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9019d",
+          "targetRVA": "0x6a73b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901a2",
+          "targetRVA": "0x6a73b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901a7",
+          "targetRVA": "0x6a73b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901ac",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901b1",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901b6",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901bb",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901c0",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901c5",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901ca",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901cf",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901d4",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901d9",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901de",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901e3",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901e8",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901ed",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901f2",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901f7",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc901fc",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90201",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90206",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9020b",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90211",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90216",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9021b",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90220",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90225",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9022a",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc90232",
+          "targetRVA": "0x6a6480",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9023a",
+          "targetRVA": "0x6a6480",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9023f",
+          "targetRVA": "0x6a73c0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc9024d",
+          "targetRVA": "-0x1721fce6",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0xc8e410",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rcx"
+        },
+        {
+          "rva": "0xc8e415",
+          "op": "push",
+          "args": "rbx"
+        },
+        {
+          "rva": "0xc8e416",
+          "op": "push",
+          "args": "rsi"
+        },
+        {
+          "rva": "0xc8e417",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0xc8e418",
+          "op": "push",
+          "args": "r12"
+        },
+        {
+          "rva": "0xc8e41a",
+          "op": "push",
+          "args": "r13"
+        },
+        {
+          "rva": "0xc8e41c",
+          "op": "push",
+          "args": "r14"
+        },
+        {
+          "rva": "0xc8e41e",
+          "op": "push",
+          "args": "r15"
+        },
+        {
+          "rva": "0xc8e420",
+          "op": "sub",
+          "args": "rsp, 0x110"
+        },
+        {
+          "rva": "0xc8e427",
+          "op": "movaps",
+          "args": "xmmword ptr [rsp + 0x100], xmm6"
+        },
+        {
+          "rva": "0xc8e42f",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x5452359], 0"
+        },
+        {
+          "rva": "0xc8e436",
+          "op": "jne",
+          "args": "0x180c8e6df"
+        },
+        {
+          "rva": "0xc8e43c",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51ab4e5]"
+        },
+        {
+          "rva": "0xc8e443",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xc8e448",
+          "op": "lea",
+          "args": "rcx, [rip + 0x518d409]"
+        }
+      ]
+    },
+    {
+      "method": "SceneLoader.HandleLoadSceneRequest",
+      "rva": "0xc800b0",
+      "endRVAExclusive": "0xc8018a",
+      "decodedInstructions": 46,
+      "directCalls": 6,
+      "knownCallees": [],
+      "allCalls": [
+        {
+          "rva": "0xc800d3",
+          "targetRVA": "0x6a7110",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc80105",
+          "targetRVA": "0x30918b0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc80122",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc80134",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc80156",
+          "targetRVA": "0x6a6440",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        },
+        {
+          "rva": "0xc80174",
+          "targetRVA": "0x10efca0",
+          "registeredNames": [],
+          "ambiguousAliasCount": 0,
+          "preparation": []
+        }
+      ],
+      "entry": [
+        {
+          "rva": "0xc800b0",
+          "op": "mov",
+          "args": "qword ptr [rsp + 8], rbx"
+        },
+        {
+          "rva": "0xc800b5",
+          "op": "push",
+          "args": "rdi"
+        },
+        {
+          "rva": "0xc800b6",
+          "op": "sub",
+          "args": "rsp, 0x90"
+        },
+        {
+          "rva": "0xc800bd",
+          "op": "cmp",
+          "args": "byte ptr [rip + 0x54606dc], 0"
+        },
+        {
+          "rva": "0xc800c4",
+          "op": "mov",
+          "args": "rbx, rdx"
+        },
+        {
+          "rva": "0xc800c7",
+          "op": "mov",
+          "args": "rdi, rcx"
+        },
+        {
+          "rva": "0xc800ca",
+          "op": "jne",
+          "args": "0x180c800df"
+        },
+        {
+          "rva": "0xc800cc",
+          "op": "lea",
+          "args": "rcx, [rip + 0x51823d5]"
+        },
+        {
+          "rva": "0xc800d3",
+          "op": "call",
+          "args": "0x1806a7110"
+        },
+        {
+          "rva": "0xc800d8",
+          "op": "mov",
+          "args": "byte ptr [rip + 0x54606c1], 1"
+        },
+        {
+          "rva": "0xc800df",
+          "op": "xorps",
+          "args": "xmm0, xmm0"
+        },
+        {
+          "rva": "0xc800e2",
+          "op": "lea",
+          "args": "rcx, [rsp + 0x20]"
+        },
+        {
+          "rva": "0xc800e7",
+          "op": "xor",
+          "args": "edx, edx"
+        },
+        {
+          "rva": "0xc800e9",
+          "op": "movups",
+          "args": "xmmword ptr [rsp + 0x40], xmm0"
+        },
+        {
+          "rva": "0xc800ee",
+          "op": "movups",
+          "args": "xmmword ptr [rsp + 0x50], xmm0"
+        }
+      ]
+    }
+  ],
+  "referenceLoadMapNativeRVA": "0xc75de0",
+  "limits": "Method-pointer-resolved static disassembly only. May miss indirect or compiler-generated calls. Does not prove actual Addressables scene key, bundle manifest entries, render completion, Map53 coefficients or 3+1 real anchors."
+}

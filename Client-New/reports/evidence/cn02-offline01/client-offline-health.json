@@ -1,0 +1,171 @@
+{
+  "schema": "cn02-offline01-readonly-source-v1",
+  "scope": "Unity source-controlled SYNTHETIC offline BaLangHuyen. NOT original map restoration or GS-authoritative movement.",
+  "unityEditorVersion": "6000.6.7f1",
+  "assetsMetaFileCount": 90,
+  "packageCacheMetaFileCount": 9691,
+  "assetsUniqueGuidCount": 90,
+  "packageCacheUniqueGuidCount": 9691,
+  "duplicateProjectGuids": {},
+  "missingAssetMeta": [],
+  "serializedScannedFileCount": 16,
+  "referenceCountsByCategory": {
+    "package": 56,
+    "project": 120,
+    "unity-builtin": 35
+  },
+  "unresolvedGuids": [],
+  "unresolvedMeansBroken": false,
+  "perFileReferenceCounts": [
+    {
+      "asset": "_JXClient/Prefabs/OfflinePlayer.prefab",
+      "referenceCounts": {
+        "project": 2,
+        "unity-builtin": 1
+      }
+    },
+    {
+      "asset": "_JXClient/Scenes/BaLangHuyen.unity",
+      "referenceCounts": {
+        "package": 17,
+        "project": 106,
+        "unity-builtin": 15
+      }
+    },
+    {
+      "asset": "_JXClient/Scenes/Bootstrap.unity",
+      "referenceCounts": {
+        "package": 2,
+        "project": 1,
+        "unity-builtin": 6
+      }
+    },
+    {
+      "asset": "_JXClient/Scenes/MovementTest.unity",
+      "referenceCounts": {
+        "package": 17,
+        "project": 6,
+        "unity-builtin": 8
+      }
+    },
+    {
+      "asset": "_JXClient/Movement/Materials/Avatar.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Movement/Materials/Ground.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Movement/Materials/Wall.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Materials/BLH_BoundaryRock.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Materials/BLH_GrassTerrain.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Materials/BLH_HouseWall.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Materials/BLH_PlazaTile.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Materials/BLH_StoneRoad.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Materials/BLH_TileRoof.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Materials/BLH_WoodTimber.mat",
+      "referenceCounts": {
+        "package": 2
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Prefabs/BLH_SyntheticGateArchway.prefab",
+      "referenceCounts": {
+        "project": 3,
+        "unity-builtin": 3
+      }
+    },
+    {
+      "asset": "_JXClient/Environment/Prefabs/BLH_SyntheticVillageHouse.prefab",
+      "referenceCounts": {
+        "project": 2,
+        "unity-builtin": 2
+      }
+    }
+  ],
+  "requiredOfflineScenes": [
+    "BaLangHuyen.unity",
+    "Bootstrap.unity",
+    "MovementTest.unity"
+  ],
+  "changedUncommittedAntigravityMaterialNames": [
+    "Avatar.mat",
+    "BLH_BoundaryRock.mat",
+    "BLH_GrassTerrain.mat",
+    "BLH_HouseWall.mat",
+    "BLH_PlazaTile.mat",
+    "BLH_StoneRoad.mat",
+    "BLH_TileRoof.mat",
+    "BLH_WoodTimber.mat"
+  ],
+  "antigravityMaterialCountExpected": 8,
+  "editMode": {
+    "fileName": "editmode.xml",
+    "total": 29,
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0,
+    "result": "Passed",
+    "sha256": "16A63BAE5D8B000314E31128FB768C0202F6A347E0B852586B7C009853E61B41"
+  },
+  "playMode": {
+    "fileName": "playmode.xml",
+    "total": 18,
+    "passed": 18,
+    "failed": 0,
+    "skipped": 0,
+    "result": "Passed",
+    "sha256": "0BF94CC8A06C536D67363C7C2D0FA84485AB02C55E9765B1712725F3BCF4EE30"
+  },
+  "win64Player": {
+    "exeBytes": 667136,
+    "exeSha256": "9806ABDE4A406ED68647E9505852C49F6AA72A372F4F084E2AA2821AFFEA57A2",
+    "companionFolderPresent": true,
+    "unityPlayerDllPresent": true,
+    "buildBatchReportedCleanExit": true,
+    "launchOrNetworkAcceptanceVerified": false
+  },
+  "networkOrServerUsed": false,
+  "runtimeGsAcceptanceVerified": false,
+  "note": "Unresolved GUID can indicate Unity engine/internal/package generated references; assess per source before concluding broken. 47 Unity tests do not prove output played on end-user graphics or multiplayer. Materials are read-only."
+}

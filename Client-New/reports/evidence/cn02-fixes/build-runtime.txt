@@ -1,0 +1,16 @@
+Review build process exit: 0
+Visible runtime process exit: 0
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-build.log:817: DisplayProgressNotification: Build Successful
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-build.log:818: Build Finished, Result: Success.
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:42: [CN-02] VALIDATION scene=BaLangHuyen offlineReady=True sessionState=OfflineReady roots=True groundRenderer=True groundCollider=True probes5=True spawnPos=(0.00, 0.04, -3.00) cameraBounds=Center: (0.00, 4.00, 0.00), Extents: (28.00, 10.00, 28.00)
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:43: [CN-02] PROBE name=Probe_CenterPlaza hit=True point=(0.00, 0.04, 0.00) normal=(0.00, 1.00, 0.00) collider=BLH_CenterPlazaGround
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:44: [CN-02] PROBE name=Probe_NorthGatePath hit=True point=(0.00, 0.02, 18.00) normal=(0.00, 1.00, 0.00) collider=BLH_NorthSouthRoad
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:45: [CN-02] PROBE name=Probe_SouthGatePath hit=True point=(0.00, 0.02, -18.00) normal=(0.00, 1.00, 0.00) collider=BLH_NorthSouthRoad
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:46: [CN-02] PROBE name=Probe_EastBridgeApproach hit=True point=(18.00, 0.03, 0.00) normal=(0.00, 1.00, 0.00) collider=BLH_EastWestRoad
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:47: [CN-02] PROBE name=Probe_WestMarketApproach hit=True point=(-18.00, 0.03, 0.00) normal=(0.00, 1.00, 0.00) collider=BLH_EastWestRoad
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:48: [CN-02] CAPTURED angle='Angle 1: South Overview (Yaw=0, Pitch=45, Dist=18)' path=E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime\view1_spawn_south.png exists=True
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:50: [CN-02] WALK_START start=(0.00, 0.04, -3.00) target=(4.00, 0.00, -1.00) screen=(764.2, 386.8) accepted=True
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:51: [CN-02] WALK_END end=(3.92, 0.11, -1.07) distance=0.103 frames=1612 elapsed=1.09s avgFps=1475.8 totalMemMB=2.76 passed=True
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:52: [CN-02] CAPTURED angle='Angle 2: East View Post-Walk (Yaw=90, Pitch=40, Dist=16)' path=E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime\view2_east_walked.png exists=True
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:53: [CN-02] CAPTURED angle='Angle 3: North Elevated (Yaw=180, Pitch=60, Dist=22)' path=E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime\view3_north_elevated.png exists=True
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime.log:54: [CN-02] CAPTURED angle='Angle 4: West Diagonal Close (Yaw=240, Pitch=35, Dist=12)' path=E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn02-fixes-runtime\view4_west_close.png exists=True

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Failed(Child)" total="6" passed="4" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.2651287">
+  <test-suite type="TestSuite" id="1000" name="UnityProject" fullname="UnityProject" runstate="Runnable" testcasecount="28" result="Failed" site="Child" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.265129" total="6" passed="4" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1008" name="JXClient.Tests.CalibrationEditor.dll" fullname="E:/Games/VLTK3D/SwordOnline/Client-New/UnityProject/Library/ScriptAssemblies/JXClient.Tests.CalibrationEditor.dll" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.254954" total="6" passed="4" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="6560" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1001" name="AnchorCalibrationEditorTests" fullname="AnchorCalibrationEditorTests" classname="AnchorCalibrationEditorTests" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.253777" total="6" passed="4" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1002" name="CapturedSceneDraftExportsAndRoundTripsWithoutInventingLegacyPoints" fullname="AnchorCalibrationEditorTests.CapturedSceneDraftExportsAndRoundTripsWithoutInventingLegacyPoints" methodname="CapturedSceneDraftExportsAndRoundTripsWithoutInventingLegacyPoints" classname="AnchorCalibrationEditorTests" runstate="Runnable" seed="42500775" result="Passed" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.064796" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="ChangedEvidenceFileCannotRemainReadyForReview" fullname="AnchorCalibrationEditorTests.ChangedEvidenceFileCannotRemainReadyForReview" methodname="ChangedEvidenceFileCannotRemainReadyForReview" classname="AnchorCalibrationEditorTests" runstate="Runnable" seed="1800534881" result="Passed" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.024792" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1004" name="ChangedSceneMarkerCoordinatesCannotReuseCurrentSceneFingerprint" fullname="AnchorCalibrationEditorTests.ChangedSceneMarkerCoordinatesCannotReuseCurrentSceneFingerprint" methodname="ChangedSceneMarkerCoordinatesCannotReuseCurrentSceneFingerprint" classname="AnchorCalibrationEditorTests" runstate="Runnable" seed="674640600" result="Failed" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.042249" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: <System.IO.InvalidDataException>
+  But was:  null
+]]></message>
+            <stack-trace><![CDATA[at AnchorCalibrationEditorTests.ChangedSceneMarkerCoordinatesCannotReuseCurrentSceneFingerprint () [0x0006b] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\EditMode\CalibrationEditor\AnchorCalibrationEditorTests.cs:31
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1007" name="EditorWindowCreatesCaptureImportAssessAndExportControls" fullname="AnchorCalibrationEditorTests.EditorWindowCreatesCaptureImportAssessAndExportControls" methodname="EditorWindowCreatesCaptureImportAssessAndExportControls" classname="AnchorCalibrationEditorTests" runstate="Runnable" seed="1097072192" result="Passed" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.079939" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1005" name="IncompleteDraftShapeIsRejectedOnImport" fullname="AnchorCalibrationEditorTests.IncompleteDraftShapeIsRejectedOnImport" methodname="IncompleteDraftShapeIsRejectedOnImport" classname="AnchorCalibrationEditorTests" runstate="Runnable" seed="1517901836" result="Failed" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.013539" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: <System.IO.InvalidDataException>
+  But was:  null
+]]></message>
+            <stack-trace><![CDATA[at AnchorCalibrationEditorTests.IncompleteDraftShapeIsRejectedOnImport () [0x0005a] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\EditMode\CalibrationEditor\AnchorCalibrationEditorTests.cs:37
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1003" name="StaleSceneFingerprintIsRejectedOnImport" fullname="AnchorCalibrationEditorTests.StaleSceneFingerprintIsRejectedOnImport" methodname="StaleSceneFingerprintIsRejectedOnImport" classname="AnchorCalibrationEditorTests" runstate="Runnable" seed="363639258" result="Passed" start-time="2026-10-25 10:25:36Z" end-time="2026-10-25 10:25:36Z" duration="0.013844" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/QT/AppData/LocalLow/DefaultCompany/UnityProject\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

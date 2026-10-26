@@ -1,0 +1,114 @@
+{
+  "Timestamp": "2026-10-25T15:44:24.0619241+07:00",
+  "Baseline": "b0dfacc",
+  "Branch": "cg/cn01-offline-movement",
+  "MissingAssetMeta": 0,
+  "BuildProcessExit": 0,
+  "BuildSummary": "Succeeded",
+  "BuildErrors": 0,
+  "BuildWarnings": 0,
+  "MovementDllSHA256": "97777C814FFFDEA3E867E372AD79A41BE3C4A8A66396124A19C72BB66EEDF06C",
+  "SourceHashes": [
+    {
+      "SHA256": "860328AA33412A805037766B2478FDD8116997C894E2CFA81119054D85BEA525",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\JXClient.Movement.asmdef"
+    },
+    {
+      "SHA256": "DD30CA529F86ECA5EAFD6FE193ADB9217DDB3C828D25998C50E7E88EA69F3550",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\JXClient.Movement.asmdef.meta"
+    },
+    {
+      "SHA256": "CA32C900812C094A02BB801FEFBD23FFE71A89B66F174CE3AE8C27E6C1B70708",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\Materials.meta"
+    },
+    {
+      "SHA256": "15A0C667864E76ABAB41B86CD8F4155815730E36E052296888F4143CDE08121E",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\MovementHud.cs"
+    },
+    {
+      "SHA256": "E7CB53E9EEBF45FB44729D86F0044F7D41ADEDE35D7407F21BB93CEA091A7A45",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\MovementHud.cs.meta"
+    },
+    {
+      "SHA256": "F79C8505B30A51CE4D5422C5A24220F42B02432FEA98D51D26E7F9DC481F0CCF",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\OfflineMovement.cs"
+    },
+    {
+      "SHA256": "5A24A2A23D10CD0A02E2A670D9162FA4B7E8CA10FD4EE536E9D1FD94887FA832",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\OfflineMovement.cs.meta"
+    },
+    {
+      "SHA256": "4536DE666E136C06D34D887FBD5088DDCB6A35F23E4396B5E4D7F7A29022B288",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\OrbitFollowCamera.cs"
+    },
+    {
+      "SHA256": "523FF7FEF5ED7D4D3C6270C5991560F71574BF2013140C86ECC9AE74E7B39B27",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\OrbitFollowCamera.cs.meta"
+    },
+    {
+      "SHA256": "6D2C13ABF6ED088CA32CBBE1AA13D2C3D62ADAB481DF280C205D84B2AB5488D4",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\Materials\\Avatar.mat"
+    },
+    {
+      "SHA256": "BEE825BBE1E4C34205EE12AA2B2E424794F7E947B240C0172BFB4AC0499689A9",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\Materials\\Avatar.mat.meta"
+    },
+    {
+      "SHA256": "1D4864D4F78D6BE8891E09D85F8748A537575F55169D7A157D78E5A588749B04",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\Materials\\Ground.mat"
+    },
+    {
+      "SHA256": "2E4C728A1EAD9345FDCCC624F5C09834DF8A6AE28E4F07F56F1A88E411525E5F",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\Materials\\Ground.mat.meta"
+    },
+    {
+      "SHA256": "25168DFC1FBED831EE00A0B1D7002B092C17F537A20701561436C809FBEA1746",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\Materials\\Wall.mat"
+    },
+    {
+      "SHA256": "D793C78A770F914C04DF63F8E244ECA37C54C8EEF8D56B91FA7E5AA581499522",
+      "Path": "UnityProject\\Assets\\_JXClient\\Movement\\Materials\\Wall.mat.meta"
+    },
+    {
+      "SHA256": "5A592B06E0C776651527C274D25FF917CCFBAACD47B27A380E67693B97F6B5EF",
+      "Path": "UnityProject\\Assets\\_JXClient\\Scenes\\MovementTest.unity"
+    },
+    {
+      "SHA256": "B0C79D9F83D28E65AF227433C367C03C11C4658DCF121428D99D231A03DF19DE",
+      "Path": "UnityProject\\Assets\\_JXClient\\Prefabs\\OfflinePlayer.prefab"
+    }
+  ],
+  "Tests": {
+    "Failed": 0,
+    "EditMode": 3,
+    "PlayMode": 9
+  },
+  "Runtime": {
+    "Input": "Automated pointer API; Input System virtual mouse tested separately; human click not yet witnessed",
+    "DistanceToTarget": 0.113,
+    "End": "(-2.93,0.08,-1.04)",
+    "RenderedExit": 0,
+    "Start": "(0,0,-3)",
+    "BatchExit": 0
+  },
+  "ReferenceHashes": [
+    {
+      "Path": "E:\\Games\\VLTK3D\\SwordOnline\\Client-3D-2\\update\\Game.exe",
+      "Hash": "1CAE3982C04BE9D6F8F7EA8CE272600400655D40FBF0671818EFF1D7A79750EE"
+    },
+    {
+      "Path": "E:\\Games\\VLTK3D\\SwordOnline\\Client-3D-2\\update\\GameAssembly.dll",
+      "Hash": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069"
+    }
+  ],
+  "SceneDataHashes": [
+    {
+      "Path": "E:\\Games\\VLTK3D\\SwordOnline\\Client-New\\Builds\\CN01-Windows\\JXClientNew_Data\\level0",
+      "Hash": "244BFB726C1D8A61BF1B9C974BF9089517C81075A46BCE9E61C90EE5F7A9BE87"
+    },
+    {
+      "Path": "E:\\Games\\VLTK3D\\SwordOnline\\Client-New\\Builds\\CN01-Windows\\JXClientNew_Data\\level1",
+      "Hash": "23FBEF64978194C9DA6E94CE1E8C7BB00E504156FE3D63654801F969DEF3F8E9"
+    }
+  ]
+}

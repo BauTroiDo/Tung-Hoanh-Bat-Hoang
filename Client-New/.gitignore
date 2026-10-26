@@ -1,0 +1,63 @@
+# Unity generated and IDE-local
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]in/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+
+# Build artifacts
+Builds/
+build/
+dist/
+coverage/
+TestResults/
+*.apk
+*.aab
+*.ipa
+*.app
+# Do not blanket-ignore .exe/.dll: licensed native Unity Plugins may be project dependencies.
+# Executables produced under Builds/ or build/ remain ignored by directory.
+
+# Source provenance / third-party proprietary assets stay outside Git
+ThirdParty-Unlicensed/
+ReferenceDumps/
+RawExtracts/
+AssetCache/
+*.bundle
+*.bdd
+*.pak
+*.mpk
+*.emg
+
+# Temporary agent state, credentials and private logs
+.cache/
+.tmp/
+*.tmp
+*.log
+*.trace
+*.dmp
+*.core
+*.secret
+*.key
+.env
+.env.*
+credentials.json
+secrets.json
+session-tickets*
+*_private.json
+
+# Do NOT ignore Unity sources, assets with verified rights, .meta, Packages or ProjectSettings.
+*.slnx

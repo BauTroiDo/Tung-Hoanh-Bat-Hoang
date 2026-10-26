@@ -1,0 +1,1158 @@
+{
+  "sourceSHA256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "methodDefinitions": [
+    {
+      "methodIndex": 5039,
+      "owner": "MapService",
+      "name": "UpdateWorldInfo",
+      "token": "0x60013b0",
+      "parameterStart": 3754,
+      "parameters": [
+        {
+          "parameterIndex": 3754,
+          "name": "data",
+          "typeIndex": 52052,
+          "token": "0x8000ea8"
+        }
+      ]
+    },
+    {
+      "methodIndex": 5047,
+      "owner": "MapService",
+      "name": "Calibrate",
+      "token": "0x60013b8",
+      "parameterStart": 3769,
+      "parameters": [
+        {
+          "parameterIndex": 3769,
+          "name": "serverA",
+          "typeIndex": 51674,
+          "token": "0x8000eb7"
+        },
+        {
+          "parameterIndex": 3770,
+          "name": "unityA",
+          "typeIndex": 51674,
+          "token": "0x8000eb8"
+        },
+        {
+          "parameterIndex": 3771,
+          "name": "serverB",
+          "typeIndex": 51674,
+          "token": "0x8000eb9"
+        },
+        {
+          "parameterIndex": 3772,
+          "name": "unityB",
+          "typeIndex": 51674,
+          "token": "0x8000eba"
+        },
+        {
+          "parameterIndex": 3773,
+          "name": "serverC",
+          "typeIndex": 51674,
+          "token": "0x8000ebb"
+        },
+        {
+          "parameterIndex": 3774,
+          "name": "unityC",
+          "typeIndex": 51674,
+          "token": "0x8000ebc"
+        }
+      ]
+    },
+    {
+      "methodIndex": 14504,
+      "owner": "ProcessGameUnity",
+      "name": "OnSyncWorld",
+      "token": "0x60038a9",
+      "parameterStart": 10127,
+      "parameters": [
+        {
+          "parameterIndex": 10127,
+          "name": "data",
+          "typeIndex": 52052,
+          "token": "0x800278d"
+        }
+      ]
+    },
+    {
+      "methodIndex": 14818,
+      "owner": "SubWorld",
+      "name": "Activate",
+      "token": "0x60039e3",
+      "parameterStart": 65535,
+      "parameters": []
+    },
+    {
+      "methodIndex": 14840,
+      "owner": "SubWorld",
+      "name": "LoadMap",
+      "token": "0x60039f9",
+      "parameterStart": 10475,
+      "parameters": [
+        {
+          "parameterIndex": 10475,
+          "name": "nTemplateId",
+          "typeIndex": 40354,
+          "token": "0x80028e9"
+        },
+        {
+          "parameterIndex": 10476,
+          "name": "nMapId",
+          "typeIndex": 40354,
+          "token": "0x80028ea"
+        },
+        {
+          "parameterIndex": 10477,
+          "name": "nRegion",
+          "typeIndex": 40354,
+          "token": "0x80028eb"
+        },
+        {
+          "parameterIndex": 10478,
+          "name": "nMpsX",
+          "typeIndex": 40354,
+          "token": "0x80028ec"
+        },
+        {
+          "parameterIndex": 10479,
+          "name": "nMpsY",
+          "typeIndex": 40354,
+          "token": "0x80028ed"
+        }
+      ]
+    }
+  ],
+  "candidateWorldTypeDefinitions": [
+    {
+      "typeDefinitionIndex": 497,
+      "byvalTypeRegistryIndex": 52598,
+      "name": "XaPhuMapInfo",
+      "namespace": "",
+      "totalFieldCount": 5,
+      "fields": [
+        {
+          "fieldIndex": 4559,
+          "name": "id",
+          "typeRegistryIndex": 40360,
+          "token": "0x40011d0"
+        },
+        {
+          "fieldIndex": 4560,
+          "name": "name",
+          "typeRegistryIndex": 48356,
+          "token": "0x40011d1"
+        },
+        {
+          "fieldIndex": 4561,
+          "name": "gs",
+          "typeRegistryIndex": 40360,
+          "token": "0x40011d2"
+        },
+        {
+          "fieldIndex": 4562,
+          "name": "type",
+          "typeRegistryIndex": 48356,
+          "token": "0x40011d3"
+        },
+        {
+          "fieldIndex": 4563,
+          "name": "level",
+          "typeRegistryIndex": 40360,
+          "token": "0x40011d4"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 692,
+      "byvalTypeRegistryIndex": 48599,
+      "name": "SubWorldGizmos",
+      "namespace": "",
+      "totalFieldCount": 44,
+      "fields": [
+        {
+          "fieldIndex": 6005,
+          "name": "centerRegionColor",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001776"
+        },
+        {
+          "fieldIndex": 6006,
+          "name": "activeRegionColor",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001777"
+        },
+        {
+          "fieldIndex": 6007,
+          "name": "loadedRegionColor",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001778"
+        },
+        {
+          "fieldIndex": 6008,
+          "name": "borderThickness",
+          "typeRegistryIndex": 47562,
+          "token": "0x4001779"
+        },
+        {
+          "fieldIndex": 6009,
+          "name": "showCellGrid",
+          "typeRegistryIndex": 33193,
+          "token": "0x400177a"
+        },
+        {
+          "fieldIndex": 6010,
+          "name": "cellGridColor",
+          "typeRegistryIndex": 34349,
+          "token": "0x400177b"
+        },
+        {
+          "fieldIndex": 6011,
+          "name": "showObstacles",
+          "typeRegistryIndex": 33193,
+          "token": "0x400177c"
+        },
+        {
+          "fieldIndex": 6012,
+          "name": "showObstacleFill",
+          "typeRegistryIndex": 33193,
+          "token": "0x400177d"
+        },
+        {
+          "fieldIndex": 6013,
+          "name": "showObstacleBorder",
+          "typeRegistryIndex": 33193,
+          "token": "0x400177e"
+        },
+        {
+          "fieldIndex": 6014,
+          "name": "obstacleAlpha",
+          "typeRegistryIndex": 47562,
+          "token": "0x400177f"
+        },
+        {
+          "fieldIndex": 6015,
+          "name": "colorFull",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001780"
+        },
+        {
+          "fieldIndex": 6016,
+          "name": "colorLT",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001781"
+        },
+        {
+          "fieldIndex": 6017,
+          "name": "colorRT",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001782"
+        },
+        {
+          "fieldIndex": 6018,
+          "name": "colorLB",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001783"
+        },
+        {
+          "fieldIndex": 6019,
+          "name": "colorRB",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001784"
+        },
+        {
+          "fieldIndex": 6020,
+          "name": "colorLT_Quarter",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001785"
+        },
+        {
+          "fieldIndex": 6021,
+          "name": "colorRT_Quarter",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001786"
+        },
+        {
+          "fieldIndex": 6022,
+          "name": "colorLB_Quarter",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001787"
+        },
+        {
+          "fieldIndex": 6023,
+          "name": "colorRB_Quarter",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001788"
+        },
+        {
+          "fieldIndex": 6024,
+          "name": "colorHalf_Vert_L",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001789"
+        },
+        {
+          "fieldIndex": 6025,
+          "name": "colorHalf_Vert_R",
+          "typeRegistryIndex": 34349,
+          "token": "0x400178a"
+        },
+        {
+          "fieldIndex": 6026,
+          "name": "colorHalf_Vert_B",
+          "typeRegistryIndex": 34349,
+          "token": "0x400178b"
+        },
+        {
+          "fieldIndex": 6027,
+          "name": "colorHalf_Vert_T",
+          "typeRegistryIndex": 34349,
+          "token": "0x400178c"
+        },
+        {
+          "fieldIndex": 6028,
+          "name": "colorLT_QuarterRev",
+          "typeRegistryIndex": 34349,
+          "token": "0x400178d"
+        },
+        {
+          "fieldIndex": 6029,
+          "name": "colorRT_QuarterRev",
+          "typeRegistryIndex": 34349,
+          "token": "0x400178e"
+        },
+        {
+          "fieldIndex": 6030,
+          "name": "colorLB_QuarterRev",
+          "typeRegistryIndex": 34349,
+          "token": "0x400178f"
+        },
+        {
+          "fieldIndex": 6031,
+          "name": "colorRB_QuarterRev",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001790"
+        },
+        {
+          "fieldIndex": 6032,
+          "name": "colorLT_QuarterComp",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001791"
+        },
+        {
+          "fieldIndex": 6033,
+          "name": "colorRT_QuarterComp",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001792"
+        },
+        {
+          "fieldIndex": 6034,
+          "name": "colorLB_QuarterComp",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001793"
+        },
+        {
+          "fieldIndex": 6035,
+          "name": "colorRB_QuarterComp",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001794"
+        },
+        {
+          "fieldIndex": 6036,
+          "name": "obstBorderColor",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001795"
+        },
+        {
+          "fieldIndex": 6037,
+          "name": "showLabels",
+          "typeRegistryIndex": 33193,
+          "token": "0x4001796"
+        },
+        {
+          "fieldIndex": 6038,
+          "name": "showNeighborLinks",
+          "typeRegistryIndex": 33193,
+          "token": "0x4001797"
+        },
+        {
+          "fieldIndex": 6039,
+          "name": "neighborLinkColor",
+          "typeRegistryIndex": 34349,
+          "token": "0x4001798"
+        },
+        {
+          "fieldIndex": 6040,
+          "name": "showNpcDots",
+          "typeRegistryIndex": 33193,
+          "token": "0x4001799"
+        },
+        {
+          "fieldIndex": 6041,
+          "name": "npcDotColor",
+          "typeRegistryIndex": 34349,
+          "token": "0x400179a"
+        },
+        {
+          "fieldIndex": 6042,
+          "name": "npcDotRadius",
+          "typeRegistryIndex": 47562,
+          "token": "0x400179b"
+        },
+        {
+          "fieldIndex": 6043,
+          "name": "showInGameView",
+          "typeRegistryIndex": 33193,
+          "token": "0x400179c"
+        },
+        {
+          "fieldIndex": 6044,
+          "name": "targetCamera",
+          "typeRegistryIndex": 33716,
+          "token": "0x400179d"
+        },
+        {
+          "fieldIndex": 6045,
+          "name": "_glMat",
+          "typeRegistryIndex": 42246,
+          "token": "0x400179e"
+        },
+        {
+          "fieldIndex": 6046,
+          "name": "value__",
+          "typeRegistryIndex": 40377,
+          "token": "0x400179f"
+        },
+        {
+          "fieldIndex": 6047,
+          "name": "Gizmos",
+          "typeRegistryIndex": 61561,
+          "token": "0x40017a0"
+        },
+        {
+          "fieldIndex": 6048,
+          "name": "GL",
+          "typeRegistryIndex": 61561,
+          "token": "0x40017a1"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 2007,
+      "byvalTypeRegistryIndex": 48596,
+      "name": "SubWorld",
+      "namespace": "GameWorld",
+      "totalFieldCount": 23,
+      "fields": [
+        {
+          "fieldIndex": 15212,
+          "name": "MAX_REGION",
+          "typeRegistryIndex": 40383,
+          "token": "0x4003b6d"
+        },
+        {
+          "fieldIndex": 15213,
+          "name": "MAX_SUBWORLD",
+          "typeRegistryIndex": 40383,
+          "token": "0x4003b6e"
+        },
+        {
+          "fieldIndex": 15214,
+          "name": "DIR_UP",
+          "typeRegistryIndex": 40383,
+          "token": "0x4003b6f"
+        },
+        {
+          "fieldIndex": 15215,
+          "name": "DIR_RIGHT",
+          "typeRegistryIndex": 40383,
+          "token": "0x4003b70"
+        },
+        {
+          "fieldIndex": 15216,
+          "name": "DIR_DOWN",
+          "typeRegistryIndex": 40383,
+          "token": "0x4003b71"
+        },
+        {
+          "fieldIndex": 15217,
+          "name": "DIR_LEFT",
+          "typeRegistryIndex": 40383,
+          "token": "0x4003b72"
+        },
+        {
+          "fieldIndex": 15218,
+          "name": "<SubWorldName>k__BackingField",
+          "typeRegistryIndex": 48352,
+          "token": "0x4003b73"
+        },
+        {
+          "fieldIndex": 15219,
+          "name": "<Index>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b74"
+        },
+        {
+          "fieldIndex": 15220,
+          "name": "<SubWorldID>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b75"
+        },
+        {
+          "fieldIndex": 15221,
+          "name": "<MapTemplateID>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b76"
+        },
+        {
+          "fieldIndex": 15222,
+          "name": "<Weather>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b77"
+        },
+        {
+          "fieldIndex": 15223,
+          "name": "<CurrentTime>k__BackingField",
+          "typeRegistryIndex": 50513,
+          "token": "0x4003b78"
+        },
+        {
+          "fieldIndex": 15224,
+          "name": "<Regions>k__BackingField",
+          "typeRegistryIndex": 30286,
+          "token": "0x4003b79"
+        },
+        {
+          "fieldIndex": 15225,
+          "name": "<ClientRegionIdx>k__BackingField",
+          "typeRegistryIndex": 30224,
+          "token": "0x4003b7a"
+        },
+        {
+          "fieldIndex": 15226,
+          "name": "<WorldRegionWidth>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b7b"
+        },
+        {
+          "fieldIndex": 15227,
+          "name": "<WorldRegionHeight>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b7c"
+        },
+        {
+          "fieldIndex": 15228,
+          "name": "<TotalRegion>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b7d"
+        },
+        {
+          "fieldIndex": 15229,
+          "name": "<RegionBeginX>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b7e"
+        },
+        {
+          "fieldIndex": 15230,
+          "name": "<RegionBeginY>k__BackingField",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003b7f"
+        },
+        {
+          "fieldIndex": 15231,
+          "name": "<MessageQueue>k__BackingField",
+          "typeRegistryIndex": 52303,
+          "token": "0x4003b80"
+        },
+        {
+          "fieldIndex": 15232,
+          "name": "_regionIdToIndexCache",
+          "typeRegistryIndex": 10618,
+          "token": "0x4003b81"
+        },
+        {
+          "fieldIndex": 15233,
+          "name": "_isLoadingRegion",
+          "typeRegistryIndex": 33188,
+          "token": "0x4003b82"
+        },
+        {
+          "fieldIndex": 15234,
+          "name": "_currentLoadCoroutine",
+          "typeRegistryIndex": 34983,
+          "token": "0x4003b83"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 2057,
+      "byvalTypeRegistryIndex": 42162,
+      "name": "MapSceneInfo",
+      "namespace": "VietKiem.Levels.Domain",
+      "totalFieldCount": 24,
+      "fields": [
+        {
+          "fieldIndex": 15430,
+          "name": "SceneMapName",
+          "typeRegistryIndex": 48356,
+          "token": "0x4003c47"
+        },
+        {
+          "fieldIndex": 15431,
+          "name": "MapVolume",
+          "typeRegistryIndex": 52027,
+          "token": "0x4003c48"
+        },
+        {
+          "fieldIndex": 15432,
+          "name": "PrefabKeys",
+          "typeRegistryIndex": 19456,
+          "token": "0x4003c49"
+        },
+        {
+          "fieldIndex": 15433,
+          "name": "handleGroup",
+          "typeRegistryIndex": 8996,
+          "token": "0x4003c4a"
+        },
+        {
+          "fieldIndex": 15434,
+          "name": "loadSemaphore",
+          "typeRegistryIndex": 47124,
+          "token": "0x4003c4b"
+        },
+        {
+          "fieldIndex": 15435,
+          "name": "_mapVisible",
+          "typeRegistryIndex": 33188,
+          "token": "0x4003c4c"
+        },
+        {
+          "fieldIndex": 15436,
+          "name": "currentSceneKey",
+          "typeRegistryIndex": 48352,
+          "token": "0x4003c4d"
+        },
+        {
+          "fieldIndex": 15437,
+          "name": "_loadRequestSerial",
+          "typeRegistryIndex": 40355,
+          "token": "0x4003c4e"
+        },
+        {
+          "fieldIndex": 15438,
+          "name": "sceneMap",
+          "typeRegistryIndex": 10957,
+          "token": "0x4003c4f"
+        },
+        {
+          "fieldIndex": 15439,
+          "name": "_loadedWithPcVariant",
+          "typeRegistryIndex": 33188,
+          "token": "0x4003c50"
+        },
+        {
+          "fieldIndex": 15440,
+          "name": "_variantReloadPending",
+          "typeRegistryIndex": 33188,
+          "token": "0x4003c51"
+        },
+        {
+          "fieldIndex": 15441,
+          "name": "_pcVariantKeyExists",
+          "typeRegistryIndex": 10996,
+          "token": "0x4003c52"
+        },
+        {
+          "fieldIndex": 15442,
+          "name": "_mapSceneHandle",
+          "typeRegistryIndex": 9094,
+          "token": "0x4003c53"
+        },
+        {
+          "fieldIndex": 15443,
+          "name": "_mapScene",
+          "typeRegistryIndex": 46869,
+          "token": "0x4003c54"
+        },
+        {
+          "fieldIndex": 15444,
+          "name": "_hasMapScene",
+          "typeRegistryIndex": 33188,
+          "token": "0x4003c55"
+        },
+        {
+          "fieldIndex": 15445,
+          "name": "_mapSceneViaAddressables",
+          "typeRegistryIndex": 33188,
+          "token": "0x4003c56"
+        },
+        {
+          "fieldIndex": 15446,
+          "name": "SceneContainerName",
+          "typeRegistryIndex": 48373,
+          "token": "0x4003c57"
+        },
+        {
+          "fieldIndex": 15447,
+          "name": "MapProgressBase",
+          "typeRegistryIndex": 47576,
+          "token": "0x4003c58"
+        },
+        {
+          "fieldIndex": 15448,
+          "name": "MapProgressSpan",
+          "typeRegistryIndex": 47576,
+          "token": "0x4003c59"
+        },
+        {
+          "fieldIndex": 15449,
+          "name": "MapSceneStallTimeoutSeconds",
+          "typeRegistryIndex": 47576,
+          "token": "0x4003c5a"
+        },
+        {
+          "fieldIndex": 15450,
+          "name": "_prevActiveScene",
+          "typeRegistryIndex": 46869,
+          "token": "0x4003c5b"
+        },
+        {
+          "fieldIndex": 15451,
+          "name": "MaxAttemptsPerPrefab",
+          "typeRegistryIndex": 40379,
+          "token": "0x4003c5c"
+        },
+        {
+          "fieldIndex": 15452,
+          "name": "PerPrefabTimeoutMs",
+          "typeRegistryIndex": 40379,
+          "token": "0x4003c5d"
+        },
+        {
+          "fieldIndex": 15453,
+          "name": "MaxConcurrentInstantiate",
+          "typeRegistryIndex": 40369,
+          "token": "0x4003c5e"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 3740,
+      "byvalTypeRegistryIndex": 43950,
+      "name": "ObjectMapInfo",
+      "namespace": "System.Runtime.Serialization.Formatters.Binary",
+      "totalFieldCount": 4,
+      "fields": [
+        {
+          "fieldIndex": 23096,
+          "name": "objectId",
+          "typeRegistryIndex": 40357,
+          "token": "0x40010e9"
+        },
+        {
+          "fieldIndex": 23097,
+          "name": "numMembers",
+          "typeRegistryIndex": 40355,
+          "token": "0x40010ea"
+        },
+        {
+          "fieldIndex": 23098,
+          "name": "memberNames",
+          "typeRegistryIndex": 30622,
+          "token": "0x40010eb"
+        },
+        {
+          "fieldIndex": 23099,
+          "name": "memberTypes",
+          "typeRegistryIndex": 30745,
+          "token": "0x40010ec"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 5816,
+      "byvalTypeRegistryIndex": 52304,
+      "name": "WorldSpaceData",
+      "namespace": "UnityEngine.UIElements",
+      "totalFieldCount": 5,
+      "fields": [
+        {
+          "fieldIndex": 30399,
+          "name": "k_Empty3DBounds",
+          "typeRegistryIndex": 33249,
+          "token": "0x4001202"
+        },
+        {
+          "fieldIndex": 30400,
+          "name": "localBounds3D",
+          "typeRegistryIndex": 33246,
+          "token": "0x4001203"
+        },
+        {
+          "fieldIndex": 30401,
+          "name": "localBoundsPicking3D",
+          "typeRegistryIndex": 33246,
+          "token": "0x4001204"
+        },
+        {
+          "fieldIndex": 30402,
+          "name": "localBoundsWithoutNested3D",
+          "typeRegistryIndex": 33246,
+          "token": "0x4001205"
+        },
+        {
+          "fieldIndex": 30403,
+          "name": "boundingBoxWithoutNested",
+          "typeRegistryIndex": 45803,
+          "token": "0x4001206"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 12795,
+      "byvalTypeRegistryIndex": 41210,
+      "name": "KUiSceneTimeInfo",
+      "namespace": "Network.Header",
+      "totalFieldCount": 5,
+      "fields": [
+        {
+          "fieldIndex": 66020,
+          "name": "szSceneName",
+          "typeRegistryIndex": 29914,
+          "token": "0x40012a6"
+        },
+        {
+          "fieldIndex": 66021,
+          "name": "nSceneId",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012a7"
+        },
+        {
+          "fieldIndex": 66022,
+          "name": "nScenePos0",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012a8"
+        },
+        {
+          "fieldIndex": 66023,
+          "name": "nScenePos1",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012a9"
+        },
+        {
+          "fieldIndex": 66024,
+          "name": "nGameSpaceTime",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012aa"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 12798,
+      "byvalTypeRegistryIndex": 41114,
+      "name": "KSceneMapInfo",
+      "namespace": "Network.Header",
+      "totalFieldCount": 10,
+      "fields": [
+        {
+          "fieldIndex": 66031,
+          "name": "nScallH",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b1"
+        },
+        {
+          "fieldIndex": 66032,
+          "name": "nScallV",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b2"
+        },
+        {
+          "fieldIndex": 66033,
+          "name": "nFocusMinH",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b3"
+        },
+        {
+          "fieldIndex": 66034,
+          "name": "nFocusMinV",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b4"
+        },
+        {
+          "fieldIndex": 66035,
+          "name": "nFocusMaxH",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b5"
+        },
+        {
+          "fieldIndex": 66036,
+          "name": "nFocusMaxV",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b6"
+        },
+        {
+          "fieldIndex": 66037,
+          "name": "nOrigFocusH",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b7"
+        },
+        {
+          "fieldIndex": 66038,
+          "name": "nOrigFocusV",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b8"
+        },
+        {
+          "fieldIndex": 66039,
+          "name": "nFocusOffsetH",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012b9"
+        },
+        {
+          "fieldIndex": 66040,
+          "name": "nFocusOffsetV",
+          "typeRegistryIndex": 40360,
+          "token": "0x40012ba"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 12815,
+      "byvalTypeRegistryIndex": 47059,
+      "name": "SearchMapInfo",
+      "namespace": "Network.Header",
+      "totalFieldCount": 5,
+      "fields": [
+        {
+          "fieldIndex": 66144,
+          "name": "nSubWorldId",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001322"
+        },
+        {
+          "fieldIndex": 66145,
+          "name": "nDestMpsX",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001323"
+        },
+        {
+          "fieldIndex": 66146,
+          "name": "nDestMpsY",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001324"
+        },
+        {
+          "fieldIndex": 66147,
+          "name": "nReviseMpsX",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001325"
+        },
+        {
+          "fieldIndex": 66148,
+          "name": "nReviseMpsY",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001326"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 12817,
+      "byvalTypeRegistryIndex": 41149,
+      "name": "KSubworldPos",
+      "namespace": "Network.Header",
+      "totalFieldCount": 2,
+      "fields": [
+        {
+          "fieldIndex": 66151,
+          "name": "m_iSubworldId",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001329"
+        },
+        {
+          "fieldIndex": 66152,
+          "name": "m_cSubworldCoord",
+          "typeRegistryIndex": 40966,
+          "token": "0x400132a"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 13018,
+      "byvalTypeRegistryIndex": 52052,
+      "name": "WORLD_SYNC",
+      "namespace": "Network.Header",
+      "totalFieldCount": 7,
+      "fields": [
+        {
+          "fieldIndex": 67390,
+          "name": "ProtocolType",
+          "typeRegistryIndex": 33519,
+          "token": "0x4001800"
+        },
+        {
+          "fieldIndex": 67391,
+          "name": "SubWorld",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001801"
+        },
+        {
+          "fieldIndex": 67392,
+          "name": "Region",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001802"
+        },
+        {
+          "fieldIndex": 67393,
+          "name": "Weather",
+          "typeRegistryIndex": 33519,
+          "token": "0x4001803"
+        },
+        {
+          "fieldIndex": 67394,
+          "name": "Frame",
+          "typeRegistryIndex": 50516,
+          "token": "0x4001804"
+        },
+        {
+          "fieldIndex": 67395,
+          "name": "MapCopyID",
+          "typeRegistryIndex": 40360,
+          "token": "0x4001805"
+        },
+        {
+          "fieldIndex": 67396,
+          "name": "szName",
+          "typeRegistryIndex": 29914,
+          "token": "0x4001806"
+        }
+      ]
+    },
+    {
+      "typeDefinitionIndex": 13034,
+      "byvalTypeRegistryIndex": 53430,
+      "name": "tagQueryMapInfo",
+      "namespace": "Network.Header",
+      "totalFieldCount": 1,
+      "fields": [
+        {
+          "fieldIndex": 67454,
+          "name": "Header",
+          "typeRegistryIndex": 53427,
+          "token": "0x4001840"
+        }
+      ]
+    }
+  ],
+  "resolvedWorldSyncType": {
+    "typeDefinitionIndex": 13018,
+    "byvalTypeRegistryIndex": 52052,
+    "name": "WORLD_SYNC",
+    "namespace": "Network.Header",
+    "totalFieldCount": 7,
+    "fields": [
+      {
+        "fieldIndex": 67390,
+        "name": "ProtocolType",
+        "typeRegistryIndex": 33519,
+        "token": "0x4001800"
+      },
+      {
+        "fieldIndex": 67391,
+        "name": "SubWorld",
+        "typeRegistryIndex": 40360,
+        "token": "0x4001801"
+      },
+      {
+        "fieldIndex": 67392,
+        "name": "Region",
+        "typeRegistryIndex": 40360,
+        "token": "0x4001802"
+      },
+      {
+        "fieldIndex": 67393,
+        "name": "Weather",
+        "typeRegistryIndex": 33519,
+        "token": "0x4001803"
+      },
+      {
+        "fieldIndex": 67394,
+        "name": "Frame",
+        "typeRegistryIndex": 50516,
+        "token": "0x4001804"
+      },
+      {
+        "fieldIndex": 67395,
+        "name": "MapCopyID",
+        "typeRegistryIndex": 40360,
+        "token": "0x4001805"
+      },
+      {
+        "fieldIndex": 67396,
+        "name": "szName",
+        "typeRegistryIndex": 29914,
+        "token": "0x4001806"
+      }
+    ]
+  },
+  "resolvedTypeParameterIndex": 52052,
+  "nativeLoadMapBindings": [
+    {
+      "callArgument": "nTemplateId",
+      "sourceField": "MapCopyID",
+      "sourceOffset": 20,
+      "nativeRegister": "edx",
+      "fieldTypeRegistryIndex": 40360
+    },
+    {
+      "callArgument": "nMapId",
+      "sourceField": "SubWorld",
+      "sourceOffset": 4,
+      "nativeRegister": "r8d",
+      "fieldTypeRegistryIndex": 40360
+    },
+    {
+      "callArgument": "nRegion",
+      "sourceField": "Region",
+      "sourceOffset": 8,
+      "nativeRegister": "r9d",
+      "fieldTypeRegistryIndex": 40360
+    },
+    {
+      "callArgument": "nMpsX",
+      "sourceField": null,
+      "sourceOffset": null,
+      "nativeRegister": "stack +0x20",
+      "sourceValue": "zeroed-esi"
+    },
+    {
+      "callArgument": "nMpsY",
+      "sourceField": null,
+      "sourceOffset": null,
+      "nativeRegister": "stack +0x28",
+      "sourceValue": "zeroed-esi"
+    }
+  ],
+  "historicalMap53HarnessObservation": {
+    "sourceFile": "M1-map53-region.json",
+    "sourceSHA256": "EE997AD6763C1EA2DCB7DC2710330A8C2F631558625F7E18000A001965C6DBB0",
+    "kind": "historical-local-test-harness-events",
+    "distinctWorldSyncEvents": 1,
+    "totalWorldSyncEvents": 2,
+    "observedFields": {
+      "SubWorld": 53,
+      "MapCopyID": 53,
+      "Region": 6488114
+    },
+    "derivedLoaderArguments": {
+      "nTemplateId": 53,
+      "nMapId": 53,
+      "nRegion": 6488114,
+      "nMpsX": 0,
+      "nMpsY": 0
+    },
+    "gate": "NOT_RUNTIME_ACCEPTANCE: historical emitted events only; no original 4016 rendered scene + mapped landmark pairing."
+  },
+  "recordSource": "Original IL2CPP v39 MethodDefinition, ParamDefinition, TypeDefinition, FieldDefinition, and SHA-checked 4016 native callsite",
+  "limitations": "Original method and field names recovered with byval registry-index equality. The three named DWORD source offsets are supported by compiled native transfers; other field offsets, full wire framing, live Map53 coefficients and landmark pairing remain unverified."
+}

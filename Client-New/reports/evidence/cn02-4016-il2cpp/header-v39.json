@@ -1,0 +1,224 @@
+{
+  "version": 39,
+  "sourceSha256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "sourceBytes": 20101168,
+  "sections": [
+    {
+      "index": 0,
+      "offset": 380,
+      "size": 115132,
+      "count": 28783,
+      "recordSize": 4
+    },
+    {
+      "index": 1,
+      "offset": 115512,
+      "size": 943432,
+      "count": 28782,
+      "recordSize": null
+    },
+    {
+      "index": 2,
+      "offset": 1058944,
+      "size": 2944308,
+      "count": 164949,
+      "recordSize": null
+    },
+    {
+      "index": 3,
+      "offset": 4003252,
+      "size": 12576,
+      "count": 524,
+      "recordSize": 24
+    },
+    {
+      "index": 4,
+      "offset": 4015828,
+      "size": 549460,
+      "count": 27473,
+      "recordSize": 20
+    },
+    {
+      "index": 5,
+      "offset": 4565288,
+      "size": 5160544,
+      "count": 161267,
+      "recordSize": 32
+    },
+    {
+      "index": 6,
+      "offset": 9725832,
+      "size": 63432,
+      "count": 5286,
+      "recordSize": 12
+    },
+    {
+      "index": 7,
+      "offset": 9789264,
+      "size": 303120,
+      "count": 25260,
+      "recordSize": 12
+    },
+    {
+      "index": 8,
+      "offset": 10092384,
+      "size": 1213240,
+      "count": 1213240,
+      "recordSize": 1
+    },
+    {
+      "index": 9,
+      "offset": 11305624,
+      "size": 93936,
+      "count": 7828,
+      "recordSize": 12
+    },
+    {
+      "index": 10,
+      "offset": 11399560,
+      "size": 2176812,
+      "count": 181401,
+      "recordSize": 12
+    },
+    {
+      "index": 11,
+      "offset": 13576372,
+      "size": 1252104,
+      "count": 104342,
+      "recordSize": 12
+    },
+    {
+      "index": 12,
+      "offset": 14828476,
+      "size": 103446,
+      "count": 7389,
+      "recordSize": 14
+    },
+    {
+      "index": 13,
+      "offset": 14931924,
+      "size": 16932,
+      "count": 4233,
+      "recordSize": 4
+    },
+    {
+      "index": 14,
+      "offset": 14948856,
+      "size": 76384,
+      "count": 4774,
+      "recordSize": 16
+    },
+    {
+      "index": 15,
+      "offset": 15025240,
+      "size": 31640,
+      "count": 7910,
+      "recordSize": 4
+    },
+    {
+      "index": 16,
+      "offset": 15056880,
+      "size": 31036,
+      "count": 7759,
+      "recordSize": 4
+    },
+    {
+      "index": 17,
+      "offset": 15087916,
+      "size": 873012,
+      "count": 218253,
+      "recordSize": 4
+    },
+    {
+      "index": 18,
+      "offset": 15960928,
+      "size": 165152,
+      "count": 20644,
+      "recordSize": 8
+    },
+    {
+      "index": 19,
+      "offset": 16126080,
+      "size": 1761770,
+      "count": 21485,
+      "recordSize": 82
+    },
+    {
+      "index": 20,
+      "offset": 17887852,
+      "size": 4392,
+      "count": 122,
+      "recordSize": 36
+    },
+    {
+      "index": 21,
+      "offset": 17892244,
+      "size": 8296,
+      "count": 122,
+      "recordSize": 68
+    },
+    {
+      "index": 22,
+      "offset": 17900540,
+      "size": 8792,
+      "count": 1099,
+      "recordSize": 8
+    },
+    {
+      "index": 23,
+      "offset": 17909332,
+      "size": 3144,
+      "count": 786,
+      "recordSize": 4
+    },
+    {
+      "index": 24,
+      "offset": 17912476,
+      "size": 1556744,
+      "count": 1556744,
+      "recordSize": 1
+    },
+    {
+      "index": 25,
+      "offset": 19469220,
+      "size": 467512,
+      "count": 58439,
+      "recordSize": 8
+    },
+    {
+      "index": 26,
+      "offset": 19936732,
+      "size": 88884,
+      "count": 22221,
+      "recordSize": 4
+    },
+    {
+      "index": 27,
+      "offset": 20025616,
+      "size": 62472,
+      "count": 7809,
+      "recordSize": 8
+    },
+    {
+      "index": 28,
+      "offset": 20088088,
+      "size": 0,
+      "count": 0,
+      "recordSize": null
+    },
+    {
+      "index": 29,
+      "offset": 20088088,
+      "size": 0,
+      "count": 0,
+      "recordSize": null
+    },
+    {
+      "index": 30,
+      "offset": 20088088,
+      "size": 13080,
+      "count": 3270,
+      "recordSize": 4
+    }
+  ]
+}

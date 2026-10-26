@@ -1,0 +1,7 @@
+Actual scene draft export process exit: 0
+Win64 build process exit: 0
+Graphical EditMode process exit: 0
+PlayMode process exit: 0
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\anchor-workflow-export.log:327: [CN02-ANCHORS] Unpaired draft exported; calibration remains UNVERIFIED: E:\Games\VLTK3D\SwordOnline\Client-New\reports\evidence\anchors\drafts\map53-anchors-20261025-102929-20804c5bad4445bda82ad52a3d12be81.json
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\anchor-workflow-build.log:856: DisplayProgressNotification: Build Successful
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\anchor-workflow-build.log:857: Build Finished, Result: Success.

@@ -1,0 +1,34 @@
+{
+  "Timestamp": "2026-10-25T16:56:25.1729302+07:00",
+  "Mode": "Read-only inventory. No import, extraction, execution or redistribution.",
+  "Bundles": [
+    {
+      "Path": "E:\\Games\\VLTK3D\\SwordOnline\\Client-3D-2\\LAN-LOCAL\\Map53Official4016\\pc_balanghuyen_assets_all_53fcdd524b8c67eafad5c013f036ed4b.bundle",
+      "Rights": "UNKNOWN; possession alone does not establish approved import/distribution",
+      "SHA256": "73283BA18C144FB37286CAAD5F6BF4DB4F17C25BD94A3B470FA3E5D07A5DF4D1",
+      "Bytes": 31592781
+    },
+    {
+      "Path": "E:\\Games\\VLTK3D\\SwordOnline\\Client-3D-2\\LAN-LOCAL\\Map53Official4016\\pc_balanghuyen_scenes_all_4e0a8e141624756b20ca4ccfa32087fb.bundle",
+      "Rights": "UNKNOWN; possession alone does not establish approved import/distribution",
+      "SHA256": "EEB567D492CE740AAD8A796F531D993917F511FDA60ECF4DDE25DA6C2B4DEC4A",
+      "Bytes": 9738990
+    }
+  ],
+  "AnchorTrace": {
+    "SHA256": "EE997AD6763C1EA2DCB7DC2710330A8C2F631558625F7E18000A001965C6DBB0",
+    "Conclusion": "Two legacy-only collinear points, no verified paired Unity coordinates. Does not satisfy 3+1 calibration.",
+    "PairedUnityPoints": [],
+    "LegacyPoints": [
+      [
+        51889,
+        102090
+      ],
+      [
+        51889,
+        102105
+      ]
+    ],
+    "Source": "E:/Games/VLTK3D/SwordOnline/Client-3D-2/LAN-LOCAL/M1-map53-region.json"
+  }
+}

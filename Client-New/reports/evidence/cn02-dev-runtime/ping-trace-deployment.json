@@ -1,0 +1,17 @@
+{
+  "source_before": "715208d04f731cbd12ddf1c20f60c348d80cd34c57fe876af895844a9ba3cd34",
+  "source_after": "5dbbb751cc67873db9fcc9ae12a48157dee5f2e5f5e6739c04a1a5f9721cac17",
+  "stale_gate": {
+    "status": "P0_PROTOCOL_EVIDENCE_MISSING_OR_STALE",
+    "world_entry_enabled": false,
+    "m1_p0_pass": false,
+    "stale_source": "gs-bridge-m1/native_session.py"
+  },
+  "ready_gate": {
+    "status": "CONTROLLED_MAP53_PROTOCOL_TEST_READY",
+    "world_entry_enabled": true,
+    "m1_p0_pass": false
+  },
+  "tests_exit": 0,
+  "changes": "numeric ping logging only; packet behavior unchanged"
+}

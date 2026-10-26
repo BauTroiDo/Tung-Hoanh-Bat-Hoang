@@ -1,0 +1,160 @@
+{
+  "pid": 31732,
+  "seconds": 35,
+  "events": [
+    {
+      "kind": "installed",
+      "urlHooks": 2,
+      "snapshots": "metadata field reads on main loop",
+      "mutations": false
+    },
+    {
+      "kind": "snapshot",
+      "frames": 1,
+      "gameManagerFound": true,
+      "sceneLoaderFound": true,
+      "mapId": 53,
+      "mapLoadInFlight": false,
+      "localPlayerId": 40709,
+      "initialized": true,
+      "playerPrefabFailStreak": 0,
+      "currentSceneMap": "",
+      "sceneContainerName": "SceneContainer",
+      "notShowMap": false,
+      "serviceFound": true,
+      "currentSceneKey": "BaLangHuyen",
+      "mapVisible": true,
+      "requestSerial": 3,
+      "pcVariant": true,
+      "hasMapScene": true,
+      "viaAddressables": true,
+      "affine": {
+        "m00": -2.406399965286255,
+        "m01": 3.5840001106262207,
+        "m10": 3.891200065612793,
+        "m11": 3.328000068664551,
+        "offsetX": -225.52000427246094,
+        "offsetZ": -1433.8399658203125
+      },
+      "mapData": {
+        "CurrentTemplateId": 53,
+        "RegionBeginX": 74,
+        "RegionBeginY": 83,
+        "MinX": 74,
+        "MinY": 83,
+        "MaxX": 117,
+        "MaxY": 116,
+        "WorldRegionWidth": 44,
+        "WorldRegionHeight": 34,
+        "CurrentMapPath": "country/balanghuyen",
+        "CurrentDatFolder": "Settings/maps/country/balanghuyen"
+      }
+    },
+    {
+      "kind": "urlSet",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "httpSend",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "urlSet",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "httpSend",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "urlSet",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "httpSend",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "urlSet",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "httpSend",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "urlSet",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "httpSend",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "snapshot",
+      "frames": 152,
+      "gameManagerFound": true,
+      "sceneLoaderFound": true,
+      "mapId": 53,
+      "mapLoadInFlight": false,
+      "localPlayerId": 40709,
+      "initialized": true,
+      "playerPrefabFailStreak": 0,
+      "currentSceneMap": "",
+      "sceneContainerName": "SceneContainer",
+      "notShowMap": false,
+      "serviceFound": true,
+      "currentSceneKey": "BaLangHuyen",
+      "mapVisible": true,
+      "requestSerial": 3,
+      "pcVariant": true,
+      "hasMapScene": true,
+      "viaAddressables": true,
+      "affine": {
+        "m00": -2.406399965286255,
+        "m01": 3.5840001106262207,
+        "m10": 3.891200065612793,
+        "m11": 3.328000068664551,
+        "offsetX": -225.52000427246094,
+        "offsetZ": -1433.8399658203125
+      },
+      "mapData": {
+        "CurrentTemplateId": 53,
+        "RegionBeginX": 74,
+        "RegionBeginY": 83,
+        "MinX": 74,
+        "MinY": 83,
+        "MaxX": 117,
+        "MaxY": 116,
+        "WorldRegionWidth": 44,
+        "WorldRegionHeight": 34,
+        "CurrentMapPath": "country/balanghuyen",
+        "CurrentDatFolder": "Settings/maps/country/balanghuyen"
+      }
+    },
+    {
+      "kind": "urlSet",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "httpSend",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "urlSet",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "httpSend",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "urlSet",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    },
+    {
+      "kind": "httpSend",
+      "url": "https://cdn-jx3d.tepaylink.vn/upload/xaphu_routes.json"
+    }
+  ]
+}

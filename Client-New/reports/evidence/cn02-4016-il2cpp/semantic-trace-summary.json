@@ -1,0 +1,239 @@
+{
+  "stage": "CN02-BULK-05",
+  "sourceBinarySHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "sourceMetadataSHA256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "historicalTraces": {
+    "region": {
+      "file": "M1-map53-region-events.jsonl",
+      "validJsonRecords": 124,
+      "invalidJsonLines": 0,
+      "kindCounts": {
+        "lanEarlyRootArmed": 2,
+        "lanRootAfterServerList": 2,
+        "lanRootBeforeFirstPakRead": 2,
+        "originalAvatarCreationReturn": 19,
+        "originalCreateLocalPlayer": 19,
+        "originalMapLoadAttempt": 10,
+        "originalMapRequest": 19,
+        "receivedNpcPosition": 7,
+        "receivedWorldMap": 19,
+        "subworldMapSelector": 19
+      },
+      "observedWorldTriples": [
+        {
+          "subWorld": 53,
+          "mapCopyId": 53,
+          "region": 6488114
+        }
+      ],
+      "avatarCreationPendingCount": 19,
+      "note": "Instrumented historical Frida/test-harness events, NOT raw authenticated network frames."
+    },
+    "fixed": {
+      "file": "M1-map53-fixed-events.jsonl",
+      "validJsonRecords": 26,
+      "invalidJsonLines": 0,
+      "kindCounts": {
+        "lanEarlyRootArmed": 1,
+        "lanRootAfterServerList": 1,
+        "lanRootBeforeFirstPakRead": 1,
+        "originalMapLoadAttempt": 5,
+        "originalMapRequest": 5,
+        "receivedWorldMap": 5,
+        "subworldMapSelector": 5
+      },
+      "observedWorldTriples": [],
+      "avatarCreationPendingCount": 0,
+      "note": "Instrumented historical Frida/test-harness events, NOT raw authenticated network frames."
+    },
+    "http": {
+      "file": "M1-map53-http-events.jsonl",
+      "jsonRecords": 2433,
+      "malformedLines": 2,
+      "httpMethods": {
+        "GET": 2433
+      },
+      "httpStatusCounts": {
+        "200": 7,
+        "206": 5,
+        "404": 2421
+      },
+      "recordsMatchingBalanghuyenBundleName": 2,
+      "recordsMatchingPcBalanghuyenBundleName": 2,
+      "pcBalangStatusCounts": {
+        "200": 2
+      },
+      "pcBalangResponseLengthsBytes": [
+        9738990,
+        31592781
+      ],
+      "note": "Historical localhost HTTP mirror records are NOT current official CDN availability or proof of Unity scene completion. No URLs or asset names exported."
+    }
+  },
+  "documentarySecondaryObservations": {
+    "historicalBishopAuthReported": true,
+    "historicalGsInitialSyncReported": true,
+    "historicalOriginalGsAckReported": true,
+    "historicalAssetOrSceneGateNotPassed": true,
+    "historicalAuthoritativeMoveAcceptance": false,
+    "warning": "Statements come from 2026-10-24 and 2026-10-25 historical handoff documents; different sessions, not an independently verified fresh packet trace."
+  },
+  "nativeDirectCallEdges": [
+    {
+      "caller": "ProcessGameUnity.OnSyncWorld",
+      "callee": "MapService.UpdateWorldInfo",
+      "callsiteRva": "0xc38d1f",
+      "calleeRva": "0x8e0dd0",
+      "verifiedDirectCall": true
+    },
+    {
+      "caller": "MapService.UpdateWorldInfo",
+      "callee": "SubWorld.LoadMap",
+      "callsiteRva": "0x8e1094",
+      "calleeRva": "0xc75de0",
+      "verifiedDirectCall": true
+    },
+    {
+      "caller": "MapService.UpdateWorldInfo",
+      "callee": "SubWorld.Activate",
+      "callsiteRva": "0x8e10e8",
+      "calleeRva": "0xc753c0",
+      "verifiedDirectCall": true
+    }
+  ],
+  "scenePathDirectCallEdges": [
+    {
+      "caller": "SubWorld.LoadMap",
+      "callee": "MapDataService.LoadForTemplate",
+      "callsiteRva": "0xc762ac",
+      "calleeRva": "0x8c9bf0",
+      "verifiedDirectCall": true
+    },
+    {
+      "caller": "SubWorld.LoadMap",
+      "callee": "GameManager.LoadScene",
+      "callsiteRva": "0xc7638a",
+      "calleeRva": "0x918b70",
+      "verifiedDirectCall": true
+    },
+    {
+      "caller": "MapDataService.LoadForTemplate",
+      "callee": "MapDataService.ResolveMapFolderPath",
+      "callsiteRva": "0x8c9f59",
+      "calleeRva": "0x8cd240",
+      "verifiedDirectCall": true
+    }
+  ],
+  "namedWorldSyncToLoadMap": {
+    "formalBindings": [
+      {
+        "formalParameter": "nTemplateId",
+        "worldSyncField": "MapCopyID",
+        "byteOffset": 20,
+        "register": "edx"
+      },
+      {
+        "formalParameter": "nMapId",
+        "worldSyncField": "SubWorld",
+        "byteOffset": 4,
+        "register": "r8d"
+      },
+      {
+        "formalParameter": "nRegion",
+        "worldSyncField": "Region",
+        "byteOffset": 8,
+        "register": "r9d"
+      },
+      {
+        "formalParameter": "nMpsX",
+        "observedNativeArgument": "zero in path"
+      },
+      {
+        "formalParameter": "nMpsY",
+        "observedNativeArgument": "zero in path"
+      }
+    ],
+    "projectedHistoricalMapSelectorInputs": [
+      {
+        "nTemplateId": 53,
+        "nMapId": 53,
+        "nRegion": 6488114,
+        "nMpsX": 0,
+        "nMpsY": 0
+      }
+    ],
+    "qualification": "A projection of instrumented historical fields through verified native call convention, NOT a direct packet capture or Map53 scene/affine calibration."
+  },
+  "knownMethodRvaContracts": [
+    {
+      "method": "BishopNetwork::Login()",
+      "rva": "0x8f3750",
+      "metadataIndexMatches": true
+    },
+    {
+      "method": "GameServerNetwork::ConnectToServer()",
+      "rva": "0x92ca30",
+      "metadataIndexMatches": true
+    },
+    {
+      "method": "Network.Header.ProcessGameUnity::OnSyncWorld()",
+      "rva": "0xc38990",
+      "metadataIndexMatches": true
+    },
+    {
+      "method": "MapDataService::LoadForTemplate()",
+      "rva": "0x8c9bf0",
+      "metadataIndexMatches": true
+    },
+    {
+      "method": "VietKiem.Levels.Application.SceneLoadService::ResolveVariantKeyAsync()",
+      "rva": "0xc74650",
+      "metadataIndexMatches": true
+    },
+    {
+      "method": "WalkState::Enter()",
+      "rva": "0x87b290",
+      "metadataIndexMatches": true
+    },
+    {
+      "method": "StateMachine::ChangeState()",
+      "rva": "0x878a30",
+      "metadataIndexMatches": true
+    }
+  ],
+  "stageAssessments": [
+    {
+      "name": "Bishop authorization",
+      "status": "DOCUMENTED_HISTORICALLY",
+      "evidenceType": "retrospective QA report; no redacted raw ticket capture"
+    },
+    {
+      "name": "GameServer initial sync/ACK",
+      "status": "DOCUMENTED_HISTORICALLY",
+      "evidenceType": "QA handoff for separate sessions; not same-session proof as instrumented events"
+    },
+    {
+      "name": "WORLD_SYNC field/selector",
+      "status": "OBSERVED_IN_HISTORICAL_INSTRUMENTED_EVENTS",
+      "evidenceType": "instrumented receivedWorldMap / subworldMapSelector values; static native mapping"
+    },
+    {
+      "name": "SubWorld/Map load attempt",
+      "status": "OBSERVED_ATTEMPT",
+      "evidenceType": "originalMapLoadAttempt event, not scene success"
+    },
+    {
+      "name": "Addressables/scene rendered",
+      "status": "NOT_VERIFIED",
+      "evidenceType": "historical CDN/localhost logs with no independently confirmed rendered map"
+    },
+    {
+      "name": "WalkState real authoritative movement",
+      "status": "NOT_VERIFIED",
+      "evidenceType": "RVA only; no same-session server-authenticated move and echoed position"
+    }
+  ],
+  "runtimeEndToEndPass": false,
+  "map53CalibrationAccepted": false,
+  "limits": "Do not join events from different historical runs into a single authenticated end-to-end packet trace. No raw GUID/password/name/ticket/payload persisted. Neither full scene load nor GameServer-authoritative movement was observed. Map53 6 runtime affine floats and genuine 3+1 paired original landmarks remain missing. CN02-04 BLOCKED / CN03 CLOSED."
+}

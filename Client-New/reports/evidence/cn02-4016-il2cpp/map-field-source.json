@@ -1,0 +1,928 @@
+{
+  "metadataSHA256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "binarySHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "targets": [
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5010,
+      "name": "get_CurrentMapDisplayName",
+      "token": "0x6001393",
+      "nativeRVA": "0x8E1EF0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5011,
+      "name": "EnsureInvDet",
+      "token": "0x6001394",
+      "nativeRVA": "0x8DE330"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5012,
+      "name": "get_MpsWorldScale",
+      "token": "0x6001395",
+      "nativeRVA": "0x8E2140"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5013,
+      "name": "get_MpsWorldScaleForSpeed",
+      "token": "0x6001396",
+      "nativeRVA": "0x8E1F90"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5014,
+      "name": "WorldDeltaToMpsDelta",
+      "token": "0x6001397",
+      "nativeRVA": "0x8E11E0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5015,
+      "name": "WorldDeltaToMpsDistance",
+      "token": "0x6001398",
+      "nativeRVA": "0x8E12D0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5016,
+      "name": "WorldRadiusForMpsRange",
+      "token": "0x6001399",
+      "nativeRVA": "0x8E1A40"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5017,
+      "name": "ClampWorldTargetToMpsRange",
+      "token": "0x600139A",
+      "nativeRVA": "0x8DDBC0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5018,
+      "name": "EnsureEllipseParams",
+      "token": "0x600139B",
+      "nativeRVA": "0x8DE0F0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5019,
+      "name": "GetWorldEllipseForMpsRange",
+      "token": "0x600139C",
+      "nativeRVA": "0x8DE900"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5020,
+      "name": "Mps2WorldPos",
+      "token": "0x600139D",
+      "nativeRVA": "0x8DFD10"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5021,
+      "name": "Map2WorldPos",
+      "token": "0x600139E",
+      "nativeRVA": "0x8DFBF0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5022,
+      "name": "WorldPos2Mps",
+      "token": "0x600139F",
+      "nativeRVA": "0x8E18B0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5023,
+      "name": "WorldPos2GridCell",
+      "token": "0x60013A0",
+      "nativeRVA": "0x8E1710"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5024,
+      "name": "DirToRotation",
+      "token": "0x60013A1",
+      "nativeRVA": "0x8DDE90"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5025,
+      "name": "RotationToDir",
+      "token": "0x60013A2",
+      "nativeRVA": "0x8E0470"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5026,
+      "name": "WorldDirToDirIndex",
+      "token": "0x60013A3",
+      "nativeRVA": "0x8E1480"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5027,
+      "name": "GetDirIndex",
+      "token": "0x60013A4",
+      "nativeRVA": "0x8DE680"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5028,
+      "name": "GetDirIndex",
+      "token": "0x60013A5",
+      "nativeRVA": "0x8DE3F0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5029,
+      "name": "DirIndex2Dir",
+      "token": "0x60013A6",
+      "nativeRVA": "0x8DDDD0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5030,
+      "name": "Dir2DirIndex",
+      "token": "0x60013A7",
+      "nativeRVA": "0x8DDD10"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5031,
+      "name": "GetLength",
+      "token": "0x60013A8",
+      "nativeRVA": "0x8DE8C0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5032,
+      "name": "TransformDirectionX",
+      "token": "0x60013A9",
+      "nativeRVA": "0x8E0B50"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5033,
+      "name": "TransformDirectionZ",
+      "token": "0x60013AA",
+      "nativeRVA": "0x8E0BE0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5034,
+      "name": "TransformDirection",
+      "token": "0x60013AB",
+      "nativeRVA": "0x8E0C70"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5035,
+      "name": "InternalDirSinCos",
+      "token": "0x60013AC",
+      "nativeRVA": "0x8DFB80"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5036,
+      "name": "DirCos",
+      "token": "0x60013AD",
+      "nativeRVA": "0x8DDD30"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5037,
+      "name": "DirSin",
+      "token": "0x60013AE",
+      "nativeRVA": "0x8DDDF0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5038,
+      "name": "GetDistance",
+      "token": "0x60013AF",
+      "nativeRVA": "0x8DE870"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5039,
+      "name": "UpdateWorldInfo",
+      "token": "0x60013B0",
+      "nativeRVA": "0x8E0DD0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5040,
+      "name": "ResetPlayerTrail",
+      "token": "0x60013B1",
+      "nativeRVA": "0x8E03D0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5041,
+      "name": "SampleLocalPlayerTrail",
+      "token": "0x60013B2",
+      "nativeRVA": "0x8E0510"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5042,
+      "name": "NearestTrailDistMps",
+      "token": "0x60013B3",
+      "nativeRVA": "0x8DFE00"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5043,
+      "name": "SegDistSqr",
+      "token": "0x60013B4",
+      "nativeRVA": "0x8E0770"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5044,
+      "name": "HandleSyncNpcMinPlayer",
+      "token": "0x60013B5",
+      "nativeRVA": "0x8DE9C0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5045,
+      "name": "RemoveNpcFromRegion",
+      "token": "0x60013B6",
+      "nativeRVA": "0x8E01F0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5046,
+      "name": "IsMovementCommand",
+      "token": "0x60013B7",
+      "nativeRVA": "0x8DFBD0"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5047,
+      "name": "Calibrate",
+      "token": "0x60013B8",
+      "nativeRVA": "0x8DD750"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5048,
+      "name": "Solve3x3",
+      "token": "0x60013B9",
+      "nativeRVA": "0x8E0870"
+    },
+    {
+      "owner": "MapService",
+      "ownerIndex": 637,
+      "index": 5049,
+      "name": ".cctor",
+      "token": "0x60013BA",
+      "nativeRVA": "0x8E1B40"
+    },
+    {
+      "owner": "MapConverter",
+      "ownerIndex": 1156,
+      "index": 8561,
+      "name": "WorldToMapPos",
+      "token": "0x6002172",
+      "nativeRVA": "0xA1FC80"
+    },
+    {
+      "owner": "MapConverter",
+      "ownerIndex": 1156,
+      "index": 8562,
+      "name": "MapToWorldPos",
+      "token": "0x6002173",
+      "nativeRVA": "0xA1FBB0"
+    },
+    {
+      "owner": "MapConverter",
+      "ownerIndex": 1156,
+      "index": 8563,
+      "name": "MpsToMapPos",
+      "token": "0x6002174",
+      "nativeRVA": "0xA1FC00"
+    },
+    {
+      "owner": "MapConverter",
+      "ownerIndex": 1156,
+      "index": 8564,
+      "name": "Server2MiniMap",
+      "token": "0x6002175",
+      "nativeRVA": "0xA1FC50"
+    },
+    {
+      "owner": "MapConverter",
+      "ownerIndex": 1156,
+      "index": 8565,
+      "name": ".ctor",
+      "token": "0x6002176",
+      "nativeRVA": "0x77D280"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14789,
+      "name": "get_SubWorldName",
+      "token": "0x60039C6",
+      "nativeRVA": "0x8902A0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14790,
+      "name": "set_SubWorldName",
+      "token": "0x60039C7",
+      "nativeRVA": "0x828260"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14791,
+      "name": "get_Index",
+      "token": "0x60039C8",
+      "nativeRVA": "0xA7DC00"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14792,
+      "name": "set_Index",
+      "token": "0x60039C9",
+      "nativeRVA": "0xA7DC30"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14793,
+      "name": "get_SubWorldID",
+      "token": "0x60039CA",
+      "nativeRVA": "0x96AE10"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14794,
+      "name": "set_SubWorldID",
+      "token": "0x60039CB",
+      "nativeRVA": "0xA7DC10"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14795,
+      "name": "get_MapTemplateID",
+      "token": "0x60039CC",
+      "nativeRVA": "0x82CAA0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14796,
+      "name": "set_MapTemplateID",
+      "token": "0x60039CD",
+      "nativeRVA": "0x7E7630"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14797,
+      "name": "get_Weather",
+      "token": "0x60039CE",
+      "nativeRVA": "0x82CA90"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14798,
+      "name": "set_Weather",
+      "token": "0x60039CF",
+      "nativeRVA": "0xBDBBD0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14799,
+      "name": "get_CurrentTime",
+      "token": "0x60039D0",
+      "nativeRVA": "0x82CAB0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14800,
+      "name": "set_CurrentTime",
+      "token": "0x60039D1",
+      "nativeRVA": "0x8A8EF0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14801,
+      "name": "get_Regions",
+      "token": "0x60039D2",
+      "nativeRVA": "0x920020"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14802,
+      "name": "set_Regions",
+      "token": "0x60039D3",
+      "nativeRVA": "0xB2C220"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14803,
+      "name": "get_ClientRegionIdx",
+      "token": "0x60039D4",
+      "nativeRVA": "0x920010"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14804,
+      "name": "set_ClientRegionIdx",
+      "token": "0x60039D5",
+      "nativeRVA": "0x9203F0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14805,
+      "name": "get_WorldRegionWidth",
+      "token": "0x60039D6",
+      "nativeRVA": "0xA069D0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14806,
+      "name": "set_WorldRegionWidth",
+      "token": "0x60039D7",
+      "nativeRVA": "0xAB6F20"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14807,
+      "name": "get_WorldRegionHeight",
+      "token": "0x60039D8",
+      "nativeRVA": "0x826E50"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14808,
+      "name": "set_WorldRegionHeight",
+      "token": "0x60039D9",
+      "nativeRVA": "0x826ED0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14809,
+      "name": "get_TotalRegion",
+      "token": "0x60039DA",
+      "nativeRVA": "0x826E60"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14810,
+      "name": "set_TotalRegion",
+      "token": "0x60039DB",
+      "nativeRVA": "0x826EE0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14811,
+      "name": "get_RegionBeginX",
+      "token": "0x60039DC",
+      "nativeRVA": "0x843650"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14812,
+      "name": "set_RegionBeginX",
+      "token": "0x60039DD",
+      "nativeRVA": "0x842E70"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14813,
+      "name": "get_RegionBeginY",
+      "token": "0x60039DE",
+      "nativeRVA": "0x7D3290"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14814,
+      "name": "set_RegionBeginY",
+      "token": "0x60039DF",
+      "nativeRVA": "0x7D3370"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14815,
+      "name": "get_MessageQueue",
+      "token": "0x60039E0",
+      "nativeRVA": "0xA773E0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14816,
+      "name": "set_MessageQueue",
+      "token": "0x60039E1",
+      "nativeRVA": "0xAE91F0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14817,
+      "name": ".ctor",
+      "token": "0x60039E2",
+      "nativeRVA": "0xC7B560"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14818,
+      "name": "Activate",
+      "token": "0x60039E3",
+      "nativeRVA": "0xC753C0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14819,
+      "name": "MessageLoop",
+      "token": "0x60039E4",
+      "nativeRVA": "0xC791A0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14820,
+      "name": "ProcessMessage",
+      "token": "0x60039E5",
+      "nativeRVA": "0xC79D50"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14821,
+      "name": "Map2Mps",
+      "token": "0x60039E6",
+      "nativeRVA": "0xC790F0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14822,
+      "name": "Map2Mps",
+      "token": "0x60039E7",
+      "nativeRVA": "0xC790B0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14823,
+      "name": "Mps2Map",
+      "token": "0x60039E8",
+      "nativeRVA": "0xC79540"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14824,
+      "name": "IsInvalidRegion",
+      "token": "0x60039E9",
+      "nativeRVA": "0xC75AB0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14825,
+      "name": "TestBarrier",
+      "token": "0x60039EA",
+      "nativeRVA": "0xC7B2C0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14826,
+      "name": "TestBarrier",
+      "token": "0x60039EB",
+      "nativeRVA": "0xC7AF50"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14827,
+      "name": "TestBarrierMin",
+      "token": "0x60039EC",
+      "nativeRVA": "0xC7AB70"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14828,
+      "name": "GetBarrier",
+      "token": "0x60039ED",
+      "nativeRVA": "0xC75990"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14829,
+      "name": "FindRegion",
+      "token": "0x60039EE",
+      "nativeRVA": "0xC75920"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14830,
+      "name": "FindFreeRegion",
+      "token": "0x60039EF",
+      "nativeRVA": "0xC75810"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14831,
+      "name": "NpcChangeRegion",
+      "token": "0x60039F0",
+      "nativeRVA": "0xC79700"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14832,
+      "name": "ObjChangeRegion",
+      "token": "0x60039F1",
+      "nativeRVA": "0xC79BB0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14833,
+      "name": "MissileChangeRegion",
+      "token": "0x60039F2",
+      "nativeRVA": "0xC793A0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14834,
+      "name": "AddPlayer",
+      "token": "0x60039F3",
+      "nativeRVA": "0xC75440"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14835,
+      "name": "RemovePlayer",
+      "token": "0x60039F4",
+      "nativeRVA": "0xC79E60"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14836,
+      "name": "Close",
+      "token": "0x60039F5",
+      "nativeRVA": "0xC75700"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14837,
+      "name": "HandleNpcDelete",
+      "token": "0x60039F6",
+      "nativeRVA": "0x7B49A0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14838,
+      "name": "HandleObjDelete",
+      "token": "0x60039F7",
+      "nativeRVA": "0x7B49A0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14839,
+      "name": "HandleMissileDelete",
+      "token": "0x60039F8",
+      "nativeRVA": "0x7B49A0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14840,
+      "name": "LoadMap",
+      "token": "0x60039F9",
+      "nativeRVA": "0xC75DE0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14841,
+      "name": "SetupNeighborConnections",
+      "token": "0x60039FA",
+      "nativeRVA": "0xC79FB0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14842,
+      "name": "GetMapPath",
+      "token": "0x60039FB",
+      "nativeRVA": "0xC75A40"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14843,
+      "name": "LoWord",
+      "token": "0x60039FC",
+      "nativeRVA": "0xC75DD0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14844,
+      "name": "HiWord",
+      "token": "0x60039FD",
+      "nativeRVA": "0xC75AA0"
+    },
+    {
+      "owner": "SubWorld",
+      "ownerIndex": 2007,
+      "index": 14845,
+      "name": "Update",
+      "token": "0x60039FE",
+      "nativeRVA": "0xC7B4E0"
+    },
+    {
+      "owner": "MapSceneInfo",
+      "ownerIndex": 2057,
+      "index": 15155,
+      "name": ".ctor",
+      "token": "0x6003B34",
+      "nativeRVA": "0x77D280"
+    }
+  ],
+  "limits": "Metadata ownership and pointer arrays are static; native Map53 values not read from runtime.",
+  "mapServiceFields": {
+    "mapServiceTypeIndex": 637,
+    "fieldFirstIndex": 5555,
+    "fieldLastIndex": 5588,
+    "fieldNames": [
+      "m00",
+      "m01",
+      "m10",
+      "m11",
+      "offsetX",
+      "offsetZ",
+      "defLOGIC_CELL_WIDTH",
+      "defLOGIC_CELL_HEIGHT",
+      "WEATHERID_NOTHING",
+      "TRAIL_CAP",
+      "TRAIL_TTL_SEC",
+      "TRAIL_HIT_MPS",
+      "TRAIL_SAMPLE_INTERVAL",
+      "TRAIL_MIN_STEP_MPS",
+      "_trailX",
+      "_trailY",
+      "_trailT",
+      "_trailHead",
+      "_trailCount",
+      "_trailNextSampleT",
+      "_trailLastX",
+      "_trailLastY",
+      "_invDet",
+      "_mpsWorldScale",
+      "CurrentSubworld",
+      "SPEED_SCALE_MULT",
+      "_ellipseUnitMajor",
+      "_ellipseUnitMinor",
+      "_ellipseYawDeg",
+      "g_nSinBuffer",
+      "g_nCosBuffer",
+      "g_nSin",
+      "g_nCos"
+    ],
+    "constructorDefaults": [
+      {
+        "field": "m00",
+        "staticFieldOffset": 0,
+        "float32": -2.406399965286255,
+        "rawWord": "0xC01A0275",
+        "writerRVA": "0x8E1BB5"
+      },
+      {
+        "field": "m01",
+        "staticFieldOffset": 4,
+        "float32": 3.5840001106262207,
+        "rawWord": "0x40656042",
+        "writerRVA": "0x8E1BC9"
+      },
+      {
+        "field": "m10",
+        "staticFieldOffset": 8,
+        "float32": 3.891200065612793,
+        "rawWord": "0x4079096C",
+        "writerRVA": "0x8E1BDE"
+      },
+      {
+        "field": "m11",
+        "staticFieldOffset": 12,
+        "float32": 3.328000068664551,
+        "rawWord": "0x4054FDF4",
+        "writerRVA": "0x8E1BF3"
+      },
+      {
+        "field": "offsetX",
+        "staticFieldOffset": 16,
+        "float32": -225.52000427246094,
+        "rawWord": "0xC361851F",
+        "writerRVA": "0x8E1C08"
+      },
+      {
+        "field": "offsetZ",
+        "staticFieldOffset": 20,
+        "float32": -1433.8399658203125,
+        "rawWord": "0xC4B33AE1",
+        "writerRVA": "0x8E1C1D"
+      }
+    ],
+    "calibrateRVA": "0x8DD750",
+    "calibrateSolve3x3RVA": "0x8E0870",
+    "calibrateSolveCallsites": [
+      "0x8DD904",
+      "0x8DD99E"
+    ],
+    "caveat": "Global defaults only. No proof of effective Map53 runtime values or map scene alignment."
+  },
+  "calibrateCallerAudit": {
+    "targetRVA": "0x8DD750",
+    "rawE8Candidates": 0,
+    "callsites": [],
+    "limits": "Direct E8 only; indirect/virtual/reflection calls not exhaustively searched."
+  }
+}

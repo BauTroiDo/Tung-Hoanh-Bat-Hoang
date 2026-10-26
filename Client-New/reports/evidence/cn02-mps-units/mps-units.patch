@@ -1,0 +1,116 @@
+--- a/gs-bridge-m1/native_initial_packets.py
++++ b/gs-bridge-m1/native_initial_packets.py
+@@ -9,0 +10 @@
++from native_movement import legacy_to_native_mps
+@@ -84 +85,2 @@
+-    rx, ry = x // 1024, y // 1024
++    native_x, native_y = legacy_to_native_mps(x, y)
++    rx, ry = native_x // 1024, native_y // 1024
+@@ -93,0 +96,2 @@
++    # Verified packed native NPC_SYNC MapX/MapY offsets from marshaller proof.
++    struct.pack_into('<ii', native_actor, 53, native_x, native_y)
+--- a/gs-bridge-m1/native_movement.py
++++ b/gs-bridge-m1/native_movement.py
+@@ -17,0 +18,22 @@
++def legacy_to_native_mps(x, y):
++    # GS: 512x1024 per region. Native4016: 1024x1024 per region.
++    x, y = _coord(x), _coord(y)
++    return _coord(x * 2), y
++
++
++def native_to_legacy_mps(x, y):
++    # Odd native X represents half a legacy unit; quantize toward lower X.
++    return _coord(x) // 2, _coord(y)
++
++
++def authoritative_move_target(legacy, expected_entity):
++    if (not isinstance(legacy, bytes) or len(legacy) != 13
++            or legacy[0] not in (85, 86)):
++        raise ValueError('Invalid authoritative move target')
++    entity, x, y = struct.unpack_from('<Iii', legacy, 1)
++    if type(expected_entity) is not int or not 1 <= expected_entity <= 0xffffffff or entity != expected_entity:
++        raise ValueError('Move target belongs to another entity')
++    nx, ny = legacy_to_native_mps(x, y)
++    return struct.pack('<BIii', 99 if legacy[0] == 85 else 79, entity, nx, ny)
++
++
+@@ -26,2 +48 @@
+-    _coord(x)
+-    _coord(y)
++    x, y = native_to_legacy_mps(x, y)
+@@ -60,0 +82,4 @@
++    nx, ny = legacy_to_native_mps(x, y)
++    # MPS already includes floor(offset/1024). Carry only its fractional bit.
++    nx = _coord(nx + ((off_x & 1023) // 512))
++    native_off_x = (off_x * 2) % 32768
+@@ -62 +87 @@
+-    return PositionUpdate(struct.pack('<BIIIHH', native_opcode, entity, x, y, off_x, off_y),
++    return PositionUpdate(struct.pack('<BIIIHH', native_opcode, entity, nx, ny, native_off_x, off_y),
+--- a/gs-bridge-m1/native_session.py
++++ b/gs-bridge-m1/native_session.py
+@@ -19 +19 @@
+-from native_movement import client_movement, authoritative_position
++from native_movement import client_movement, authoritative_position, authoritative_move_target
+@@ -175 +175 @@
+-                            send_native(bytes([99 if opcode == 85 else 79]) + packet[1:])
++                            send_native(authoritative_move_target(packet, summary.entity_id))
+--- a/gs-bridge-m1/test_native_map_region.py
++++ b/gs-bridge-m1/test_native_map_region.py
+@@ -18 +18 @@
+-        self.assertEqual(struct.unpack_from('<I',v.world,5)[0],0x00630032)
++        self.assertEqual(struct.unpack_from('<I',v.world,5)[0],0x00630065)
+--- a/gs-bridge-m1/test_native_mps_units.py
++++ b/gs-bridge-m1/test_native_mps_units.py
+@@ -0,0 +1,52 @@
++"""Coordinate contract: GS region512x1024, native4016 region1024x1024."""
++import struct,unittest
++from pathlib import Path
++import native_movement as move
++from native_initial_packets import convert_initial
++from test_native_map_region import fixture
++MAP=Path(__file__).with_name('M1-original-maplist.ini').read_bytes()
++
++def position(x=52032,y=101696,ox=0,oy=0,entity=41234):
++    return struct.pack('<BIiiiiI',206,entity,x,y,ox,oy,0)
++
++class MpsUnitTests(unittest.TestCase):
++    def test_initial_region_preserves_gs_region_not_raw_mps(self):
++        value=convert_initial(fixture(),MAP)
++        self.assertEqual(struct.unpack_from('<I',value.world,5)[0],0x00630065)
++        self.assertEqual(value.position,(52032,101696))
++    def test_initial_actor_uses_native_units(self):
++        value=convert_initial(fixture(),MAP)
++        self.assertEqual(struct.unpack_from('<ii',value.actor,53),(104064,101696))
++    def test_walk_inverse_before_range_check(self):
++        wire=struct.pack('<Bii',85,104080,101700)
++        self.assertEqual(move.client_movement(wire,53,(52032,101696)),struct.pack('<Bii',75,52040,101700))
++    def test_run_odd_x_quantizes_at_half_legacy_unit(self):
++        wire=struct.pack('<Bii',117,104081,101700)
++        self.assertEqual(move.client_movement(wire,53,(52032,101696)),struct.pack('<Biii',76,52040,101700,53))
++    def test_outbound_position_scales_x_only(self):
++        update=move.authoritative_position(position(),41234)
++        self.assertEqual(struct.unpack('<BIIIHH',update.packet),(120,41234,104064,101696,0,0))
++        self.assertEqual(update.position,(52032,101696))
++    def test_fractional_carry_and_cell_remainder(self):
++        update=move.authoritative_position(position(52049,101696,17920,2048),41234)
++        self.assertEqual(struct.unpack('<BIIIHH',update.packet),(120,41234,104099,101696,3072,2048))
++    def test_scaled_position_overflow_rejected(self):
++        with self.assertRaises(ValueError):
++            move.authoritative_position(position(0x40000000,101696),41234)
++    def test_inverse_does_not_expand_legacy_move_range(self):
++        with self.assertRaises(ValueError):
++            move.client_movement(struct.pack('<Bii',85,2*(52032+4097),101696),53,(52032,101696))
++    def test_negative_native_destination_rejected(self):
++        with self.assertRaises(ValueError):
++            move.client_movement(struct.pack('<Bii',85,-1,101696),53,(52032,101696))
++    def test_walk_target_echo_uses_native_units(self):
++        old=struct.pack('<BIii',85,41234,52040,101700)
++        self.assertEqual(move.authoritative_move_target(old,41234),struct.pack('<BIii',99,41234,104080,101700))
++    def test_run_target_identity_is_not_relabelled(self):
++        with self.assertRaises(ValueError):
++            move.authoritative_move_target(struct.pack('<BIii',86,999,52040,101700),41234)
++    def test_target_packet_size_must_match(self):
++        with self.assertRaises(ValueError):
++            move.authoritative_move_target(b'\x55'+b'\0'*8,41234)
++
++if __name__=='__main__':unittest.main(verbosity=2)

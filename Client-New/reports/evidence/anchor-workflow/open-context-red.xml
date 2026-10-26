@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 10:39:38Z" end-time="2026-10-25 10:39:38Z" duration="0.2325195">
+  <test-suite type="TestSuite" id="1000" name="UnityProject" fullname="UnityProject" runstate="Runnable" testcasecount="29" result="Failed" site="Child" start-time="2026-10-25 10:39:38Z" end-time="2026-10-25 10:39:38Z" duration="0.232520" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1009" name="JXClient.Tests.CalibrationEditor.dll" fullname="E:/Games/VLTK3D/SwordOnline/Client-New/UnityProject/Library/ScriptAssemblies/JXClient.Tests.CalibrationEditor.dll" runstate="Runnable" testcasecount="7" result="Failed" site="Child" start-time="2026-10-25 10:39:38Z" end-time="2026-10-25 10:39:38Z" duration="0.225117" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="22560" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1001" name="AnchorCalibrationEditorTests" fullname="AnchorCalibrationEditorTests" classname="AnchorCalibrationEditorTests" runstate="Runnable" testcasecount="7" result="Failed" site="Child" start-time="2026-10-25 10:39:38Z" end-time="2026-10-25 10:39:38Z" duration="0.223920" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1007" name="OpenCommandShowsTargetMapAndPrefilledMarkerForm" fullname="AnchorCalibrationEditorTests.OpenCommandShowsTargetMapAndPrefilledMarkerForm" methodname="OpenCommandShowsTargetMapAndPrefilledMarkerForm" classname="AnchorCalibrationEditorTests" runstate="Runnable" seed="522382412" result="Failed" start-time="2026-10-25 10:39:38Z" end-time="2026-10-25 10:39:38Z" duration="0.209922" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected string length 41 but was 39. Strings differ at index 25.
+  Expected: "Assets/_JXClient/Scenes/BaLangHuyen.unity"
+  But was:  "Assets/_JXClient/Scenes/Bootstrap.unity"
+  ------------------------------------^
+]]></message>
+            <stack-trace><![CDATA[at AnchorCalibrationEditorTests.OpenCommandShowsTargetMapAndPrefilledMarkerForm () [0x00017] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\EditMode\CalibrationEditor\AnchorCalibrationEditorTests.cs:59
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[No graphic device is available to initialize the view.
+No graphic device is available to show the window.
+No graphic device is available to initialize the view.
+Saving results to: C:/Users/QT/AppData/LocalLow/DefaultCompany/UnityProject\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

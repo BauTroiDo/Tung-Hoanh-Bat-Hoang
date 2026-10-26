@@ -1,0 +1,12 @@
+{
+  "source_hashes": {
+    "native_session.py": "4a5ff8d531cf4be27e1e25b06a7f5331f881f3b8d74c1433bfce36923ecb4f72",
+    "native_gs_dispatch.py": "93dd4879bcae4835c674b0e5cef5dcb66f966316ac2cf25fb0cc53760b592009"
+  },
+  "stale_gate_refused": true,
+  "world_entry_enabled": true,
+  "m1_p0_pass": false,
+  "tests_exit": 0,
+  "tests": 136,
+  "backup": "C:\\Server-Game\\SwordOnline\\Client3D-LAN\\qa_runs\\cn02-traffic-window-20261026\\before"
+}

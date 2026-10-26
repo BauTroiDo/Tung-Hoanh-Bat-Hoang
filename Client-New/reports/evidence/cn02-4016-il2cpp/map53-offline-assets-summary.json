@@ -1,0 +1,71 @@
+{
+  "schema": "CN02-BULK-07-map53-offline-v1",
+  "catalogBuildTarget": "StandaloneWindows64",
+  "addressablesVersion": "2.8.1",
+  "catalogSha256": "61997894DDD843F1FB521F2BEED3FB7E2006874B085E51EA8214C39A6378BB2D",
+  "bundles": {
+    "assets": {
+      "fileName": "pc_balanghuyen_assets_all_53fcdd524b8c67eafad5c013f036ed4b.bundle",
+      "sizeBytes": 31592781,
+      "sha256": "73283BA18C144FB37286CAAD5F6BF4DB4F17C25BD94A3B470FA3E5D07A5DF4D1",
+      "catalogContainsExactName": true,
+      "format": "UnityFS",
+      "formatVersion": 8,
+      "unityEngineVersion": "5.x.x",
+      "unityRevision": "6000.3.9f1",
+      "declaredSize": 31592781,
+      "compressedMetadataBytes": 1633,
+      "uncompressedMetadataBytes": 3633,
+      "compressionType": 3,
+      "blockInfoAtEnd": false,
+      "blockCount": 349,
+      "verifiedBlockCount": 349,
+      "verifiedUncompressedBytes": 45637664,
+      "nodeCount": 2,
+      "nodeSizesBytes": [
+        7746816,
+        37890848
+      ],
+      "nodeExtensions": [
+        "",
+        ".ress"
+      ],
+      "unityFsMetadataParsed": true
+    },
+    "scenes": {
+      "fileName": "pc_balanghuyen_scenes_all_4e0a8e141624756b20ca4ccfa32087fb.bundle",
+      "sizeBytes": 9738990,
+      "sha256": "EEB567D492CE740AAD8A796F531D993917F511FDA60ECF4DDE25DA6C2B4DEC4A",
+      "catalogContainsExactName": true,
+      "format": "UnityFS",
+      "formatVersion": 8,
+      "unityEngineVersion": "5.x.x",
+      "unityRevision": "6000.3.9f1",
+      "declaredSize": 9738990,
+      "compressedMetadataBytes": 1056,
+      "uncompressedMetadataBytes": 2268,
+      "compressionType": 3,
+      "blockInfoAtEnd": false,
+      "blockCount": 198,
+      "verifiedBlockCount": 198,
+      "verifiedUncompressedBytes": 25943784,
+      "nodeCount": 4,
+      "nodeSizesBytes": [
+        5650076,
+        16727056,
+        587388,
+        2979264
+      ],
+      "nodeExtensions": [
+        "",
+        ".ress",
+        ".sharedassets"
+      ],
+      "unityFsMetadataParsed": true
+    }
+  },
+  "fullUnityAssetDeserializeOrSceneLoadVerified": false,
+  "liveMap53SceneRendered": false,
+  "gsAuthoritativeMovementVerified": false,
+  "notes": "SHA pinned two official 4016 PC bundles. UnityFS header and block directory parsed; block payload decompression/serialized Unity objects/Addressables scene keys and live scene ready are NOT verified. 404s from other assets do not prove these two missing."
+}

@@ -1,0 +1,10 @@
+Final build exit: 0
+Final visible smoke exit: 0
+Batch smoke exit: 0 (same runtime logic; before final newline normalization)
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn01-runtime-batch.log:28: [CN-01] INPUT accepted=1 screen=(536.37, 390.72) destination=(-3.00, 0.00, -1.00) source=pointer
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn01-runtime-batch.log:29: [CN-01] AUTOMATED_SMOKE start=(0.00, 0.00, -3.00) accepted=True target=(-3.00, 0.00, -1.00)
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn01-runtime-batch.log:30: [CN-01] AUTOMATED_SMOKE end=(-2.93, 0.08, -1.04) distance=0.113 passed=True
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn01-runtime-visible.log:42: [CN-01] INPUT accepted=1 screen=(536.37, 390.72) destination=(-3.00, 0.00, -1.00) source=pointer
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn01-runtime-visible.log:43: [CN-01] AUTOMATED_SMOKE start=(0.00, 0.00, -3.00) accepted=True target=(-3.00, 0.00, -1.00)
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn01-runtime-visible.log:44: [CN-01] AUTOMATED_SMOKE end=(-2.93, 0.08, -1.04) distance=0.113 passed=True
+E:\Games\VLTK3D\SwordOnline\Client-New\.tmp\cn01-build.log:919: [CN-01] BUILD result=Succeeded errors=0 warnings=0 bytes=104188338

@@ -1,0 +1,3183 @@
+{
+  "binarySHA256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "metadataSHA256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "asmCsharpPointerSlots": 19668,
+  "uniqueExecutablePointers": 16619,
+  "MapServiceMethodBodies": 40,
+  "directRelativeTransferCounts": {
+    "Calibrate": 0,
+    "Mps2WorldPos": 74,
+    "WorldPos2Mps": 109,
+    "Map2WorldPos": 19,
+    "UpdateWorldInfo": 1,
+    "Solve3x3": 2
+  },
+  "instructionBoundaryConfirmedCounts": {
+    "Calibrate": 0,
+    "Mps2WorldPos": 74,
+    "WorldPos2Mps": 109,
+    "Map2WorldPos": 19,
+    "UpdateWorldInfo": 1,
+    "Solve3x3": 2
+  },
+  "directRelativeTransferCandidates": [
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x7f6ff0",
+      "owningFunctionStartRVA": "0x7f67c2",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x7fda36",
+      "owningFunctionStartRVA": "0x7fd930",
+      "ownerLabels": [
+        {
+          "tokenRow": 2952,
+          "method": "MoveTo",
+          "type": "PlayerAI",
+          "metadataIndex": 2951
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x7ff3cc",
+      "owningFunctionStartRVA": "0x7ff292",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x809ab6",
+      "owningFunctionStartRVA": "0x809a6e",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x815caa",
+      "owningFunctionStartRVA": "0x815c6b",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8215e0",
+      "owningFunctionStartRVA": "0x82152e",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x821c04",
+      "owningFunctionStartRVA": "0x821aa0",
+      "ownerLabels": [
+        {
+          "tokenRow": 2723,
+          "method": "DispatchPathfinding",
+          "type": "JXMovement",
+          "metadataIndex": 2722
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8228d5",
+      "owningFunctionStartRVA": "0x822899",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x822a1c",
+      "owningFunctionStartRVA": "0x822940",
+      "ownerLabels": [
+        {
+          "tokenRow": 2714,
+          "method": "IsRoutingToCellOf",
+          "type": "JXMovement",
+          "metadataIndex": 2713
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8239ee",
+      "owningFunctionStartRVA": "0x823703",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x823c1f",
+      "owningFunctionStartRVA": "0x823703",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x824672",
+      "owningFunctionStartRVA": "0x82462f",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x82635c",
+      "owningFunctionStartRVA": "0x82631a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x829b1f",
+      "owningFunctionStartRVA": "0x829a60",
+      "ownerLabels": [
+        {
+          "tokenRow": 2780,
+          "method": "DescribeDest",
+          "type": "MoveCmdTrace",
+          "metadataIndex": 2779
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8320f7",
+      "owningFunctionStartRVA": "0x831c6d",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8332ef",
+      "owningFunctionStartRVA": "0x832d70",
+      "ownerLabels": [
+        {
+          "tokenRow": 3249,
+          "method": "TrySelectFillerAtClick",
+          "type": "PlayerClickDetector",
+          "metadataIndex": 3248
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x83a265",
+      "owningFunctionStartRVA": "0x83a110",
+      "ownerLabels": [
+        {
+          "tokenRow": 3383,
+          "method": "GetCurrentPlayerSpawnPosition",
+          "type": "PlayerInfoService",
+          "metadataIndex": 3382
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x843340",
+      "owningFunctionStartRVA": "0x843000",
+      "ownerLabels": [
+        {
+          "tokenRow": 3414,
+          "method": "UpdatePlayerInfo",
+          "type": "PlayerManager",
+          "metadataIndex": 3413
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x843429",
+      "owningFunctionStartRVA": "0x8433aa",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x84350a",
+      "owningFunctionStartRVA": "0x843470",
+      "ownerLabels": [
+        {
+          "tokenRow": 3416,
+          "method": "UpdatePosition",
+          "type": "PlayerManager",
+          "metadataIndex": 3415
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x843ce3",
+      "owningFunctionStartRVA": "0x843840",
+      "ownerLabels": [
+        {
+          "tokenRow": 3455,
+          "method": "ApplyMovement",
+          "type": "PlayerMovement",
+          "metadataIndex": 3454
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x844816",
+      "owningFunctionStartRVA": "0x8446a0",
+      "ownerLabels": [
+        {
+          "tokenRow": 3465,
+          "method": "ServerMoveTo",
+          "type": "PlayerMovement",
+          "metadataIndex": 3464
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x844ac1",
+      "owningFunctionStartRVA": "0x8449c0",
+      "ownerLabels": [
+        {
+          "tokenRow": 3461,
+          "method": "SyncFromServer",
+          "type": "PlayerMovement",
+          "metadataIndex": 3460
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x844bcf",
+      "owningFunctionStartRVA": "0x844b88",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x854295",
+      "owningFunctionStartRVA": "0x854253",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x85472b",
+      "owningFunctionStartRVA": "0x8542cd",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x854c30",
+      "owningFunctionStartRVA": "0x854a80",
+      "ownerLabels": [
+        {
+          "tokenRow": 3654,
+          "method": "ExecuteStep2",
+          "type": "BlurMoveState",
+          "metadataIndex": 3653
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x854cfa",
+      "owningFunctionStartRVA": "0x854a80",
+      "ownerLabels": [
+        {
+          "tokenRow": 3654,
+          "method": "ExecuteStep2",
+          "type": "BlurMoveState",
+          "metadataIndex": 3653
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x854ee3",
+      "owningFunctionStartRVA": "0x854a80",
+      "ownerLabels": [
+        {
+          "tokenRow": 3654,
+          "method": "ExecuteStep2",
+          "type": "BlurMoveState",
+          "metadataIndex": 3653
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8577ce",
+      "owningFunctionStartRVA": "0x857500",
+      "ownerLabels": [
+        {
+          "tokenRow": 3686,
+          "method": "DoHurt",
+          "type": "HurtState",
+          "metadataIndex": 3685
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85787b",
+      "owningFunctionStartRVA": "0x857500",
+      "ownerLabels": [
+        {
+          "tokenRow": 3686,
+          "method": "DoHurt",
+          "type": "HurtState",
+          "metadataIndex": 3685
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85ac14",
+      "owningFunctionStartRVA": "0x85aaf0",
+      "ownerLabels": [
+        {
+          "tokenRow": 3698,
+          "method": "CanReachTargetMps",
+          "type": "JumpingState",
+          "metadataIndex": 3697
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x85b070",
+      "owningFunctionStartRVA": "0x85b00b",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85b8ca",
+      "owningFunctionStartRVA": "0x85b740",
+      "ownerLabels": [
+        {
+          "tokenRow": 3692,
+          "method": "Exit",
+          "type": "JumpingState",
+          "metadataIndex": 3691
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x85bf46",
+      "owningFunctionStartRVA": "0x85be00",
+      "ownerLabels": [
+        {
+          "tokenRow": 3721,
+          "method": "HasJumpStartClearance",
+          "type": "JumpingState",
+          "metadataIndex": 3720
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85c04c",
+      "owningFunctionStartRVA": "0x85be00",
+      "ownerLabels": [
+        {
+          "tokenRow": 3721,
+          "method": "HasJumpStartClearance",
+          "type": "JumpingState",
+          "metadataIndex": 3720
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85c33c",
+      "owningFunctionStartRVA": "0x85c270",
+      "ownerLabels": [
+        {
+          "tokenRow": 3720,
+          "method": "IsWorldPosBlocked",
+          "type": "JumpingState",
+          "metadataIndex": 3719
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85c946",
+      "owningFunctionStartRVA": "0x85c700",
+      "ownerLabels": [
+        {
+          "tokenRow": 3702,
+          "method": "RedirectMidairPreserveSpeed",
+          "type": "JumpingState",
+          "metadataIndex": 3701
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x85ca82",
+      "owningFunctionStartRVA": "0x85ca2b",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85d500",
+      "owningFunctionStartRVA": "0x85d390",
+      "ownerLabels": [
+        {
+          "tokenRow": 3697,
+          "method": "TestJump",
+          "type": "JumpingState",
+          "metadataIndex": 3696
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85e265",
+      "owningFunctionStartRVA": "0x85dfc0",
+      "ownerLabels": [
+        {
+          "tokenRow": 3711,
+          "method": "TrySyncAirControlToServer",
+          "type": "JumpingState",
+          "metadataIndex": 3710
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x85e319",
+      "owningFunctionStartRVA": "0x85e291",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x860f84",
+      "owningFunctionStartRVA": "0x860e50",
+      "ownerLabels": [
+        {
+          "tokenRow": 3778,
+          "method": "DispatchDashMovement",
+          "type": "RunAttackCoordinator",
+          "metadataIndex": 3777
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8621a9",
+      "owningFunctionStartRVA": "0x861f60",
+      "ownerLabels": [
+        {
+          "tokenRow": 3777,
+          "method": "UpdateRunningStep",
+          "type": "RunAttackCoordinator",
+          "metadataIndex": 3776
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x86d263",
+      "owningFunctionStartRVA": "0x86d0a0",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x86f24b",
+      "owningFunctionStartRVA": "0x86efe0",
+      "ownerLabels": [
+        {
+          "tokenRow": 3829,
+          "method": "CastMeleeSkill",
+          "type": "SkillState",
+          "metadataIndex": 3828
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x86fa48",
+      "owningFunctionStartRVA": "0x86f8fd",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x86fc7f",
+      "owningFunctionStartRVA": "0x86f8fd",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x871749",
+      "owningFunctionStartRVA": "0x8716ee",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x873212",
+      "owningFunctionStartRVA": "0x873110",
+      "ownerLabels": [
+        {
+          "tokenRow": 3838,
+          "method": "DoState",
+          "type": "SprintState",
+          "metadataIndex": 3837
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x873b64",
+      "owningFunctionStartRVA": "0x873b28",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x875457",
+      "owningFunctionStartRVA": "0x875424",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8757f5",
+      "owningFunctionStartRVA": "0x8755aa",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8758ce",
+      "owningFunctionStartRVA": "0x875870",
+      "ownerLabels": [
+        {
+          "tokenRow": 3839,
+          "method": "SetServerTarget",
+          "type": "SprintState",
+          "metadataIndex": 3838
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x875aa9",
+      "owningFunctionStartRVA": "0x875a50",
+      "ownerLabels": [
+        {
+          "tokenRow": 3852,
+          "method": "SubStepCount",
+          "type": "SprintState",
+          "metadataIndex": 3851
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x875ace",
+      "owningFunctionStartRVA": "0x875a50",
+      "ownerLabels": [
+        {
+          "tokenRow": 3852,
+          "method": "SubStepCount",
+          "type": "SprintState",
+          "metadataIndex": 3851
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x876782",
+      "owningFunctionStartRVA": "0x876597",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x876917",
+      "owningFunctionStartRVA": "0x8768a0",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x876b16",
+      "owningFunctionStartRVA": "0x876a74",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x876b36",
+      "owningFunctionStartRVA": "0x876a74",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x87b117",
+      "owningFunctionStartRVA": "0x87b010",
+      "ownerLabels": [
+        {
+          "tokenRow": 3894,
+          "method": "DoState",
+          "type": "WalkState",
+          "metadataIndex": 3893
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x87b954",
+      "owningFunctionStartRVA": "0x87b918",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x87d08a",
+      "owningFunctionStartRVA": "0x87d054",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x87d42e",
+      "owningFunctionStartRVA": "0x87d1da",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x87d513",
+      "owningFunctionStartRVA": "0x87d4b0",
+      "ownerLabels": [
+        {
+          "tokenRow": 3895,
+          "method": "SetServerTarget",
+          "type": "WalkState",
+          "metadataIndex": 3894
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x87d659",
+      "owningFunctionStartRVA": "0x87d600",
+      "ownerLabels": [
+        {
+          "tokenRow": 3909,
+          "method": "SubStepCount",
+          "type": "WalkState",
+          "metadataIndex": 3908
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x87d67e",
+      "owningFunctionStartRVA": "0x87d600",
+      "ownerLabels": [
+        {
+          "tokenRow": 3909,
+          "method": "SubStepCount",
+          "type": "WalkState",
+          "metadataIndex": 3908
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x87e332",
+      "owningFunctionStartRVA": "0x87e0d1",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x87e4cf",
+      "owningFunctionStartRVA": "0x87e458",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x87e6d6",
+      "owningFunctionStartRVA": "0x87e634",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x87e6f6",
+      "owningFunctionStartRVA": "0x87e634",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x882bb3",
+      "owningFunctionStartRVA": "0x882820",
+      "ownerLabels": [
+        {
+          "tokenRow": 4189,
+          "method": "TryFindListedPoint",
+          "type": "NpcWalk",
+          "metadataIndex": 4188
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8950e2",
+      "owningFunctionStartRVA": "0x894f00",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x898cff",
+      "owningFunctionStartRVA": "0x898c64",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x898f41",
+      "owningFunctionStartRVA": "0x898e70",
+      "ownerLabels": [
+        {
+          "tokenRow": 4262,
+          "method": "ReachableNear",
+          "type": "XaPhuTravel",
+          "metadataIndex": 4261
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x899122",
+      "owningFunctionStartRVA": "0x898e70",
+      "ownerLabels": [
+        {
+          "tokenRow": 4262,
+          "method": "ReachableNear",
+          "type": "XaPhuTravel",
+          "metadataIndex": 4261
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x89ab4a",
+      "owningFunctionStartRVA": "0x89aa00",
+      "ownerLabels": [
+        {
+          "tokenRow": 4250,
+          "method": "TryGetPlayerPos",
+          "type": "XaPhuTravel",
+          "metadataIndex": 4249
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8c9508",
+      "owningFunctionStartRVA": "0x8c9454",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Solve3x3",
+      "kind": "call",
+      "fromRVA": "0x8dd904",
+      "owningFunctionStartRVA": "0x8dd750",
+      "ownerLabels": [
+        {
+          "tokenRow": 5048,
+          "method": "Calibrate",
+          "type": "MapService",
+          "metadataIndex": 5047
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Solve3x3",
+      "kind": "call",
+      "fromRVA": "0x8dd99e",
+      "owningFunctionStartRVA": "0x8dd750",
+      "ownerLabels": [
+        {
+          "tokenRow": 5048,
+          "method": "Calibrate",
+          "type": "MapService",
+          "metadataIndex": 5047
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8ded41",
+      "owningFunctionStartRVA": "0x8deae8",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8df2ee",
+      "owningFunctionStartRVA": "0x8deae8",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8dfa18",
+      "owningFunctionStartRVA": "0x8deae8",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8dfcd3",
+      "owningFunctionStartRVA": "0x8dfbf0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5022,
+          "method": "Map2WorldPos",
+          "type": "MapService",
+          "metadataIndex": 5021
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8e05be",
+      "owningFunctionStartRVA": "0x8e0575",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8ee401",
+      "owningFunctionStartRVA": "0x8edee0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5074,
+          "method": "DrawAll",
+          "type": "ObstacleMapVisualizer",
+          "metadataIndex": 5073
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8ee424",
+      "owningFunctionStartRVA": "0x8edee0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5074,
+          "method": "DrawAll",
+          "type": "ObstacleMapVisualizer",
+          "metadataIndex": 5073
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8ee449",
+      "owningFunctionStartRVA": "0x8edee0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5074,
+          "method": "DrawAll",
+          "type": "ObstacleMapVisualizer",
+          "metadataIndex": 5073
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8ee46f",
+      "owningFunctionStartRVA": "0x8edee0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5074,
+          "method": "DrawAll",
+          "type": "ObstacleMapVisualizer",
+          "metadataIndex": 5073
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8efcd3",
+      "owningFunctionStartRVA": "0x8efc30",
+      "ownerLabels": [
+        {
+          "tokenRow": 5071,
+          "method": "RebuildVertexCache",
+          "type": "ObstacleMapVisualizer",
+          "metadataIndex": 5070
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8efd4d",
+      "owningFunctionStartRVA": "0x8efc30",
+      "ownerLabels": [
+        {
+          "tokenRow": 5071,
+          "method": "RebuildVertexCache",
+          "type": "ObstacleMapVisualizer",
+          "metadataIndex": 5070
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8efdc9",
+      "owningFunctionStartRVA": "0x8efc30",
+      "ownerLabels": [
+        {
+          "tokenRow": 5071,
+          "method": "RebuildVertexCache",
+          "type": "ObstacleMapVisualizer",
+          "metadataIndex": 5070
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x8efe44",
+      "owningFunctionStartRVA": "0x8efc30",
+      "ownerLabels": [
+        {
+          "tokenRow": 5071,
+          "method": "RebuildVertexCache",
+          "type": "ObstacleMapVisualizer",
+          "metadataIndex": 5070
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x8f0008",
+      "owningFunctionStartRVA": "0x8effc1",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x9034fe",
+      "owningFunctionStartRVA": "0x903490",
+      "ownerLabels": [
+        {
+          "tokenRow": 5428,
+          "method": "CellCentreWorld",
+          "type": "SceneObstacleMap",
+          "metadataIndex": 5427
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x903619",
+      "owningFunctionStartRVA": "0x903530",
+      "ownerLabels": [
+        {
+          "tokenRow": 5433,
+          "method": "ClipSegmentAtObstacle",
+          "type": "SceneObstacleMap",
+          "metadataIndex": 5432
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x90363c",
+      "owningFunctionStartRVA": "0x903530",
+      "ownerLabels": [
+        {
+          "tokenRow": 5433,
+          "method": "ClipSegmentAtObstacle",
+          "type": "SceneObstacleMap",
+          "metadataIndex": 5432
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x9037cb",
+      "owningFunctionStartRVA": "0x903530",
+      "ownerLabels": [
+        {
+          "tokenRow": 5433,
+          "method": "ClipSegmentAtObstacle",
+          "type": "SceneObstacleMap",
+          "metadataIndex": 5432
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x903a14",
+      "owningFunctionStartRVA": "0x9039d6",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x903d84",
+      "owningFunctionStartRVA": "0x903a5a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x903e03",
+      "owningFunctionStartRVA": "0x903d95",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x904073",
+      "owningFunctionStartRVA": "0x904009",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x90545b",
+      "owningFunctionStartRVA": "0x90540e",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x905483",
+      "owningFunctionStartRVA": "0x90540e",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x906a62",
+      "owningFunctionStartRVA": "0x906a08",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x906a8a",
+      "owningFunctionStartRVA": "0x906a08",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x907738",
+      "owningFunctionStartRVA": "0x9076a0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5448,
+          "method": "DrawCellGrid",
+          "type": "SubWorldGizmos",
+          "metadataIndex": 5447
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x907788",
+      "owningFunctionStartRVA": "0x9076a0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5448,
+          "method": "DrawCellGrid",
+          "type": "SubWorldGizmos",
+          "metadataIndex": 5447
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x907865",
+      "owningFunctionStartRVA": "0x9076a0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5448,
+          "method": "DrawCellGrid",
+          "type": "SubWorldGizmos",
+          "metadataIndex": 5447
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x9078b5",
+      "owningFunctionStartRVA": "0x9076a0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5448,
+          "method": "DrawCellGrid",
+          "type": "SubWorldGizmos",
+          "metadataIndex": 5447
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x907db9",
+      "owningFunctionStartRVA": "0x907bf0",
+      "ownerLabels": [
+        {
+          "tokenRow": 5449,
+          "method": "DrawNpcDots",
+          "type": "SubWorldGizmos",
+          "metadataIndex": 5448
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x908c77",
+      "owningFunctionStartRVA": "0x908c17",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x908ccc",
+      "owningFunctionStartRVA": "0x908c17",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x908d23",
+      "owningFunctionStartRVA": "0x908c17",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x908d75",
+      "owningFunctionStartRVA": "0x908c17",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x90936e",
+      "owningFunctionStartRVA": "0x909310",
+      "ownerLabels": [
+        {
+          "tokenRow": 5458,
+          "method": "Mps2W",
+          "type": "SubWorldGizmos",
+          "metadataIndex": 5457
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x909711",
+      "owningFunctionStartRVA": "0x9096b9",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x913d0a",
+      "owningFunctionStartRVA": "0x913c4b",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x914433",
+      "owningFunctionStartRVA": "0x913d79",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x92271a",
+      "owningFunctionStartRVA": "0x922500",
+      "ownerLabels": [
+        {
+          "tokenRow": 785,
+          "method": "MoveNext",
+          "type": "<CR_BotLifecycle>d__60",
+          "metadataIndex": 784
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x922ada",
+      "owningFunctionStartRVA": "0x922a77",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x94b6f2",
+      "owningFunctionStartRVA": "0x94b6ae",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x97a880",
+      "owningFunctionStartRVA": "0x97a7d7",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x97a912",
+      "owningFunctionStartRVA": "0x97a8c0",
+      "ownerLabels": [
+        {
+          "tokenRow": 6614,
+          "method": "JumpToWorld",
+          "type": "PlayerJumpHelper",
+          "metadataIndex": 6613
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x9eada5",
+      "owningFunctionStartRVA": "0x9eab80",
+      "ownerLabels": [
+        {
+          "tokenRow": 7934,
+          "method": "RefreshMeshBudget",
+          "type": "SpawnObjectManager",
+          "metadataIndex": 7933
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x9eb369",
+      "owningFunctionStartRVA": "0x9eb325",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0x9ec3bb",
+      "owningFunctionStartRVA": "0x9ebd80",
+      "ownerLabels": [
+        {
+          "tokenRow": 7943,
+          "method": "SpawnDropItemNow",
+          "type": "SpawnObjectManager",
+          "metadataIndex": 7942
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0x9ecb8c",
+      "owningFunctionStartRVA": "0x9eca20",
+      "ownerLabels": [
+        {
+          "tokenRow": 7952,
+          "method": "TryEvictForIncoming",
+          "type": "SpawnObjectManager",
+          "metadataIndex": 7951
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xa20d1d",
+      "owningFunctionStartRVA": "0xa20a20",
+      "ownerLabels": [
+        {
+          "tokenRow": 8615,
+          "method": "CR_DrawPath",
+          "type": "MiniMapController",
+          "metadataIndex": 8614
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xa22dda",
+      "owningFunctionStartRVA": "0xa22cd0",
+      "ownerLabels": [
+        {
+          "tokenRow": 8591,
+          "method": "GetEntityMps",
+          "type": "MiniMapController",
+          "metadataIndex": 8590
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xa249f9",
+      "owningFunctionStartRVA": "0xa2483e",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xa24eb2",
+      "owningFunctionStartRVA": "0xa24e40",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xa25c24",
+      "owningFunctionStartRVA": "0xa259c9",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xa26660",
+      "owningFunctionStartRVA": "0xa26621",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xa27fce",
+      "owningFunctionStartRVA": "0xa26c30",
+      "ownerLabels": [
+        {
+          "tokenRow": 8597,
+          "method": "UpdateMiniMap",
+          "type": "MiniMapController",
+          "metadataIndex": 8596
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xa288d8",
+      "owningFunctionStartRVA": "0xa284f0",
+      "ownerLabels": [
+        {
+          "tokenRow": 8616,
+          "method": "UpdateTeammateMarkers",
+          "type": "MiniMapController",
+          "metadataIndex": 8615
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xa4f0ab",
+      "owningFunctionStartRVA": "0xa4e8a0",
+      "ownerLabels": [
+        {
+          "tokenRow": 8623,
+          "method": "MoveNext",
+          "type": "<PlayerMove>d__113",
+          "metadataIndex": 8622
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xa4ffb3",
+      "owningFunctionStartRVA": "0xa4ff5d",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xa508ed",
+      "owningFunctionStartRVA": "0xa5086f",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xa51311",
+      "owningFunctionStartRVA": "0xa512f5",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xa7e095",
+      "owningFunctionStartRVA": "0xa7dd40",
+      "ownerLabels": [
+        {
+          "tokenRow": 9143,
+          "method": "LogNPCDir",
+          "type": "TestScript",
+          "metadataIndex": 9142
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xa7e5ca",
+      "owningFunctionStartRVA": "0xa7e390",
+      "ownerLabels": [
+        {
+          "tokenRow": 9140,
+          "method": "LogNPCMapPos",
+          "type": "TestScript",
+          "metadataIndex": 9139
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xb9a2aa",
+      "owningFunctionStartRVA": "0xb9a110",
+      "ownerLabels": [
+        {
+          "tokenRow": 1319,
+          "method": "GetMpsPos",
+          "type": "MissleManager",
+          "metadataIndex": 1318
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xba0284",
+      "owningFunctionStartRVA": "0xba0206",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xba0914",
+      "owningFunctionStartRVA": "0xba08c1",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xba092f",
+      "owningFunctionStartRVA": "0xba08c1",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xba0e74",
+      "owningFunctionStartRVA": "0xba0ba0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1257,
+          "method": "CalculateHelixOffset",
+          "type": "Missle",
+          "metadataIndex": 1256
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xba19dc",
+      "owningFunctionStartRVA": "0xba1960",
+      "ownerLabels": [
+        {
+          "tokenRow": 1266,
+          "method": "CellDistanceAuthoritative",
+          "type": "Missle",
+          "metadataIndex": 1265
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xba1c89",
+      "owningFunctionStartRVA": "0xba1c30",
+      "ownerLabels": [
+        {
+          "tokenRow": 1271,
+          "method": "CellDistanceWorld",
+          "type": "Missle",
+          "metadataIndex": 1270
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xba1ca9",
+      "owningFunctionStartRVA": "0xba1c30",
+      "ownerLabels": [
+        {
+          "tokenRow": 1271,
+          "method": "CellDistanceWorld",
+          "type": "Missle",
+          "metadataIndex": 1270
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xba3a4e",
+      "owningFunctionStartRVA": "0xba38e8",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xba507d",
+      "owningFunctionStartRVA": "0xba500a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xba657b",
+      "owningFunctionStartRVA": "0xba6508",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xba675e",
+      "owningFunctionStartRVA": "0xba660c",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xba84ec",
+      "owningFunctionStartRVA": "0xba8450",
+      "ownerLabels": [
+        {
+          "tokenRow": 1290,
+          "method": "UpdateMisslePos",
+          "type": "Missle",
+          "metadataIndex": 1289
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xbacc09",
+      "owningFunctionStartRVA": "0xbacbbf",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xbb056e",
+      "owningFunctionStartRVA": "0xbb04f9",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xbb9beb",
+      "owningFunctionStartRVA": "0xbb97b5",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xc2d437",
+      "owningFunctionStartRVA": "0xc2cec4",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xc34b5f",
+      "owningFunctionStartRVA": "0xc349e0",
+      "ownerLabels": [
+        {
+          "tokenRow": 14523,
+          "method": "OnSyncNpcMinPlayer",
+          "type": "ProcessGameUnity",
+          "metadataIndex": 14522
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "UpdateWorldInfo",
+      "kind": "call",
+      "fromRVA": "0xc38d1f",
+      "owningFunctionStartRVA": "0xc38990",
+      "ownerLabels": [
+        {
+          "tokenRow": 14505,
+          "method": "OnSyncWorld",
+          "type": "ProcessGameUnity",
+          "metadataIndex": 14504
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xc46c75",
+      "owningFunctionStartRVA": "0xc46c2f",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xc79918",
+      "owningFunctionStartRVA": "0xc7976a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xc79a5a",
+      "owningFunctionStartRVA": "0xc7976a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xcd3d0d",
+      "owningFunctionStartRVA": "0xcd3ba6",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xcd3db5",
+      "owningFunctionStartRVA": "0xcd3ba6",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xcd4d24",
+      "owningFunctionStartRVA": "0xcd4a87",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xcd4d72",
+      "owningFunctionStartRVA": "0xcd4a87",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xcd5d35",
+      "owningFunctionStartRVA": "0xcd5cb0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1606,
+          "method": "SetDestinationFromMap",
+          "type": "NPC",
+          "metadataIndex": 1605
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xcd87ba",
+      "owningFunctionStartRVA": "0xcd8530",
+      "ownerLabels": [
+        {
+          "tokenRow": 1663,
+          "method": "SyncMapRegionFromTransform",
+          "type": "NPC",
+          "metadataIndex": 1662
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xcd9ede",
+      "owningFunctionStartRVA": "0xcd9e9c",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xcdc367",
+      "owningFunctionStartRVA": "0xcdc0a0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1590,
+          "method": "UpdateRenderState",
+          "type": "NPC",
+          "metadataIndex": 1589
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xcde625",
+      "owningFunctionStartRVA": "0xcde3a0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1693,
+          "method": "MoveNext",
+          "type": "<CR_SmoothSyncToServer>d__191",
+          "metadataIndex": 1692
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xdfd253",
+      "owningFunctionStartRVA": "0xdfd163",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xdfdd4a",
+      "owningFunctionStartRVA": "0xdfda8a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xdff440",
+      "owningFunctionStartRVA": "0xdff1c0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1755,
+          "method": "ForceNPCUpdateMps",
+          "type": "NPCInfoService",
+          "metadataIndex": 1754
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xdff48f",
+      "owningFunctionStartRVA": "0xdff1c0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1755,
+          "method": "ForceNPCUpdateMps",
+          "type": "NPCInfoService",
+          "metadataIndex": 1754
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe06cbf",
+      "owningFunctionStartRVA": "0xe05f7e",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe0a985",
+      "owningFunctionStartRVA": "0xe0a830",
+      "ownerLabels": [
+        {
+          "tokenRow": 1860,
+          "method": "BudgetRetrySqrDist",
+          "type": "NPCManager",
+          "metadataIndex": 1859
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe0ad62",
+      "owningFunctionStartRVA": "0xe0aa20",
+      "ownerLabels": [
+        {
+          "tokenRow": 1837,
+          "method": "BuildNearestFirstOrder",
+          "type": "NPCManager",
+          "metadataIndex": 1836
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe0c212",
+      "owningFunctionStartRVA": "0xe0be70",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe14cf4",
+      "owningFunctionStartRVA": "0xe14be0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1900,
+          "method": "SearchNpcAt",
+          "type": "NPCManager",
+          "metadataIndex": 1899
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe14f77",
+      "owningFunctionStartRVA": "0xe14be0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1900,
+          "method": "SearchNpcAt",
+          "type": "NPCManager",
+          "metadataIndex": 1899
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xe1a262",
+      "owningFunctionStartRVA": "0xe1a1d0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1706,
+          "method": "MissleCell",
+          "type": "NpcCellIndex",
+          "metadataIndex": 1705
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xe1a31a",
+      "owningFunctionStartRVA": "0xe1a2b0",
+      "ownerLabels": [
+        {
+          "tokenRow": 1705,
+          "method": "MissleCell",
+          "type": "NpcCellIndex",
+          "metadataIndex": 1704
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xe6e146",
+      "owningFunctionStartRVA": "0xe6e104",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe6f285",
+      "owningFunctionStartRVA": "0xe6f1d6",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe6f2af",
+      "owningFunctionStartRVA": "0xe6f1d6",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xe75b00",
+      "owningFunctionStartRVA": "0xe75ab8",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xe75b6e",
+      "owningFunctionStartRVA": "0xe75ab8",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xe769ef",
+      "owningFunctionStartRVA": "0xe76910",
+      "ownerLabels": [
+        {
+          "tokenRow": 2074,
+          "method": "PlayPreCastSound",
+          "type": "AbilityBase",
+          "metadataIndex": 2073
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xea1c89",
+      "owningFunctionStartRVA": "0xea1ad0",
+      "ownerLabels": [
+        {
+          "tokenRow": 2442,
+          "method": "ApplyBecameVisible",
+          "type": "JXCharacter",
+          "metadataIndex": 2441
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xea5ed7",
+      "owningFunctionStartRVA": "0xea5e95",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xea6383",
+      "owningFunctionStartRVA": "0xea60ad",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xea6809",
+      "owningFunctionStartRVA": "0xea6780",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xea6db5",
+      "owningFunctionStartRVA": "0xea6a3d",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xea7ba0",
+      "owningFunctionStartRVA": "0xea775a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xea7f74",
+      "owningFunctionStartRVA": "0xea775a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xea8190",
+      "owningFunctionStartRVA": "0xea775a",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xeaa448",
+      "owningFunctionStartRVA": "0xeaa401",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xeac1df",
+      "owningFunctionStartRVA": "0xeabfe0",
+      "ownerLabels": [
+        {
+          "tokenRow": 2482,
+          "method": "UpgradeVisualNow",
+          "type": "JXCharacter",
+          "metadataIndex": 2481
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xeac97e",
+      "owningFunctionStartRVA": "0xeac532",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "WorldPos2Mps",
+      "kind": "call",
+      "fromRVA": "0xeadbf5",
+      "owningFunctionStartRVA": "0xead740",
+      "ownerLabels": [
+        {
+          "tokenRow": 2470,
+          "method": "ValidateAndUseSkillOnArrival",
+          "type": "JXCharacter",
+          "metadataIndex": 2469
+        }
+      ],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Mps2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xeaf5c2",
+      "owningFunctionStartRVA": "0xeaf580",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    },
+    {
+      "target": "Map2WorldPos",
+      "kind": "call",
+      "fromRVA": "0xec25c9",
+      "owningFunctionStartRVA": "0xec24c7",
+      "ownerLabels": [],
+      "status": "INSTRUCTION_BOUNDARY_CONFIRMED"
+    }
+  ],
+  "mapServiceScopedMethods": [
+    {
+      "rva": "0x8dd750",
+      "names": [
+        "Calibrate"
+      ],
+      "instructionWindowBytes": 1121,
+      "fieldOffsetWrites": [],
+      "selectedCalls": [
+        {
+          "atRVA": "0x8dd904",
+          "targetRVA": "0x8e0870"
+        },
+        {
+          "atRVA": "0x8dd99e",
+          "targetRVA": "0x8e0870"
+        }
+      ]
+    },
+    {
+      "rva": "0x8ddbc0",
+      "names": [
+        "ClampWorldTargetToMpsRange"
+      ],
+      "instructionWindowBytes": 324,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8ddbc0",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8ddbc5",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8ddcc6",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8ddcd8",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rbx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8ddd10",
+      "names": [
+        "Dir2DirIndex"
+      ],
+      "instructionWindowBytes": 512,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8ddd30",
+      "names": [
+        "DirCos"
+      ],
+      "instructionWindowBytes": 158,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8ddd30",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8dddd0",
+      "names": [
+        "DirIndex2Dir"
+      ],
+      "instructionWindowBytes": 512,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8dddf0",
+      "names": [
+        "DirSin"
+      ],
+      "instructionWindowBytes": 155,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8dddf0",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8dde90",
+      "names": [
+        "DirToRotation"
+      ],
+      "instructionWindowBytes": 595,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8dde93",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rax",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8dde97",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rax",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8de072",
+          "offset": 4,
+          "fieldCandidate": "m01",
+          "baseRegister": "rdi",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8de077",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rdi",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8de079",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rdi",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8de0b3",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rdi",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8de0f0",
+      "names": [
+        "EnsureEllipseParams"
+      ],
+      "instructionWindowBytes": 103,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8de330",
+      "names": [
+        "EnsureInvDet"
+      ],
+      "instructionWindowBytes": 181,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8de3f0",
+      "names": [
+        "GetDirIndex"
+      ],
+      "instructionWindowBytes": 169,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8de680",
+      "names": [
+        "GetDirIndex"
+      ],
+      "instructionWindowBytes": 154,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8de870",
+      "names": [
+        "GetDistance"
+      ],
+      "instructionWindowBytes": 66,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8de8c0",
+      "names": [
+        "GetLength"
+      ],
+      "instructionWindowBytes": 60,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8de900",
+      "names": [
+        "GetWorldEllipseForMpsRange"
+      ],
+      "instructionWindowBytes": 177,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8de900",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8de905",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8de96e",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rsi",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8de98a",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rdi",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8de9a4",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rbx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8de9c0",
+      "names": [
+        "HandleSyncNpcMinPlayer"
+      ],
+      "instructionWindowBytes": 296,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8dfb80",
+      "names": [
+        "InternalDirSinCos"
+      ],
+      "instructionWindowBytes": 65,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8dfbd0",
+      "names": [
+        "IsMovementCommand"
+      ],
+      "instructionWindowBytes": 512,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8dfbf0",
+      "names": [
+        "Map2WorldPos"
+      ],
+      "instructionWindowBytes": 276,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8dfbf0",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8dfcec",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rbx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": [
+        {
+          "atRVA": "0x8dfcac",
+          "targetRVA": "0xc790f0"
+        },
+        {
+          "atRVA": "0x8dfcd3",
+          "targetRVA": "0x8dfd10"
+        }
+      ]
+    },
+    {
+      "rva": "0x8dfd10",
+      "names": [
+        "Mps2WorldPos"
+      ],
+      "instructionWindowBytes": 239,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8dfd10",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8dfd15",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8dfdad",
+          "offset": 4,
+          "fieldCandidate": "m01",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8dfde6",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8dfdf0",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8dfe00",
+      "names": [
+        "NearestTrailDistMps"
+      ],
+      "instructionWindowBytes": 126,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8dfe34",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "r15",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8dfe64",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rbx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e01f0",
+      "names": [
+        "RemoveNpcFromRegion"
+      ],
+      "instructionWindowBytes": 474,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e03d0",
+      "names": [
+        "ResetPlayerTrail"
+      ],
+      "instructionWindowBytes": 156,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e0470",
+      "names": [
+        "RotationToDir"
+      ],
+      "instructionWindowBytes": 155,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e0510",
+      "names": [
+        "SampleLocalPlayerTrail"
+      ],
+      "instructionWindowBytes": 101,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e0770",
+      "names": [
+        "SegDistSqr"
+      ],
+      "instructionWindowBytes": 247,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e079d",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rsp",
+          "operation": "movaps",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e07ac",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rsp",
+          "operation": "movaps",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e0870",
+      "names": [
+        "Solve3x3"
+      ],
+      "instructionWindowBytes": 722,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e0a14",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rax",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e0aa4",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rax",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e0ab8",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rax",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e0aeb",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rax",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e0af5",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rax",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e0aff",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rax",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e0b50",
+      "names": [
+        "TransformDirectionX"
+      ],
+      "instructionWindowBytes": 135,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e0be0",
+      "names": [
+        "TransformDirectionZ"
+      ],
+      "instructionWindowBytes": 136,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e0c70",
+      "names": [
+        "TransformDirection"
+      ],
+      "instructionWindowBytes": 339,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e0d74",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e0d7d",
+          "offset": 4,
+          "fieldCandidate": "m01",
+          "baseRegister": "rbx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e0db8",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e0dd0",
+      "names": [
+        "UpdateWorldInfo"
+      ],
+      "instructionWindowBytes": 1032,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e0ed9",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rdi",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e11e0",
+      "names": [
+        "WorldDeltaToMpsDelta"
+      ],
+      "instructionWindowBytes": 235,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e12d0",
+      "names": [
+        "WorldDeltaToMpsDistance"
+      ],
+      "instructionWindowBytes": 429,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e1480",
+      "names": [
+        "WorldDirToDirIndex"
+      ],
+      "instructionWindowBytes": 281,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e1480",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e14cb",
+          "offset": 4,
+          "fieldCandidate": "m01",
+          "baseRegister": "rbx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1534",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1538",
+          "offset": 4,
+          "fieldCandidate": "m01",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e153d",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rbx",
+          "operation": "movss",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e1710",
+      "names": [
+        "WorldPos2GridCell"
+      ],
+      "instructionWindowBytes": 410,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e1710",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1715",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e184b",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rsi",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e18a2",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rdi",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e18b0",
+      "names": [
+        "WorldPos2Mps"
+      ],
+      "instructionWindowBytes": 396,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e18b0",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e1a40",
+      "names": [
+        "WorldRadiusForMpsRange"
+      ],
+      "instructionWindowBytes": 90,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e1a78",
+          "offset": 4,
+          "fieldCandidate": "m01",
+          "baseRegister": "rbx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e1b40",
+      "names": [
+        ".cctor"
+      ],
+      "instructionWindowBytes": 943,
+      "fieldOffsetWrites": [
+        {
+          "rva": "0x8e1b40",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rsp",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1bb5",
+          "offset": 0,
+          "fieldCandidate": "m00",
+          "baseRegister": "rcx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1bc9",
+          "offset": 4,
+          "fieldCandidate": "m01",
+          "baseRegister": "rcx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1bde",
+          "offset": 8,
+          "fieldCandidate": "m10",
+          "baseRegister": "rcx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1bf3",
+          "offset": 12,
+          "fieldCandidate": "m11",
+          "baseRegister": "rcx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1c08",
+          "offset": 16,
+          "fieldCandidate": "offsetX",
+          "baseRegister": "rcx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        },
+        {
+          "rva": "0x8e1c1d",
+          "offset": 20,
+          "fieldCandidate": "offsetZ",
+          "baseRegister": "rcx",
+          "operation": "mov",
+          "warning": "Access to matching offset, NOT PROOF register is MapService staticFields"
+        }
+      ],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e1ef0",
+      "names": [
+        "get_CurrentMapDisplayName"
+      ],
+      "instructionWindowBytes": 148,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e1f90",
+      "names": [
+        "get_MpsWorldScaleForSpeed"
+      ],
+      "instructionWindowBytes": 161,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    },
+    {
+      "rva": "0x8e2140",
+      "names": [
+        "get_MpsWorldScale"
+      ],
+      "instructionWindowBytes": 102,
+      "fieldOffsetWrites": [],
+      "selectedCalls": []
+    }
+  ],
+  "constraints": "Direct transfer matches are raw bytes. Offset writes are candidate offsets without register dataflow. Reflection, virtual, delegate and dynamic calls unverified; no live Map53 values."
+}

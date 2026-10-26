@@ -1,0 +1,16 @@
+{
+  "pid": 31732,
+  "seconds": 28,
+  "events": [
+    {
+      "kind": "installed",
+      "sceneHooks": 10,
+      "mutations": false
+    },
+    {
+      "kind": "mainLoopPulse",
+      "frames": 1500
+    }
+  ],
+  "limits": "No method calls, no mutation or network sends; passive hook arguments only; idle observation is not scene success."
+}

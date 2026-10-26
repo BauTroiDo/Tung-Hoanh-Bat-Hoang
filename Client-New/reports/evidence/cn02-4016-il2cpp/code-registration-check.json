@@ -1,0 +1,64 @@
+{
+  "binarySha256": "011357720B210AA1F392A8B62FF8DE090D3A895230A6E0135BCE707196871069",
+  "metadataSha256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+  "status": "REGISTRATION_UNVERIFIED",
+  "moduleArrays": [
+    {
+      "arrayRVA": "0x5cb5008",
+      "imageCount": 121,
+      "missing": [
+        "AmazingAssets.TerrainToMesh.dll"
+      ],
+      "firstFive": [
+        {
+          "name": "Assembly-CSharp.dll",
+          "methodPointerCount": 19668,
+          "recordRVA": "0x4befcf0"
+        },
+        {
+          "name": "Boxophobic.AtmosphericHeightFog.Runtime.dll",
+          "methodPointerCount": 22,
+          "recordRVA": "0x4befdf0"
+        },
+        {
+          "name": "Boxophobic.Utils.Scripts.dll",
+          "methodPointerCount": 46,
+          "recordRVA": "0x4beff70"
+        },
+        {
+          "name": "DOTweenPro.dll",
+          "methodPointerCount": 60,
+          "recordRVA": "0x4bf0d30"
+        },
+        {
+          "name": "DOTweenPro.Scripts.dll",
+          "methodPointerCount": 59,
+          "recordRVA": "0x4bf0ba0"
+        }
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "candidateArrayRVA": "0x5cb5008",
+      "readable": 121,
+      "firstNames": [
+        "Assembly-CSharp.dll",
+        "Boxophobic.AtmosphericHeightFog.Runtime.dll",
+        "Boxophobic.Utils.Scripts.dll",
+        "DOTweenPro.dll",
+        "DOTweenPro.Scripts.dll",
+        "DOTween.dll",
+        "DOTween.Modules.dll",
+        "DamageNumbersPro.dll"
+      ],
+      "missing": [
+        "AmazingAssets.TerrainToMesh.dll"
+      ],
+      "unexpected": [],
+      "duplicates": 0
+    }
+  ],
+  "codeRegistrationFieldCandidates": [],
+  "limitations": "Static name, count, pointer matching does not prove live execution or original scene/legacy calibration."
+}

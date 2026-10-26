@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Failed(Child)" total="8" passed="3" failed="5" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.0670442">
+  <test-suite type="TestSuite" id="1000" name="UnityProject" fullname="UnityProject" runstate="Runnable" testcasecount="22" result="Failed" site="Child" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.067044" total="8" passed="3" failed="5" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1026" name="JXClient.Tests.EditMode.dll" fullname="E:/Games/VLTK3D/SwordOnline/Client-New/UnityProject/Library/ScriptAssemblies/JXClient.Tests.EditMode.dll" runstate="Runnable" testcasecount="22" result="Failed" site="Child" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.056432" total="8" passed="3" failed="5" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="21696" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1001" name="CalibrationEvidenceTests" fullname="CalibrationEvidenceTests" classname="CalibrationEvidenceTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.054128" total="8" passed="3" failed="5" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1009" name="CollinearOrOutOfBoundsAnchorsCannotBeAssessedAsReady" fullname="CalibrationEvidenceTests.CollinearOrOutOfBoundsAnchorsCannotBeAssessedAsReady" methodname="CollinearOrOutOfBoundsAnchorsCannotBeAssessedAsReady" classname="CalibrationEvidenceTests" runstate="Runnable" seed="212838893" result="Failed" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.029779" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: InvalidInput
+  But was:  NeedsEvidence
+]]></message>
+            <stack-trace><![CDATA[at CalibrationEvidenceTests.CollinearOrOutOfBoundsAnchorsCannotBeAssessedAsReady () [0x00039] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\EditMode\Coordinates\CalibrationEvidenceTests.cs:26
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1002" name="CompleteConsistentMeasuredMetadataIsOnlyReadyForReview" fullname="CalibrationEvidenceTests.CompleteConsistentMeasuredMetadataIsOnlyReadyForReview" methodname="CompleteConsistentMeasuredMetadataIsOnlyReadyForReview" classname="CalibrationEvidenceTests" runstate="Runnable" seed="791122757" result="Failed" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.000417" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: ReadyForReview
+  But was:  NeedsEvidence
+]]></message>
+            <stack-trace><![CDATA[at CalibrationEvidenceTests.CompleteConsistentMeasuredMetadataIsOnlyReadyForReview () [0x0001e] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\EditMode\Coordinates\CalibrationEvidenceTests.cs:12
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1006" name="DuplicateHoldoutAndLabelsAreInvalid" fullname="CalibrationEvidenceTests.DuplicateHoldoutAndLabelsAreInvalid" methodname="DuplicateHoldoutAndLabelsAreInvalid" classname="CalibrationEvidenceTests" runstate="Runnable" seed="455587835" result="Failed" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.000277" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: InvalidInput
+  But was:  NeedsEvidence
+]]></message>
+            <stack-trace><![CDATA[at CalibrationEvidenceTests.DuplicateHoldoutAndLabelsAreInvalid () [0x00039] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\EditMode\Coordinates\CalibrationEvidenceTests.cs:20
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1005" name="IndependentHoldoutOutsideToleranceIsRejected" fullname="CalibrationEvidenceTests.IndependentHoldoutOutsideToleranceIsRejected" methodname="IndependentHoldoutOutsideToleranceIsRejected" classname="CalibrationEvidenceTests" runstate="Runnable" seed="1760744211" result="Failed" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.000261" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: OutOfTolerance
+  But was:  NeedsEvidence
+]]></message>
+            <stack-trace><![CDATA[at CalibrationEvidenceTests.IndependentHoldoutOutsideToleranceIsRejected () [0x00051] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\EditMode\Coordinates\CalibrationEvidenceTests.cs:18
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1008" name="MissingOrMalformedHashesNeedEvidence" fullname="CalibrationEvidenceTests.MissingOrMalformedHashesNeedEvidence" methodname="MissingOrMalformedHashesNeedEvidence" classname="CalibrationEvidenceTests" runstate="Runnable" seed="265696304" result="Passed" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.001805" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1007" name="MissingRowsAndInvalidToleranceAreInvalid" fullname="CalibrationEvidenceTests.MissingRowsAndInvalidToleranceAreInvalid" methodname="MissingRowsAndInvalidToleranceAreInvalid" classname="CalibrationEvidenceTests" runstate="Runnable" seed="1457905999" result="Failed" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.000312" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: InvalidInput
+  But was:  NeedsEvidence
+]]></message>
+            <stack-trace><![CDATA[at CalibrationEvidenceTests.MissingRowsAndInvalidToleranceAreInvalid () [0x0001a] in E:\Games\VLTK3D\SwordOnline\Client-New\UnityProject\Assets\_JXClient\Tests\EditMode\Coordinates\CalibrationEvidenceTests.cs:22
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1004" name="SyntheticFixturesCannotBecomeMeasuredCalibration" fullname="CalibrationEvidenceTests.SyntheticFixturesCannotBecomeMeasuredCalibration" methodname="SyntheticFixturesCannotBecomeMeasuredCalibration" classname="CalibrationEvidenceTests" runstate="Runnable" seed="1614997432" result="Passed" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.000135" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1003" name="UnknownEvidenceCannotBecomeReady" fullname="CalibrationEvidenceTests.UnknownEvidenceCannotBecomeReady" methodname="UnknownEvidenceCannotBecomeReady" classname="CalibrationEvidenceTests" runstate="Runnable" seed="1788421662" result="Passed" start-time="2026-10-25 10:20:26Z" end-time="2026-10-25 10:20:26Z" duration="0.000133" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: C:/Users/QT/AppData/LocalLow/DefaultCompany/UnityProject\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

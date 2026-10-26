@@ -1,0 +1,216 @@
+﻿{
+    "schema": "cn02-bulk03-runtime-gameplay-v1",
+    "timestampUtc": "2026-10-25T23:58:36.3391434Z",
+    "unityVersion": "6000.6.7f1",
+    "platform": "WindowsPlayer",
+    "graphicsDeviceName": "NVIDIA GeForce GTX 1080",
+    "graphicsDeviceType": "Direct3D12",
+    "isBatchMode": false,
+    "sceneName": "BaLangHuyen",
+    "provenanceVersion": "cn02-synthetic-v1",
+    "isSyntheticFallback": true,
+    "calibrationStatus": "Unverified",
+    "offlineSceneReady": true,
+    "sessionState": "OfflineReady",
+    "moveRequestNetworkAllowed": false,
+    "measuredFps": 1446.5704345703125,
+    "managedMemoryMB": 2.57421875,
+    "capturedScreenshots": [
+        "bulk03_view1_south_spawn.png",
+        "bulk03_view2_east_road.png",
+        "bulk03_view3_north_obstacle_routed.png",
+        "bulk03_view4_west_northgate.png"
+    ],
+    "groundProbes": [
+        {
+            "probeName": "Probe_CenterPlaza",
+            "worldOrigin": "(0.00, 0.00, 0.00)",
+            "hitGround": true,
+            "hitPoint": "(0.00, 0.04, 0.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_CenterPlazaGround"
+        },
+        {
+            "probeName": "Probe_NorthGatePath",
+            "worldOrigin": "(0.00, 0.00, 18.00)",
+            "hitGround": true,
+            "hitPoint": "(0.00, 0.02, 18.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_NorthSouthRoad"
+        },
+        {
+            "probeName": "Probe_SouthGatePath",
+            "worldOrigin": "(0.00, 0.00, -18.00)",
+            "hitGround": true,
+            "hitPoint": "(0.00, 0.02, -18.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_NorthSouthRoad"
+        },
+        {
+            "probeName": "Probe_EastBridgeApproach",
+            "worldOrigin": "(18.00, 0.00, 0.00)",
+            "hitGround": true,
+            "hitPoint": "(18.00, 0.03, 0.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_EastWestRoad"
+        },
+        {
+            "probeName": "Probe_WestMarketApproach",
+            "worldOrigin": "(-18.00, 0.00, 0.00)",
+            "hitGround": true,
+            "hitPoint": "(-18.00, 0.03, 0.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_EastWestRoad"
+        },
+        {
+            "probeName": "Probe_SouthWestPlazaApproach",
+            "worldOrigin": "(-6.00, 0.00, -8.00)",
+            "hitGround": true,
+            "hitPoint": "(-6.00, 0.00, -8.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_MainMeadowGround"
+        },
+        {
+            "probeName": "Probe_NorthEastPlazaApproach",
+            "worldOrigin": "(6.00, 0.00, 8.00)",
+            "hitGround": true,
+            "hitPoint": "(6.00, 0.00, 8.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_MainMeadowGround"
+        },
+        {
+            "probeName": "Probe_NorthWestMeadow",
+            "worldOrigin": "(-16.00, 0.00, 16.00)",
+            "hitGround": true,
+            "hitPoint": "(-16.00, 0.00, 16.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_MainMeadowGround"
+        },
+        {
+            "probeName": "Probe_NorthEastMeadow",
+            "worldOrigin": "(16.00, 0.00, 16.00)",
+            "hitGround": true,
+            "hitPoint": "(16.00, 0.00, 16.00)",
+            "hitNormal": "(0.00, 1.00, 0.00)",
+            "colliderName": "BLH_MainMeadowGround"
+        }
+    ],
+    "gameplayCases": [
+        {
+            "caseId": "CASE-01-IDLE-SPAWN",
+            "description": "Verify initial Idle state on valid Layer-8 ground at OfflineSpawn_VillageCenter",
+            "startPosition": "(0.00, 0.04, -3.00)",
+            "targetPosition": "(0.00, 0.04, -3.00)",
+            "endPosition": "(0.00, 0.04, -3.00)",
+            "motionStateObserved": "Idle",
+            "lastInputObserved": "Click the ground",
+            "waypointCount": 0,
+            "durationSeconds": 0.019999999552965164,
+            "averageFps": 3.2051703929901123,
+            "passed": true,
+            "notes": "Initial spawn verified on ground"
+        },
+        {
+            "caseId": "CASE-02-WALK-EAST-PLAZA",
+            "description": "Offline MoveIntent along plaza to East Road (6, 0, 0)",
+            "startPosition": "(0.00, 0.04, -3.00)",
+            "targetPosition": "(6.00, 0.00, 0.00)",
+            "endPosition": "(5.93, 0.11, -0.04)",
+            "motionStateObserved": "Walking -> Idle",
+            "lastInputObserved": "Ground destination accepted",
+            "waypointCount": 1,
+            "durationSeconds": 1.6565351486206055,
+            "averageFps": 1337.73193359375,
+            "passed": true,
+            "notes": "planarDist=0.080m, frames=2216"
+        },
+        {
+            "caseId": "CASE-03-PATHFIND-AROUND-WEST-WALL",
+            "description": "Obstacle-avoiding A* pathfinding around Obstacle_WestWall from (-2,0,2) to (-8.5,0,2)",
+            "startPosition": "(-2.00, 0.05, 2.00)",
+            "targetPosition": "(-8.50, 0.00, 2.00)",
+            "endPosition": "(-8.47, 0.10, 2.07)",
+            "motionStateObserved": "Walking -> Idle",
+            "lastInputObserved": "Ground path accepted (3 waypoints)",
+            "waypointCount": 3,
+            "durationSeconds": 2.712602138519287,
+            "averageFps": 1369.90234375,
+            "passed": true,
+            "notes": "planarDist=0.079m, frames=3716"
+        },
+        {
+            "caseId": "CASE-04-PATHFIND-AROUND-EAST-PILLAR",
+            "description": "Obstacle-avoiding A* pathfinding around Obstacle_EastLanternPillar from (2,0,-3.5) to (7.5,0,-3.5)",
+            "startPosition": "(2.00, 0.05, -3.50)",
+            "targetPosition": "(7.50, 0.00, -3.50)",
+            "endPosition": "(7.43, 0.08, -3.46)",
+            "motionStateObserved": "Walking -> Idle",
+            "lastInputObserved": "Ground path accepted (7 waypoints)",
+            "waypointCount": 7,
+            "durationSeconds": 1.5768208503723145,
+            "averageFps": 1346.3800048828125,
+            "passed": true,
+            "notes": "planarDist=0.079m, frames=2123"
+        },
+        {
+            "caseId": "CASE-05-BLOCKED-BY-WALL",
+            "description": "Direct movement without pathfinding stops safely at Obstacle_WestWall with MotionState=Blocked",
+            "startPosition": "(-2.00, 0.05, 2.00)",
+            "targetPosition": "(-8.50, 0.00, 2.00)",
+            "endPosition": "(-4.42, 0.11, 2.00)",
+            "motionStateObserved": "Blocked",
+            "lastInputObserved": "Ground destination accepted",
+            "waypointCount": 1,
+            "durationSeconds": 0.6161861419677734,
+            "averageFps": 1288.5716552734375,
+            "passed": true,
+            "notes": "Stopped at x=-4.42 before wall x=-5.5 (blockedFrames=10)"
+        },
+        {
+            "caseId": "CASE-06-UNREACHABLE-COURTYARD",
+            "description": "Target inside enclosed stone courtyard (16, 0, -16) is rejected as Unreachable target",
+            "startPosition": "(8.00, 0.08, -12.00)",
+            "targetPosition": "(16.00, 0.00, -16.00)",
+            "endPosition": "(8.00, 0.08, -12.00)",
+            "motionStateObserved": "Unreachable",
+            "lastInputObserved": "Unreachable target",
+            "waypointCount": 0,
+            "durationSeconds": 0.03202056884765625,
+            "averageFps": 1381.3583984375,
+            "passed": true,
+            "notes": "Accepted=False, State=Unreachable, Input=Unreachable target"
+        },
+        {
+            "caseId": "CASE-07-UI-AND-OFFSCREEN-REJECTION",
+            "description": "Clicks on top-left HUD shield and off-screen coordinates are rejected without moving player",
+            "startPosition": "(8.00, 0.08, -12.00)",
+            "targetPosition": "UI(60, H-40) / Offscreen(-25,-25)",
+            "endPosition": "(8.00, 0.08, -12.00)",
+            "motionStateObserved": "Unreachable",
+            "lastInputObserved": "UI consumed click | Outside view",
+            "waypointCount": 0,
+            "durationSeconds": 0.009999999776482582,
+            "averageFps": 1381.3583984375,
+            "passed": true,
+            "notes": "UI='UI consumed click', Offscreen='Outside view'"
+        },
+        {
+            "caseId": "CASE-08-WALK-NORTH-GATE",
+            "description": "Offline MoveIntent along North road from (0,0,6) to North Gate (0,0,16)",
+            "startPosition": "(0.00, 0.05, 6.00)",
+            "targetPosition": "(0.00, 0.00, 16.00)",
+            "endPosition": "(0.00, 0.10, 15.92)",
+            "motionStateObserved": "Walking -> Idle",
+            "lastInputObserved": "Ground destination accepted",
+            "waypointCount": 1,
+            "durationSeconds": 2.4810333251953125,
+            "averageFps": 1407.47802734375,
+            "passed": true,
+            "notes": "planarDist=0.078m, frames=3492"
+        }
+    ],
+    "totalCases": 8,
+    "passedCases": 8,
+    "failedCases": 0,
+    "allPassed": true
+}

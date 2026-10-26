@@ -1,0 +1,66 @@
+{
+  "schema": "cn02-bulk09-live-qa-snapshot-v1",
+  "timestampServer": "2026-10-26T06:06:26+07:00",
+  "clientComputer": "DESKTOP-TPG2RNF",
+  "serverComputer": "WIN-33R6OP5GO1M",
+  "serverQaSource": "C:\\Server-Game\\SwordOnline\\Client3D-LAN\\qa_runs\\cn02-bulk09\\sanitized-gateway-snapshot.json",
+  "gateway": {
+    "pid": 7600,
+    "port": 14180,
+    "nativeGsBridge": true,
+    "allowlistedClient": "192.168.1.13",
+    "gatewayProcessConfirmed": true,
+    "gatewayManagerStatus": "RUNNING",
+    "bishopPid": 3212,
+    "gs001Pid": 1608
+  },
+  "client": {
+    "originalGamePid": 8328,
+    "earlyRootLauncherPid": 25636,
+    "loopbackMirrorPid": 13100,
+    "originalMetadataSha256": "5586F416AA26EBE57EA7F6580D0A53E5E5F29C50E425E64A4D3F2A95D6069E08",
+    "earlyRootStartupVerified": true,
+    "nativePakMounts": 5,
+    "firstPakReadBytes": 572,
+    "lanLoginPanelOpened": true,
+    "loginPanelAccountSubmissionReported": false
+  },
+  "network": {
+    "nativeGreetingBytes": 34,
+    "nativeGreetingPrefixValid": true,
+    "credentialsSentBySmoke": false
+  },
+  "evidenceCounts": {
+    "nativeGreeting": 8,
+    "bishopAuthSuccess": 6,
+    "nativeRoleSelectVerified": 1,
+    "bishopPermitSent": 0,
+    "nativeRoleSelectionPermissionError": 1
+  },
+  "assets": {
+    "catalogHashGet200": 1,
+    "map53SceneBundleRequestedDuringSnapshot": false,
+    "map53AssetsBundleRequestedDuringSnapshot": false
+  },
+  "gate": {
+    "nativeGatewayListen": "PASS",
+    "nativeGreeting": "PASS",
+    "realBishopAuthObserved": "OBSERVED",
+    "bishopGsPermit": "REJECTED",
+    "worldSync": "NOT_VERIFIED",
+    "map53SceneRendered": "NOT_VERIFIED",
+    "gsAuthoritativeMove": "NOT_VERIFIED",
+    "activeAffineSixCoefficients": "NOT_CAPTURED",
+    "pairedLandmarks": "NOT_CAPTURED",
+    "runtimeEndToEndAccepted": false,
+    "cn0204": "BLOCKED",
+    "cn03": "CLOSED"
+  },
+  "limits": [
+    "Counters are cumulative and not all events belong to one authenticated session.",
+    "The role-select PermissionError arises in BishopConnection.select_role() when the Bishop permission flag is not 1; do not bypass this refusal.",
+    "Original Game.exe was started with an existing memory-only QA launcher; original metadata and GameAssembly hashes remain unchanged.",
+    "No raw credentials, tickets, role/account names, wire packets or source dumps are included."
+  ],
+  "rawClientEvidenceRoot": "E:\\Games\\VLTK3D\\SwordOnline\\Tool\\_outputs\\cn02-bulk\\map53-qa09"
+}

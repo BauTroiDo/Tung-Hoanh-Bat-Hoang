@@ -1,0 +1,58 @@
+{
+  "source_log": "C:\\Server-Game\\SwordOnline\\Client3D-LAN\\qa_runs\\cn02-dev-runtime-trace-20261026\\gateway-trace.log",
+  "verified_timestamp_roundtrips": 37,
+  "first_pairs": [
+    {
+      "entity": 40707,
+      "server_tick": 333135,
+      "client_tick": 3482894,
+      "gs_source": "2026-10-26 13:40:02,850 M1 ping source opcode=143 bytes=5 server_tick=333135",
+      "c2s_reply": "2026-10-26 13:40:05,425 M1 ping sent opcode=122 bytes=9 entity=40707 server_tick=333135 client_tick=3482894",
+      "gs_echo": "2026-10-26 13:40:05,456 M1 ping echo gs_opcode=174 native_opcode=131 bytes=5 entity=40707 client_tick=3482894"
+    },
+    {
+      "entity": 40707,
+      "server_tick": 333501,
+      "client_tick": 3501059,
+      "gs_source": "2026-10-26 13:40:22,677 M1 ping source opcode=143 bytes=5 server_tick=333501",
+      "c2s_reply": "2026-10-26 13:40:23,591 M1 ping sent opcode=122 bytes=9 entity=40707 server_tick=333501 client_tick=3501059",
+      "gs_echo": "2026-10-26 13:40:23,613 M1 ping echo gs_opcode=174 native_opcode=131 bytes=5 entity=40707 client_tick=3501059"
+    },
+    {
+      "entity": 40707,
+      "server_tick": 334001,
+      "client_tick": 3528360,
+      "gs_source": "2026-10-26 13:40:50,457 M1 ping source opcode=143 bytes=5 server_tick=334001",
+      "c2s_reply": "2026-10-26 13:40:50,890 M1 ping sent opcode=122 bytes=9 entity=40707 server_tick=334001 client_tick=3528360",
+      "gs_echo": "2026-10-26 13:40:50,895 M1 ping echo gs_opcode=174 native_opcode=131 bytes=5 entity=40707 client_tick=3528360"
+    },
+    {
+      "entity": 40707,
+      "server_tick": 334501,
+      "client_tick": 3558693,
+      "gs_source": "2026-10-26 13:41:18,286 M1 ping source opcode=143 bytes=5 server_tick=334501",
+      "c2s_reply": "2026-10-26 13:41:21,223 M1 ping sent opcode=122 bytes=9 entity=40707 server_tick=334501 client_tick=3558693",
+      "gs_echo": "2026-10-26 13:41:21,239 M1 ping echo gs_opcode=174 native_opcode=131 bytes=5 entity=40707 client_tick=3558693"
+    }
+  ],
+  "disconnect_reasons": {
+    "client disconnected": 10,
+    "Native M1 session traffic limit": 6,
+    "Unsupported native M1 command": 1
+  },
+  "recent_movement_records": [
+    "2026-10-26 13:44:23,068 M1 authoritative position entity=40709 x=51889 y=102450",
+    "2026-10-26 13:46:33,104 M1 native movement forwarded entity=40710 count=1",
+    "2026-10-26 13:46:33,175 M1 authoritative position entity=40710 x=51889 y=102455",
+    "2026-10-26 13:46:33,347 M1 authoritative position entity=40710 x=51889 y=102465",
+    "2026-10-26 13:48:40,419 M1 native movement forwarded entity=40711 count=1",
+    "2026-10-26 13:48:40,509 M1 authoritative position entity=40711 x=51889 y=102470",
+    "2026-10-26 13:48:40,680 M1 authoritative position entity=40711 x=51889 y=102480",
+    "2026-10-26 13:50:50,686 M1 native movement forwarded entity=40712 count=1",
+    "2026-10-26 13:50:50,790 M1 authoritative position entity=40712 x=51889 y=102485",
+    "2026-10-26 13:50:50,962 M1 authoritative position entity=40712 x=51889 y=102495",
+    "2026-10-26 13:53:00,783 M1 native movement forwarded entity=40713 count=1",
+    "2026-10-26 13:53:00,963 M1 authoritative position entity=40713 x=51889 y=102510"
+  ],
+  "limits": "Ping acceptance only. Reconnect movements are not user-click proof. Before coordinate-unit patch."
+}

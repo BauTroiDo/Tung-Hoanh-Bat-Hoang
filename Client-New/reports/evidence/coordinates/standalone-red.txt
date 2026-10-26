@@ -1,0 +1,50 @@
+
+Welcome to .NET 8.0!
+---------------------
+SDK Version: 8.0.318
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, run 'dotnet dev-certs https --trust'
+Learn about HTTPS: https://aka.ms/dotnet-https
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+An issue was encountered verifying workloads. For more information, run "dotnet workload update".
+FAIL ScaleTranslationAndIndependentHoldoutAreCorrect:   Expected: 12.0d +/- 1.0000000000000001E-09d
+  But was:  1.0d
+
+FAIL RotatedAxesAndInverseUseSceneHorizontalCoordinates:   Expected: 8.0d +/- 1.0000000000000001E-09d
+  But was:  1.0d
+
+FAIL ReflectionAndNegativeCoordinatesRoundTrip:   Expected: 8.0d +/- 1.0000000000000001E-09d
+  But was:  -4.0d
+
+FAIL LargeSourceOriginPreservesLocalDisplacement:   Expected: 0.5d +/- 1.0000000000000001E-09d
+  But was:  1000000000000.25d
+
+FAIL BoundsAreInclusiveAndBothDomainsAreChecked:   Expected: <System.ArgumentOutOfRangeException>
+  But was:  null
+
+FAIL DuplicateAndCollinearSourceAnchorsAreRejected:   Expected: <System.ArgumentException>
+  But was:  null
+
+FAIL NearCollinearSourceAnchorsAreRejectedRelatively:   Expected: <System.ArgumentException>
+  But was:  null
+
+FAIL NonInvertibleSceneMappingIsRejected:   Expected: <System.ArgumentException>
+  But was:  null
+
+FAIL NonFiniteValuesAndInvalidBoundsAreRejected:   Expected: <System.ArgumentException>
+  But was:  null
+
+FAIL CalibrationAnchorsOutsideBoundsAreRejected:   Expected: <System.ArgumentOutOfRangeException>
+  But was:  null
+
+PASS IdentityFitAndInverseAgreeAcrossBounds
+Standalone mathematical fixtures: passed=1, failed=10. This is not Unity Test Runner.

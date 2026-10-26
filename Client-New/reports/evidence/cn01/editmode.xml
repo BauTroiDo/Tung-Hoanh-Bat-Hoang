@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.0786604">
+  <test-suite type="TestSuite" id="1000" name="UnityProject" fullname="UnityProject" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.078660" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1005" name="JXClient.Tests.EditMode.dll" fullname="E:/Games/VLTK3D/SwordOnline/Client-New/UnityProject/Library/ScriptAssemblies/JXClient.Tests.EditMode.dll" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.072130" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="14152" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1006" name="JXClient" fullname="JXClient" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.071807" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1007" name="Tests" fullname="JXClient.Tests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.071619" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1008" name="EditMode" fullname="JXClient.Tests.EditMode" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.071410" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1001" name="Cn00BootstrapTests" fullname="JXClient.Tests.EditMode.Cn00BootstrapTests" classname="JXClient.Tests.EditMode.Cn00BootstrapTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.070455" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1004" name="BootstrapScene_ExistsAndInitializesOfflineReadyState" fullname="JXClient.Tests.EditMode.Cn00BootstrapTests.BootstrapScene_ExistsAndInitializesOfflineReadyState" methodname="BootstrapScene_ExistsAndInitializesOfflineReadyState" classname="JXClient.Tests.EditMode.Cn00BootstrapTests" runstate="Runnable" seed="2043672266" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.052658" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[CN-00][BootstrapRunner] Gate CN-00 | Scene: Bootstrap | State: OfflineReady | Unity: 6000.6.7f1 | GroundCollider: Ready | Network: Offline (No GS connection in CN-00)
+]]></output>
+              </test-case>
+              <test-case id="1002" name="DomainPrimitives_EnforceValidConstraints" fullname="JXClient.Tests.EditMode.Cn00BootstrapTests.DomainPrimitives_EnforceValidConstraints" methodname="DomainPrimitives_EnforceValidConstraints" classname="JXClient.Tests.EditMode.Cn00BootstrapTests" runstate="Runnable" seed="2063826342" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.003791" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1003" name="GameSessionRules_ForbidMoveBeforeWorldReady" fullname="JXClient.Tests.EditMode.Cn00BootstrapTests.GameSessionRules_ForbidMoveBeforeWorldReady" methodname="GameSessionRules_ForbidMoveBeforeWorldReady" classname="JXClient.Tests.EditMode.Cn00BootstrapTests" runstate="Runnable" seed="1829398785" result="Passed" start-time="2026-10-25 08:40:30Z" end-time="2026-10-25 08:40:30Z" duration="0.000438" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/QT/AppData/LocalLow/DefaultCompany/UnityProject\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

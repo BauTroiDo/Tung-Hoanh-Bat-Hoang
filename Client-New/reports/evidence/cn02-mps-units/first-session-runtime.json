@@ -1,0 +1,24 @@
+{
+  "entity": 40714,
+  "initial": [
+    "2026-10-26 13:59:35,407 M1 native initial sent map=53 entity=40714 packets=5 omitted=(69, 118, 164, 165, 166, 167, 214)",
+    "2026-10-26 13:59:35,465 M1 original GS ACK sent once entity=40714"
+  ],
+  "movement_records": 213,
+  "first_positions": [
+    "2026-10-26 13:59:36,295 M1 authoritative position entity=40714 x=51889 y=102520",
+    "2026-10-26 13:59:36,467 M1 authoritative position entity=40714 x=51889 y=102525",
+    "2026-10-26 13:59:37,404 M1 authoritative position entity=40714 x=51882 y=102506"
+  ],
+  "last_positions": [
+    "2026-10-26 14:01:19,905 M1 authoritative position entity=40714 x=51806 y=101577",
+    "2026-10-26 14:01:20,015 M1 authoritative position entity=40714 x=51798 y=101558",
+    "2026-10-26 14:01:20,125 M1 authoritative position entity=40714 x=51790 y=101540"
+  ],
+  "ping": [
+    "2026-10-26 14:00:45,247 M1 ping echo gs_opcode=174 native_opcode=131 bytes=5 entity=40714 client_tick=258579",
+    "2026-10-26 14:01:15,576 M1 ping sent opcode=122 bytes=9 entity=40714 server_tick=356001 client_tick=288912",
+    "2026-10-26 14:01:15,623 M1 ping echo gs_opcode=174 native_opcode=131 bytes=5 entity=40714 client_tick=288912"
+  ],
+  "limits": "Original GS4168 session only; later GS4020 sessions are separate."
+}
