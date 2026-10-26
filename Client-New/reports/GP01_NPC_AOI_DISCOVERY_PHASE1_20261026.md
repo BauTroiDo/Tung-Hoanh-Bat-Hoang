@@ -17,7 +17,7 @@
 
 ## Tests actually run
 - py_compile three GP01 files: exit 0.
-- python -m unittest discover -s gs-bridge-m1 -p 'test_*.py' -q from Client3D-LAN: **171/171 PASS, exit 0** (14 new GP01 tests).
+- python -m unittest discover -s gs-bridge-m1 -p 'test_*.py' -q from Client3D-LAN: **173/173 PASS, exit 0** (16 new GP01 tests).
 
 ## Next blocking gate
 1. Verify exact native4016 NPC_MIN(84), NPC_SYNC(98), NPC_REMOVE and interaction consumption layouts through real IL2CPP/GameServer packet evidence; resolve missing required fields. Do not change original 4016 binary.
