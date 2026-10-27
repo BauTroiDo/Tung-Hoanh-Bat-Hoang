@@ -9,7 +9,6 @@ from pathlib import Path
 import logging
 import os
 from map53_collision_contract import Map53CollisionContract
-from native_npc_aoi import NativeNpcAoiProbe
 import select
 import struct
 import time
@@ -21,6 +20,7 @@ from gs_native_relay import (build_native_greeting, recv_wire, decode_frame,
 from native_initial_packets import convert_initial, player_appearance
 from native_movement import (bounded_client_movement, authoritative_position,
                              authoritative_move_target, DuplicateMoveGuard)
+from native_npc_aoi import NativeNpcAoiProbe, build_dev_npc_snapshot_request
 from gs_world_scalar_projection import project_named_initial_packet
 
 LOG = logging.getLogger('client3d-gateway')
@@ -179,6 +179,14 @@ def run_native_session(client, broker, peer_ip, *, first_wire=None,
                     backend.send(initial.legacy_end)
                     summary.backend_acks = 1
                     LOG.info('M1 original GS ACK sent once entity=%d', summary.entity_id)
+                    # GP01 snapshot only if both the bridge and a dedicated DEV
+                    # server opt in. Baseline original GS treats ID 0 as invalid.
+                    if (npc_probe is not None and
+                        os.environ.get('GP01_DEV_NPC_SNAPSHOT', '0') == '1'):
+                        backend.send(build_dev_npc_snapshot_request())
+                        npc_probe.enable_dev_snapshot()
+                        LOG.info('GP01 DEV NPC snapshot requested after real ACK entity=%d',
+                                 summary.entity_id)
                 elif clear and clear[0] in (85, 117):
                     if not summary.backend_acks:
                         raise PermissionError('Movement before original GS ACK')
@@ -225,7 +233,11 @@ def run_native_session(client, broker, peer_ip, *, first_wire=None,
                     if npc_probe is None:
                         LOG.info('M1 native NPC request omitted (GP01 gated off)')
                     else:
-                        request = npc_probe.request_from_native(clear, summary.position)
+                        try:
+                            request = npc_probe.request_from_native(clear, summary.position)
+                        except (ValueError, KeyError, IndexError, struct.error) as exc:
+                            LOG.warning('GP01 ignored malformed native NPC request: %s', exc)
+                            request = None
                         if request is not None:
                             backend.send(request)
                             LOG.info('GP01 forwarded verified native NPC request to GS id=%d',
@@ -243,8 +255,13 @@ def run_native_session(client, broker, peer_ip, *, first_wire=None,
                 for opcode, packet in split_batch(batch):
                     if npc_probe is not None and opcode in (76, 77, 84, 155):
                         pre_full = len(npc_probe.full_metadata)
-                        original_request = npc_probe.observe_server(
-                            opcode, packet, summary.position, now=time.monotonic())
+                        try:
+                            original_request = npc_probe.observe_server(
+                                opcode, packet, summary.position, now=time.monotonic())
+                        except (ValueError, KeyError, IndexError, struct.error) as exc:
+                            LOG.warning('GP01 ignored malformed GS NPC record opcode=%d bytes=%d: %s',
+                                        opcode, len(packet), exc)
+                            original_request = None
                         if original_request is not None:
                             backend.send(original_request)
                             LOG.info('GP01 requested real GS NPC metadata id=%d',

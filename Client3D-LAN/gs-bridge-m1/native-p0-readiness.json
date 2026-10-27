@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "client_dll_sha256": "011357720b210aa1f392a8b62ff8de090d3a895230a6e0135bce707196871069",
+  "map_id": 53,
+  "native_scene": "BaLangHuyen",
+  "roundtrips": {
+    "WORLD_SYNC": 98,
+    "NPC_SYNC": 105,
+    "PLAYER_SYNC": 98,
+    "CURPLAYER_SYNC": 83,
+    "NPC_PLAYER_TYPE_NORMAL_SYNC": 17,
+    "NPC_RUN_COMMAND": 9
+  },
+  "native_ack": [
+    98
+  ],
+  "socket_chain_verified": true,
+  "source_hashes": {
+    "gateway.py": "1f83fb02a3082d54b8d5e8eb38c4ae633d2b6165e9ae89b851ca2cddf11d9098",
+    "legacy_bishop.py": "164a8801e68fc99c14805fb83be289959369533d02d0711ccc5fd5161e428ee5",
+    "legacy_gameserver.py": "1d67518e4e656fbce74a29a97f7b0e113dcbb7fef5851271e29a69d43837f3b2",
+    "world_conversion.py": "6de039d6354b05ef045b308dd9cf47431c6b0a066017fc9496b9f0d826e82b46",
+    "reference/native-layout.json": "7585dacc9227b76df2b825d670e287feede03af91db69f19652368a28a8f9dd0",
+    "gs-bridge-m1/native_p0_readiness.py": "b7fceec46627c35863a4f2342093833a44bee3bb7d7491e52e34caf00971fec0",
+    "gs-bridge-m1/native_gs_dispatch.py": "93dd4879bcae4835c674b0e5cef5dcb66f966316ac2cf25fb0cc53760b592009",
+    "gs-bridge-m1/native_gs_handshake.py": "576ee7c8d33addd6be7b965e7382aca41455b2273ba907de914ecfd0d7f06162",
+    "gs-bridge-m1/gs_native_relay.py": "8c6e3e3872e6d938d3a3857cb6fceb05805f7a26025287a1692ddb68163d9677",
+    "gs-bridge-m1/native_initial_packets.py": "9ed78000c81336b834e3d423a597f2f8820306d1eb0ee631b88fbe2eedecef53",
+    "gs-bridge-m1/native_movement.py": "9be025b45acbdf4080e2ec1ef184d9782250e33971996be3b8eaa282b1bf8b71",
+    "gs-bridge-m1/native_session.py": "cda849dd4cb5999000ba3b3bed1a65ab1d7981db633920765bb4f5a799af9696",
+    "gs-bridge-m1/native_diagnostics.py": "28570572e7ab7a44945e91fb65619c6ef24496858f7991d1cdce2127a1bf229a",
+    "gs-bridge-m1/gs_initial_sync_preview.py": "790064e9bbae900838df1f06c7e6fb927e5df57ed9fdabd34dc5ad7510303a2c",
+    "gs-bridge-m1/gs_world_map53_name_preview.py": "37e53621d45ca76b09d4be49ab144c0159d13041756b31484823b69432611b1f",
+    "gs-bridge-m1/gs_world_scalar_projection.py": "8505f01366d30637ae44d272714326f2a0ea9d9f8fade2ea4edf6fbdda506cf6",
+    "gs-bridge-m1/gs_npc_status_merge.py": "64a0f1be712812eca2715808d331b430018870dbc25f210ef5e8ea0c65351356",
+    "gs-bridge-m1/M1-world-struct-field-map-20261024.json": "64b4e50c673aedc53809e1e4a3ea90c6aafd1ae954dd9695c0c98b1864eceed4",
+    "gs-bridge-m1/M1-original-maplist.ini": "94388082ce0c993e124074e68c0488e813440bf8b74b96a3fddcc4fece62f983"
+  },
+  "evidence_file": "M1-P0-NATIVE-CONTRACT-EVIDENCE-20261024.json",
+  "acceptance": "NOT_YET_TESTED_ON_REAL_CHARACTER",
+  "map53_copyid_retest": {
+    "client_marshaller_bytes": 98,
+    "byte_exact": true,
+    "managed_map_copy_id": 53,
+    "wire_map_copy_id": 53,
+    "wire_subworld": 53,
+    "network_sent": false,
+    "rea_source_sha256": "d5943e303638ada78cd31b79f49199945a3613926d0b18a3037ff1f06212acd1",
+    "regression_tests": 103,
+    "test_log": "../backups/map53-copyid-20261025/tests.log",
+    "acceptance": "M1-P0_NOT_PASS_PENDING_REAL_CLIENT"
+  },
+  "map53_region_retest": {
+    "tests": 105,
+    "marshaller_bytes": 98,
+    "byte_exact": true,
+    "wire_region": 6488114,
+    "wire_map_copy_id": 53,
+    "rea_source_sha256": "2fe9a11b95bfad32cbc8db756ca0a33c8eddbcf660c892a55293ed3581e7f2b4",
+    "acceptance": "NOT_PASS_PENDING_REAL_CLIENT"
+  },
+  "mps_axis_unit_retest": {
+    "legacy_region_mps": [
+      512,
+      1024
+    ],
+    "native_region_mps": [
+      1024,
+      1024
+    ],
+    "tests": 129,
+    "runtime_acceptance": "PENDING_REAL_CLIENT",
+    "affine_coefficients_changed": false
+  },
+  "traffic_policy_retest": {
+    "window_seconds": 10,
+    "window_bytes": 8388608,
+    "window_frames": 4096,
+    "idle_seconds": 90,
+    "controlled_dev_fixed_lifetime": null,
+    "tests": 136,
+    "runtime": "PENDING"
+  },
+  "movement_repeat_retest": {
+    "tests": 148,
+    "repeat_window_ms": 200,
+    "identical_commands_only": true,
+    "stale_far_move_soft_rejected": true,
+    "gs_forced_position_preserved": true,
+    "runtime_acceptance": "PENDING"
+  },
+  "gp01_canary_note": "Map53 GP01 snapshot observer code; 178 bridge regression tests passed; native NPC spawn still NOT accepted"
+}
