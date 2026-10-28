@@ -209,10 +209,15 @@ public:
    int gerAllRoleDataInaccName(char *accName);
    int gerAllRoleDataInaccName(S3DBI_RoleBaseInfo *ptempBuffer,char *accName,int isThisSerVer,int roleMaxCount);
    int SelectBlobData(void * pRoleBuffer,char *roleName,unsigned int nkey);
+   // Load a single SQLite snapshot: blob and trade revision together.
+   int SelectBlobDataWithRevision(void* blob,int capacity,char* roleName,sqlite3_int64* revision);
    bool InsertBlobData(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);
    bool deleteBlobData(char *roleName,unsigned int nkey,bool show=false);
    bool updateBlobData(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);
    bool updateBlobData_n(void * roleData,int len,char *roleName,unsigned int nkey,bool show=false);
+   // Opt-in CAS save; legacy save remains unchanged.
+   int updateBlobData_versioned(void *roleData,int len,char *roleName,sqlite3_int64 expected,sqlite3_int64* next);
+   int updateBlobData_versioned_receipt(void *roleData,int len,char *roleName,sqlite3_int64 expected,unsigned __int64 nonce,sqlite3_int64* next);
    bool updateBlobData_atomic_dual(void * roleDataA,int lenA,char *roleNameA, void * roleDataB,int lenB,char *roleNameB,unsigned int nkeyA=0,unsigned int nkeyB=0,bool show=false);
    bool ensureTradeReceiptTable();
    bool isTradeTxCommitted(unsigned __int64 uTxId);

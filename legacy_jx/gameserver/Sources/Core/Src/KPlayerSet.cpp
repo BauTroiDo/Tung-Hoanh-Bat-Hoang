@@ -14,6 +14,7 @@
 #include "KSubWorldSet.h"
 #include "CoreServerShell.h"
 #include "KPlayerTradeJournal.h"
+#include "RoleSaveExitFence.h"
 #endif
 #include "KPlayerSet.h"
 #include "Text.h"
@@ -873,6 +874,12 @@ void KPlayerSet::__PrepareRemove(int nIndex)
 {
 	if (nIndex <= 0 || nIndex >= MAX_PLAYER)
 		return;
+#ifdef _SERVER
+    if (JXRoleSaveExitFence::BlocksRelease(
+        Player[nIndex].m_bRoleRevisionProtocolSeen,
+        Player[nIndex].m_bRoleSaveRevisionLoaded,
+        Player[nIndex].m_bRoleSavePending)) return;
+#endif
 	CheckMaps(nIndex,FALSE,FALSE);
 	Player[nIndex].WaitForRemove();    //设置离开游戏状态
 }
@@ -889,6 +896,13 @@ void KPlayerSet::gm_PrepareRemove(char *accName,char *roleName)
 	if  (!accName || !roleName) return ;
 
 	int  nIndex = FindNameID(accName);
+#ifdef _SERVER
+    if (nIndex > 0 && nIndex < MAX_PLAYER &&
+        JXRoleSaveExitFence::BlocksRelease(
+            Player[nIndex].m_bRoleRevisionProtocolSeen,
+            Player[nIndex].m_bRoleSaveRevisionLoaded,
+            Player[nIndex].m_bRoleSavePending)) return;
+#endif
 
 	if  (nIndex>0 && nIndex<MAX_PLAYER)
 	     CheckMaps(nIndex,FALSE,true);
@@ -953,6 +967,12 @@ void KPlayerSet::PrepareRemove(int nIndex,BOOL isOnline)
 {
 	if (nIndex <= 0 || nIndex >= MAX_PLAYER)
 		return;
+#ifdef _SERVER
+    if (JXRoleSaveExitFence::BlocksRelease(
+        Player[nIndex].m_bRoleRevisionProtocolSeen,
+        Player[nIndex].m_bRoleSaveRevisionLoaded,
+        Player[nIndex].m_bRoleSavePending)) return;
+#endif
 
     CheckMaps(nIndex,FALSE,isOnline);
 
@@ -1162,6 +1182,13 @@ void KPlayerSet::RemoveInGame(int nIndex)
 //某个索引玩家离开游戏时GS调用
 void KPlayerSet::RemoveQuiting(int nIndex)
 {
+    if (nIndex <= 0 || nIndex >= MAX_PLAYER) return;
+#ifdef _SERVER
+    if (JXRoleSaveExitFence::BlocksRelease(
+        Player[nIndex].m_bRoleRevisionProtocolSeen,
+        Player[nIndex].m_bRoleSaveRevisionLoaded,
+        Player[nIndex].m_bRoleSavePending)) return;
+#endif
 	if (Player[nIndex].m_nNetConnectIdx == -1 || Player[nIndex].m_dwID == 0 || Player[nIndex].m_nLiXian)
 		return;
 

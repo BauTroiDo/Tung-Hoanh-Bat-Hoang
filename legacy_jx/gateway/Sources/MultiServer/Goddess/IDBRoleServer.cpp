@@ -158,6 +158,7 @@ int copySqldataToDB()
 int copyDBdataToSql()
 {  //hBakRoleListOutput  AddRoleOutputString
 	char outStr[218];
+    int skipped=0;
 	if (db_table && sqlitel_table)
 	{
 		ZCursor *copycursor = db_table->first();
@@ -169,17 +170,26 @@ int copyDBdataToSql()
 				unsigned int nkey=FileNameDB(pRoleData->BaseInfo.szName);
 				//sqlitel_table->deleteBlobData(pRoleData->BaseInfo.szName,nkey,true);
 				//sqlitel_table->InsertBlobData((void *)copycursor->data,copycursor->size,pRoleData->BaseInfo.szName,nkey);
-			    sqlitel_table->updateBlobData((void *)copycursor->data,copycursor->size,pRoleData->BaseInfo.szName,nkey,true);
+			    const bool imported=sqlitel_table->updateBlobData(
+                    (void*)copycursor->data,copycursor->size,
+                    pRoleData->BaseInfo.szName,nkey,true);
+                if(!imported) {
+                    ++skipped;
+                    AddRoleOutputString(hBakRoleListOutput,
+                        "[BDB->SQLite] SKIP existing/revisioned/trade-fenced role");
+                }
 
+				if(imported) {
 				sprintf(outStr,"-拷贝:%s:%s成功",pRoleData->BaseInfo.caccname,pRoleData->BaseInfo.szName);
 				AddRoleOutputString(hBakRoleListOutput,outStr);
+                }
 			}
 
 			if(!db_table->next(copycursor))
 				break;
 		} 
 
-		return true;
+		return skipped==0;
 	}
 	AddRoleOutputString(hBakRoleListOutput,"db或sql数据库没有打开,不能copy!");
 	return false;
@@ -495,7 +505,7 @@ void *GetRoleInfoForGM(int nInfoID, char * pRoleBuffer, char * strUser, int &nBu
 	return pRoleBuffer;
 }
 
-void *GetRoleInfo( char * pRoleBuffer, char * strUser, int &nBufLen, char *pAccName,UINT nThsiServer)
+void *GetRoleInfo( char * pRoleBuffer, char * strUser, int &nBufLen, char *pAccName,UINT nThsiServer, sqlite3_int64* roleRevision)
 {
 
 	int size = 0;
@@ -504,7 +514,11 @@ void *GetRoleInfo( char * pRoleBuffer, char * strUser, int &nBufLen, char *pAccN
 	if  (g_dataType==DATA_KIND_SQL)
 	{
 		unsigned int nKey=FileNameDB(strUser);
-		nBufLen = sqlitel_table->SelectBlobData(pRoleBuffer,strUser,nKey);
+		// Avoid an inconsistent (blob, revision) pair across a concurrent trade.
+		if (roleRevision)
+			nBufLen = sqlitel_table->SelectBlobDataWithRevision(pRoleBuffer,nBufLen,strUser,roleRevision);
+		else
+			nBufLen = sqlitel_table->SelectBlobData(pRoleBuffer,strUser,nKey);
 		if  (nBufLen<=0)
 		{
 			nBufLen=0;
@@ -610,6 +624,21 @@ int  CheckRoleName(char *pName)
 //保存角色的信息，如果数据库不存在该玩家，则增加该玩家
 //bAutoInsertWhenNoExistUser 设为TRUE时表示，如果需要保存的该玩家在数据库中并不存在则自动加入到数据库中，FALSE则不增加直接返回错误
 //注意INI文件只须存放将需要改动的数据，不需改动的数据将自动保存原状。
+// Server-to-server versioned ordinary save, without legacy fallback.
+int SaveRoleInfoVersioned(char* roleData,int bytes,sqlite3_int64 expected,
+                           unsigned __int64 nonce,sqlite3_int64* nextRevision)
+{
+    if(g_dataType!=DATA_KIND_SQL || !sqlitel_table || !roleData ||
+       bytes<(int)offsetof(TRoleData,pBuffer) || bytes>=128*1024 ||
+       !nonce || !nextRevision) return -14;
+    TRoleData* p=(TRoleData*)roleData;
+    if(!memchr(p->BaseInfo.szName,0,sizeof(p->BaseInfo.szName)) ||
+       !p->BaseInfo.szName[0] || p->dwDataLen!=(unsigned int)bytes)
+        return -14;
+    return sqlitel_table->updateBlobData_versioned_receipt(roleData,bytes,
+        p->BaseInfo.szName,expected,nonce,nextRevision);
+}
+
 int	SaveRoleInfo(char * pRoleBuffer,const char *strUser,BOOL bAutoInsertWhenNoExistUser)
 {
 	ASSERT(pRoleBuffer);

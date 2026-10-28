@@ -20,6 +20,7 @@
 #include "IServer.h"
 #include "KTimer.h"
 #include "KTransferUnit.h"
+#include "RoleSaveRetryCache.h"
 
 #include "KLinkArray.h"
 ///////////////////////////////////////////////////////////////
@@ -199,6 +200,7 @@ private:
 	//KTimer				m_Timer;
 	typedef std::unordered_map<DWORD, KTransferUnit*>	IP2CONNECTUNIT;
 	IP2CONNECTUNIT		m_mapIp2TransferUnit;
+	JXRoleSaveRetry::Cache m_roleSaveRetryCache;
 public:
 	KSwordOnLineSever();
 	~KSwordOnLineSever();
@@ -322,6 +324,7 @@ private:
 	BOOL				SendGameDataToClient(const unsigned long lnID, const int nPlayerIndex);
 	//void				SavePlayerData();
 	BOOL				SavePlayerData(int nIndex, bool bUnLock);
+	void                RetryPendingRoleSaves();
 	void				ExitAllPlayer();
 	void                ExitAllPlayerIngame();
 	//void				PlayerLogoutGateway();

@@ -15,6 +15,8 @@
 #include "CRC32.h"
 #include "..\..\Core\Src/KCoreData.h"
 #include "..\..\Core\Src\KPlayerTradeJournal.h"
+#include "RoleSaveRevisionWire.h"
+#include <stddef.h>
 //#include "..\..\Core\Src/KGameglobalSet.h"
 
 #ifdef _STANDALONE
@@ -2953,15 +2955,56 @@ void KSwordOnLineSever::DatabaseMessageProcess(const char* pData, size_t dataLen
 		break;
 	case s2c_roleserver_saverole_result:
 		{
+			if (dataLength < sizeof(TProcessData))
+			{
+				printf("[RoleSave] Truncated Goddess ACK: bytes=%zu.\n", dataLength);
+				break;
+			}
 			TProcessData*	pPD = (TProcessData *)pData;
 
-			if  (pPD->nDataLen!=791030)
-				break;
-
-			int nIndex = pPD->ulIdentity;
-
-			if (nIndex <= 0 || nIndex >= MAX_PLAYER)
-				break;
+            int nIndex = pPD->ulIdentity;
+            if (nIndex <= 0 || nIndex >= MAX_PLAYER || !m_pCoreServerShell)
+                break;
+            if (pPD->nDataLen == 791031) {
+                if (dataLength < offsetof(TProcessData,pDataBuffer)+25)
+                    break;
+                const unsigned char* ack=(const unsigned char*)pPD->pDataBuffer;
+                const int status=(int)(signed char)ack[0];
+                const unsigned __int64 expected=JXRoleRevisionWire::ReadU64(ack+1);
+                const unsigned __int64 committed=JXRoleRevisionWire::ReadU64(ack+9);
+                const unsigned __int64 nonce=JXRoleRevisionWire::ReadU64(ack+17);
+                const JXRoleSaveRetry::Pending* pending =
+                    m_roleSaveRetryCache.Find(nIndex);
+                unsigned __int64 liveExpected=0,liveNonce=0;
+                if (!pending ||
+                    !m_pCoreServerShell->GetPendingRoleSave(
+                        nIndex,pending->role.c_str(),&liveExpected,&liveNonce) ||
+                    !m_roleSaveRetryCache.Matches(nIndex,pending->role,
+                        expected,nonce) || liveExpected!=expected ||
+                    liveNonce!=nonce)
+                    break; // stale ACK cannot complete a recycled slot
+                const int accepted=m_pCoreServerShell->FinishRoleSave(
+                    nIndex,expected,nonce,status,committed);
+                if (accepted!=0)
+                    m_roleSaveRetryCache.RemoveIfMatch(nIndex,
+                        pending->role,expected,nonce);
+                if (accepted != 1) {
+                    if (accepted < 0)
+                        m_pCoreServerShell->SetSaveStatus(nIndex,SAVE_REQUEST);
+                    break; // never disconnect or transfer for a stale ACK
+                }
+            } else if (pPD->nDataLen == 791030) {
+                char roleName[64]={0};
+                m_pCoreServerShell->GetGameData(
+                    SGDI_CHARACTER_NAME,(UINT_PTR)roleName,nIndex);
+                if (m_pCoreServerShell->IsRoleSaveRevisionRequired(
+                      nIndex,roleName))
+                    break; // legacy ACK cannot complete a versioned session
+                if (pPD->pDataBuffer[0] != 1) {
+                    m_pCoreServerShell->SetSaveStatus(nIndex,SAVE_REQUEST);
+                    break;
+                }
+            } else break;
 			printf("[Archive successfully]: Player character archive index [%d] completed!\n", nIndex);
 			if (m_pCoreServerShell->IsCharacterLiXian(nIndex) != 2)
 			{//正常退出的 不是离线的
@@ -3988,9 +4031,35 @@ void KSwordOnLineSever::GatewayLargePackProcess(const void *pData, size_t dataLe
 				GUID guid;
 				memcpy(&guid,&(pGI->guid), sizeof(GUID));
 							
-				if ( pGI->datalength > 0 )
-				{
-					const TRoleData *pRoleData = ( const TRoleData * )( pGI->szData );
+				// Validate the reassembled frame before reading TRoleData fields.
+#ifndef _STANDALONE
+                if (pBuffer->GetUsed() < offsetof(tagGuidableInfo,szData) ||
+                    pGI->datalength > pBuffer->GetUsed() - offsetof(tagGuidableInfo,szData)) {
+                    printf("[RoleRev] Bishop role frame length invalid.\n");
+                    break;
+                }
+#endif
+                if (pGI->datalength > 0)
+                {
+                    if (pGI->datalength < offsetof(TRoleData,pBuffer)) {
+                        printf("[RoleRev] Truncated role header.\n");
+                        break;
+                    }
+                    const TRoleData *pRoleData = (const TRoleData *)(pGI->szData);
+                    if (pRoleData->dwDataLen < offsetof(TRoleData,pBuffer) ||
+                        pRoleData->dwDataLen > pGI->datalength) {
+                        printf("[RoleRev] Role BLOB length invalid.\n");
+                        break;
+                    }
+                    unsigned __int64 loadedRevision = 0;
+                    const JXRoleRevisionWire::DecodeResult revisionState =
+                        JXRoleRevisionWire::Decode(pGI->szData,pGI->datalength,
+                            pRoleData->dwDataLen,pRoleData->BaseInfo.szName,
+                            &loadedRevision);
+                    if (revisionState == JXRoleRevisionWire::Invalid) {
+                        printf("[RoleRev] Corrupted or mismatched revision trailer.\n");
+                        break;
+                    }
 					/*BOOL	bCRCCheck = TRUE;
 					if (pRoleData->dwFriendOffset == pRoleData->dwDataLen - 4 && pRoleData->nFriendCount == 0)
 					{//最后的 是 朋友列表的偏移
@@ -4026,8 +4095,18 @@ void KSwordOnLineSever::GatewayLargePackProcess(const void *pData, size_t dataLe
 						
 					if (nIdx>0)
 					{//网络链接成功
-						ppl.bPermit = true;   //是否许可玩家登陆
-						m_pCoreServerShell->OperationRequest(SSOI_RELOAD_WELCOME_MSG,0,nIdx);           //发送欢迎语
+                        if (revisionState == JXRoleRevisionWire::Valid &&
+                            !m_pCoreServerShell->SetRoleSaveRevision(nIdx,
+                                pRoleData->BaseInfo.szName, loadedRevision)) {
+                            printf("[RoleRev] Failed to bind revision to slot %d.\n",nIdx);
+                            m_pCoreServerShell->PreparePlayerForLoginFailed(nIdx);
+                            ppl.bPermit = false;
+                        } else {
+                            if (revisionState == JXRoleRevisionWire::Absent)
+                                printf("[RoleRev] Legacy login has no CAS token, slot %d.\n",nIdx);
+                            ppl.bPermit = true;   //是否许可玩家登陆
+						m_pCoreServerShell->OperationRequest(SSOI_RELOAD_WELCOME_MSG,0,nIdx);
+                        } // Revision session binding succeeded           //发送欢迎语
 					    //printf("[SSOI_RELOAD_WELCOME_MSG] send to nIdx:(%d),caccname:(%s)------\n",nIdx,pRoleData->BaseInfo.caccname);		
 					}					
 				//	}发往bishop
@@ -4414,6 +4493,7 @@ void KSwordOnLineSever::MainLoop()
 	 PlayerLogoutGateway();                //网关断开 循环检测 是否退出游戏的
 	 PlayerExchangeServer();               //跨服转换地图时 
     //m_pServer->PreparePackSink();  //准备发包？
+    RetryPendingRoleSaves();
     m_pCoreServerShell->Breathe();    //服务器端里的主循环
 	//TongattackLoop();	                        //帮会宣战循环
 
@@ -4594,6 +4674,47 @@ void KSwordOnLineSever::ProcessPingReply(const unsigned long lnID, const char* p
 	}
 }
 */
+void KSwordOnLineSever::RetryPendingRoleSaves()
+{
+    if (!m_pCoreServerShell || !m_pDatabaseClient) return;
+    const DWORD now=GetTickCount();
+    const DWORD intervalMs=5000;
+    const unsigned int maxRetries=3;
+    std::vector<int> stale;
+    const std::map<int,JXRoleSaveRetry::Pending>& tasks =
+        m_roleSaveRetryCache.Entries();
+    for(std::map<int,JXRoleSaveRetry::Pending>::const_iterator it=tasks.begin();
+        it!=tasks.end();++it) {
+        const int slot=it->first;
+        const JXRoleSaveRetry::Pending& pending=it->second;
+        unsigned __int64 expected=0,nonce=0;
+        if(!m_pCoreServerShell->GetPendingRoleSave(
+                slot,pending.role.c_str(),&expected,&nonce) ||
+           !m_roleSaveRetryCache.Matches(slot,pending.role,expected,nonce)) {
+            stale.push_back(slot);
+            continue;
+        }
+        if(!pending.Due(now,intervalMs)) continue;
+        if(pending.retries>=maxRetries) {
+            // The database might already have committed. Never invent
+            // a new nonce: fail closed and require authoritative resync.
+            m_pCoreServerShell->FinishRoleSave(slot,expected,nonce,-14,0);
+            m_pCoreServerShell->SetSaveStatus(slot,SAVE_REQUEST);
+            printf("[RoleSave] Retry exhausted for %s; resync required.\n",
+                   pending.role.c_str());
+            stale.push_back(slot);
+            continue;
+        }
+        // Exactly the same Rainbow frames as the original save request.
+        for(size_t j=0;j<pending.frames.size();++j)
+            m_pDatabaseClient->SendPackToServer(
+                pending.frames[j].data(),pending.frames[j].size());
+        m_roleSaveRetryCache.RecordRetry(slot,now);
+    }
+    for(size_t j=0;j<stale.size();++j)
+        m_roleSaveRetryCache.Remove(stale[j]);
+}
+
 BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 {
 	if (!m_pDatabaseClient)
@@ -4638,7 +4759,26 @@ BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 	//printf("-----------存档长度C:%d-----------\n", pData->dwDataLen);
 	if (pData && pData->dwDataLen)
 	{	//size_t == unsigned int
-		sProcessData.nDataLen = pData->dwDataLen + sizeof(TProcessData) - 1;
+        if (pData->dwDataLen < offsetof(TRoleData,pBuffer) ||
+            pData->dwDataLen > (128*1024-JXRoleRevisionWire::kSaveBytes) ||
+            !memchr(pData->BaseInfo.szName,0,sizeof(pData->BaseInfo.szName)))
+            return FALSE;
+        unsigned char saveTrailer[JXRoleRevisionWire::kSaveBytes]={0};
+        const bool versioned = m_pCoreServerShell->IsRoleSaveRevisionRequired(
+            nIndex,pData->BaseInfo.szName);
+        if (versioned) {
+            unsigned __int64 expected=0,nonce=0;
+            if (!m_pCoreServerShell->BeginRoleSave(nIndex,pData->BaseInfo.szName,
+                                                  &expected,&nonce))
+                return FALSE;
+            if (!JXRoleRevisionWire::EncodeSave(saveTrailer,sizeof(saveTrailer),
+                    pData->BaseInfo.szName,expected,nonce)) {
+                m_pCoreServerShell->FinishRoleSave(nIndex,expected,nonce,-14,0);
+                return FALSE;
+            }
+        }
+        sProcessData.nDataLen = pData->dwDataLen + sizeof(TProcessData) - 1 +
+            (versioned ? JXRoleRevisionWire::kSaveBytes : 0);
 		
 		/*pData->dwDataLen += 4;
 		DWORD	dwCRC = 0;
@@ -4650,6 +4790,8 @@ BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 
 		//m_theSend.AddData(c2s_rolekfjhu_saveroleinfo, (const BYTE*)pData, pData->dwDataLen - 4);
 		m_theSend.AddData(c2s_rolekfjhu_saveroleinfo, (const BYTE*)pData, pData->dwDataLen);
+        if (versioned)
+            m_theSend.AddData(c2s_rolekfjhu_saveroleinfo,saveTrailer,sizeof(saveTrailer));
 		//printf("-----------存档长度L:%d-----------\n", pData->dwDataLen);
 
 		//m_theSend.AddData(c2s_rolekfjhu_saveroleinfo, (const BYTE*)&dwCRC, 4);
@@ -4665,16 +4807,28 @@ BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 		char* pBuffer = m_theSend.GetHeadPack(c2s_rolekfjhu_saveroleinfo, actLen);
 		//printf("-----------存档长度J:%d-----------\n", pData->dwDataLen);
 #endif
+        std::vector<std::vector<unsigned char> > framedPackets;
 		int loopCount=0;
 		while(pBuffer)
 		{//发往goddes
 			loopCount ++;
 #ifndef _STANDALONE
 			//printf("-----------存档长度A:%d-----------\n", pBuffer->GetUsed());
-			m_pDatabaseClient->SendPackToServer(pBuffer->GetBuffer(), pBuffer->GetUsed());
+            if (versioned) {
+                const unsigned char* raw=(const unsigned char*)pBuffer->GetBuffer();
+                framedPackets.push_back(std::vector<unsigned char>(
+                    raw,raw+pBuffer->GetUsed()));
+            } else {
+                m_pDatabaseClient->SendPackToServer(pBuffer->GetBuffer(),pBuffer->GetUsed());
+            }
 #else
 			//printf("-----------存档长度B:%d-----------\n",actLen);
-			m_pDatabaseClient->SendPackToServer(pBuffer, actLen);
+            if (versioned) {
+                const unsigned char* raw=(const unsigned char*)pBuffer;
+                framedPackets.push_back(std::vector<unsigned char>(raw,raw+actLen));
+            } else {
+                m_pDatabaseClient->SendPackToServer(pBuffer,actLen);
+            }
 #endif
 
 #ifndef _STANDALONE
@@ -4699,6 +4853,23 @@ BOOL KSwordOnLineSever::SavePlayerData(int nIndex, bool bUnLock)
 #endif
 		}
 		m_theSend.DelData(c2s_rolekfjhu_saveroleinfo);
+        if (versioned) {
+            unsigned __int64 liveExpected=0,liveNonce=0;
+            const bool bound=m_pCoreServerShell->GetPendingRoleSave(
+                nIndex,pData->BaseInfo.szName,&liveExpected,&liveNonce);
+            if(!bound || !m_roleSaveRetryCache.Store(
+                 nIndex,pData->BaseInfo.szName,liveExpected,liveNonce,
+                 GetTickCount(),framedPackets)) {
+                if(bound)
+                    m_pCoreServerShell->FinishRoleSave(
+                        nIndex,liveExpected,liveNonce,-14,0);
+                return FALSE;
+            }
+            // Send exactly the stored frames, reused byte-for-byte on retry.
+            for(size_t packetIndex=0;packetIndex<framedPackets.size();++packetIndex)
+                m_pDatabaseClient->SendPackToServer(
+                    framedPackets[packetIndex].data(),framedPackets[packetIndex].size());
+        }
 #ifndef _STANDALONE
 		try
 		{
@@ -4850,6 +5021,11 @@ void KSwordOnLineSever::PlayerLogoutGateway()
 	// 遍历玩家（不能遍历连接，因为Timeout部分的玩家没有连接）
 	for (int nIndex = 1; nIndex < MAX_PLAYER; nIndex++)
 	{
+        // A timeout/NACK does not prove Goddess committed the last role
+        // snapshot. Do not unlock, transfer or recycle this session until
+        // an authoritative revision reload resolves it.
+        if (m_pCoreServerShell->IsRoleSaveReleaseBlocked(nIndex))
+            continue;
 		if (m_pCoreServerShell->IsPlayerLoginTimeOut(nIndex))
 		{//超时登陆的
 			char szName[ACC_LENGTH]={0},szRoleName[NAME_LENGHT]={0};
